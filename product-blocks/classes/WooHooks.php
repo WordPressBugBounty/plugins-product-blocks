@@ -1,0 +1,189 @@
+<?php
+/**
+ * WooHooks Action.
+ * 
+ * @package WOPB\Notice
+ * @since v.4.0.0
+ */
+namespace WOPB;
+
+defined('ABSPATH') || exit;
+
+/**
+ * WooHooks class.
+ */
+class WooHooks {
+
+    public function __construct() {
+		add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'add_to_cart_filter'), 100, 3 );
+        add_action( 'woocommerce_before_shop_loop_item_title', array( $this, 'before_shop_loop_item' ), 100 );
+        add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'before_add_to_cart_button' ), 100 );
+        add_action( 'woocommerce_after_add_to_cart_button', array( $this, 'after_add_to_cart_button' ), 100 );
+        add_filter( 'wopb_after_loop_item', array( $this, 'after_loop_item' ), 100 );
+//        add_action( 'wopb_product_meta_end', array( $this, 'after_product_meta_end' ), 100 );
+	}
+
+	/**
+     * Add To Cart Button Filter for Loop Product
+     *
+     * @since v.3.1.5
+     * @param $add_to_cart_html
+     * @param $product
+     * @param $products
+     *
+     * @return html
+     */
+    public function add_to_cart_filter( $add_to_cart_html, $product, $args ) {
+        $before = $after = '';
+        $top_filter = apply_filters( 'wopb_top_add_to_cart_loop', $content = '', $product, $args );
+        $before_filter = apply_filters( 'wopb_before_add_to_cart_loop', $content = '', $product, $args );
+        $after_filter = apply_filters( 'wopb_after_add_to_cart_loop', $content = '', $product, $args );
+        $bottom_filter = apply_filters( 'wopb_bottom_add_to_cart_loop', $content = '', $product, $args );
+        
+        if ( $top_filter ) {
+            $before .= '<div class="wopb-cart-top">';
+            $before .= $top_filter;
+            $before .= '</div>';
+        }
+        if ( $before_filter ) {
+            $before .= '<span class="wopb-cart-before">';
+            $before .= $before_filter;
+            $before .= '</span>';
+        }
+        if ( $after_filter ) {
+            $after .= '<span class="wopb-cart-after">';
+            $after .= $after_filter;
+            $after .= '</span>';
+        }
+        if ( $bottom_filter ) {
+            $after .= '<div class="wopb-cart-bottom">';
+            $after .= $bottom_filter;
+            $after .= '</div>';
+        }
+
+        return $before . $add_to_cart_html . $after;
+    }
+
+    /**
+     * Various Addons Before Shop Loop Title
+     *
+     * @since v.3.1.5
+     * @return null
+     */
+    public function before_shop_loop_item() {
+        $args = array();
+        $before_title = apply_filters( 'wopb_before_shop_loop_title', $content = '', $args );
+        if ( $before_title ) {
+            $content = '<div class="wopb-loop-image-top">';
+            $content .= $before_title;
+            $content .= '</div>';
+            echo $content; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+        }
+    }
+
+    /**
+     * Button In Single Product Page Before Cart Button
+     *
+     * @since v.3.1.5
+     * @return null
+     */
+    public function before_add_to_cart_button() {
+        $content = '';
+        $top_filter = apply_filters( 'wopb_top_add_to_cart', $content = '' );
+        $before_filter = apply_filters( 'wopb_before_add_to_cart', $content = '' );
+        if ( $top_filter ) {
+            $content .= '<div class="wopb-cart-top">';
+            $content .= $top_filter;
+            $content .= '</div>';
+        }
+        if ( $before_filter ) {
+            $content .= '<span class="wopb-cart-before">';
+            $content .= $before_filter;
+            $content .= '</span>';
+        }
+        echo $content; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+    }
+
+    /**
+     * Button In Single Product Page After Cart Button
+     *
+     * @since v.3.1.5
+     * @return null
+     */
+    public function after_add_to_cart_button() {
+        $after_filter = apply_filters( 'wopb_after_add_to_cart', $content = '' );
+        $bottom_filter = apply_filters( 'wopb_bottom_add_to_cart', $content = '' );
+        $content = '';
+        if( $after_filter ) {
+            $content .= '<span class="wopb-cart-after">';
+            $content .= $after_filter;
+            $content .= '</span>';
+        }
+        if ( $bottom_filter ) {
+            $content .= '<div class="wopb-cart-bottom">';
+            $content .= $bottom_filter;
+            $content .= "</div>";
+        }
+
+        echo $content; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+    }
+
+    /**
+     * Filter Applied After Loop Item
+     *
+     * @param $content
+     * @return string
+     * @since v.todo
+     */
+    public function after_loop_item( $content ) {
+        $germanized_wc = array( // Germanized woocommerce function for after loop item
+            'unit_price' => 'woocommerce_gzd_template_loop_price_unit',
+            'tax' => 'woocommerce_gzd_template_loop_tax_info',
+            'shipping_costs' => 'woocommerce_gzd_template_loop_shipping_costs_info',
+            'delivery_time' => 'woocommerce_gzd_template_loop_delivery_time_info',
+            'units' => 'woocommerce_gzd_template_loop_product_units',
+            'deposit' => 'woocommerce_gzd_template_loop_deposit',
+            'deposit_packaging_type' => 'woocommerce_gzd_template_loop_deposit_packaging_type',
+            'nutri_score' => 'woocommerce_gzd_template_loop_nutri_score',
+        );
+        ob_start();
+            foreach ( $germanized_wc as $func ) {
+                if ( function_exists( $func ) ) {
+                    $func();
+                }
+            }
+        $content .= ob_get_clean();
+
+        return $content; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+    }
+
+    /**
+     * Filter Applied After Product Meta
+     *
+     * @return string
+     * @since v.todo
+     */
+    public function after_product_meta_end () {
+        global $product;
+        $content = '';
+        if( ! $product->is_type('grouped') ) {
+            $germanized_wc = array( // Germanized woocommerce function for after loop item
+                'unit_price' => 'woocommerce_gzd_template_single_price_unit',
+                'legal' => 'woocommerce_gzd_template_single_legal_info',
+                'delivery_time' => 'woocommerce_gzd_template_single_delivery_time_info',
+                'defect_description' => 'woocommerce_gzd_template_single_defect_description',
+                'deposit' => 'woocommerce_gzd_template_single_deposit',
+                'deposit_packaging_type' => 'woocommerce_gzd_template_single_deposit_packaging_type',
+                'nutri_score' => 'woocommerce_gzd_template_single_nutri_score',
+
+            );
+            foreach ($germanized_wc as $func) {
+                if (function_exists($func)) {
+                    $content .= $func();
+                }
+            }
+        }
+        echo $content;
+
+    }
+}
