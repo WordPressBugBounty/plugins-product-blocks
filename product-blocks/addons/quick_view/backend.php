@@ -452,12 +452,6 @@ function wopb_get_quickview_settings( $config ) {
                                     'type' => 'section',
                                     'label' => __('Modal Style', 'product-blocks'),
                                     'attr' => array(
-                                        'quick_view_modal_bg' => array (
-                                            'type'=> 'color',
-                                            'label'=> __('Background Color', 'product-blocks'),
-                                            'default'=>  '#FFFFFF',
-                                            'tooltip'=> __('Color', 'product-blocks'),
-                                        ),
                                         'quick_view_title_typo' => array (
                                             'type'=> 'typography',
                                             'label'=> __('Title Typography', 'product-blocks'),
@@ -469,6 +463,43 @@ function wopb_get_quickview_settings( $config ) {
                                                 'color' => '#070707',
                                                 'hover_color' => '',
                                             ),
+                                        ),
+                                        'quick_view_modal_btn_typo' => array (
+                                            'type'=> 'typography',
+                                            'label'=> __('Button Typography', 'product-blocks'),
+                                            'default'=> (object)array(
+                                                'size' => 14,
+                                                'bold' => false,
+                                                'italic' => false,
+                                                'underline' => false,
+                                                'color' => '#ffffff',
+                                                'hover_color' => '#ff176b',
+                                            ),
+                                        ),
+                                        'quick_view_modal_btn_border' => array (
+                                            'type'=> 'border',
+                                            'label'=> __('Button Border', 'product-blocks'),
+                                            'default'=> (object)array(
+                                                'border' => 1,
+                                                'color' => '#ff176b',
+                                            ),
+                                        ),
+                                        'quick_view_modal_btn_bg' => array (
+                                            'type'=> 'color2',
+                                            'field1'=> 'bg',
+                                            'field2'=> 'hover_bg',
+                                            'label'=> __('Button Background', 'product-blocks'),
+                                            'default'=>  (object)array(
+                                                'bg' => '#ff176b',
+                                                'hover_bg' => '#ffffff',
+                                            ),
+                                            'tooltip'=> __('Background Color', 'product-blocks'),
+                                        ),
+                                        'quick_view_modal_bg' => array (
+                                            'type'=> 'color',
+                                            'label'=> __('Modal Background', 'product-blocks'),
+                                            'default'=>  '#FFFFFF',
+                                            'tooltip'=> __('Color', 'product-blocks'),
                                         ),
                                         'quick_view_content_inner_gap' => [
                                             'type'=> 'number',

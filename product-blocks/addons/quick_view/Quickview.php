@@ -26,7 +26,7 @@ class Quickview
         $quick_view_position = wopb_function()->get_setting( 'quick_view_position' );
         $this->is_mobile = wp_is_mobile();
         
-        add_action( 'wp_ajax_wopb_quickview',       array( $this, 'wopb_quickview_callback' ) );
+        add_action( 'wc_ajax_wopb_quickview',       array( $this, 'wopb_quickview_callback' ) );
         add_action( 'wp_ajax_nopriv_wopb_quickview',array( $this, 'wopb_quickview_callback' ) );
         add_action( 'wp_enqueue_scripts',           array( $this, 'add_quickview_scripts' ) );
 
@@ -194,6 +194,22 @@ class Quickview
             'quick_view_thumbnail_ratio' => 'default',
             'quick_view_thumbnail_height' => 350,
             'quick_view_thumbnail_width' => 400,
+            'quick_view_modal_btn_typo' => array(
+                'size' => 14,
+                'bold' => false,
+                'italic' => false,
+                'underline' => false,
+                'color' => '#ffffff',
+                'hover_color' => '#ff176b',
+            ),
+            'quick_view_modal_btn_border' => array(
+                'border' => 1,
+                'color' => '#ff176b',
+            ),
+            'quick_view_modal_btn_bg' => array(
+                'bg' => '#ff176b',
+                'hover_bg' => '#ffffff',
+            ),
         );
         foreach ( $initial_data as $key => $val ) {
             if ( ! isset( $settings[$key] ) ) {
@@ -785,6 +801,7 @@ class Quickview
         if ( $key == 'wopb_quickview' ) {
             $settings = wopb_function()->get_setting();
             $btn_style = array_merge( $settings['quick_view_btn_typo'], $settings['quick_view_btn_bg'] );
+            $modal_btn_style = array_merge( $settings['quick_view_modal_btn_typo'], $settings['quick_view_modal_btn_bg'] );
 
             $css = '';
             if( ! empty( $settings['quick_view_btn_align'] ) ) {
@@ -845,6 +862,23 @@ class Quickview
                     $css .= '}';
                 }
             }
+
+            $css .= '.wopb-quick-view-wrapper form.cart button.single_add_to_cart_button,';
+            $css .= '.wopb-quick-view-wrapper .single_add_to_cart_button.wopb-quickview-buy-btn,';
+            $css .= '.wopb-quick-view-wrapper .wopb-compare-btn.wopb-compare-shop-btn,';
+            $css .= '.wopb-quick-view-wrapper .wopb-wishlist-add.wopb-wishlist-shop-btn,';
+            $css .= '.wopb-quick-view-wrapper .wopb-chunk-price-label{';
+                $css .= wopb_function()->convert_css('general', $modal_btn_style);
+                $css .= wopb_function()->convert_css('border', $settings['quick_view_modal_btn_border']);
+            $css .= '}';
+            $css .= '.wopb-quick-view-wrapper form.cart button.single_add_to_cart_button:hover,';
+            $css .= '.wopb-quick-view-wrapper .single_add_to_cart_button.wopb-quickview-buy-btn:hover,';
+            $css .= '.wopb-quick-view-wrapper .wopb-compare-btn.wopb-compare-shop-btn:hover,';
+            $css .= '.wopb-quick-view-wrapper .wopb-wishlist-add.wopb-wishlist-shop-btn:hover,';
+            $css .= '.wopb-quick-view-wrapper .wopb-chunk-price-label:hover{';
+                $css .= wopb_function()->convert_css('hover', $modal_btn_style);
+                $css .= wopb_function()->convert_css('border', $settings['quick_view_modal_btn_border']);
+            $css .= '}';
 
             wopb_function()->update_css( $key, 'add', $css );
         }

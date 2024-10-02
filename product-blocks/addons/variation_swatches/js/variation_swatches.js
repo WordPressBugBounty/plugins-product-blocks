@@ -1,176 +1,324 @@
 (function ($) {
-    'use strict';
+    'use strict'
     $(document).ready(function ($) {
         $('.wopb-compare-modal-content .wopb-loop-variations-form, .wopb-block-item .wopb-product-btn .wopb-loop-variations-form').remove()
-
-        //call each variation form
-        $(".variations_form").each(function () {
-            // $(this).wc_variation_form();
-            $(this).loopVariationSwitcherForm();
+        $(document).on('wopbAjaxComplete', function () {
+            $(this).variationForm()
         });
+        $(this).variationForm()
+
     });
 
-    //initialization WooCommerce variation form
-    $.fn.loopVariationSwitcherForm = function(){
-        return this.each( function(){
-            let variationForm = $(this);
-            let singleBuilder = $('.wopb-builder-container').find('.wp-block-columns');
-            let product = variationForm.parents('.wopb-block-content-wrap:first');
-            product = product.length < 1 ? variationForm.parents('.wopb-builder-cart:first') : product;
-            product = product.length < 1 && singleBuilder.length > 0 ? singleBuilder : product;
-            product = product.length < 1 ? variationForm.closest('.product.product-type-variable') : product;
-            product = product.length < 1 ? variationForm.closest('.single-product .product') : product;
-            let defaultProductSummary = variationForm.parents('.entry-summary:first');
-            let defaultPriceHtml = product.find('.wopb-variation-switcher-price').html();
-            if(!defaultPriceHtml) {
-                defaultPriceHtml = product.find('.wopb-product-price').html();
+    $.fn.variationForm = function () {
+        //call each variation form
+        $(".variations_form").each(function () {
+            let that = $(this);
+            if( that.hasClass('wopb-variation-init') ) {
+                return
             }
-            let addToCartButton = product.find('.add_to_cart_button').filter(function() {
-                return $(this).children().length === 0;
-            }).first();
-            let defaultAddToCartButtonText = product.find('.add_to_cart_button').filter(function() {
-                return $(this).children().length === 0;
-            }).first().text();
-            setTimeout(function () {
-                 product.backupProductImage();
-            }, 100);
-            $(variationForm)
-            .on("click", ".wopb-variation-swatches .wopb-swatch", function (e) {
-                product.parents('.wopb-block-item:first').find('.wopb-product-deals').remove();
-                e.preventDefault(product);
-                let swatch = $(this);
-                let swatchSelect = swatch.closest(".value").find("select");
-                let swatchLabel = swatch.parents('tr:first').find('.label label:first');
-                let swatchLabelNameHtml = `<span class="wopb-swatch-label-value">: ${swatch.data('name')}</span>`;
-                swatchLabel.find('.wopb-swatch-label-value').remove();
-                if (!swatch.hasClass("disabled")) {
-                    if ((swatchSelect.trigger("focusin"), !swatchSelect.find('option[value="' + swatch.attr("data-value") + '"]').length)) {
-                        swatch.siblings(".wopb-swatch").removeClass("selected");
-                        swatchSelect.val("");
-                    }else {
-                        if(swatch.hasClass("selected")) {
-                            swatchSelect.val("");
-                            swatch.removeClass("selected");
-                        }else {
-                            swatch.addClass("selected").siblings(".selected").removeClass("selected");
-                            swatchSelect.val(swatch.attr("data-value"));
-                            swatchLabel.append(swatchLabelNameHtml)
+            let variationParam = {'form': that}
+            let builderCart = that.parents('.wopb-builder-cart:first');
+            if (!builderCart.length) {
+                let singleProduct = that.parents('.single-product:first').find('.product:first')
+                let defaultLoop = that.parents('.product.product-type-variable:first:not([id])').not('.single-product')
+                let wopbLoop = that.parents('.wopb-block-content-wrap:first');
+                if (defaultLoop.length || wopbLoop.length ) {
+                    let product = defaultLoop;
+                    let imgItem = 'img:first';
+                    let switcherPrice = defaultLoop.find('.wopb-variation-switcher-price');
+
+                    if( wopbLoop.length ) {
+                        product = wopbLoop;
+                        imgItem = '.wopb-block-image a img:first';
+                        switcherPrice = wopbLoop.find('.wopb-product-price');
+                        variationParam = {
+                            ...variationParam,
+                            'srcSelector': 'full_src'
                         }
                     }
-                     swatchSelect.trigger('change');
+                    variationParam = {
+                        ...variationParam,
+                        'product': product,
+                        'imgItem': imgItem,
+                        'switcherPrice': switcherPrice,
+                        'defaultPriceHtml': switcherPrice.html(),
+                        'source': 'loopProduct',
+                    }
+                    that.wopVariationSwitch(variationParam);
+                } else if (singleProduct.length) {
+                    variationParam = {
+                        ...variationParam,
+                        'product': singleProduct,
+                        'source': 'singleProduct',
+                    }
+                    that.wopVariationSwitch(variationParam);
                 }
 
-                setTimeout(function () {
-                    let swatchesClass = product.find('.wopb-variation-swatches:visible');
-                    let selectedClass = product.find('.wopb-swatch.selected');
-                    if(selectedClass.length < 1) {
-                        product.resetDefaultImage()
-                    }
+                $(this).wc_variation_form();
+            }
+        });
+    }
 
-                    if( swatchesClass.length !== selectedClass.length && !defaultProductSummary.length ) {
-                        product.resetAddToCartText( addToCartButton, defaultAddToCartButtonText);
+    //initialization WooCommerce variation form
+    $.fn.wopVariationSwitch = function(variationParam = {}){
+        if( $(this).hasClass('wopb-variation-init') ) {
+            return
+        }
+        $(this).addClass('wopb-variation-init')
+        let {product, form, source = ''} = variationParam
+        let cartBtn = product.find('.add_to_cart_button');
+        let defaultCartText = cartBtn.filter(function() {
+                return ! $(this).children().length;
+            }).first().text();
+        if( source !== 'singleProduct' ) {
+            product.backupProductImage(variationParam);
+        }
+        $(form).on("click", ".wopb-variation-swatches .wopb-swatch", function (e) {
+            e.preventDefault(product);
+            product.parents('.wopb-block-item:first').find('.wopb-product-deals').remove();
+            let swatch = $(this);
+            let swatchSelect = swatch.closest(".value").find("select");
+            let swatchLabel = swatch.parents('tr:first').find('.label label:first');
+            let swatchLabelHtml = `<span class="wopb-swatch-label-value">: ${swatch.data('name')}</span>`;
+            swatchLabel.find('.wopb-swatch-label-value').remove();
+            if (!swatch.hasClass("disabled")) {
+                if (
+                    swatchSelect.trigger("focusin") &&
+                    !swatchSelect.find('option[value="' + swatch.attr("data-value") + '"]').length
+                ) {
+                    swatch.siblings(".wopb-swatch").removeClass("selected");
+                    swatchSelect.val("");
+                }else {
+                    if(swatch.hasClass("selected")) {
+                        swatchSelect.val("");
+                        swatch.removeClass("selected");
+                    }else {
+                        swatch.addClass("selected").siblings(".selected").removeClass("selected");
+                        swatchSelect.val(swatch.attr("data-value"));
+                        swatchLabel.append(swatchLabelHtml)
                     }
-                }, 100)
-            })
-            .on("woocommerce_variation_select_change", function () {
-                setTimeout(function () {
-                    $(variationForm).find("tbody tr").each(function () {
-                        let thisObject = $(this);
-                        let option = thisObject.find("select option");
-                        let selectedOption = option.filter(":selected");
-                        let selectedOptionArray = [];
-                        option.each(function (e, a) {
-                            "" !== a.value && selectedOptionArray.push(a.value);
-                        });
-                        thisObject.find(".wopb-swatch").each(function () {
-                            let option = $(this).attr("data-value");
-                            if(selectedOptionArray.indexOf(option) > -1) {
-                                $(this).removeClass("disabled")
-                                $(this).find(".wopb-variation-swatch-tooltip").show();
-                            }else {
-                                $(this).addClass("disabled");
-                                $(this).find(".wopb-variation-swatch-tooltip").hide();
-                                selectedOption.length && option === selectedOption.val() && $(this).removeClass("selected");
-                            }
-                        });
-                    });
+                }
+                swatchSelect.trigger('change');
+            }
 
-                    let swatchesClass = product.find('.wopb-variation-swatches:visible');
-                    let selectedClass = swatchesClass.find('.wopb-swatch.selected');
-                    let currentAttribute = selectedClass.parents('.wopb-variation-swatches:first').attr("data-attribute_name");
-                    let variationId = selectedClass.attr('data-variation_id');
-                    if(selectedClass.length === 1 && (selectedClass.hasClass('wopb-swatch-color') || selectedClass.hasClass('wopb-swatch-image'))) {
-                        let variations = JSON.parse(variationForm.attr("data-product_variations"));
+            setTimeout(function () {
+                let swatchClass = product.find('.wopb-variation-swatches');
+                let selectedClass = product.find('.wopb-swatch.selected');
+                let currentAttr = selectedClass.parents('.wopb-variation-swatches:first').attr("data-attribute_name");
+                let variationId = selectedClass.attr('data-variation_id');
+
+                if(selectedClass.length == 1) {
+                    if( selectedClass.hasClass('wopb-swatch-color') || selectedClass.hasClass('wopb-swatch-image') ) {
+                        let variations = JSON.parse(form.attr("data-product_variations"));
                         let found = false;
-                        for(const i in variations) {
-                            if(found) continue;
-                            if(variations.hasOwnProperty(i)) {
-                                if (selectedClass.attr('data-value') === variations[i].attributes[currentAttribute] && variationId == variations[i].variation_id) {
+                        for (const i in variations) {
+                            if (found) continue;
+                            if (variations.hasOwnProperty(i)) {
+                                if (selectedClass.attr('data-value') === variations[i].attributes[currentAttr] && variationId == variations[i].variation_id) {
                                     found = true;
-                                    product.changeVariationImage(variations[i])
+                                    let finalVariation = variations[i];
+                                    form.trigger('found_variation', [ finalVariation ]);
                                 }
                             }
                         }
                     }
-
-                }, 100);
-            }).on("found_variation", function (e, variation) {
-                if (variation && product.find('.woocommerce-product-gallery').length < 1 && singleBuilder.length < 1) {
-                    let selectedVariation = {},
-					variations = $(this).find( 'select[name^=attribute]' );
-                    if ( !variations.length) {
-                        variations = $(this).find( '[name^=attribute]:checked' );
-                    }
-                    if ( !variations.length) {
-                        variations = $(this).find( 'input[name^=attribute]' );
-                    }
-
-                    variations.each( function() {
-                        let thisItem = $( this ),
-                            attributeName = thisItem.attr( 'name' ),
-                            attributeValue = thisItem.val();
-                            thisItem.removeClass( 'error' );
-                        if ( attributeValue.length === 0 ) {
-                            thisItem.addClass( 'required error' );
-                        } else {
-                            selectedVariation[attributeName] = attributeValue;
-                        }
-                    });
-                    product.changeVariationImage(variation);
-                    if( variation.is_in_stock ) {
-                        product.addToCartButtonText(addToCartButton, variation, selectedVariation)
-                    }else {
-                        product.resetAddToCartText(addToCartButton, defaultAddToCartButtonText);
-                    }
-                    product.changeVariationPrice(variation, defaultPriceHtml)
-                    if(variation.wopb_deal) {
-                        product.parents('.wopb-block-item:first').find('.wopb-product-meta').after(variation.wopb_deal)
-                        product.parents('.wopb-block-item:first').find('.wopb-product-deals').each(function(i, obj) {
-                            loopcounter(obj);
-                        });
-                        product.parents('.wopb-block-item:first').find('.wopb-product-deals').css({'opacity': 1,'transform': 'translate(0,0)',});
-                    }
-                    return true;
-		        }
-            })
-            .on("click", ".reset_variations", function () {
-                $('.wopb-swatch-label-value').remove()
-                product.parents('.wopb-block-item:first').find('.wopb-product-deals').remove();
-                if (product.find('.woocommerce-product-gallery').length < 1 && singleBuilder.length < 1) {
-                    product.resetAddToCartText(addToCartButton, defaultAddToCartButtonText);
-                    product.resetVariationPrice(defaultPriceHtml);
+                }else if(source !== 'singleProduct' && selectedClass.length < 1) {
+                    form.find('.reset_variations').trigger('click')
+                }
+                if(
+                    source !== 'singleProduct' &&
+                    (selectedClass.length != swatchClass.length)
+                ) {
+                    product.resetCartText(cartBtn, defaultCartText);
                 }
 
-                $(this).closest("table.variations").find(".wopb-swatch.selected").removeClass("selected");
-                $(this).closest("table.variations").find(".wopb-swatch.disabled").removeClass("disabled");
+                $(form).find("tbody tr").each(function () {
+                    let that = $(this);
+                    let option = that.find("select option");
+                    let selectedOption = option.filter(":selected");
+                    let selectedArray = [];
+                    option.each(function (e, a) {
+                        "" !== a.value && selectedArray.push(a.value);
+                    });
+                    that.find(".wopb-swatch").each(function () {
+                        option = $(this).attr("data-value");
+                        if(selectedArray.indexOf(option) > -1) {
+                            $(this).removeClass("disabled")
+                            $(this).find(".wopb-variation-swatch-tooltip").show();
+                        }else {
+                            $(this).addClass("disabled");
+                            $(this).find(".wopb-variation-swatch-tooltip").hide();
+                            selectedOption.length && option === selectedOption.val() && $(this).removeClass("selected");
+                        }
+                    });
+                });
+            }, 100)
+        })
 
-                setTimeout(function () {
-                    // if(singleBuilder.length < 1) {
-                        product.resetDefaultImage();
-                    // }
-                }, 100)
-            });
+        if( source !== 'singleProduct' ) {
+            $(form).on("found_variation", function (e, variation) {
+                if (variation) {
+                        let that = $(this);
+                        let swatchClass = product.find('.wopb-variation-swatches');
+                        let selectedClass = product.find('.wopb-swatch.selected');
+                        let selectedVariation = {},
+                            variations = that.find('select[name^=attribute]');
+                        variations = !variations.length ? that.find('[name^=attribute]:checked') : variations;
+                        variations = !variations.length ? that.find('input[name^=attribute]') : variations;
+
+                        variations.each(function () {
+                            let thisItem = $(this),
+                                attributeName = thisItem.attr('name'),
+                                attributeValue = thisItem.val();
+                            thisItem.removeClass('error');
+                            if (attributeValue.length === 0) {
+                                thisItem.addClass('required error');
+                            } else {
+                                selectedVariation[attributeName] = attributeValue;
+                            }
+                        });
+                        if( selectedClass.length == swatchClass.length ) {
+                            if ( variation.is_in_stock ) {
+                                product.cartBtnText(cartBtn, variation, selectedVariation)
+                            }
+                            if (variationParam.defaultPriceHtml) {
+                                product.changeVariationPrice(variation, variationParam)
+                            }
+                            if (variation.wopb_deal) {
+                                product.showDeal(variation)
+                            }
+                        }
+                        if( ! variation.is_in_stock ) {
+                            product.resetCartText(cartBtn, defaultCartText);
+                        }
+                        product.changeVariationImage(variation, variationParam);
+                        return true;
+                }
+            })
+        }
+        $(form).on("click", ".reset_variations", function (event) {
+            event.preventDefault()
+            $(this).closest("table.variations").find(".wopb-swatch.selected").removeClass("selected");
+            $(this).closest("table.variations").find(".wopb-swatch.disabled").removeClass("disabled");
+            if( source !== 'singleProduct' ) {
+                $('.wopb-swatch-label-value').remove()
+                product.parents('.wopb-block-item:first').find('.wopb-product-deals').remove();
+                product.resetCartText(cartBtn, defaultCartText);
+                if( variationParam.defaultPriceHtml ) {
+                    product.resetVariationPrice(variationParam);
+                }
+                product.resetDefaultImage(variationParam);
+            }
         });
+    }
+
+    //Show Deal
+    $.fn.showDeal = function( variation ){
+        let that = $(this)
+        that.parents('.wopb-block-item:first').find('.wopb-product-new-meta').after(variation.wopb_deal)
+        that.parents('.wopb-block-item:first').find('.wopb-product-deals').each(function (i, obj) {
+            loopcounter(obj);
+        });
+        that.parents('.wopb-block-item:first').find('.wopb-product-deals').css({
+            'opacity': 1,
+            'transform': 'translate(0,0)',
+        });
+    }
+
+    // Change the product image when variation found
+    $.fn.changeVariationImage = function( variation, variationParam ){
+        let thumbnail = $(this).getProductImage(variationParam);
+        let attributes = {
+            alt: variation.image.alt,
+            src: variationParam.srcSelector ? variation.image[variationParam.srcSelector] : variation.image.thumb_src,
+        };
+        thumbnail.attr(attributes);
+    };
+
+    $.fn.resetDefaultImage = function( variationParam ){
+        let thumbnail = $(this).getProductImage(variationParam);
+        let backupAttr = {
+            alt: thumbnail.attr('data-backup_alt'),
+            src: thumbnail.attr('data-backup_src'),
+            width: thumbnail.attr('data-backup_width'),
+            height: thumbnail.attr('data-backup_height')
+        }
+        thumbnail.attr(backupAttr);
+    };
+
+    $.fn.backupProductImage = function(variationParam){
+        let thumbnail = $(this).getProductImage(variationParam);
+
+        // Default image backup
+        let attr = {
+            "data-backup_alt": thumbnail.attr('alt'),
+            "data-backup_src": thumbnail.attr('src'),
+            "data-backup_width": thumbnail.attr('width'),
+            "data-backup_height": thumbnail.attr('height'),
+        }
+        thumbnail.attr(attr);
+    }
+
+    $.fn.getProductImage = function( variationParam = {} ) {
+        let {getImage, imgItem} = variationParam
+        let thumbnail = ''
+
+        if(getImage ) {
+            thumbnail = variationParam.getImage
+        }else if( imgItem ) {
+            thumbnail = $(this).find(imgItem)
+        }
+        return thumbnail;
+    }
+
+    $.fn.cartBtnText = function( cartBtn, variation, selectedVariation ) {
+        cartBtn.each(function () {
+            let btn = $(this);
+            let btnText = btn;
+            if( btn.parents('.wopb-cart-action:first').find('.wopb-cart-tooltip:first').length ) {
+                btnText = btn.parents('.wopb-cart-action:first').find('.wopb-cart-tooltip:first');
+            }else if( btn.children().length ) {
+                return
+            }
+            let cartText = btn.data('add-to-cart-text');
+            if(!cartText) {
+                cartText = 'Add To Cart';
+            }
+            btn.attr('data-variation_id', variation.variation_id);
+            btn.attr('data-variation', JSON.stringify(selectedVariation));
+            btnText.text(cartText);
+            btn.addClass('wopb-loop-add-to-cart-button');
+        })
+    }
+
+    $.fn.resetCartText = function(cartBtn, defaultCartText) {
+        cartBtn.each(function () {
+            let btn = $(this);
+            let btnText = btn;
+            if( btn.parents('.wopb-cart-action:first').find('.wopb-cart-tooltip:first').length ) {
+                btnText = btn.parents('.wopb-cart-action:first').find('.wopb-cart-tooltip:first');
+            }else if( btn.children().length ) {
+                return
+            }
+            btnText.text(defaultCartText);
+            btn.removeClass('wopb-loop-add-to-cart-button');
+            btn.removeAttr('data-variation_id');
+            btn.removeAttr('data-variation');
+        })
+    }
+
+    $.fn.changeVariationPrice = function(variation, variationParam) {
+        variationParam.switcherPrice.html('');
+        if(variation.price_html) {
+            variationParam.switcherPrice.html(variation.price_html);
+        }else {
+            variationParam.switcherPrice.html(variationParam.defaultPriceHtml);
+        }
+    }
+
+    $.fn.resetVariationPrice = function(variationParam) {
+        variationParam.switcherPrice.html('');
+        variationParam.switcherPrice.html(variationParam.defaultPriceHtml);
     }
 
     $(document).on('click', '.wopb-loop-add-to-cart-button', function (e) {
@@ -241,201 +389,4 @@
             },
         });
     })
-
-    $.fn.backupProductImage = function(){
-        let productThumbnail = $(this).getProductImage();
-
-		// Default image backup
-		let backupAttributes = {
-			"data-backup_alt": productThumbnail.attr('alt'),
-			"data-backup_src": productThumbnail.attr('src'),
-			"data-backup_large_image": productThumbnail.attr('data-large_image'),
-			"data-backup_width": productThumbnail.attr('width'),
-			"data-backup_height": productThumbnail.attr('height'),
-			"data-backup_thumb": productThumbnail.parents('.flex-active-slide').data('thumb')
-		}
-		if( productThumbnail.attr('srcset') ) {
-		    backupAttributes["data-backup_srcset"] = productThumbnail.attr( 'srcset' );
-		    backupAttributes["data-backup_sizes"] = productThumbnail.attr( 'sizes' );
-		}
-
-		productThumbnail.attr(backupAttributes);
-    }
-
-    // Change the product image when variation found
-	$.fn.changeVariationImage = function(variation){
-        // image selector
-        let productThumbnail = $(this).getProductImage();
-        let flexMatchingNav = $(this).find('.woocommerce-product-gallery .flex-control-nav');
-        let thumbSlickCurrentNav = $('.wopb-builder-container')
-                .find('.woocommerce-product-gallery__wrapper .wopb-builder-slider-nav .slick-active');
-        if(thumbSlickCurrentNav.length > 0) {
-                let thumbSlickCurrentImage = '';
-                thumbSlickCurrentImage = thumbSlickCurrentNav.find('img[src="' + variation.image.gallery_thumbnail_src + '"]');
-                if(thumbSlickCurrentImage.length < 1) {
-                    let builderDefaultNavImage = $('.wopb-builder-container').find('.woocommerce-product-gallery__wrapper .wopb-builder-slider-nav .slick-current')
-                    builderDefaultNavImage.trigger('click');
-                }else {
-                    thumbSlickCurrentImage.parents('.slick-active:first').trigger('click');
-                }
-            }else if(flexMatchingNav.length > 0) {
-            let flexMatchingImage = '';
-            flexMatchingImage = flexMatchingNav.find('img[src="' + variation.image.gallery_thumbnail_src + '"]');
-            if(!flexMatchingImage) {
-                let defaultFlexMatchingImageBackup = productThumbnail.parents('.woocommerce-product-gallery__image.flex-active-slide:first').find('a img').data('backup_thumb');
-                flexMatchingImage = flexMatchingNav.find('img[src="' + defaultFlexMatchingImageBackup + '"]');
-            }
-            flexMatchingImage.trigger('click')
-        }else {
-            let singleProductImageSection = $(this).find('.woocommerce-product-gallery .woocommerce-product-gallery__image');
-            let singleProductZoomImage =  singleProductImageSection.find('.zoomImg');
-
-            let ImageSrc = '';
-            if(productThumbnail.parents('.woocommerce-LoopProduct-link:first').length > 0) {
-                ImageSrc = variation.image.thumb_src;
-            }else {
-                ImageSrc = variation.image.full_src;
-            }
-            let attributes = {
-                alt: variation.image.alt,
-                src: ImageSrc,
-                // width: variation.image.full_src_w,
-                // height: variation.image.full_src_h
-            };
-
-            if( productThumbnail.attr('srcset') ) {
-                attributes.srcset = variation.image.srcset;
-                attributes.sizes = variation.image.sizes;
-            }
-
-            // Change variation image
-            productThumbnail.attr(attributes);
-
-            if(singleProductImageSection.length > 0) {
-                singleProductImageSection.find('a').attr('href', variation.image.thumb_src)
-                singleProductImageSection.find('a img').attr('data-large_image', variation.image.full_src)
-            }
-            if(singleProductZoomImage.length > 0) {
-                let singleProductZoomImageAttributes = {
-                    alt: variation.image.alt,
-                    src: variation.image.full_src,
-                    width: variation.image.full_src_w,
-                    height: variation.image.full_src_H
-                };
-                singleProductZoomImage.attr(singleProductZoomImageAttributes);
-            }
-        }
-	};
-    let builderDefaultNav = $('.wopb-builder-container').find('.woocommerce-product-gallery__wrapper .wopb-builder-slider-nav .slick-current');
-    $.fn.resetDefaultImage = function(){
-		// Image selector
-		let productThumbnail = $(this).getProductImage();
-		let flexMatchingImage = $(this).find('.woocommerce-product-gallery .flex-control-nav img[src="' + productThumbnail.attr('data-backup_thumb') + '"]');
-		if(flexMatchingImage.length > 0) {
-		    flexMatchingImage.trigger('click')
-        }else if(builderDefaultNav.length > 0) {
-            builderDefaultNav.trigger('click');
-        } else {
-		   // Get backup attributes before reset
-            let backupAttributes = {
-                alt: productThumbnail.attr('data-backup_alt'),
-                src: productThumbnail.attr('data-backup_src'),
-                width: productThumbnail.attr('data-backup_width'),
-                height: productThumbnail.attr('data-backup_height')
-            }
-            if( productThumbnail.attr('srcset') ) {
-                backupAttributes["srcset"] = productThumbnail.attr( 'data-backup_srcset' );
-                backupAttributes["sizes"]  = productThumbnail.attr( 'data-backup_sizes' );
-            }
-            backupAttributes["data-large_image"]  = productThumbnail.attr( 'data-backup_large_image' );
-            productThumbnail.attr(backupAttributes).removeAttr('srcset');
-        }
-    };
-
-    $.fn.getProductImage = function() {
-        let productThumbnail = ''
-        let singleProductImage = $(this).find('.woocommerce-product-gallery .woocommerce-product-gallery__image a img');
-        let builderProductImage = $('.wopb-builder-container').find('.wopb-product-gallery-wrapper .slick-active img')
-        if (singleProductImage.length < 1) { //find image in blocksy theme
-            singleProductImage = $(this).find('.woocommerce-product-gallery .flexy .ct-image-container img');
-        }
-        if (singleProductImage.length > 0) {
-            productThumbnail = singleProductImage;
-        }else if(builderProductImage.length > 0) {
-            productThumbnail = builderProductImage;
-        }else{
-            //find image in woocommerce loop product
-            let wcImageSection = $(this).find('img:first').parents('a:first');
-            if(wcImageSection.length > 0) {
-                productThumbnail = wcImageSection.find('img.attachment-woocommerce_thumbnail');
-                if(productThumbnail.length < 1){
-                    productThumbnail = wcImageSection.find('img.wp-post-image');
-                }
-                if(productThumbnail.length < 1){
-                    productThumbnail = wcImageSection.find('img').first();
-                }
-            }
-            //find image in woocommerce loop product
-
-            //find image in product blocks grid
-            if(productThumbnail.length < 1){
-                productThumbnail = $(this).find('.wopb-block-image a img');
-            }
-        }
-		return productThumbnail;
-    }
-
-    $.fn.addToCartButtonText = function(addToCartButton, variation, selectedVariation) {
-        let product = $(this);
-        let data_add_to_cart_text = addToCartButton.data('add-to-cart-text');
-        if(!data_add_to_cart_text) {
-            data_add_to_cart_text = 'Add To Cart';
-        }
-
-        addToCartButton.attr('data-variation_id', variation.variation_id);
-        addToCartButton.attr('data-variation', JSON.stringify(selectedVariation));
-        if(product.find('.wopb-product-meta:visible .add_to_cart_button').length > 0) {
-            addToCartButton.find('[class^="wopb-tooltip-text-"]').text(data_add_to_cart_text);
-        }else {
-            addToCartButton.text(data_add_to_cart_text);
-        }
-
-        addToCartButton.addClass('wopb-loop-add-to-cart-button');
-    }
-
-    $.fn.resetAddToCartText = function(addToCartButton, defaultAddToCartButtonText) {
-        let product = $(this);
-        if(product.find('.wopb-product-meta:visible .add_to_cart_button').length > 0) {
-            addToCartButton.find('[class^="wopb-tooltip-text-"]').text(defaultAddToCartButtonText);
-        }else {
-            addToCartButton.text(defaultAddToCartButtonText);
-        }
-        addToCartButton.removeClass('wopb-loop-add-to-cart-button');
-        addToCartButton.removeAttr('data-variation_id');
-        addToCartButton.removeAttr('data-variation');
-    }
-
-    $.fn.changeVariationPrice = function(variation, defaultPriceHtml) {
-        let product = $(this);
-        let variationSwitcherPrice = product.find('.wopb-variation-switcher-price');
-        if(variationSwitcherPrice.length < 1) {
-            variationSwitcherPrice = product.find('.wopb-product-price');
-        }
-        variationSwitcherPrice.html('');
-        if(variation.price_html) {
-            variationSwitcherPrice.html(variation.price_html);
-        }else {
-            variationSwitcherPrice.html(defaultPriceHtml);
-        }
-    }
-
-    $.fn.resetVariationPrice = function(defaultPriceHtml) {
-        let product = $(this);
-        let variationSwitcherPrice = product.find('.wopb-variation-switcher-price');
-        if(variationSwitcherPrice.length < 1) {
-            variationSwitcherPrice = product.find('.wopb-product-price');
-        }
-        variationSwitcherPrice.html('');
-        variationSwitcherPrice.html(defaultPriceHtml);
-    }
 })(jQuery);

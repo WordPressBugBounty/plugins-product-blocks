@@ -188,7 +188,7 @@ class REST_API {
 				'label' => $status,
 			);
 			if ( $action_type == 'status' ) {
-				$temp['count'] = wopb_function()->generate_stock_status_count_query( $key, $params );
+				$temp['count'] = wopb_function()->generate_stock_status_count_query( $key, $prams );
 			}
 			$stock_status[] = $temp;
 		}
@@ -300,6 +300,7 @@ class REST_API {
 					$regular                    = $products->get_regular_price();
 					$post_data['sales_price']   = $sales;
 					$post_data['regular_price'] = $regular;
+					$post_data['range_price'] = !$regular && !$sales ? $products->get_price_html() : '';
 					$post_data['percentage']    = ( $regular && $sales ) ? round( ( ( $regular - $sales ) / $regular ) * 100 ) : 0;
 					$post_data['symbol']        = get_woocommerce_currency_symbol();
 					break;

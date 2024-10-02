@@ -9,7 +9,6 @@ class Filter {
         add_action( 'init', array( $this, 'register' ) );
         
         add_action( 'wc_ajax_wopb_show_more_filter_item', array( $this, 'wopb_show_more_filter_item_callback' ) );
-        add_action( 'wp_ajax_wopb_show_more_filter_item', array( $this, 'wopb_show_more_filter_item_callback' ) );
 		add_action( 'wp_ajax_nopriv_wopb_show_more_filter_item', array( $this, 'wopb_show_more_filter_item_callback' ) );
     }
     
@@ -40,7 +39,7 @@ class Filter {
             'viewTaxonomyLimit' => 10,
             'togglePlusMinus' => true,
             'togglePlusMinusInitialOpen' => true,
-            'toggleInitialMobile' => true,
+            'toggleInitialMobile' => false,
             'filterHeadText' => 'Filter',
             'currentPostId' =>  '',
         );
@@ -98,7 +97,7 @@ class Filter {
             $wraper_before .= '<div '.(isset($attr['advanceId'])?'id="'.sanitize_html_class($attr['advanceId']).'" ':'').' class="wp-block-product-blocks-' . esc_attr($block_name) . ' wopb-block-' . sanitize_html_class($attr["blockId"]) . ' ' . $attr["className"] . '">';
                 $wraper_before .= '<div class="wopb-product-wrapper wopb-filter-block ' . $wrapper_class . '" data-postid = "' . $page_post_id . '" data-block-target = "' . $attr['blockTarget'] . '" data-current-url="' . get_pagenum_link() . '">';
 
-                if ( $attr['filterHeading'] ) {
+                if ( $attr['filterHeading'] || $is_mobile ) {
                     $html .= '<div class="wopb-filter-title-section">';
                         $html .= '<span class="wopb-filter-title">'.wp_kses($attr['filterHeadText'], wopb_function()->allowed_html_tags()).'</span>';
                         $html .= '<span class="dashicons dashicons-filter wopb-filter-icon"></span>';
@@ -129,7 +128,7 @@ class Filter {
      *
      * @param $filter_content
      * @return string
-     * @since v.todo
+     * @since v.4.0.6
      */
     public function filter_in_footer($filter_content) {
         $filter_modal = '';
@@ -137,12 +136,12 @@ class Filter {
             $filter_modal .= '<div class="wopb-modal-overlay"></div>';
             $filter_modal .= '<div class="wopb-filter-content">';
                 $filter_modal .= '<div class="wopb-modal-header">';
-                    $filter_modal .= '<span class="wopb-modal-title">';
-                        $filter_modal .= __('Filter', 'product-blocks');
-                    $filter_modal .= '</span>';
                     $filter_modal .= '<a class="wopb-modal-close">';
                         $filter_modal .= wopb_function()->svg_icon( 'close' );
                     $filter_modal .= '</a>';
+                    $filter_modal .= '<span class="wopb-modal-title">';
+                        $filter_modal .= __('Filter', 'product-blocks');
+                    $filter_modal .= '</span>';
                 $filter_modal .= '</div>';
             $filter_modal .= $filter_content;
             $filter_modal .= '</div>';
@@ -153,7 +152,7 @@ class Filter {
     /**
      * Filter Content
      *
-     * @since v.todo
+     * @since v.4.0.6
      * @return string
      */
     public function filter_content($active_filters, $target_block_attr, $attr) {
@@ -256,6 +255,9 @@ class Filter {
                                 }
                                 $taxonomy->terms = get_terms($term_query);
                                 $params['taxonomy'] = $taxonomy;
+                                if ( ! empty( $term_query['parent'] ) ) {
+                                    $params['parent_id'] = $term_query['parent'];
+                                }
                                 if ( $taxonomy->terms ) {
                                     $tax_count++;
                                     $params['tax_count'] = $tax_count;
@@ -431,12 +433,12 @@ class Filter {
              $attr['is_search'] = is_search();
              $attr['search_query'] = get_search_query();
          }
+         if($attr['enableTaxonomyRelation'] && $params['tax_count'] == 1) {
+             $this->taxonomy_relation();
+         }
 ?>
         <div class="wopb-filter-section<?php echo isset($params['taxonomy']->name) ? ' wopb-filter-' . esc_attr( $params['taxonomy']->name ) : '' ?>">
             <?php
-                if($attr['enableTaxonomyRelation'] && $params['tax_count'] == 1) {
-                    $this->taxonomy_relation();
-                }
                 $this->filter_header_content($attr, $params);
             ?>
 
@@ -446,6 +448,7 @@ class Filter {
                     class="wopb-filter-slug"
                     value="product_taxonomy"
                     data-taxonomy="<?php echo esc_attr($params['taxonomy']->name) ?>"
+                    data-parent="<?php echo ! empty( $params['parent_id'] ) ? esc_attr( $params['parent_id'] ) : '' ?>"
                     data-term-limit="<?php echo esc_attr($attr['viewTaxonomyLimit']) ?>"
                     data-attributes="<?php echo esc_attr(wp_json_encode($attr)) ?>"
                     data-target-block-attributes="<?php echo esc_attr(wp_json_encode($params['target_block_attr'])) ?>"
@@ -733,6 +736,9 @@ class Filter {
             $taxonomy->attribute = wopb_function()->get_attribute_by_taxonomy($taxonomy->name);
         }elseif($taxonomy->name !== 'product_tag') {
             $term_query['parent'] = 0;
+        }
+        if( ! empty( $_POST['parent'] ) ) {
+            $term_query['parent'] = $_POST['parent'];
         }
         $term_offset = ((isset($_POST['item_page'])?sanitize_text_field($_POST['item_page']):1) - 1) * (isset($_POST['term_limit'])? sanitize_text_field( $_POST['term_limit']):1);
         $term_offset = $params['hiddenTermCount'] > 0 ? $term_offset + $params['hiddenTermCount'] : $term_offset;

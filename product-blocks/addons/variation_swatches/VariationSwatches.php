@@ -118,6 +118,13 @@ class VariationSwatches
             'variation_image_height' => '28',
             'variation_switch_position' => 'before_cart',
             'variation_align_shop' => '',
+            'variation_label_typo' => array(
+                'size' => 15,
+                'bold' => 500,
+                'italic' => false,
+                'underline' => false,
+                'color' => 'rgba(7, 7, 7, 1)',
+            ),
         );
         foreach ($initial_data as $key => $val) {
             wopb_function()->set_setting($key, $val);
@@ -833,6 +840,15 @@ class VariationSwatches
                     $css .= 'justify-content: ' . $settings['variation_align_shop'] . ';';
                 $css .= '}';
             }
+            if( ! empty( $settings['variation_switch_shape_style'] ) && $settings['variation_switch_shape_style'] == 'circle' ) {
+                $css .= '.wopb-variation-swatches .wopb-swatch.wopb-swatch-image,';
+                $css .= '.wopb-variation-swatches .wopb-swatch.wopb-swatch-image img {';
+                    $css .= 'border-radius: 50%;';
+                $css .= '}';
+            }
+            $css .= '.variations_form table.variations:has(.wopb-variation-swatches) th.label label {';
+                $css .= wopb_function()->convert_css('general', $settings['variation_label_typo']);
+            $css .= '}';
 
             wopb_function()->update_css( $key, 'add', $css );
         }

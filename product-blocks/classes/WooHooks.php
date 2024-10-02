@@ -20,7 +20,6 @@ class WooHooks {
         add_action( 'woocommerce_before_add_to_cart_button', array( $this, 'before_add_to_cart_button' ), 100 );
         add_action( 'woocommerce_after_add_to_cart_button', array( $this, 'after_add_to_cart_button' ), 100 );
         add_filter( 'wopb_after_loop_item', array( $this, 'after_loop_item' ), 100 );
-//        add_action( 'wopb_product_meta_end', array( $this, 'after_product_meta_end' ), 100 );
 	}
 
 	/**
@@ -133,7 +132,7 @@ class WooHooks {
      *
      * @param $content
      * @return string
-     * @since v.todo
+     * @since v.4.0.6
      */
     public function after_loop_item( $content ) {
         $germanized_wc = array( // Germanized woocommerce function for after loop item
@@ -155,35 +154,5 @@ class WooHooks {
         $content .= ob_get_clean();
 
         return $content; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-    }
-
-    /**
-     * Filter Applied After Product Meta
-     *
-     * @return string
-     * @since v.todo
-     */
-    public function after_product_meta_end () {
-        global $product;
-        $content = '';
-        if( ! $product->is_type('grouped') ) {
-            $germanized_wc = array( // Germanized woocommerce function for after loop item
-                'unit_price' => 'woocommerce_gzd_template_single_price_unit',
-                'legal' => 'woocommerce_gzd_template_single_legal_info',
-                'delivery_time' => 'woocommerce_gzd_template_single_delivery_time_info',
-                'defect_description' => 'woocommerce_gzd_template_single_defect_description',
-                'deposit' => 'woocommerce_gzd_template_single_deposit',
-                'deposit_packaging_type' => 'woocommerce_gzd_template_single_deposit_packaging_type',
-                'nutri_score' => 'woocommerce_gzd_template_single_nutri_score',
-
-            );
-            foreach ($germanized_wc as $func) {
-                if (function_exists($func)) {
-                    $content .= $func();
-                }
-            }
-        }
-        echo $content;
-
     }
 }

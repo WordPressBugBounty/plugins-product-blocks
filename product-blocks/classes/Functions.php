@@ -1657,6 +1657,7 @@ class Functions{
         $conditions = $condition ? $condition : get_option('wopb_builder_conditions', array());
         $post_type = isset($_GET['post_type']) ? sanitize_key($_GET['post_type']) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         $not_header_footer = $type != 'header' && $type != 'footer';
+        $is_shop = is_shop();
 
         /*
          * Archive Builder
@@ -1665,7 +1666,7 @@ class Functions{
             if (!empty($conditions['archive'])) {
                 foreach ($conditions['archive'] as $key => $val) {
                     if (
-                        !is_shop() && !is_category() && get_post_type($key) == 'wopb_builder' &&
+                        !$is_shop && !is_category() && get_post_type($key) == 'wopb_builder' &&
                         ( is_archive() || ( !is_archive() && ( is_product_taxonomy() || is_product_tag() ) ) )
                     ) {
                         if (in_array('include/archive', $val)) {
@@ -1801,7 +1802,7 @@ class Functions{
                                 $page_id = $key;
                             }
                         }
-                    }else if (is_shop() && !is_search()) {
+                    }else if ($is_shop && !is_search()) {
                         if (in_array('filter/shop', $val)) {
                             if ('publish' == get_post_status($key)) {
                                 $page_id = $key;
@@ -1969,7 +1970,7 @@ class Functions{
         if (isset($conditions['shop']) && $not_header_footer) {
             if (!empty($conditions['shop'])) {
                 foreach ($conditions['shop'] as $key => $val) {
-                    if (is_shop() && !is_search()) {
+                    if ($is_shop && !is_search()) {
                         if (is_array($val) && in_array('filter/shop', $val)) {
                             if ('publish' == get_post_status($key) && get_post_type($key) == 'wopb_builder') {
                                 $page_id = $key;
@@ -2085,10 +2086,13 @@ class Functions{
          * since v.3.0.0
          */
         
-        if (isset($conditions['singular_page']) && $not_header_footer && ( is_shop() || is_singular()) ) {
+        if (isset($conditions['singular_page']) && $not_header_footer && ( $is_shop || is_singular()) ) {
             $obj = get_queried_object();
-            $post_type =  is_shop() ? 'page' : $obj->post_type;
-            $post_id =  is_shop() ? get_the_ID() : $obj->ID;
+            $shop_id = $is_shop ? wc_get_page_id('shop') : '';
+            $post_type =  $is_shop ? 'page' : $obj->post_type;
+            $post_id =  $is_shop && $shop_id
+                        ? $shop_id
+                        : ( $is_shop ? get_the_ID() : $obj->ID );
             if (is_object($obj)) {
                 foreach ($conditions['singular_page'] as $key => $val) {
                     if (get_post_status($key)) {
@@ -2463,10 +2467,14 @@ class Functions{
      * @return void
      */
     public function front_common_script() {
+        $require_script = array('jquery','wopb-flexmenu-script','wp-api-fetch', 'wopb-slick-script');
+        if ( wopb_function()->get_setting( 'wopb_variation_swatches' ) == 'true' ) {
+            $require_script[] = 'wopb-variation-swatches';
+        }
         wp_enqueue_style('wopb-css', WOPB_URL.'assets/css/wopb.css', array(), WOPB_VER );
         wp_enqueue_script('wopb-slick-script', WOPB_URL.'assets/js/slick.min.js', array('jquery'), WOPB_VER, true);
         wp_enqueue_script('wopb-flexmenu-script', WOPB_URL.'assets/js/flexmenu.min.js', array('jquery'), WOPB_VER, true);
-        wp_enqueue_script('wopb-script', WOPB_URL.'assets/js/wopb.js', array('jquery','wopb-flexmenu-script','wp-api-fetch', 'wopb-slick-script'), WOPB_VER, true);
+        wp_enqueue_script('wopb-script', WOPB_URL.'assets/js/wopb.js', $require_script, WOPB_VER, true);
         $wopb_core_localize = array(
             'url' => WOPB_URL,
             'ajax' => admin_url('admin-ajax.php'),
@@ -2561,6 +2569,7 @@ class Functions{
                 'ajax_show_more_filter_item' => \WC_AJAX::get_endpoint('wopb_show_more_filter_item'),
                 'ajax_product_list' => \WC_AJAX::get_endpoint('wopb_product_list'),
                 'ajax_variation_loop_add_cart' => \WC_AJAX::get_endpoint('wopb_variation_loop_add_cart'),
+                'ajax_quick_view' => \WC_AJAX::get_endpoint('wopb_quickview'),
             ];
             return $endpoints;
         }else {
@@ -2955,7 +2964,7 @@ class Functions{
             $tooltip_html = '';
             if ( $is_icon ) {
                 $inner_html .= $this->svg_icon('cart');
-                $tooltip_html .= '<span class="wopb-tooltip-text-'.$tooltip_position.'">'.esc_html($cart_text && $product->is_type('simple') ? $cart_text : $product->add_to_cart_text()).'</span>';
+                $tooltip_html .= '<span class="wopb-cart-tooltip wopb-tooltip-text-'.$tooltip_position.'">'.esc_html($cart_text && $product->is_type('simple') ? $cart_text : $product->add_to_cart_text()).'</span>';
             } else {
                 $inner_html .= $cart_text && $product->is_type('simple') ? esc_html( $cart_text ) : esc_html( $product->add_to_cart_text() );
             }
@@ -3019,7 +3028,11 @@ class Functions{
             switch ($type) {
                 case 'general':
                     $css .= ! empty($value['size']) ? 'font-size: ' . $value['size'] . 'px;' : '';
-                    $css .= 'font-weight: ' . ( ! empty($value['bold'] ) ? 'bold' : 'normal' ) . ';';
+                    $css .= 'font-weight: ' .
+                        ( ! empty( $value['bold'] )
+                            ? ( $value['bold'] == 1 ? 'bold' : $value['bold'] )
+                            : 'normal'
+                        ) . ' !important;';
                     $css .= ! empty($value['italic']) ? 'font-style: ' . 'italic;' : '';
                     $css .= 'text-decoration: ' . (! empty($value['underline']) ? 'underline;' : 'none') . ';';
                     if( isset( $value['color'] ) ) {
@@ -3063,7 +3076,7 @@ class Functions{
 
                 case 'border':
                     $css .= 'border: ' .
-                        (! empty( $value['border'] )
+                        ( ! empty( $value['border'] )
                             ? $value['border']
                             : 0
                         ) . 'px solid ' .

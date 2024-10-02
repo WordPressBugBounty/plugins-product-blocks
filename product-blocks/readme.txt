@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.6.1
 Requires PHP: 7.0
-Stable tag: 4.0.6
+Stable tag: 4.0.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -154,6 +154,21 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.0.7 - 02 October 2024 =
+* Update: Product Filtering block sidebar popup for mobile device
+* Update: Label Typography setting added in Variation Swatches addon
+* Update: Button Settings added in Quickview modal
+* Fix: Header builder doesn't work on the shop page only
+* Fix: Image style square doesn't work in the Variation Swatches
+* Fix: Show More properly doesn't work for archive page in the Product Filtering block
+* Fix: Product image hover effect doesn't work on the Product Grid when the taxonomy is positioned above the image
+* Fix: Regular price color doesn't work when the product doesn't have a sale price
+* Fix: Product image gallery position is not centered in the Single Product builder
+* Fix: Hide Desktop setting error in Column block
+* Fix: Button block icon size doesn't work properly for responsive device
+* Fix: Quickview disable for mobile is not working
+* Fix: Short description settings do not hide when the short description is disabled in the Product Grid block
+
 = 4.0.6 - 15 September 2024 =
 * Update: Product Filter block popup for Mobile device
 * Update: Product image added in order review block of Checkout Builder

@@ -221,7 +221,7 @@ class Product_Grid_3{
                                                     }
 
                                                     if ( $attr['catPosition'] != 'none' && $attr['catShow'] ) {
-                                                        $image_data .= '<div class="wopb-category-img-grid">'.wp_kses_post($category).'</div>';
+                                                        $image_data .= wp_kses_post($category);
                                                     }
 
                                                     if ( $product->get_stock_status() == 'outofstock' && $attr["showOutStock"] ) {

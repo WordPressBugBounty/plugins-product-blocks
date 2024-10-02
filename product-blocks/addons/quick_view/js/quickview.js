@@ -24,7 +24,7 @@
 
         if(that.data('postid')){
             $.ajax({
-                url: wopb_quickview.ajax,
+                url: wopb_core.ajax_quick_view,
                 type: 'POST',
                 data: {
                     action: 'wopb_quickview',
@@ -153,12 +153,23 @@
             jQuery( this ).wc_product_gallery(  );
         } );
 
-        form_variation.each(function () {
-            jQuery(this).wc_variation_form();
-            if(wopb_quickview.isVariationSwitchActive == 'true') {
-                jQuery(this).loopVariationSwitcherForm();
-            }
-        });
+        let quickWrapper = $('.wopb-quick-view-wrapper')
+        let galleryWrapper = quickWrapper.find('.wopb-quick-slider')
+        let variationParam = {
+            'product' : _modalContent,
+            'form' : form_variation,
+            'galleryWrapper' : galleryWrapper,
+            'nav' : quickWrapper.find('.wopb-quick-slider-nav'),
+            'defaultSlide' : quickWrapper.find('.wopb-quick-slider-nav .slick-current'),
+            'defaultNavImage' : quickWrapper.find('.wopb-quick-slider-nav .slick-current img').attr('src'),
+            'defaultProductImage' : galleryWrapper.find('.slick-active img:first').attr('src'),
+            'source': 'singleProduct',
+        }
+        form_variation.wc_variation_form();
+        quickWrapper.variationChange(variationParam)
+        if(wopb_quickview.isVariationSwitchActive == 'true') {
+            form_variation.wopVariationSwitch(variationParam);
+        }
 
         // Start image zoom 1 on hover in quick
         const imageWrapper = $('.wopb-quick-view-image');

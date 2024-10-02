@@ -86,7 +86,7 @@ class Initialization{
     /**
      * Footer Callback
      *
-     * @since v.todo
+     * @since v.4.0.6
      * @return NULL
      */
     public function footer_callback() {
@@ -281,6 +281,7 @@ class Initialization{
                 'productTaxonomyList' => wopb_function()->get_product_taxonomies(['term_limit' => 10]),
                 'product_category' => get_terms( ['taxonomy' => 'product_cat', 'hide_empty' => true, 'number' => 10] ),
                 'builder_type' => $is_builder ? get_post_meta( $post->ID, '_wopb_builder_type', true ) : '',
+                'taxonomyCatUrl' => admin_url( 'edit-tags.php?taxonomy=category' ),
             ));
 
             wp_set_script_translations( 'wopb-blocks-editor-script', 'product-blocks', WOPB_PATH . 'languages/' );

@@ -70,7 +70,7 @@ function get_variation_swatches_settings( $config ) {
                                         ),
                                         'variation_switch_label_is_background' => array(
                                             'type' => 'toggle',
-                                            'label' => __('Label Background', 'product-blocks'),
+                                            'label' => __('Shape(Label) Background', 'product-blocks'),
                                             'default' => 'yes',
                                             'desc' => __('Click if you want to show/hide background', 'product-blocks')
                                         ),
@@ -117,6 +117,17 @@ function get_variation_swatches_settings( $config ) {
                                 'container_2' => array(
                                     'type' => 'container',
                                     'attr' => array(
+                                        'variation_label_typo' => array (
+                                            'type'=> 'typography',
+                                            'label'=> __('Label Typography', 'product-blocks'),
+                                            'default'=> (object)array(
+                                                'size' => 15,
+                                                'bold' => 500,
+                                                'italic' => false,
+                                                'underline' => false,
+                                                'color' => 'rgba(7, 7, 7, 1)',
+                                            ),
+                                        ),
                                         'variation_switch_width' => array(
                                             'type' => 'number',
                                             'label' => __('Width (PX)', 'product-blocks'),

@@ -86,6 +86,23 @@
                 rtl: $('html').attr('dir') && $('html').attr('dir') == 'rtl' ? true : false,
             });
         });
+
+        let form = $('.wopb-builder-cart .variations_form')
+        let wooGalleryWrapper = $('.woocommerce-product-gallery__wrapper')
+        let variationParam = {
+            'product': form.parents('.wopb-builder-cart:first') ,
+            'form': form,
+            'galleryWrapper': wooGalleryWrapper.find('.wopb-product-gallery-wrapper'),
+            'nav': wooGalleryWrapper.find('.wopb-builder-slider-nav'),
+            'defaultSlide': wooGalleryWrapper.find('.wopb-builder-slider-nav .slick-current'),
+            'defaultNavImage': wooGalleryWrapper.find('.wopb-builder-slider-nav .slick-current img').attr('src'),
+            'defaultProductImage': wooGalleryWrapper.find('.slick-active img:first').attr('src'),
+            'source': 'singleProduct',
+        }
+        wooGalleryWrapper.variationChange(variationParam)
+        if( form.find('.wopb-variation-selector').length ) {
+            form.wopVariationSwitch(variationParam);
+        }
    }
 
     $(document).on('click', '.wopb-product-zoom', function(e){
@@ -250,10 +267,6 @@
             },
             success: function(data) {
                 $(data).insertBefore( parents.find('.wopb-loadmore-insert-before') );
-                $(".variations_form").each(function () {
-                    $(this).wc_variation_form();
-                    $(this).loopVariationSwitcherForm();
-                });
                 if(paged == pages){
                     that.addClass('wopb-disable');
                 }else{
@@ -315,10 +328,6 @@
                 },
                 success: function(data) {
                     wrap.find('.wopb-wrapper-main-content').html(data);
-                    $(".variations_form").each(function () {
-                        $(this).wc_variation_form();
-                        $(this).loopVariationSwitcherForm();
-                    });
                 },
                 complete:function() {
                     unblock(filterWrapper);
@@ -448,11 +457,6 @@
                             scrollTop: wrap.offset().top - 50
                         }, 100);
                     }
-
-                    $(".variations_form").each(function () {
-                        $(this).wc_variation_form();
-                        $(this).loopVariationSwitcherForm();
-                    });
 
                 },
                 complete:function() {
@@ -826,9 +830,6 @@
                 }
             } );
         });
-
-        //Product filter trigger when page load
-        // $('.wopb-filter-slug-reset').parent('.wopb-filter-body').trigger('change');
     });
 
 
@@ -997,7 +998,6 @@
         let footer = $('.wopb-checkout-review-table tfoot')
         let reviewFooter = $(data.fragments['.woocommerce-checkout-review-order-table']).find('tfoot');
         if( footer.length && reviewFooter.length ) {
-            console.log(reviewFooter.html());
             footer.html(reviewFooter.html())
         }
     })
@@ -1117,62 +1117,57 @@
 	};
 
     //variation form trigger for builder
-    let builderDefaultNav = $('.woocommerce-product-gallery__wrapper .wopb-builder-slider-nav .slick-current');
-    let builderDefaultNavImage = $('.woocommerce-product-gallery__wrapper .wopb-builder-slider-nav .slick-current img').attr('src');
-    let builderDefaultProductImage = $('.wopb-product-gallery-wrapper .slick-active img').first().attr('src');
-    $('.wopb-builder-cart .variations_form')
-        .on("found_variation", function (e, variation) {
-            let productThumbnail = $('.wopb-product-gallery-wrapper .slick-active img');
-            let attributes = {
-                src: variation.image.full_src,
-            };
-            let thumbSlickCurrentNav = $('.wopb-builder-container')
-                .find('.woocommerce-product-gallery__wrapper .wopb-builder-slider-nav .slick-active');
-            if(thumbSlickCurrentNav.length > 0) {
-                let thumbSlickCurrentImage = '';
-                thumbSlickCurrentImage = thumbSlickCurrentNav.find('img[src="' + variation.image.gallery_thumbnail_src + '"]');
-                if(thumbSlickCurrentImage.length < 1 && variation.image.full_src != '') {
-                    // Change variation image for builder
-                    if(builderDefaultNav.length > 0 ) {
-                        builderDefaultNav.trigger('click');
-                        builderDefaultNav.find('img').attr('src', variation.image.gallery_thumbnail_src)
-                        productThumbnail = $('.wopb-product-gallery-wrapper .slick-active img');
+    $.fn.variationChange = ( variationParam ) => {
+        let {form, galleryWrapper, nav, defaultSlide, defaultNavImage, defaultProductImage} = variationParam
+        if( form.length ) {
+            form.on("found_variation", function (e, variation) {
+                let thumbnail = galleryWrapper.find('.slick-active img');
+                let attributes = {
+                    src: variation.image.full_src,
+                };
+                let navSlick = nav.find('.slick-active');
+                if (navSlick.length > 0) {
+                    let navImage = '';
+                    navImage = navSlick.find('img[src="' + variation.image.gallery_thumbnail_src + '"]');
+                    if (navImage.length < 1 && variation.image.full_src != '') {
+                        // Change variation image for builder
+                        if (defaultSlide.length > 0) {
+                            defaultSlide.trigger('click');
+                            defaultSlide.find('img').attr('src', variation.image.gallery_thumbnail_src)
+                            thumbnail = galleryWrapper.find('.slick-active img');
+                        }
+                        thumbnail.attr(attributes);
+                    } else if (navImage.length < 1) {
+                        defaultSlide.trigger('click');
+                    } else {
+                        navImage.parents('.slick-active:first').trigger('click');
                     }
-                    productThumbnail.attr(attributes);
-                }else if(thumbSlickCurrentImage.length < 1) {
-                    builderDefaultNav.trigger('click');
-                }else {
-                    thumbSlickCurrentImage.parents('.slick-active:first').trigger('click');
+                } else {
+                    thumbnail.attr(attributes);
                 }
-            }else {
-                // Change variation image for builder
-                productThumbnail.attr(attributes);
-            }
-        })
-        .on("reset_data", function () {
-            let productThumbnail = $('.wopb-product-gallery-wrapper .slick-active img');
-            let attributes = {
-                src: builderDefaultProductImage,
-            };
-            let variationSwitcherColorSelected = $(this).find('.wopb-variation-swatches .wopb-swatch.wopb-swatch-color.selected');
-            if(variationSwitcherColorSelected.length < 1) {
-                variationSwitcherColorSelected = $(this).find('.wopb-variation-swatches .wopb-swatch.wopb-swatch-image.selected');
-            }
-            if(variationSwitcherColorSelected.length < 1) {
-                if(builderDefaultNav.length > 0) {
-                    // Change variation image for builder
-                    builderDefaultNav.trigger('click');
-                    if(builderDefaultNavImage !== builderDefaultNav.find('img').attr('src')) {
-                        productThumbnail = $('.wopb-product-gallery-wrapper .slick-active img');
-                        builderDefaultNav.find('img').attr('src', builderDefaultNavImage)
-                        productThumbnail.attr('src', builderDefaultProductImage);
+            })
+            form.on("reset_data", function () {
+                let selectedClass = form.find('.wopb-swatch.selected');
+                if(selectedClass.length == 1 && (selectedClass.hasClass('wopb-swatch-color') || selectedClass.hasClass('wopb-swatch-image'))) {
+                    return
+                }
+                let thumbnail = galleryWrapper.find('.slick-active img');
+                let attributes = {
+                    src: defaultProductImage,
+                };
+                if (defaultSlide.length > 0) {
+                    defaultSlide.trigger('click');
+                    if (defaultNavImage !== defaultSlide.find('img').attr('src')) {
+                        thumbnail = galleryWrapper.find('.slick-active img');
+                        defaultSlide.find('img').attr('src', defaultNavImage)
+                        thumbnail.attr('src', defaultProductImage);
                     }
-                }else {
-                    // Change variation image for builder
-                    productThumbnail.attr(attributes);
+                } else {
+                    thumbnail.attr(attributes);
                 }
-            }
-        })
+            })
+        }
+    }
 
     /*
      * Product filter(feature) start
@@ -1227,7 +1222,8 @@
     let productFilters = resetProductFilter();
     let filterSlugValue =  '';
     let filterSlug = '';
-    $(document).on("change", ".wopb-filter-block-front-end .wopb-filter-section .wopb-filter-body", function (e) {
+    $(document).on("change", ".wopb-filter-block-front-end .wopb-filter-section .wopb-filter-body, " +
+        ".wopb-filter-block-front-end .wopb-taxonomy-relation .wopb-filter-body", function (e) {
         let that = $(this);
         let parent = $('.wopb-product-wrapper.wopb-filter-block-front-end');
         if($(e.target).hasClass('wopb-filter-price-input')) {
@@ -1346,10 +1342,6 @@
                 });
             })
             gridProductSlide();
-            $(".variations_form").each(function () {
-                $(this).wc_variation_form();
-                $(this).loopVariationSwitcherForm();
-            });
             unblock(blockItemWrapper);
             $(document).trigger('wopbAjaxComplete');
         })
@@ -1528,6 +1520,7 @@
                         attributes: filterSlug.data('attributes'),
                         target_block_attr: filterSlug.data('target-block-attributes'),
                         taxonomy: filterSlug.data('taxonomy'),
+                        parent: filterSlug.data('parent'),
                         term_limit: filterSlug.data('term-limit'),
                         item_page: currentItemPage,
                         hiddenTermCount: hiddenTermCount,
@@ -2188,7 +2181,7 @@
                 }
                 let playIcon = parent.find('.wopb-video-play-icon').clone()
                 playIcon.removeClass('wopb-d-none')
-                let navItem = $('.wopb-nav-image.wopb-video-nav');
+                let navItem = $('.wopb-nav-slide.wopb-video-nav');
                 if( ! navItem.length ) {
                     navItem = $('.flex-control-nav li').eq(index);
                     navItem.addClass('wopb-video-nav')

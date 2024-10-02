@@ -421,8 +421,8 @@ class NamePrice {
     public function single_add_cart_label_text( $label ) {
         $product_id = get_the_ID();
         $data = $this->get_data( $product_id );
-        if ( $product_id && $data['enable'] == 'yes' ) {
-            $label = wopb_function()->get_setting( 'name_price_single' );
+        if ( $product_id && $data['enable'] == 'yes' && $text = wopb_function()->get_setting( 'name_price_single' ) ) {
+            $label = $text;
         }
         return $label;
     }
@@ -437,8 +437,8 @@ class NamePrice {
      */
     public function shop_add_cart_label_text( $label, $product ) {
         $data = $this->get_data( $product->get_id() );
-        if ( $product && isset( $data['enable'] ) && $data['enable'] == 'yes' ) {
-            $label = wopb_function()->get_setting( 'name_price_archive' );
+        if ( $product && isset( $data['enable'] ) && $data['enable'] == 'yes' && $text = wopb_function()->get_setting( 'name_price_archive' )) {
+            $label = $text;
         }
         return $label;
     }

@@ -104,8 +104,8 @@ class Product_Image{
 
                 $image_full = $image_thumb = '';
                 $gallery_thumbnail = wc_get_image_size( 'gallery_thumbnail' );
-                $thumbnail_size = apply_filters( 'woocommerce_gallery_thumbnail_size', array( $gallery_thumbnail['width'], $gallery_thumbnail['height'] ) );
                 $full_size = apply_filters( 'woocommerce_gallery_full_size', apply_filters( 'woocommerce_product_thumbnails_large_size', 'full' ) );
+                $thumbnail_size = $full_size;
                 ob_start();
                 echo apply_filters( 'wopb_product_video', '', $product, $all_id[0] );
                 $video_thumb = ob_get_clean();
@@ -125,7 +125,7 @@ class Product_Image{
                         $image_full .= '<img src="' . $fallback_url . '" data-width="100" data-height="100"/>';
                         $image_full .= $video_thumb;
                     $image_full .= '</div>';
-                    $image_thumb .= '<div class="wopb-nav-image wopb-video-nav">';
+                    $image_thumb .= '<div class="wopb-nav-slide wopb-video-nav">';
                         $image_thumb .= '<img src="' . $fallback_thumb_url . '"/>';
                     $image_thumb .= '</div>';
                 }
@@ -136,7 +136,7 @@ class Product_Image{
                     $image_full .= '<div class="wopb-main-image">';
                         $image_full .= '<img src="'.esc_url($full_src[0]).'" alt="'.esc_attr($alt_text).'" data-width="'.esc_attr($full_src[1]).'" data-height="'.esc_attr($full_src[2]).'"/>';
                     $image_full .= '</div>';
-                    $image_thumb .= '<div class="wopb-nav-image"><img src="'.esc_url($thumbnail_src[0]).'" alt="'.esc_attr($alt_text).'" /></div>';
+                    $image_thumb .= '<div class="wopb-nav-slide"><img src="'.esc_url($thumbnail_src[0]).'" alt="'.esc_attr($alt_text).'" /></div>';
                 }
 
                 echo '<div class="wopb-product-gallery-wrapper' . ($productx_settings['showlight'] ? ' wopb-product-zoom-wrapper' : '' ). '">';

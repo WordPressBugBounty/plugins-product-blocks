@@ -22,9 +22,6 @@
     min-width: 15%;
     margin-bottom: 0;
 }
-.variations_form:not(.wopb-loop-variations-form) table.variations:has(.wopb-variation-swatches) th.label label {
-    font-weight: 500;
-}
 .variations_form:not(.wopb-loop-variations-form) table.variations tr {
     display: block;
     margin-bottom: 1em !important;
@@ -94,10 +91,8 @@
 }
 .wopb-variation-swatches .wopb-swatch-image {
     background: #EAEAEA;
-    border-radius: 50%;
 }
 .wopb-variation-swatches .wopb-swatch-image img {
-    border-radius: 50%;
     padding: 2px;
 }
 .wopb-variation-swatches .wopb-swatch-image.selected img {

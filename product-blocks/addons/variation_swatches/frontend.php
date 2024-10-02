@@ -7,10 +7,11 @@ defined( 'ABSPATH' ) || exit;
  */
 add_action( 'wp_loaded', 'wopb_variation_swatches_init' );
 function wopb_variation_swatches_init() {
-	if ( wopb_function()->get_setting( 'wopb_variation_swatches' ) == 'true' ) {
+    $settings = wopb_function()->get_setting();
+	if ( $settings['wopb_variation_swatches'] == 'true' ) {
 		require_once WOPB_PATH . '/addons/variation_swatches/VariationSwatches.php';
 		$obj = new \WOPB\VariationSwatches();
-		if ( ! wopb_function()->get_setting( 'variation_switch_heading' ) ) {
+        if ( ! isset($settings['variation_label_typo'])) {
 			$obj->initial_setup();
 		}
 	}
