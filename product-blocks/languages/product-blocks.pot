@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-02T08:57:37+00:00\n"
+"POT-Creation-Date: 2024-10-02T09:17:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: product-blocks\n"
@@ -3524,40 +3524,40 @@ msgstr ""
 msgid "Alignment in Shop/Archive Page"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:330
-#: build/addons/variation_swatches/VariationSwatches.php:330
+#: addons/variation_swatches/VariationSwatches.php:337
+#: build/addons/variation_swatches/VariationSwatches.php:337
 #: assets/js/editor.blocks.js:129
 #: assets/js/editor.blocks.js:415
 msgid "Upload Image"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:333
-#: build/addons/variation_swatches/VariationSwatches.php:333
+#: addons/variation_swatches/VariationSwatches.php:340
+#: build/addons/variation_swatches/VariationSwatches.php:340
 msgid "Remove"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:372
-#: build/addons/variation_swatches/VariationSwatches.php:372
+#: addons/variation_swatches/VariationSwatches.php:379
+#: build/addons/variation_swatches/VariationSwatches.php:379
 msgid "Select terms"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:387
-#: build/addons/variation_swatches/VariationSwatches.php:387
+#: addons/variation_swatches/VariationSwatches.php:394
+#: build/addons/variation_swatches/VariationSwatches.php:394
 msgid "Select all"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:388
-#: build/addons/variation_swatches/VariationSwatches.php:388
+#: addons/variation_swatches/VariationSwatches.php:395
+#: build/addons/variation_swatches/VariationSwatches.php:395
 msgid "Select none"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:390
-#: build/addons/variation_swatches/VariationSwatches.php:390
+#: addons/variation_swatches/VariationSwatches.php:397
+#: build/addons/variation_swatches/VariationSwatches.php:397
 msgid "Add new"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:690
-#: build/addons/variation_swatches/VariationSwatches.php:690
+#: addons/variation_swatches/VariationSwatches.php:697
+#: build/addons/variation_swatches/VariationSwatches.php:697
 msgid "Clear"
 msgstr ""
 
