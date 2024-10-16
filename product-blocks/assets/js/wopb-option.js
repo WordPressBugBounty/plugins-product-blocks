@@ -215,21 +215,21 @@
     });
 
     // Move notice into after heading
-    $(document).ready( function() {
-        const noticeWrapper = $('.wopb-notice-wrapper');
-        if ( noticeWrapper.length > 0  ) {
-            setTimeout( function() {
-                noticeWrapper.each(function(e){
-                    const notice = $(this);
-                    if($('#wpwrap .wrap .wp-header-end').length>0) {
-                        $('#wpwrap .wrap .wp-header-end').after(notice);
-                    } else {
-                        $('#wpwrap .wrap h1').after(notice);
-                    }
-                });
-            }, 100);
-        }
-    });
+    // $(document).ready( function() {
+    //     const noticeWrapper = $('.wopb-notice-wrapper');
+    //     if ( noticeWrapper.length > 0  ) {
+    //         setTimeout( function() {
+    //             noticeWrapper.each(function(e){
+    //                 const notice = $(this);
+    //                 if($('#wpwrap .wrap .wp-header-end').length>0) {
+    //                     $('#wpwrap .wrap .wp-header-end').after(notice);
+    //                 } else {
+    //                     $('#wpwrap .wrap h1').after(notice);
+    //                 }
+    //             });
+    //         }, 100);
+    //     }
+    // });
 
     $('.wopb-open-media').on('click', function () {
         let that = $(this)

@@ -953,19 +953,25 @@ th:has(.wopb-custom-font-preview-th) {
 }	
 
 /* Notice Css */
+.wopb-notice-section.notice {
+    background: unset;
+    border: unset !important;
+    box-shadow: unset;
+    padding: 0;
+    border: 1px solid #C3C4C7;
+    background: #FFF;
+}
 .wopb-notice-wrapper {
     display: flex;
     align-items: center;
-    border: 1px solid #C3C4C7;
-    background: #FFF;
-    width: calc(100% - 18px);
+    box-sizing: border-box;
     /* height: 80px; */
     padding: 10px 0px;
     position: relative;
 }
-.wrap .wopb-notice-wrapper {
-    width: 100%;
-}
+/*.wrap .wopb-notice-wrapper {*/
+/*    width: 100%;*/
+/*}*/
 
 .wopb-notice-type-1 .wopb-notice-icon img,
 .wopb-notice-type-2 .wopb-notice-icon img,

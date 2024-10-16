@@ -19,7 +19,7 @@ class Notice {
 	 *
 	 * @since v.1.0.0
 	 */
-	private $notice_version   = 'v25';
+	private $notice_version   = 'v26';
 	private $available_notice = array();
 	private $price_id         = '';
 	private $type;
@@ -49,7 +49,7 @@ class Notice {
 		// add_action( 'admin_notices', array( $this, 'wholesalex_intro_notice' ) );
 		// add_action( 'wp_ajax_install_wholesalex', array( $this, 'wholesalex_installation_callback' ) );
 
-		add_action( 'admin_notices', array( $this, 'display_notices' ) );
+		add_action( 'admin_notices', array( $this, 'display_notices' ), 0 );
 	}
 
 	private function set_new_notice( $id = '', $type = '', $design_type = '', $start = '', $end = '', $repeat = false, $priority = 10, $show_if = false ) {
@@ -76,55 +76,26 @@ class Notice {
 			case 'pro_4':
 				//
 				// Will Get Free User
-				$icon        = WOPB_URL . 'assets/img/logo-sm.svg';
 				$url         = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=wstore_topbar&utm_medium=flash_sale_pro&utm_campaign=wstore-dashboard';
-				$full_access = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=wstore_topbar&utm_medium=flash_sale_pro&utm_campaign=wstore-dashboard';
-
+                $this->wc_notice_css();
 				ob_start();
 				?>
-				
-				<div class="wopb-notice-wrapper wopb-notice-type-1 notice">
-					<div class="wopb-notice-icon"> <img src="<?php echo esc_url( $icon ); ?>"/>  </div>
-					<div class="wopb-notice-content-wrapper">
-					<div class="wopb-notice-content"> <strong>WowStore</strong> Massive Discount: Grab <strong>full access</strong> to WowStore Pro and build your sites within 3 simple steps.</div>
-					<div class="wopb-notice-buttons"> 
-						<a class="wopb-notice-btn button button-primary" href="<?php echo esc_url( $url ); ?>" target="_blank"> Upgrade to Pro   </a>
-						<a class="wopb-notice-btn button" href="<?php echo esc_url( $full_access ); ?>" target="_blank">  Give Me Full Access  </a>
-						<a href="<?php echo esc_url( $close_url ); ?>" class="wopb-notice-dont-save-money">   I Don’t Want Full Access </a>
-					</div>
-					</div>
-					<a href="<?php echo esc_url( $close_url ); ?>" class="wopb-notice-close"><span class="wopb-notice-close-icon dashicons dashicons-dismiss"> </span></a>
-				</div>
+
+                <div class="wopb-pro-notice wopb-wc-install wopb-notice-wrapper notice">
+                    <div class="wopb-install-body wopb-image-banner">
+                        <a href="<?php echo esc_url( $close_url ); ?>" class="wopb-promotional-dismiss-notice">
+                            <?php esc_html_e( 'Dismiss', 'product-blocks' ); ?>
+                        </a>
+                        <a href="<?php echo esc_url( $url ); ?>" target="_blank">
+                            <img src="<?php echo WOPB_URL . 'assets/img/banner_offer.jpg'; ?>" alt="Banner">
+                        </a>
+                    </div>
+                </div>
 
 				<?php
 
 				return ob_get_clean();
 
-				break;
-			case 'pro_2':
-				// User Get Free User
-				$icon     = WOPB_URL . 'assets/img/logo-sm.svg';
-				$url      = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=wstore_topbar&utm_medium=flash_sale_pro&utm_campaign=wstore-dashboard';
-				$discount = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=wstore_topbar&utm_medium=flash_sale_pro&utm_campaign=wstore-dashboard';
-
-				ob_start();
-				?>
-				
-				<div class="wopb-notice-wrapper wopb-notice-type-2 notice">
-					<div class="wopb-notice-content-wrapper">
-					<div class="wopb-notice-content"> Grab the <strong>special discount</strong> and reduce 80% development time with WowStore Pro. </div>
-					<div class="wopb-notice-buttons"> 
-						<a class="wopb-notice-btn button button-primary" href="<?php echo esc_url( $url ); ?>" target="_blank"> Upgrade to Pro  </a>
-						<a class="wopb-notice-btn button" href="<?php echo esc_url( $discount ); ?>" target="_blank"> Give Me Discount</a>
-						<a href="<?php echo esc_url( $close_url ); ?>" class="wopb-notice-dont-save-money"> I don’t Want </a>
-					</div>
-					</div>
-					<a href="<?php echo esc_url( $close_url ); ?>" class="wopb-notice-close"><span class="wopb-notice-close-icon dashicons dashicons-dismiss"> </span></a>
-					</div>
-
-				<?php
-
-				return ob_get_clean();
 				break;
 			case 'pro_3':
 				// Will Get single
@@ -146,6 +117,33 @@ class Notice {
 
 				<?php
 				return ob_get_clean();
+                break;
+
+            case 'pro_2':
+                // User Get Free User
+                $icon     = WOPB_URL . 'assets/img/logo-sm.svg';
+                $url      = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=wstore_topbar&utm_medium=flash_sale_pro&utm_campaign=wstore-dashboard';
+                $discount = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=wstore_topbar&utm_medium=flash_sale_pro&utm_campaign=wstore-dashboard';
+
+                ob_start();
+                ?>
+
+                <div class="wopb-notice-wrapper wopb-notice-type-2 notice">
+                    <div class="wopb-notice-content-wrapper">
+                        <div class="wopb-notice-content"> Grab the <strong>special discount</strong> and reduce 80% development time with WowStore Pro. </div>
+                        <div class="wopb-notice-buttons">
+                            <a class="wopb-notice-btn button button-primary" href="<?php echo esc_url( $url ); ?>" target="_blank"> Upgrade to Pro  </a>
+                            <a class="wopb-notice-btn button" href="<?php echo esc_url( $discount ); ?>" target="_blank"> Give Me Discount</a>
+                            <a href="<?php echo esc_url( $close_url ); ?>" class="wopb-notice-dont-save-money"> I don’t Want </a>
+                        </div>
+                    </div>
+                    <a href="<?php echo esc_url( $close_url ); ?>" class="wopb-notice-close"><span class="wopb-notice-close-icon dashicons dashicons-dismiss"> </span></a>
+                </div>
+
+                <?php
+
+                return ob_get_clean();
+                break;
 
 			case 'pro_1':
 				// Will Get single
@@ -155,19 +153,20 @@ class Notice {
 				$access_url = 'https://www.wpxpo.com/wowstore/?utm_source=db-wstore-global&utm_medium=discount_explore_now&utm_campaign=wstore-dashboard';
 				ob_start();
 				?>
-					
-					<div class="wopb-notice-wrapper wopb-notice-type-1 notice">
-						<div class="wopb-notice-icon"> <img src="<?php echo esc_url( $icon ); ?>"/>  </div>
-						<div class="wopb-notice-content-wrapper">
-                            <div class="wopb-notice-content"> <strong>ProductX</strong> is now <strong>WowStore</strong>. Enjoy a <strong style="color: #ff176b;">FLAT 70% DISCOUNT</strong> on the <strong>LIFETIME DEAL</strong>🔥</div>
-						<div class="wopb-notice-buttons"> 
-							<a class="wopb-notice-btn button button-primary" href="<?php echo esc_url( $url ); ?>" target="_blank"> SAVE 70% NOW!  </a>
-							<a class="wopb-notice-btn button" href="<?php echo esc_url( $access_url ); ?>" target="_blank">Explore WowStore</a>
-							<a href="<?php echo esc_url( $close_url ); ?>" class="wopb-notice-dont-save-money"> I Don’t Want to Save Money </a>
-						</div>
-						</div>
-						<a href="<?php echo esc_url( $close_url ); ?>" class="wopb-notice-close"><span class="wopb-notice-close-icon dashicons dashicons-dismiss"> </span></a>
-					</div>
+					<div class="wopb-notice-section notice">
+                        <div class="wopb-notice-wrapper wopb-notice-type-1">
+                            <div class="wopb-notice-icon"> <img src="<?php echo esc_url( $icon ); ?>"/>  </div>
+                            <div class="wopb-notice-content-wrapper">
+                                <div class="wopb-notice-content"> <strong>Halloween Discount Alert:</strong> WowStore is on Sale - Enjoy <strong style="color: #ff176b;">up to 60% OFF</strong> on the complete WooCommerce solution</div>
+                            <div class="wopb-notice-buttons">
+                                <a class="wopb-notice-btn button button-primary" href="<?php echo esc_url( $url ); ?>" target="_blank"> SAVE 60% NOW!  </a>
+                                <a class="wopb-notice-btn button" href="<?php echo esc_url( $access_url ); ?>" target="_blank">Explore WowStore</a>
+                                <a href="<?php echo esc_url( $close_url ); ?>" class="wopb-notice-dont-save-money"> I Don’t Want to Save Money </a>
+                            </div>
+                            </div>
+                            <a href="<?php echo esc_url( $close_url ); ?>" class="wopb-notice-close"><span class="wopb-notice-close-icon dashicons dashicons-dismiss"> </span></a>
+                        </div>
+                    </div>
 	
 					<?php
 
@@ -354,7 +353,7 @@ class Notice {
 					}
 
 					if(isset( $notice['id'], $notice['design_type'])) {
-//						echo $this->get_notice_content( $notice['id'], $notice['design_type'] ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo $this->get_notice_content( $notice['id'], $notice['design_type'] ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 						
 						++$displayed_notice_count;
 					}
@@ -522,22 +521,9 @@ class Notice {
 			// $is_already_collect 	= get_transient( 'wpxpo_data_collect_productx' ) == 'yes';
 
 			$this->available_notice = array(
-				'wopb_free_promo_400'        => $this->set_new_notice( 'wopb_free_promo_400', 'promotion', 'pro_1', '14-7-2024', '22-8-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
+				'wopb_halloween_1'        => $this->set_new_notice( 'wopb_halloween_1', 'promotion', 'pro_1', '21-10-2024', '28-10-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
+				'wopb_halloween_2'        => $this->set_new_notice( 'wopb_halloween_2', 'promotion', 'pro_4', '29-10-2024', '02-11-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
 				/*
-				// Free to Pro
-				'wopb_free_promo_1'        => $this->set_new_notice( 'wopb_free_promo_1', 'promotion', 'pro_1', '1-2-2024', '10-2-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
-				'wopb_free_promo_2'        => $this->set_new_notice( 'wopb_free_promo_2', 'promotion', 'pro_2', '15-2-2024', '25-2-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
-				'wopb_free_promo_3'        => $this->set_new_notice( 'wopb_free_promo_3', 'promotion', 'pro_3', '1-3-2024', '10-3-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
-				'wopb_free_promo_4'        => $this->set_new_notice( 'wopb_free_promo_4', 'promotion', 'pro_4', '15-3-2024', '25-3-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
-
-				// Pro Tier 2 -> Unlimited Sites to Lifetime or others
-				'wopb_pro_lifetime_unli_1' => $this->set_new_notice( 'wopb_pro_lifetime_unli_1', 'promotion', 'lifetime_n_unlimited_1', '1-2-2024', '20-2-2024', false, 10, in_array( $this->price_id, array( 2 ) ) ),
-				'wopb_pro_lifetime_unli_2' => $this->set_new_notice( 'wopb_pro_lifetime_unli_2', 'promotion', 'lifetime_n_unlimited_1', '10-3-2024', '30-3-2024', false, 10, in_array( $this->price_id, array( 2 ) ) ),
-				
-				// Pro Tier 1 -> Single Site to Lifetime or Others
-				'wopb_lifetime_1'          => $this->set_new_notice( 'wopb_lifetime_1', 'promotion', 'lifetime_1', '1-2-2024', '20-2-2024', false, 10, in_array( $this->price_id, array( 1 ) ) ),
-				'wopb_lifetime_2'          => $this->set_new_notice( 'wopb_lifetime_2', 'promotion', 'lifetime_2', '10-3-2024', '30-3-2024', false, 10, in_array( $this->price_id, array( 1 ) ) ),
-
 				// Welcome
 				'welcome_notice'           => array(
 					'id'                        => 'welcome_notice',
@@ -634,21 +620,20 @@ class Notice {
 	public function wc_notice_css() {
 		?>
 		<style type="text/css">
-			.wopb-wc-install.wc-install {
+			.wopb-wc-install{
 				display: flex;
 				align-items: center;
 				background: #fff;
 				margin-top: 40px;
-				width: calc(100% - 65px);
+				/*width: calc(100% - 65px);*/
 				border: 1px solid #ccd0d4;
 				padding: 4px;
 				border-radius: 4px;
 				border-left: 3px solid #46b450;
 				line-height: 0;
-				padding: 20px;
 			}
-			.wopb-wc-install.wc-install img {
-				margin-right: 20px;
+			.wopb-wc-install img {
+				width: 100%
 			}
 			.wopb-install-body {
 				-ms-flex: 1;
@@ -709,7 +694,7 @@ class Notice {
 			}
 			.wopb-pro-notice {
 				position: relative;
-				border-left: 3px solid #f79220;
+				border-left: 3px solid #FF176B;
 			}
 			.wopb-pro-notice .wopb-install-body h3 {
 				font-size: 20px;
@@ -745,7 +730,7 @@ class Notice {
 				border: none;
 				box-shadow: none;
 			}
-			.wopb-pro-notice .promotional-dismiss-notice {
+			.wopb-pro-notice .wopb-promotional-dismiss-notice {
 				background-color: #000000;
 				padding-top: 0px;
 				position: absolute;
@@ -782,7 +767,7 @@ class Notice {
 			.wopb-eid-notice p.wopb-eid-offer a:hover {
 				background-color: #edaa42;
 			}
-			.wopb-install-body .promotional-dismiss-notice {
+			.wopb-install-body .wopb-promotional-dismiss-notice {
 				right: 4px;
 				top: 3px;
 				border-radius: unset !important;
