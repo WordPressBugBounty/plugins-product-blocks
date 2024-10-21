@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.6.1
 Requires PHP: 7.0
-Stable tag: 4.0.9
+Stable tag: 4.1.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -154,6 +154,22 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.1.0 – 21 October 2024 =
+* Update: Pagination gap option has been added to the Product Grid/List block
+* Update: Category before/after title option has been added to the Product Grid 2 block
+* Update: Background color option has been added to the image in the Product Grid block
+* Improvement: Single product image compatibility added for the Organic Food theme
+* Fix: Compare and Wishlist buttons aligned on the same line in Quickview popup.
+* Fix: Translation issue in Compare and Product Filtering blocks.
+* Fix: Deprecated issue in Quickview.
+* Fix: PHP warning issue related to enabling Quickview on mobile in Forum.
+* Fix: Pagination dots appearing in the wrong place in the Product Grid/List block.
+* Fix: Click actions not working in the Product Grid block after a filter is applied via the Product Filtering block on iPhone.
+* Fix: Currency Switcher input value now prevents negative values.
+* Fix: Padding for navigation items not working in the Product Tab block of the Single Product builder.
+* Fix: Undefined array key issue in Variation Swatches
+* Fix: Hide Desktop issue in Row block
+
 = 4.0.9 – 16 October 2024 =
 * Fix: Product Slider block css issue
 

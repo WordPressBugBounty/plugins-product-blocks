@@ -319,7 +319,7 @@ class Product_Slider {
                             <?php if($attr['showPlusMinus'] && $attr['plusMinusPosition'] == 'both') { ?>
                                 <span class="wopb-cart-minus wopb-add-to-cart-minus"><?php echo wopb_function()->svg_icon('minus'); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
                         <?php } ?>
-                            <input type="number" class="input-text qty text" step="1" min="1" max="" name="quantity" value="1" title="Qty" size="4" placeholder="" inputMode="numeric"/>
+                            <input type="number" class="wopb-qty" step="1" min="1" max="" name="quantity" value="1" title="Qty" size="4" placeholder="" inputMode="numeric"/>
                         <?php if($attr['showPlusMinus'] && $attr['plusMinusPosition'] == 'both') { ?>
                             <span class="wopb-cart-plus wopb-add-to-cart-plus"><?php echo wopb_function()->svg_icon('plus'); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
                         <?php

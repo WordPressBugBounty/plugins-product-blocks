@@ -42,8 +42,12 @@ class Wishlist {
         add_shortcode( 'wopb_wishlist', array( $this, 'wishlist_shortcode_callback' ) );
 
         if ( wopb_function()->get_setting( 'wishlist_single_enable' ) == 'yes' ) {
-            $filter = wopb_function()->get_setting( 'wishlist_position_single' ) == 'before_cart' ? 'wopb_top_add_to_cart' : 'wopb_bottom_add_to_cart';
-            add_filter( $filter, array( $this, 'add_wishlist_html' ), 100, 1 );
+            if( wopb_function()->get_setting('wopb_quickview') == 'true' ) {
+                add_filter('wopb_quick_view_bottom_cart', function ($content, $product_id) {
+                    return $content . $this->add_wishlist_html();
+                }, 11, 2);
+            }
+            add_action('woocommerce_before_single_product', array( $this,'before_single_product' ));
         }
 
         if ( wopb_function()->get_setting( 'wishlist_shop_enable' ) == 'yes' ) { // wishlist in default WooCommerce pages
@@ -174,6 +178,17 @@ class Wishlist {
             'security' => wp_create_nonce('wopb-nonce'),
             'emptyWishlist' => wopb_function()->get_setting( 'wishlist_empty' )
         ));
+    }
+
+    /**
+     * Wishlist Button In Single Product Page
+     *
+     * @since v.4.1.0
+     * @return null
+     */
+    public function before_single_product() {
+        $filter = wopb_function()->get_setting( 'wishlist_position_single' ) == 'before_cart' ? 'wopb_top_add_to_cart' : 'wopb_bottom_add_to_cart';
+        add_filter( $filter, array( $this, 'add_wishlist_html' ), 100, 1 );
     }
 
     /**

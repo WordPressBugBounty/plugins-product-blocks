@@ -211,7 +211,7 @@ class Product_Grid_2{
                                                         $image_data .= wopb_function()->get_deals($product, $attr["dealText"]);
                                                     }
 
-                                                    if ( $attr['catPosition'] != 'none' && $attr['catShow'] ) {
+                                                    if ( $attr['catShow'] && $attr['catPosition'] != 'none' && $attr['catPosition'] != 'beforeTitle' ) {
                                                         $image_data .= wp_kses_post($category);
                                                     }
 
@@ -250,6 +250,11 @@ class Product_Grid_2{
                                             }
 
                                             $content_data .= '<div class="wopb-product-grid3-content">';
+
+                                                // Category
+                                                if ( $attr['catShow'] && $attr['catPosition'] == 'beforeTitle' ) {
+                                                    $content_data .= wp_kses_post($category);
+                                                }
                                                 // Title
                                                 if ( $attr['titleShow'] ) {
                                                     if ( $attr['variationSwitchPosition'] == 'before_title' ) {
@@ -264,7 +269,7 @@ class Product_Grid_2{
                                                     }
                                                 }
                                                 // Category
-                                                if ( $attr['catPosition'] == 'none' && $attr['catShow'] ) {
+                                                if ( $attr['catShow'] && $attr['catPosition'] == 'none' ) {
                                                     $content_data .= wp_kses_post($category);
                                                 }
                                                 // Price

@@ -625,7 +625,7 @@ class Filter {
                 <select name="sortBy" class="select wopb-filter-sorting-input">
                     <?php foreach ($attr['sortingItems'] as $item) { ?>
                         <option value="<?php echo esc_attr($item->value)?>">
-                            <?php echo esc_html($item->label)?>
+                            <?php echo esc_html__($item->label, 'product-blocks')?>
                         </option>
                    <?php } ?>
                 </select>

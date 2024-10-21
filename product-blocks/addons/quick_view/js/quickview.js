@@ -160,9 +160,10 @@
             'form' : form_variation,
             'galleryWrapper' : galleryWrapper,
             'nav' : quickWrapper.find('.wopb-quick-slider-nav'),
-            'defaultSlide' : quickWrapper.find('.wopb-quick-slider-nav .slick-current'),
-            'defaultNavImage' : quickWrapper.find('.wopb-quick-slider-nav .slick-current img').attr('src'),
-            'defaultProductImage' : galleryWrapper.find('.slick-active img:first').attr('src'),
+            'defaultNav' : quickWrapper.find('.wopb-quick-slider-nav .slick-current'),
+            'defaultProductImage' : galleryWrapper.find('.slick-active img:first'),
+            'getImage': galleryWrapper.find('.slick-active img'),
+            'navItem': '.slick-active',
             'source': 'singleProduct',
         }
         form_variation.wc_variation_form();

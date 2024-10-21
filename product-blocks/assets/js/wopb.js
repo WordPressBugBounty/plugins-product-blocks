@@ -94,15 +94,16 @@
             'form': form,
             'galleryWrapper': wooGalleryWrapper.find('.wopb-product-gallery-wrapper'),
             'nav': wooGalleryWrapper.find('.wopb-builder-slider-nav'),
-            'defaultSlide': wooGalleryWrapper.find('.wopb-builder-slider-nav .slick-current'),
-            'defaultNavImage': wooGalleryWrapper.find('.wopb-builder-slider-nav .slick-current img').attr('src'),
-            'defaultProductImage': wooGalleryWrapper.find('.slick-active img:first').attr('src'),
+            'defaultNav': wooGalleryWrapper.find('.wopb-builder-slider-nav .slick-current'),
+            'defaultProductImage': wooGalleryWrapper.find('.slick-active img:first'),
+            'getImage': wooGalleryWrapper.find('.wopb-product-gallery-wrapper .slick-active img'),
+            'navItem': '.slick-active',
             'source': 'singleProduct',
         }
-        wooGalleryWrapper.variationChange(variationParam)
         if( form.find('.wopb-variation-selector').length ) {
             form.wopVariationSwitch(variationParam);
         }
+        wooGalleryWrapper.variationChange(variationParam)
    }
 
     $(document).on('click', '.wopb-product-zoom', function(e){
@@ -361,21 +362,26 @@
             parents.find('.wopb-next-page-numbers').show()
         }
 
-
+        if (pageNum > 3) {
+            parents.find('.wopb-first-dot').show();
+        } else {
+            parents.find('.wopb-first-dot').hide();
+        }
         if(pageNum > 2) {
             parents.find('.wopb-first-pages').show()
-            parents.find('.wopb-first-dot').show()
         }else{
             parents.find('.wopb-first-pages').hide()
-            parents.find('.wopb-first-dot').hide()
         }
 
+        if (pages > pageNum + 2) {
+            parents.find('.wopb-last-dot').show()
+        } else{
+            parents.find('.wopb-last-dot').hide()
+        }
         if(pages > pageNum + 1){
             parents.find('.wopb-last-pages').show()
-            parents.find('.wopb-last-dot').show()
         }else{
             parents.find('.wopb-last-pages').hide()
-            parents.find('.wopb-last-dot').hide()
         }
     }
 
@@ -734,7 +740,8 @@
     $(document).on('click', '.wopb-add-to-cart-plus', function(e){
         e.preventDefault();
         const parents = $(this).closest('form.cart');
-        const parentQuantity = $(this).parents('.quantity:first').find('input.qty');
+        let parentQuantity = $(this).parents('.quantity:first').find('input.qty');
+        parentQuantity = parentQuantity.length ? parentQuantity : $(this).parents('.quantity:first').find('input.wopb-qty');
         let max = parentQuantity.attr('max');
         let _val = isNaN(parseInt(parentQuantity.val())) ? 0 : parseInt(parentQuantity.val());
         if ( max && typeof max !== typeof undefined ) {
@@ -757,7 +764,8 @@
     $(document).on('click', '.wopb-add-to-cart-minus', function(e){
         e.preventDefault();
         const parents = $(this).closest('form.cart');
-        const parentQuantity = $(this).parents('.quantity:first').find('input.qty');
+        let parentQuantity = $(this).parents('.quantity:first').find('input.qty');
+        parentQuantity = parentQuantity.length ? parentQuantity : $(this).parents('.quantity:first').find('input.wopb-qty');
         let _val = parseInt(parentQuantity.val());
         if ( _val >= 2 ) {
             _val = _val - 1;
@@ -1118,8 +1126,12 @@
 
     //variation form trigger for builder
     $.fn.variationChange = ( variationParam ) => {
-        let {form, galleryWrapper, nav, defaultSlide, defaultNavImage, defaultProductImage} = variationParam
+        let {form, galleryWrapper, nav, defaultNav, defaultProductImage} = variationParam
         if( form.length ) {
+            defaultProductImage.attr({
+                "data-backup_alt": defaultProductImage.attr('alt'),
+                "data-backup_src": defaultProductImage.attr('src'),
+            })
             form.on("found_variation", function (e, variation) {
                 let thumbnail = galleryWrapper.find('.slick-active img');
                 let attributes = {
@@ -1128,17 +1140,16 @@
                 let navSlick = nav.find('.slick-active');
                 if (navSlick.length > 0) {
                     let navImage = '';
-                    navImage = navSlick.find('img[src="' + variation.image.gallery_thumbnail_src + '"]');
+                    navImage = navSlick.find('img[src="' + variation.image.full_src + '"]');
                     if (navImage.length < 1 && variation.image.full_src != '') {
                         // Change variation image for builder
-                        if (defaultSlide.length > 0) {
-                            defaultSlide.trigger('click');
-                            defaultSlide.find('img').attr('src', variation.image.gallery_thumbnail_src)
+                        if (defaultNav.length > 0) {
+                            defaultNav.trigger('click');
                             thumbnail = galleryWrapper.find('.slick-active img');
                         }
                         thumbnail.attr(attributes);
                     } else if (navImage.length < 1) {
-                        defaultSlide.trigger('click');
+                        defaultNav.trigger('click');
                     } else {
                         navImage.parents('.slick-active:first').trigger('click');
                     }
@@ -1146,26 +1157,21 @@
                     thumbnail.attr(attributes);
                 }
             })
-            form.on("reset_data", function () {
-                let selectedClass = form.find('.wopb-swatch.selected');
-                if(selectedClass.length == 1 && (selectedClass.hasClass('wopb-swatch-color') || selectedClass.hasClass('wopb-swatch-image'))) {
-                    return
-                }
-                let thumbnail = galleryWrapper.find('.slick-active img');
-                let attributes = {
-                    src: defaultProductImage,
-                };
-                if (defaultSlide.length > 0) {
-                    defaultSlide.trigger('click');
-                    if (defaultNavImage !== defaultSlide.find('img').attr('src')) {
-                        thumbnail = galleryWrapper.find('.slick-active img');
-                        defaultSlide.find('img').attr('src', defaultNavImage)
-                        thumbnail.attr('src', defaultProductImage);
+            if( ! form.find('.wopb-variation-selector').length ) {
+                form.on("reset_data", function () {
+                    let attributes = {
+                        src: defaultProductImage.attr('data-backup_src'),
+                    };
+                    if (defaultNav.length > 0) {
+                        defaultNav.trigger('click');
+                        if ( defaultProductImage.attr('data-backup_src') !== defaultProductImage.attr('src') ) {
+                            defaultProductImage.attr(attributes);
+                        }
+                    } else {
+                        defaultProductImage.attr(attributes);
                     }
-                } else {
-                    thumbnail.attr(attributes);
-                }
-            })
+                })
+            }
         }
     }
 

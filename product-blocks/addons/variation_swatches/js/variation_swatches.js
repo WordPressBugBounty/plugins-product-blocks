@@ -26,15 +26,13 @@
                     let product = defaultLoop;
                     let imgItem = 'img:first';
                     let switcherPrice = defaultLoop.find('.wopb-variation-switcher-price');
+                    let srcSelector = 'thumb_src';
 
                     if( wopbLoop.length ) {
                         product = wopbLoop;
                         imgItem = '.wopb-block-image a img:first';
                         switcherPrice = wopbLoop.find('.wopb-product-price');
-                        variationParam = {
-                            ...variationParam,
-                            'srcSelector': 'full_src'
-                        }
+                        srcSelector = 'full_src'
                     }
                     variationParam = {
                         ...variationParam,
@@ -42,16 +40,26 @@
                         'imgItem': imgItem,
                         'switcherPrice': switcherPrice,
                         'defaultPriceHtml': switcherPrice.html(),
+                        'srcSelector': 'full_src',
                         'source': 'loopProduct',
                     }
                     that.wopVariationSwitch(variationParam);
                 } else if (singleProduct.length) {
-                    variationParam = {
-                        ...variationParam,
-                        'product': singleProduct,
-                        'source': 'singleProduct',
-                    }
-                    that.wopVariationSwitch(variationParam);
+                    setTimeout(function () {
+                        let defaultNav = singleProduct.find('.woocommerce-product-gallery .flex-control-nav .flex-active');
+                        variationParam = {
+                            ...variationParam,
+                            'product': singleProduct,
+                            'nav': singleProduct.find('.woocommerce-product-gallery .flex-control-nav'),
+                            'defaultNav': defaultNav,
+                            'activeSlide': '.flex-active-slide',
+                            'defaultProductImage': singleProduct.find('.woocommerce-product-gallery .flex-active-slide a img'),
+                            'getImage': singleProduct.find('.woocommerce-product-gallery .woocommerce-product-gallery__image a img'),
+                            'navItem': 'li',
+                            'source': 'singleProduct',
+                        }
+                        that.wopVariationSwitch(variationParam);
+                    }, 100);
                 }
 
                 $(this).wc_variation_form();
@@ -70,9 +78,7 @@
         let defaultCartText = cartBtn.filter(function() {
                 return ! $(this).children().length;
             }).first().text();
-        if( source !== 'singleProduct' ) {
-            product.backupProductImage(variationParam);
-        }
+        product.backupProductImage(variationParam);
         $(form).on("click", ".wopb-variation-swatches .wopb-swatch", function (e) {
             e.preventDefault(product);
             product.parents('.wopb-block-item:first').find('.wopb-product-deals').remove();
@@ -117,12 +123,14 @@
                                 if (selectedClass.attr('data-value') === variations[i].attributes[currentAttr] && variationId == variations[i].variation_id) {
                                     found = true;
                                     let finalVariation = variations[i];
-                                    form.trigger('found_variation', [ finalVariation ]);
+                                    product.changeVariationImage(finalVariation, variationParam);
                                 }
                             }
                         }
+                    }else {
+                        product.resetDefaultImage(variationParam)
                     }
-                }else if(source !== 'singleProduct' && selectedClass.length < 1) {
+                }else if(selectedClass.length < 1) {
                     form.find('.reset_variations').trigger('click')
                 }
                 if(
@@ -158,41 +166,41 @@
         if( source !== 'singleProduct' ) {
             $(form).on("found_variation", function (e, variation) {
                 if (variation) {
-                        let that = $(this);
-                        let swatchClass = product.find('.wopb-variation-swatches');
-                        let selectedClass = product.find('.wopb-swatch.selected');
-                        let selectedVariation = {},
-                            variations = that.find('select[name^=attribute]');
-                        variations = !variations.length ? that.find('[name^=attribute]:checked') : variations;
-                        variations = !variations.length ? that.find('input[name^=attribute]') : variations;
+                    let that = $(this);
+                    let swatchClass = product.find('.wopb-variation-swatches');
+                    let selectedClass = product.find('.wopb-swatch.selected');
+                    let selectedVariation = {},
+                        variations = that.find('select[name^=attribute]');
+                    variations = !variations.length ? that.find('[name^=attribute]:checked') : variations;
+                    variations = !variations.length ? that.find('input[name^=attribute]') : variations;
 
-                        variations.each(function () {
-                            let thisItem = $(this),
-                                attributeName = thisItem.attr('name'),
-                                attributeValue = thisItem.val();
-                            thisItem.removeClass('error');
-                            if (attributeValue.length === 0) {
-                                thisItem.addClass('required error');
-                            } else {
-                                selectedVariation[attributeName] = attributeValue;
-                            }
-                        });
-                        if( selectedClass.length == swatchClass.length ) {
-                            if ( variation.is_in_stock ) {
-                                product.cartBtnText(cartBtn, variation, selectedVariation)
-                            }
-                            if (variationParam.defaultPriceHtml) {
-                                product.changeVariationPrice(variation, variationParam)
-                            }
-                            if (variation.wopb_deal) {
-                                product.showDeal(variation)
-                            }
+                    variations.each(function () {
+                        let thisItem = $(this),
+                            attributeName = thisItem.attr('name'),
+                            attributeValue = thisItem.val();
+                        thisItem.removeClass('error');
+                        if (attributeValue.length === 0) {
+                            thisItem.addClass('required error');
+                        } else {
+                            selectedVariation[attributeName] = attributeValue;
                         }
-                        if( ! variation.is_in_stock ) {
-                            product.resetCartText(cartBtn, defaultCartText);
+                    });
+                    if( selectedClass.length == swatchClass.length ) {
+                        if ( variation.is_in_stock ) {
+                            product.cartBtnText(cartBtn, variation, selectedVariation)
                         }
-                        product.changeVariationImage(variation, variationParam);
-                        return true;
+                        if (variationParam.defaultPriceHtml) {
+                            product.changeVariationPrice(variation, variationParam)
+                        }
+                        if (variation.wopb_deal) {
+                            product.showDeal(variation)
+                        }
+                    }
+                    if( ! variation.is_in_stock ) {
+                        product.resetCartText(cartBtn, defaultCartText);
+                    }
+                    product.changeVariationImage(variation, variationParam);
+                    return true;
                 }
             })
         }
@@ -207,8 +215,8 @@
                 if( variationParam.defaultPriceHtml ) {
                     product.resetVariationPrice(variationParam);
                 }
-                product.resetDefaultImage(variationParam);
             }
+            product.resetDefaultImage(variationParam);
         });
     }
 
@@ -227,23 +235,69 @@
 
     // Change the product image when variation found
     $.fn.changeVariationImage = function( variation, variationParam ){
+        let {nav, defaultNav, navItem, defaultProductImage, activeSlide} = variationParam
         let thumbnail = $(this).getProductImage(variationParam);
+        if( ! defaultProductImage ) {
+            defaultProductImage = thumbnail;
+        }
         let attributes = {
             alt: variation.image.alt,
-            src: variationParam.srcSelector ? variation.image[variationParam.srcSelector] : variation.image.thumb_src,
+            src: variationParam.srcSelector ? variation.image[variationParam.srcSelector] : variation.image.full_src,
+            srcset: defaultProductImage.attr('srcset') ? variation.image.srcset : '',
+            sizes: variation.image.sizes,
         };
-        thumbnail.attr(attributes);
+        if( nav && nav.length && nav.find(navItem).length ) {
+            let currentImage = nav.find('img[src="' + variation.image.gallery_thumbnail_src + '"]');
+            currentImage = ! currentImage.length ? nav.find('img[src="' + variation.image.full_src + '"]') : currentImage;
+            if( !currentImage.length ) {
+                defaultNav.trigger('click');
+                if( variation.image.full_src !== defaultProductImage.attr('src') ) {
+                    defaultProductImage.attr(attributes);
+                }
+            }else {
+                currentImage.parents(`${navItem}:first`).trigger('click');
+                currentImage.trigger('click');
+            }
+            let zoomImage =  $(this).find(`${activeSlide} .zoomImg`);
+            if(zoomImage.length > 0) {
+                let zoomImageAttr = {
+                    alt: variation.image.alt,
+                    src: variation.image.full_src,
+                    width: variation.image.full_src_w,
+                    height: variation.image.full_src_h
+                };
+                zoomImage.attr(zoomImageAttr);
+                setTimeout(function () {
+                    zoomImage.css('width', variation.image.full_src_w + 'px')
+                    zoomImage.css('height', variation.image.full_src_h + 'px')
+                }, 200)
+
+            }
+        }else {
+            thumbnail.attr(attributes);
+        }
     };
 
     $.fn.resetDefaultImage = function( variationParam ){
-        let thumbnail = $(this).getProductImage(variationParam);
-        let backupAttr = {
-            alt: thumbnail.attr('data-backup_alt'),
-            src: thumbnail.attr('data-backup_src'),
-            width: thumbnail.attr('data-backup_width'),
-            height: thumbnail.attr('data-backup_height')
+        let {defaultNav, defaultProductImage} = variationParam
+        if( ! defaultProductImage ) {
+            defaultProductImage = $(this).getProductImage(variationParam);
         }
-        thumbnail.attr(backupAttr);
+        let backupAttr = {
+            alt: defaultProductImage.attr('data-backup_alt'),
+            src: defaultProductImage.attr('data-backup_src'),
+            srcset: defaultProductImage.attr('data-backup_srcset'),
+            width: defaultProductImage.attr('data-backup_width'),
+            height: defaultProductImage.attr('data-backup_height')
+        }
+        if( defaultNav && defaultNav.length ) {
+            defaultNav.trigger('click')
+            if ( defaultProductImage.attr('data-backup_src') !== defaultProductImage.attr('src') ) {
+                defaultProductImage.attr(backupAttr);
+            }
+        }else {
+            defaultProductImage.attr(backupAttr);
+        }
     };
 
     $.fn.backupProductImage = function(variationParam){
@@ -253,6 +307,7 @@
         let attr = {
             "data-backup_alt": thumbnail.attr('alt'),
             "data-backup_src": thumbnail.attr('src'),
+            "data-backup_srcset": thumbnail.attr('srcset'),
             "data-backup_width": thumbnail.attr('width'),
             "data-backup_height": thumbnail.attr('height'),
         }

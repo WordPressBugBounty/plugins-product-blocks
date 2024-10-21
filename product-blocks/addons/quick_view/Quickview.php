@@ -21,6 +21,9 @@ class Quickview
      *
      * @since v.1.1.0
      */
+
+     private $is_mobile;
+
     public function __construct() {
         $position_filters = $this->button_position_filters();
         $quick_view_position = wopb_function()->get_setting( 'quick_view_position' );
@@ -233,11 +236,6 @@ class Quickview
             'post_id'   => isset( $_POST['postid'] ) ? sanitize_text_field( $_POST['postid'] ) : '',
             'post_list' => isset( $_POST['postList'] ) ? sanitize_text_field( $_POST['postList'] ) : ''
         );
-        $product = wc_get_product( $params['post_id'] );
-
-        if ( wopb_function()->get_setting( 'quick_view_buy_now' ) && ! $product->is_type( 'external' ) ) {
-            add_action( 'woocommerce_after_add_to_cart_button', array( $this, 'quick_buy_now_button' ), 100 );
-        }
         $image_effect = wopb_function()->get_setting('quick_view_image_effect');
         $image_effect_type = wopb_function()->get_setting('quick_view_image_effect_type');
         ?>
@@ -395,11 +393,17 @@ class Quickview
                                 }
                                 break;
                             case 'add_to_cart':
-                                ob_start();
-                                    add_action('woocommerce_before_quantity_input_field', [$this, 'quick_view_before_add_to_cart_quantity']);
-                                    add_action('woocommerce_after_quantity_input_field', [$this, 'quick_view_after_add_to_cart_quantity']);
-                                    woocommerce_template_single_add_to_cart();
-                                echo ob_get_clean(); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                                echo '<div>';
+                                    ob_start();
+                                        add_action('woocommerce_before_quantity_input_field', [$this, 'quick_view_before_add_to_cart_quantity']);
+                                        add_action('woocommerce_after_quantity_input_field', [$this, 'quick_view_after_add_to_cart_quantity']);
+                                        woocommerce_template_single_add_to_cart();
+                                    echo ob_get_clean(); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                                    echo '<div class="wopb-cart-bottom">' . apply_filters('wopb_quick_view_bottom_cart', '', $product->get_id()) . '</div>';
+                                    if ( wopb_function()->get_setting( 'quick_view_buy_now' ) && ! $product->is_type( 'external' ) ) {
+                                        echo $this->quick_buy_now_button();
+                                    }
+                                echo '</div>';
                                 break;
                             case 'meta':
                                 woocommerce_template_single_meta();

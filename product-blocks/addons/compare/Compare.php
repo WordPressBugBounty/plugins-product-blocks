@@ -27,7 +27,6 @@ class Compare {
         $this->demo_column = 3;
         $this->my_account_compare_end_point = 'my-compare';
         $this->compare_id = $this->get_compare_id();
-        $compare_position = wopb_function()->get_setting('compare_position');
         $compare_position_shop = wopb_function()->get_setting('compare_position_shop_page');
 
         add_action('wp_enqueue_scripts', array($this, 'add_compare_scripts'));
@@ -43,14 +42,18 @@ class Compare {
                 add_filter('wp_nav_menu_items', array($this, 'nav_menu_item'), 10, 2);
             }
         }
-        add_shortcode('wopb_compare_button', array($this, 'compare_btn_html'));
+        add_shortcode('wopb_compare_button', function () {
+            return $this->get_compare( get_the_ID(), 'default' );
+        });
         add_shortcode('wopb_compare', array($this, 'compare_wrapper'));
 
         if ( wopb_function()->get_setting('compare_single_enable') == 'yes' ) {
-            $position_filters = $this->button_position_filters();
-            if( isset( $position_filters[$compare_position] ) ) {
-                add_filter($position_filters[$compare_position], array($this, 'compare_button_in_single_product'), 100, 1);
+            if( wopb_function()->get_setting('wopb_quickview') == 'true' ) {
+                add_filter('wopb_quick_view_bottom_cart', function ($content, $product_id) {
+                    return $content . $this->get_compare($product_id, 'default');
+                }, 11, 2);
             }
+            add_action('woocommerce_before_single_product', array( $this,'before_single_product' ));
         }
         if ( wopb_function()->get_setting('compare_shop_enable') == 'yes') {
             $position_filters = $this->button_position_shop_filters();
@@ -761,17 +764,6 @@ class Compare {
         return $output;
     }
 
-    /**
-     * Compare HTML for Cart Button
-     *
-     * @param array $params
-     * @return null
-     * @since v.1.1.0
-     */
-    public function compare_btn_html() {
-        return $this->get_compare( get_the_ID(), 'default' );
-    }
-
 
     /**
      * Compare Table Content
@@ -801,7 +793,7 @@ class Compare {
                     <table class="wopb-compare-table">
                         <thead>
                             <tr class="<?php echo $row_class ?>">
-                                <th class="<?php echo $column_class ?>"><?php echo __('Action' ,' product-blocks'); ?></th>
+                                <th class="<?php echo $column_class ?>"><?php echo __('Action' ,'product-blocks'); ?></th>
                                 <?php
                                     foreach ($compare_data as $key => $val) {
                                         $product = wc_get_product($val);
@@ -809,7 +801,7 @@ class Compare {
                                         <td class="wopb-compare-item wopb-compare-item-<?php echo esc_attr($product->get_id()) ?>">
                                             <a class="wopb-compare-remove" data-action="remove" data-added-action="popup" data-postid="<?php echo esc_attr($product->get_id()) ?>">
                                                 <?php echo wopb_function()->svg_icon('delete') ?>
-                                                <span><?php echo __('Delete' ,' product-blocks'); ?></span>
+                                                <span><?php echo __('Delete' ,'product-blocks'); ?></span>
                                             </a>
                                         </td>
                                 <?php
@@ -1082,11 +1074,17 @@ class Compare {
     /**
      * Compare Button In Single Product Page
      *
-     * @since v.3.1.5
+     * @since v.4.1.0
      * @return null
      */
-    public function compare_button_in_single_product( $content ) {
-        return $content . $this->compare_btn_html();
+    public function before_single_product() {
+        $compare_position = wopb_function()->get_setting('compare_position');
+        $position_filters = $this->button_position_filters();
+        if( isset( $position_filters[$compare_position] ) ) {
+            add_filter($position_filters[$compare_position], function ( $content ) {
+                return $content . $this->get_compare( get_the_ID(), 'default' );
+            }, 100, 1);
+        }
     }
 
     /**
@@ -1098,7 +1096,7 @@ class Compare {
      */
     public function compare_button_in_cart( $content ) {
         if ( ! wopb_function()->is_builder() && (is_shop() || is_archive() ) ) {
-            return $content . $this->compare_btn_html();
+            return $content . $this->get_compare( get_the_ID(), 'default' );
         }
     }
 
