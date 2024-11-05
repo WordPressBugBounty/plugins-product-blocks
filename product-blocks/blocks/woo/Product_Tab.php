@@ -94,9 +94,15 @@ class Product_Tab{
                             foreach ( $product_tabs as $key => $product_tab ) {
                                 $content .= '<div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--' . esc_attr( $key ) . ' panel entry-content wc-tab" id="tab-' . esc_attr( $key ) . '" role="tabpanel" aria-labelledby="tab-title-' . esc_attr( $key ). '">';
                                     if ( isset( $product_tab['callback'] ) ) {
-                                        ob_start();
-                                            call_user_func( $product_tab['callback'], $key, $product_tab );
-                                        $content .= ob_get_clean();
+                                        if( $key == 'description' ) {
+                                            if( $description = $product->get_description() ) {
+                                                $content .= wpautop( $description );
+                                            }
+                                        }else {
+                                            ob_start();
+                                                call_user_func($product_tab['callback'], $key, $product_tab);
+                                            $content .= ob_get_clean();
+                                        }
                                     }
                                 $content .= '</div>';
                             }

@@ -7,15 +7,11 @@
 .wopb-loop-variations-form table {
     width: fit-content;
 }
-.wopb-block-wrapper .wopb-loop-variations-form {
-    display: flex;
-}
 .wopb-block-wrapper .wopb-loop-variations-form table {
     width: 100%;
 }
 .wopb-loop-variations-form .reset_variations {
     display: block;
-    margin-top: unset;
 }
 .variations_form:not(.wopb-loop-variations-form) table.variations:has(.wopb-variation-swatches) th.label {
     margin-right: 5px;
@@ -229,13 +225,17 @@ ul.products li .wopb-loop-variations-form .wopb-variation-swatches .wopb-swatch 
 .wopb-wishlist-modal-content .wopb-loop-variations-form , .wopb-wishlist-modal-content .wopb-loop-variations-form {
     display: none;
 }
-.variations_form table.variations {
+.wopb-variation-init table.variations {
     margin: 0 !important;
 }
-.variations_form table.variations, .variations_form td.value {
+.wopb-variation-init table.variations, .wopb-variation-init td.value {
     border: none;
+    margin: 0 !important;
 }
 
 .wopb-loop-variations-form select {
     padding-right: 25px !important;
+}
+.wopb-variation-init .reset_variations {
+    margin: 5px 0 0 0 !important;
 }

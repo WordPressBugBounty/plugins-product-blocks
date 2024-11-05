@@ -633,7 +633,7 @@ class Notice {
 				line-height: 0;
 			}
 			.wopb-wc-install img {
-				width: 100%
+                width: 100px;
 			}
 			.wopb-install-body {
 				-ms-flex: 1;

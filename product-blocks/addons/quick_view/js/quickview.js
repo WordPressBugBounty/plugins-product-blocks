@@ -276,7 +276,7 @@
 
     $(document).on('click', '.wopb-quickview-buy-btn:not(.disabled)', function(e){
         let that = $(this);
-        let form = that.parents('form.cart:first');
+        let form = that.parents('.wopb-quick-view-content:first').find('form.cart:first');
         form.attr('data-redirect', that.data('redirect'));
         form.attr('data-cart_type', that.data('cart_type'));
         form.trigger('submit');

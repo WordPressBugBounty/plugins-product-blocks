@@ -25,16 +25,12 @@ class Product_Description{
         $block_name = 'product-description';
         $wraper_before = $wraper_after = $content = '';
         
-        if ( ! empty( $product ) ) {
+        if ( ! empty( $product ) && $description = $product->get_description() ) {
             $attr['className'] = !empty($attr['className']) ? preg_replace('/[^A-Za-z0-9_ -]/', '', $attr['className']) : '';
 
             $wraper_before .= '<div '.(isset($attr['advanceId']) ? 'id="' . sanitize_html_class($attr['advanceId']) . '" ':'') . ' class="wp-block-product-blocks-' . esc_attr($block_name) . ' wopb-block-' . sanitize_html_class($attr["blockId"]) . ' ' . $attr['className'] . '">';
             $wraper_before .= '<div class="wopb-product-wrapper">';
-            
-            ob_start();
-            woocommerce_product_description_tab();
-            $content = ob_get_clean();
-
+                $content .= wpautop( $description );
             $wraper_after .= '</div>';
             $wraper_after .= '</div>';
         }

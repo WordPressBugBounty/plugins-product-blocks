@@ -63,8 +63,6 @@ class Initialization{
 	 * @return NULL
 	 */
 	public function include_addons() {
-        global $wopb_default_settings; // Todo: This line should remove after 5/6 versions of v.4.0.0
-        $wopb_default_settings = array(); // Todo: This line should remove after 5/6 versions of v.4.0.0
         $is_admin = is_admin();
         $addons_dir = array_filter( glob( WOPB_PATH . 'addons/*' ), 'is_dir' );
         $wc_ready = wopb_function()->get_setting( 'is_wc_ready' );

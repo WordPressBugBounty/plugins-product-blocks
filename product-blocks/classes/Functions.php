@@ -1323,6 +1323,7 @@ class Functions{
             'posts_per_page' => -1,
             'post_type' => 'product',
             'post_status' => 'publish',
+            'fields' => 'ids',
         );
         if(is_search()) {
             $query_args['s'] = get_search_query();
@@ -1338,51 +1339,31 @@ class Functions{
             'terms' => 'exclude-from-catalog',
             'operator' => 'NOT IN',
         );
-	    if(isset($params['taxonomy']) && isset($params['taxonomy_term_id'])) {
-            $query_args['tax_query'][] = [
-                'taxonomy' => $params['taxonomy'],
-                'field' => 'id',
-                'terms' => $params['taxonomy_term_id'],
-                'operator' => 'IN'
-            ];
-        }
-        if( isset( $params['target_block_attr'] ) ) {
-            $target_block_attr = $params['target_block_attr'];
-            if (!empty($target_block_attr['queryCat'])) {
-                $query_args['tax_query'][] = array(
-                    'taxonomy' => 'product_cat',
+	    if( ! empty( $params['query_tax'] ) ) {
+            if( ! empty( $params['query_term'] ) ) {
+                $query_args['tax_query'][] = [
+                    'taxonomy' => $params['query_tax'],
                     'field' => 'slug',
-                    'terms' => json_decode(stripslashes($target_block_attr['queryCat'])),
-                    'operator' => 'IN',
-                );
+                    'terms' => $params['query_term'],
+                    'operator' => 'IN'
+                ];
             }
-//            if ($attr['queryTax'] == 'multiTaxonomy') {
-//                $temp = explode('###', $val);
-//                if (isset($temp[1])) {
-//                    $val = $temp[1];
-//                    $tax_name = $temp[0];
-//                }
-//            }
-            if( !empty($target_block_attr['queryTaxValue']) ) {
-                $tax_value = json_decode($target_block_attr['queryTaxValue']);
-                if (!empty($tax_value) && is_array($tax_value)) {
-                    $query_tax = !empty($target_block_attr['queryTax']) ? $target_block_attr['queryTax'] : 'product_cat';
-                    $tax_query = array('relation'=> 'or');
-                    foreach ( $tax_value as $tax ) {
-                        if ( isset($tax->value )) {
-                            $tax_query[] = array(
-                                'taxonomy' => $query_tax,
-                                'field' => 'slug',
-                                'terms' => $tax->value,
-                            );
-                        }
+            if( ! empty( $params['queryTaxValue'] ) && is_array( $params['queryTaxValue'] ) ) {
+                $tax_query = array('relation'=> 'or');
+                foreach ( $params['queryTaxValue'] as $tax ) {
+                    if ( isset($tax->value )) {
+                        $tax_query[] = array(
+                            'taxonomy' => $params['query_tax'],
+                            'field' => 'slug',
+                            'terms' => $tax->value,
+                        );
                     }
-                    $query_args['tax_query'][] = $tax_query;
                 }
+                $query_args['tax_query'][] = $tax_query;
             }
         }
-	    $products = new \WP_Query($query_args);
-	    return count($products->posts);
+	    $query = new \WP_Query($query_args);
+	    return $query->found_posts;
 	}
 
     /**
@@ -1470,11 +1451,13 @@ class Functions{
     }
 
     public function get_attribute_by_taxonomy($taxonomy) {
-        foreach ( wc_get_attribute_taxonomies() as $attribute ) {
-            if(wc_attribute_taxonomy_name($attribute->attribute_name) == $taxonomy) {
-                return $attribute;
+        if( strpos( $taxonomy, 'pa_') === 0 ) {
+            foreach (wc_get_attribute_taxonomies() as $attribute) {
+                if ('pa_' . $attribute->attribute_name === $taxonomy) {
+                    return $attribute;
+                }
             }
-		}
+        }
     }
 
     /**
@@ -2907,7 +2890,8 @@ class Functions{
 	 */
     public function get_add_to_cart( $product , $cart_text = '', $cart_active = '', $tooltip_position = 'left', $is_icon = false ) {
         $data = '';
-        if ( $this->isPro() && $product->is_purchasable() ) {
+        $is_purchasable = $product->is_purchasable();
+        if ( $this->isPro() && $is_purchasable ) {
             $methods = get_class_methods( wopb_pro_function() );
             if ( in_array( 'is_simple_preorder', $methods ) ) {
                 if ( wopb_pro_function()->is_simple_preorder() ) {
@@ -2946,7 +2930,7 @@ class Functions{
                 array_filter(
                     array(
                         'add_to_cart_button',
-                        ( $product->is_type('simple') ? 'ajax_add_to_cart' : '' ),
+                        ( $product->is_type('simple') && $is_purchasable ? 'ajax_add_to_cart' : '' ),
                         'wopb-cart-normal'
                     )
                 )
@@ -2955,7 +2939,7 @@ class Functions{
     
         $args = apply_filters( 'woocommerce_loop_add_to_cart_args', wp_parse_args( array(), $args ), $product );
     
-        if ( $product->get_stock_status() == 'outofstock' ) {
+        if ( $product->get_stock_status() == 'outofstock' || ! $is_purchasable ) {
             $cart_text = '';
         }
 

@@ -667,14 +667,18 @@ class VariationSwatches
     /**
      * Show Variation Selection Form in Loop Product
      *
-     * @return HTML
+     * @param $html
+     * @param $product
+     * @return string
      * @since v.2.2.7
      */
     public function loop_variation_form( $html, $product ) {
         if( $product->is_type('variable') ) {
+            $default_woo = false;
             $variation_class = 'variations_form wopb-loop-variations-form';
             if( ( is_shop() || is_archive() ) && ! wopb_function()->is_builder() ) {
                 $variation_class .= ' wopb-woo-default';
+                $default_woo = true;
             }
             $available_variations = $product->get_available_variations();
             $attributes = $product->get_variation_attributes();
@@ -703,6 +707,9 @@ class VariationSwatches
                 $html .= '</table>';
             $html .= '</div>';
 
+            if( ! $default_woo ) {
+                $html = '<div>' . $html . '</div>';
+            }
             return $html;
         }
     }

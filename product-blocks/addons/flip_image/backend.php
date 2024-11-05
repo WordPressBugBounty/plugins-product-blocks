@@ -65,6 +65,7 @@ function wopb_get_flip_image_settings($config){
                             'label' => __('Product Flip Animation Type', 'product-blocks'),
                             'display' => 'inline-box',
                             'options' => array(
+                                'none' => __( 'None','product-blocks' ),
                                 'fade_in' => __( 'Fade In','product-blocks' ),
                                 'zoom_in' => __( 'Zoom In','product-blocks' ),
                                 'fade_in_zoom_in' => __( 'Fade In & Zoom In','product-blocks' ),

@@ -88,11 +88,14 @@ class Blocks {
 	 */
     public function blocks() {
         $request = isset( $_POST['action'] ) ? sanitize_text_field( $_POST['action'] ) : '';
-        if ( 
-            is_admin() && 
-            $request != 'et_fb_ajax_render_shortcode' && // Divi Module Check
-            wopb_function()->get_screen( 'action' ) != 'elementor' && // Elementor Widget Check
-            $request != 'elementor_ajax' // Elementor Widget Check
+        $request_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        if (
+            (
+                is_admin() &&
+                $request != 'et_fb_ajax_render_shortcode' && // Divi Module Check
+                wopb_function()->get_screen( 'action' ) != 'elementor' && // Elementor Widget Check
+                $request != 'elementor_ajax' // Elementor Widget Check
+            ) || strpos($request_url, '/wopb_builder/') !== false
         ) {
             return;
         }

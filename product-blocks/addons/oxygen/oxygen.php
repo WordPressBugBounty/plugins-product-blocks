@@ -31,7 +31,6 @@ class ProductXElement extends OxyEl {
     }
 
     function render( $options, $defaults, $content ) {
-		$body_class = get_body_class();
 		$templates = $options['templates'];
 		
 		if ( $templates ) {

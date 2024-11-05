@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.6.1
 Requires PHP: 7.0
-Stable tag: 4.1.0
+Stable tag: 4.1.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -154,6 +154,21 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.1.1 – 05 November 2024 =
+* Update: Plus/Minus control added to the Cart Table block in the Cart Builder
+* Update: Product Grid/List block overlay meta(Wishlist, Compare, Quickview) show only on hover option added
+* Update: Flip Image no animation option
+* Improvement: Product Filtering block query optimize
+* Fix: Single Product template conflict with Oxygen builder
+* Fix: Product Slider block broken issue with Avada theme
+* Fix: Image settings popup not displaying in the Row/Column block
+* Fix: "Add to Cart" action is not prevented when the "Login to See Price" option is enabled in WholesaleX
+* Fix: Buy Now not working in Quickview
+* Fix: Flip Image not working for first product
+* Fix: Add To Cart button conflict with Bricks theme
+* Fix: Product image preview not working for default image after changing product in Product Image block of the Single Product Builder
+* Fix: Banner maker block Shape 2 badge broken issue
+
 = 4.1.0 – 21 October 2024 =
 * Update: Pagination gap option has been added to the Product Grid/List block
 * Update: Category before/after title option has been added to the Product Grid 2 block

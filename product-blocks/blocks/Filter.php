@@ -7,11 +7,11 @@ class Filter {
 
     public function __construct() {
         add_action( 'init', array( $this, 'register' ) );
-        
-        add_action( 'wc_ajax_wopb_show_more_filter_item', array( $this, 'wopb_show_more_filter_item_callback' ) );
-		add_action( 'wp_ajax_nopriv_wopb_show_more_filter_item', array( $this, 'wopb_show_more_filter_item_callback' ) );
+
+        add_action( 'wc_ajax_wopb_show_more_filter_item', array( $this, 'show_more_callback' ) );
+		add_action( 'wp_ajax_nopriv_wopb_show_more_filter_item', array( $this, 'show_more_callback' ) );
     }
-    
+
     public function get_attributes() {
         return array (
             'repeatableFilter' => array (
@@ -59,7 +59,7 @@ class Filter {
      * This
      * @return string
      */
-    public function content($attr, $noAjax = false) {
+    public function content($attr) {
         $attr = wp_parse_args( $attr, $this->get_attributes() );
 
         $is_active = wopb_function()->get_setting( 'is_lc_active' );
@@ -68,19 +68,12 @@ class Filter {
             $is_active = ( $start_date && ( $start_date == 'lifetime' || strtotime( $start_date ) ) ) ? true : false;
         }
 
-        $page_post_id = wopb_function()->get_ID();
+        $page_post_id =  ! empty($attr['currentPostId']) ? $attr['currentPostId'] : wopb_function()->get_ID();
         if ( $is_active && $post = get_post($page_post_id) ) {
             $is_mobile = wp_is_mobile();
             $html = $wraper_before = '';
             $block_name = 'filter';
-            $blocks = parse_blocks($post->post_content);
-            $target_block_attr = [];
-            $target_block_attr = $this->getTargetBlockAttributes($attr, $blocks, $target_block_attr);
-            if( empty( $target_block_attr['queryTax'] ) ) {
-                $target_block_attr['queryTax'] = 'product_cat';
-            }
             $attr['headingShow'] = true;
-            $active_filters = $attr['repeatableFilter'];
             $wrapper_class = '';
             $wrapper_class .= 'wopb-filter-block-front-end ';
             if( $attr['togglePlusMinus'] ) {
@@ -108,7 +101,7 @@ class Filter {
                     $this->removeFilterItem();
                     $html .= ob_get_clean();
                 }
-                $filter_content = $this->filter_content($active_filters, $target_block_attr, $attr);
+                $filter_content = $this->filter_content( $attr, $post );
                 $html .= ! $is_mobile ? $filter_content : '';
                 $wraper_after = '</div>';
             $wraper_after .= '</div>';
@@ -155,133 +148,253 @@ class Filter {
      * @since v.4.0.6
      * @return string
      */
-    public function filter_content($active_filters, $target_block_attr, $attr) {
-        $tax_count = 0;
-        $html = '<form autocomplete="off" action="javascript:">';
-            foreach ( $active_filters as $active_filter ) {
-                $params = [
-                    'headerLabel' => !empty($active_filter['label']) ? $active_filter['label'] : '',
-                    'target_block_attr' => $target_block_attr
-                ];
+    public function filter_content($attr, $post) {
+        $counter = 0;
+        $blocks = parse_blocks($post->post_content);
+        $target_block_attr = [];
+        $target_block_attr = $this->getTargetBlockAttributes($attr, $blocks, $target_block_attr);
+        $queried_object = is_product_taxonomy() ? get_queried_object() : '';
+        $query_term = array_merge(
+            array(
+                'query_tax' => $queried_object && $queried_object->taxonomy ? $queried_object->taxonomy : '',
+                'query_term' => $queried_object && $queried_object->term_id ? $queried_object->term_id : '',
+            ),
+            $target_block_attr
+        );
 
+        $html = '<form autocomplete="off" action="javascript:">';
+            foreach ( $attr['repeatableFilter'] as $active_filter ) {
+                $section_class = 'wopb-filter-' . $active_filter['type'];
+                $body_class = '';
+                $content = '';
+
+                ob_start();
                 switch ( $active_filter['type'] ) {
                     case 'search':
-                        ob_start();
-                        $this->search_filter( $attr, $params );
-                        $html .= ob_get_clean();
+                        $this->search_filter();
                         break;
                     case 'price':
-                        ob_start();
-                        $this->price_filter( $attr, $params );
-                        $html .= ob_get_clean();
+                        $body_class = ' wopb-price-range-slider';
+                        $this->price_filter();
                         break;
                     case 'status':
-                        ob_start();
-                        $this->status_filter( $attr, $params );
-                        $html .= ob_get_clean();
+                        $this->status_filter( $attr, $query_term );
                         break;
                     case 'rating':
-                        ob_start();
-                        $this->rating_filter( $attr, $params );
-                        $html .= ob_get_clean();
+                        $this->rating_filter();
                         break;
                     case 'sort_by':
-                        ob_start();
-                        $this->sorting_filter( $attr, $params );
-                        $html .= ob_get_clean();
+                        $this->sorting_filter( $attr );
                         break;
 
                     default:
-                        global $wp_query;
-                        $query_vars = $wp_query->query_vars;
-                        $attr['viewTaxonomyLimit'] = !empty($attr['viewTaxonomyLimit']) ? intval($attr['viewTaxonomyLimit']) : 10;
+                        $attr['viewTaxonomyLimit'] = ! empty( $attr['viewTaxonomyLimit'] ) ? intval( $attr['viewTaxonomyLimit'] ) : 10;
                         $object_taxonomies =  array_diff(get_object_taxonomies('product'), ['product_type', 'product_visibility', 'product_shipping_class']);
-                        $queried_object = get_queried_object();
 
                         foreach ($object_taxonomies as $key) {
-                            $taxonomy = get_taxonomy($key);
-                            $exclude_terms = [];
-
-                            if ( $taxonomy->name === $active_filter['type'] ) {
-                                $term_query = array (
+                            if ( $key === $active_filter['type'] ) {
+                                $term_query = array_merge(array(
                                     'taxonomy' => $key,
-                                    'hide_empty' => true,
-                                );
-                                if ( is_product_category() && $key == 'product_cat' ) {
+                                    'limit' => $attr['viewTaxonomyLimit'],
+                                ), $query_term);
+                                if ( $queried_object && $key == $queried_object->taxonomy && $queried_object->term_id ) {
                                     $term_query['parent'] = $queried_object->term_id;
-                                } elseif ( $key !== 'product_tag' ) {
-                                    $term_query['parent'] = 0;
                                 }
-
-                                if ( wopb_function()->get_attribute_by_taxonomy( $key ) ) {
-                                    $taxonomy->attribute = wopb_function()->get_attribute_by_taxonomy( $key );
-                                    unset( $term_query['parent'] );
+                                if(is_search()) {
+                                    $term_query['search_query'] = get_search_query();
                                 }
-                                $taxonomy->total_terms = count( get_terms( $term_query ) );
-                                $term_query['number'] = $attr['viewTaxonomyLimit'];
-                                $params['hiddenTermCount'] = 0;
-
-                                if ( $term_query['taxonomy']==='product_cat' ) {
-                                    if ( isset( $query_vars['__wholesalex_exclude_cat'] ) && !empty( $query_vars['__wholesalex_exclude_cat'] ) ) {
-                                        $term_query['exclude'] = $query_vars['__wholesalex_exclude_cat']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
-                                    }
-                                    if ( isset( $query_vars['__wholesalex_include_cat'] ) && ! empty( $query_vars['__wholesalex_include_cat'] ) ) {
-                                        $term_query['include'] = $query_vars['__wholesalex_include_cat'];
-                                    }
-                                }
-                                if( ! empty( $target_block_attr['queryTaxValue'] ) && $key == $target_block_attr['queryTax'] ) { //Merge taxonomy from selected grid
-                                    $tax_value = json_decode( $target_block_attr['queryTaxValue'] );
-                                    if ( ! empty( $tax_value ) && is_array( $tax_value ) ) {
-                                        foreach ( $tax_value as $tax ) {
-                                            if( isset( $tax->value ) ) {
-                                                $term_query['slug'][] = $tax->value;
-                                                unset( $term_query['parent'] );
-                                            }
-                                        }
-                                    }
-                                }
-                                if ( is_product_taxonomy() || ( isset( $query_vars['post__not_in'] ) && ! empty( $query_vars['post__not_in'] ) ) ) {
-                                    if ( is_product_taxonomy() ) {
-                                        $attr['is_product_taxonomy'] = true;
-                                        $attr['query_obj_taxonomy'] = $queried_object->taxonomy;
-                                        $attr['query_obj_term'] = $queried_object->term_id;
-                                    }
-                                    if ( isset( $query_vars['post__not_in'] ) && ! empty( $query_vars['post__not_in'] ) ) {
-                                        $attr['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
-                                    }
-                                    $exclude_terms = $this->exclude_terms( get_terms( $term_query ), $attr );
-                                    $params['hiddenTermCount'] = count( $exclude_terms ) > 0 ? count( $exclude_terms ) : $params['hiddenTermCount'];
-                                    $taxonomy->total_terms = $taxonomy->total_terms - $params['hiddenTermCount'];
-                                }
-                                $taxonomy->terms = get_terms($term_query);
-                                $params['taxonomy'] = $taxonomy;
-                                if ( ! empty( $term_query['parent'] ) ) {
-                                    $params['parent_id'] = $term_query['parent'];
-                                }
-                                if ( $taxonomy->terms ) {
-                                    $tax_count++;
-                                    $params['tax_count'] = $tax_count;
-                                    ob_start();
-                                    $this->product_taxonomy_filter($attr, $params);
-                                    $html .= ob_get_clean();
+                                $params = $this->get_term_data($term_query);
+                                if ( ! empty( $params['terms'] ) ) {
+                                    $counter++;
+                                    $section_class = isset($key) ? ' wopb-filter-' . esc_attr( $key ) : '';
+                                    $params['attributes'] = array(
+                                        'productCount' => $attr['productCount'],
+                                        'expandTaxonomy' => $attr['expandTaxonomy'],
+                                        'viewTaxonomyLimit' => $attr['viewTaxonomyLimit'],
+                                    );
+                                    $this->product_taxonomy_filter($params);
                                 }
                             }
                         }
                 }
+                $content .= ob_get_clean();
+
+                if( $content ) {
+                    $html .= '<div class="wopb-filter-section ' . $section_class . '">';
+                        if($attr['enableTaxonomyRelation'] && $counter == 1) {
+                            ob_start();
+                                $this->taxonomy_relation();
+                            $html .= ob_get_clean();
+                        }
+                        //Header content
+                        $html .= '<div class="wopb-filter-header">';
+                            $html .= '<span class="wopb-filter-label">';
+                                $html .= ! empty( $active_filter['label'] ) ? wp_kses_post( $active_filter['label'] ) : '';
+                            $html .= '</span>';
+                                if( $attr['togglePlusMinus'] ) {
+                                    $html .= '<div class="wopb-filter-toggle">';
+                                        $html .= '<span class="dashicons dashicons-plus-alt2 wopb-filter-plus"></span>';
+                                        $html .= '<span class="dashicons dashicons-minus wopb-filter-minus"></span>';
+                                    $html .= '</div>';
+                                }
+                        $html .= '</div>';
+
+                        //Body content
+                        $html .= '<div class="wopb-filter-body' . $body_class . '">';
+                            $html .= $content;
+                        $html .= '</div>';
+
+                    $html .= '</div>';
+                }
             }
 
             ob_start();
-                $this->reset_filter( $attr );
+                $this->reset_filter();
             $html .= ob_get_clean();
         $html .= '</form>';
         return $html;
     }
 
+    /**
+     * Get Term by Taxonomy
+     *
+     * @param $args
+     * @return array
+     * @since v.4.1.1
+     */
+    public function get_term_data( $args ) {
+        global $wpdb;
+        global $wp_query;
+        $query_vars = $wp_query->query_vars;
+        $conditions = array();
+        $post_conditions = array();
+        $where_clause = '';
+        if( ! str_starts_with($args['taxonomy'], 'pa_') && empty( $args['parent'] ) ) {
+            $args['parent'] = 0;
+        }
+        //exclude category from wholesalex
+        if ( $args['taxonomy'] == 'product_cat' && ! empty( $query_vars['__wholesalex_exclude_cat'] ) ) {
+            $exclude_cat = implode(',', $query_vars['__wholesalex_exclude_cat']);
+            $conditions[] = " terms.term_id NOT IN ($exclude_cat)";
+        }
+
+        //get taxonomy from grid and sync with query
+        if( ! empty( $args['queryTaxValue'] ) && is_array( $args['queryTaxValue'] ) ) {
+            $tax_slug = '';
+            foreach ( $args['queryTaxValue'] as $tax ) {
+                if( ! is_array( $tax ) ) {
+                    $tax = (array)$tax;
+                }
+                if(
+                    $args['taxonomy'] == $args['query_tax'] &&
+                    empty( $args['query_term'] ) &&
+                    empty( $args['child_check'] ) &&
+                    ! empty( $tax['value'] )
+                ) {
+                    $tax_slug .= "'" . $tax['value'] . "',";
+                }
+            }
+
+            //match taxonomy with value from $tax_slug variable
+            if( ! empty( $tax_slug ) ) {
+                $tax_slug = rtrim($tax_slug, ',');
+                $post_conditions[] = $conditions[] = " terms.slug IN ($tax_slug)";
+                unset( $args['parent'] );
+            }
+        }
+
+        $join_2 = "INNER JOIN {$wpdb->prefix}term_taxonomy AS term_taxonomy_2 ON 
+                    term_relation_2.term_taxonomy_id = term_taxonomy_2.term_taxonomy_id
+                INNER JOIN {$wpdb->prefix}terms AS terms_2 ON 
+                    term_taxonomy_2.term_id = terms_2.term_id";
+
+        //get taxonomy from taxonomy / archive page
+        if( ! empty( $args['query_term'] ) ) {
+            $post_conditions[] = " terms_2.term_id IN ({$args['query_term']})
+            OR terms_2.term_id IN (
+                SELECT child_term_tax.term_id FROM
+                    {$wpdb->prefix}term_taxonomy AS child_term_tax
+                WHERE child_term_tax.parent = {$args['query_term']}
+            )";
+        }
+        //product in query specific term
+        if( ! empty( $post_conditions ) ) {
+            $post_conditions = implode( ' OR ', $post_conditions );
+            $conditions[] = "posts.ID IN (
+                SELECT term_relation_2.object_id FROM 
+                    {$wpdb->prefix}term_relationships AS term_relation_2 $join_2 
+                WHERE term_taxonomy_2.taxonomy = '{$args['query_tax']}' 
+                AND $post_conditions
+            )";
+        }
+
+
+        //post not in query from $query_vars
+        if ( ! empty( $query_vars['post__not_in'] ) ) {
+            $product_not_in = implode(',', array_map('intval', $query_vars['post__not_in']));
+            $conditions[] = " posts.ID NOT IN ($product_not_in)";
+        }
+        //term fetch by parent
+        if( isset( $args['parent'] ) &&  $args['parent'] !== '' ) {
+            $conditions[] = ' term_taxonomy_1.parent=' . $args['parent'];
+        }
+        //query if search page
+        if( ! empty( $args['search_query'] ) ) {
+            $conditions[] = " posts.post_title LIKE '%{$args['search_query']}%'";
+        }
+        //Merge all where condition
+        if( ! empty( $conditions ) ) {
+            $where_clause = ' AND ' . implode(' AND ', $conditions);
+        }
+
+        $inner_query = "FROM {$wpdb->prefix}terms AS terms
+            INNER JOIN {$wpdb->prefix}term_taxonomy AS term_taxonomy_1 ON 
+                terms.term_id = term_taxonomy_1.term_id
+            LEFT JOIN {$wpdb->prefix}term_taxonomy AS child_term_tax ON    /* join child terms to show total products in parent term by both parent and child terms */
+                child_term_tax.parent = term_taxonomy_1.term_id
+            LEFT JOIN {$wpdb->prefix}term_relationships AS term_relation_1 ON  /* count product by main term and child term */
+                term_relation_1.term_taxonomy_id IN 
+                    (term_taxonomy_1.term_id, child_term_tax.term_id)
+            LEFT JOIN {$wpdb->prefix}posts AS posts ON 
+                term_relation_1.object_id = posts.ID
+            WHERE term_taxonomy_1.taxonomy = '{$args['taxonomy']}'
+                AND posts.post_type = 'product'
+                AND posts.post_status = 'publish'
+                AND posts.ID NOT IN (   /* ignore hidden product from catalog visibility */
+                    SELECT term_relation_2.object_id FROM 
+                        {$wpdb->prefix}term_relationships AS term_relation_2 $join_2
+                    WHERE term_taxonomy_2.taxonomy = 'product_visibility'
+                    AND terms_2.slug = 'exclude-from-catalog'
+            ) $where_clause";
+        $sql = $wpdb->prepare("SELECT terms.term_id, terms.name, terms.slug, COUNT(DISTINCT posts.ID) as product_count
+            $inner_query
+            GROUP BY terms.term_id
+            LIMIT %d OFFSET %d", $args['limit'], ! empty( $args['offset'] ) ? $args['offset'] : 0);
+        $terms = $wpdb->get_results($sql);
+
+        $total_terms = '';
+        if( ! empty( $terms ) ) {
+            $total_terms = $wpdb->get_var("SELECT COUNT(DISTINCT terms.term_id) AS total_terms $inner_query");
+        }
+
+        return array(
+            'query_params' => array(
+                'taxonomy' => $args['taxonomy'],
+                'query_tax' => $args['query_tax'],
+                'query_term' => $args['query_term'],
+                'queryTaxValue' => ! empty( $args['queryTaxValue'] ) ? $args['queryTaxValue'] : '',
+                'parent' => ! empty( $args['parent'] ) ? $args['parent'] : '',
+                'limit' => $args['limit'],
+                'search_query' => ! empty( $term_query['search_query'] ) ? $term_query['search_query'] : '',
+            ),
+            'total_terms' => $total_terms,
+            'terms' =>  $terms,
+        );
+    }
     public function removeFilterItem() {
 ?>
         <div class="wopb-filter-remove-section">
-            <div class="wopb-filter-active-item-list">
-            </div>
+            <div class="wopb-active-items"></div>
             <span class="wopb-filter-remove-all">
                 <?php esc_html_e('Clear All', 'product-blocks') ?> <span class="dashicons dashicons-no-alt wopb-filter-remove-icon">
             </span>
@@ -289,122 +402,73 @@ class Filter {
 <?php
     }
 
-    public function filter_header_content ($attr, $params) {
+    public function search_filter() {
 ?>
-        <div class="wopb-filter-header">
-            <span class="wopb-filter-label">
-                <?php echo wp_kses_post( $params['headerLabel'] ) ?>
-            </span>
-            <?php if($attr['togglePlusMinus']) { ?>
-                <div class="wopb-filter-toggle">
-                    <span class="dashicons dashicons-plus-alt2 wopb-filter-plus"></span>
-                    <span class="dashicons dashicons-minus wopb-filter-minus"></span>
-                </div>
-            <?php } ?>
-        </div>
+    <input type="hidden" class="wopb-filter-slug" value="search">
+    <div class="wopb-search-filter-body">
+        <input type="text" class="wopb-filter-search-input" placeholder="<?php echo esc_html__('Search Products', 'product-blocks') ?>..."/>
+        <span class="wopb-search-icon"><?php echo wopb_function()->svg_icon('search') ?></span>
+    </div>
 <?php
     }
 
-    public function search_filter($attr, $params) {
+    public function price_filter() {
+        $max_price = $this->max_price();
 ?>
-        <div class="wopb-filter-section wopb-filter-search">
-            <?php $this->filter_header_content($attr, $params); ?>
-            <div class="wopb-filter-body">
-                <input type="hidden" class="wopb-filter-slug" value="search">
-                <div class="wopb-search-filter-body">
-                    <input type="text" class="wopb-filter-search-input" placeholder="<?php echo esc_html__('Search Products', 'product-blocks') ?>..."/>
-                    <span class="wopb-search-icon">
-                        <img src="<?php echo esc_url(WOPB_URL); ?>/assets/img/svg/search.svg" alt="<?php echo esc_html__('Image', 'product-blocks')?>" />
-                    </span>
-                </div>
-            </div>
-        </div>
+    <input type="hidden" class="wopb-filter-slug" value="price">
+    <div class="wopb-price-range">
+        <span class="wopb-price-range-bar"></span>
+        <input type="range" class="wopb-price-range-input wopb-min-range" min="0" max="<?php echo esc_attr($max_price) ?>" value="0" step="1">
+        <input type="range" class="wopb-price-range-input wopb-max-range" min="0" max="<?php echo esc_attr($max_price) ?>" value="<?php echo esc_attr($max_price) ?>" step="1">
+    </div>
+    <span class="wopb-input-group">
+        <input type="number" class="wopb-filter-price-input wopb-min-price" value="0" min="0">
+        <input type="number" class="wopb-filter-price-input wopb-max-price" value="<?php echo esc_attr($max_price) ?>" min="0" max="<?php echo esc_attr($max_price) ?>">
+    </span>
 <?php
     }
 
-    public function price_filter($attr, $params) {
-        $highest_price = $this->get_highest_price();
+    public function status_filter($attr, $term_query) {
 ?>
-        <div class="wopb-filter-section wopb-filter-price">
-            <?php $this->filter_header_content($attr, $params); ?>
-
-            <div class="wopb-filter-body wopb-price-range-slider">
-                <input type="hidden" class="wopb-filter-slug" value="price">
-                <div class="wopb-price-range">
-                    <span class="wopb-price-range-bar"></span>
-                    <input type="range" class="wopb-price-range-input wopb-price-range-input-min" min="0" max="<?php echo esc_attr($highest_price) ?>" value="0" step="1">
-                    <input type="range" class="wopb-price-range-input wopb-price-range-input-max" min="0" max="<?php echo esc_attr($highest_price) ?>" value="<?php echo esc_attr($highest_price) ?>" step="1">
+    <input type="hidden" class="wopb-filter-slug" value="status">
+    <div class="wopb-filter-check-list">
+        <?php
+            foreach (wc_get_product_stock_status_options() as $key => $status) {
+                $count = wopb_function()->generate_stock_status_count_query($key, $term_query);
+        ?>
+            <div class="wopb-filter-item">
+                <div class="wopb-item-content">
+                    <label for="status_<?php echo esc_attr($key) ?>">
+                        <input type="checkbox" class="wopb-status-input" id="status_<?php echo esc_attr($key) ?>" value="<?php echo esc_attr($key) ?>"/>
+                        <?php echo esc_html($status) ?> <?php echo $attr['productCount'] ? esc_html('(' . $count .')') : '' ?>
+                    </label>
                 </div>
-                <span class="wopb-filter-price-input-group">
-                    <input type="number" class="wopb-filter-price-input wopb-filter-price-min" value="0" min="0">
-                    <input type="number" class="wopb-filter-price-input wopb-filter-price-max" value="<?php echo esc_attr($highest_price) ?>" min="0" max="<?php echo esc_attr($highest_price) ?>">
-                </span>
             </div>
-        </div>
+        <?php } ?>
+    </div>
 <?php
     }
 
-    public function status_filter($attr, $params) {
-        $stock_params = [];
-        $queried_object = get_queried_object();
-        if(is_product_taxonomy()) {
-            $stock_params['taxonomy'] = $queried_object->taxonomy;
-            $stock_params['taxonomy_term_id'] = $queried_object->term_id;
-        }
-        $stock_params['target_block_attr'] = $params['target_block_attr'];
+    public function rating_filter() {
 ?>
-        <div class="wopb-filter-section wopb-filter-status">
-            <?php $this->filter_header_content($attr, $params); ?>
-
-            <div class="wopb-filter-body">
-                <input type="hidden" class="wopb-filter-slug" value="status">
-                <div class="wopb-filter-check-list">
-                    <?php
-                        foreach (wc_get_product_stock_status_options() as $key => $status) {
-                            $count = wopb_function()->generate_stock_status_count_query($key, $stock_params);
-//                            if($count > 0) {
-                    ?>
-                        <div class="wopb-filter-check-item-section">
-                            <div class="wopb-filter-check-item">
-                                <label for="status_<?php echo esc_attr($key) ?>">
-                                    <input type="checkbox" class="wopb-filter-status-input" id="status_<?php echo esc_attr($key) ?>" value="<?php echo esc_attr($key) ?>"/>
-                                    <?php echo esc_html($status) ?> <?php echo $attr['productCount'] ? esc_html('(' . $count .')') : '' ?>
-                                </label>
-                            </div>
-                        </div>
-                    <?php } /*}*/ ?>
+    <input type="hidden" class="wopb-filter-slug" value="rating">
+    <div class="wopb-filter-check-list wopb-filter-ratings">
+        <?php for ($row = 5; $row > 0; $row--) { ?>
+            <div class="wopb-filter-item">
+                <div class="wopb-item-content">
+                    <label for="filter-rating-<?php echo esc_attr($row) ?>">
+                        <input type="checkbox" class="wopb-rating-input" value="<?php echo esc_attr($row) ?>" id="filter-rating-<?php echo esc_attr($row) ?>">
+                        <?php for ($filledStar = $row; $filledStar > 0; $filledStar--) { ?>
+                            <span class="dashicons dashicons-star-filled"></span>
+                        <?php } ?>
+                        <?php for ($emptyStar = 0; $emptyStar < 5- $row; $emptyStar++) { ?>
+                            <span class="dashicons dashicons-star-empty"></span>
+                        <?php } ?>
+                    </label>
                 </div>
             </div>
-        </div>
-<?php
-    }
-
-    public function rating_filter($attr, $params) {
-?>
-        <div class="wopb-filter-section wopb-filter-rating">
-            <?php $this->filter_header_content($attr, $params); ?>
-
-            <div class="wopb-filter-body">
-                <input type="hidden" class="wopb-filter-slug" value="rating">
-                <div class="wopb-filter-check-list wopb-filter-ratings">
-                    <?php for ($row = 5; $row > 0; $row--) { ?>
-                        <div class="wopb-filter-check-item-section">
-                            <div class="wopb-filter-check-item">
-                                <label for="filter-rating-<?php echo esc_attr($row) ?>">
-                                    <input type="checkbox" class="wopb-filter-rating-input" value="<?php echo esc_attr($row) ?>" id="filter-rating-<?php echo esc_attr($row) ?>">
-                                    <?php for ($filledStar = $row; $filledStar > 0; $filledStar--) { ?>
-                                        <span class="dashicons dashicons-star-filled"></span>
-                                    <?php } ?>
-                                    <?php for ($emptyStar = 0; $emptyStar < 5- $row; $emptyStar++) { ?>
-                                        <span class="dashicons dashicons-star-empty"></span>
-                                    <?php } ?>
-                                </label>
-                            </div>
-                        </div>
-                   <?php } ?>
-                </div>
-            </div>
-        </div>
+       <?php } ?>
+    </div>
 <?php
     }
 
@@ -427,142 +491,65 @@ class Filter {
 <?php
     }
 
-     public function product_taxonomy_filter($attr, $params) {
-
-         if(is_search()) {
-             $attr['is_search'] = is_search();
-             $attr['search_query'] = get_search_query();
-         }
-         if($attr['enableTaxonomyRelation'] && $params['tax_count'] == 1) {
-             $this->taxonomy_relation();
-         }
+     public function product_taxonomy_filter($params) {
+        $attr = $params['attributes'];
 ?>
-        <div class="wopb-filter-section<?php echo isset($params['taxonomy']->name) ? ' wopb-filter-' . esc_attr( $params['taxonomy']->name ) : '' ?>">
+        <input
+            type="hidden"
+            class="wopb-filter-slug"
+            value="product_taxonomy"
+            data-taxonomy="<?php echo esc_attr($params['query_params']['taxonomy']) ?>"
+            data-query="<?php echo esc_attr( json_encode( $params['query_params'] ) ) ?>"
+            data-attributes="<?php echo esc_attr( json_encode( $attr ) ) ?>"
+        />
+        <div class="wopb-filter-check-list">
             <?php
-                $this->filter_header_content($attr, $params);
+                ! empty( $params['query_params']['taxonomy'] ) ? $this->product_taxonomy_terms($attr, $params) : '';
             ?>
-
-            <div class="wopb-filter-body">
-                <input
-                    type="hidden"
-                    class="wopb-filter-slug"
-                    value="product_taxonomy"
-                    data-taxonomy="<?php echo esc_attr($params['taxonomy']->name) ?>"
-                    data-parent="<?php echo ! empty( $params['parent_id'] ) ? esc_attr( $params['parent_id'] ) : '' ?>"
-                    data-term-limit="<?php echo esc_attr($attr['viewTaxonomyLimit']) ?>"
-                    data-attributes="<?php echo esc_attr(wp_json_encode($attr)) ?>"
-                    data-target-block-attributes="<?php echo esc_attr(wp_json_encode($params['target_block_attr'])) ?>"
-                />
-                <div class="wopb-filter-check-list">
-                    <?php
-                        !empty($params['taxonomy']) ? $this->product_taxonomy_terms($attr, $params) : '';
-                    ?>
-                </div>
-                <?php
-                    if( $params['taxonomy']->total_terms > $attr['viewTaxonomyLimit']) {
-                        $item_total_page = $params['taxonomy']->total_terms / $attr['viewTaxonomyLimit'];
-                        $item_total_page = ceil((float)$item_total_page);
-
-                ?>
-                        <a href="javascript:" class="wopb-filter-extend-control wopb-filter-show-more" data-item-page="1" data-item-total-page="<?php echo esc_attr($item_total_page); ?>">
-                            <?php esc_html_e('Show More', 'product-blocks') ?>
-                        </a>
-                        <a href="javascript:" class="wopb-filter-extend-control wopb-filter-show-less" data-item-page="1">
-                            <?php esc_html_e('Show Less', 'product-blocks') ?>
-                        </a>
-                <?php } ?>
-            </div>
         </div>
+        <?php
+            if( ! empty( $params['total_terms'] ) && $params['total_terms'] > $attr['viewTaxonomyLimit'] ) {
+                $total_page = $params['total_terms'] / $attr['viewTaxonomyLimit'];
+                $total_page = ceil((float)$total_page);
+
+        ?>
+                <a
+                    href="javascript:"
+                    class="wopb-filter-extend-control wopb-filter-show-more"
+                    data-current-page="1"
+                    data-total-page="<?php echo esc_attr($total_page); ?>"
+                >
+                    <?php esc_html_e('Show More', 'product-blocks') ?>
+                </a>
+                <a
+                    href="javascript:"
+                    class="wopb-filter-extend-control wopb-filter-show-less"
+                    data-current-page="1"
+                >
+                    <?php esc_html_e('Show Less', 'product-blocks') ?>
+                </a>
+        <?php } ?>
 <?php
     }
 
 
-
+    /**
+     * Show Term by Taxonomy
+     *
+     * @param $attr
+     * @param $params
+     * @return null
+     * @since v.2.5.3
+     */
     public function product_taxonomy_terms($attr, $params) {
-        global $wp_query;
-        $query_vars = $wp_query->query_vars;
-        $taxonomy = $params['taxonomy'];
+        $query_params = $params['query_params'];
 ?>
         <?php
-            $key = 0;
-            foreach ($taxonomy->terms as $term) {
-                $key++;
-                 $child_term_query = array (
-                    'taxonomy' => $taxonomy->name,
-                    'hide_empty' => true,
-                    'parent' => $term->term_id,
-                    'number' => $attr['viewTaxonomyLimit']
-                );
-                $query_args = array(
-                    'posts_per_page' => -1,
-                    'post_type' => 'product',
-                    'post_status' => 'publish',
-                );
-                if(isset($attr['is_search']) && $attr['is_search']) {
-                    $query_args['s'] = $attr['search_query'];
-                }
-                $term->child_terms = get_terms($child_term_query);
-                $tax_query = [];
-                $tax_query[] = array(
-                    'taxonomy' => $taxonomy->name,
-                    'field' => 'term_id',
-                    'terms'    => $term->term_id,
-                );
-                $tax_query[] = array(
-                    'taxonomy' => 'product_visibility',
-                    'field' => 'name',
-                    'terms' => 'exclude-from-catalog',
-                    'operator' => 'NOT IN',
-                );
-                if(isset($attr['is_product_taxonomy']) && $attr['is_product_taxonomy']) {
-                    $tax_query[] = [
-                        'taxonomy' => $attr['query_obj_taxonomy'],
-                        'field' => 'id',
-                        'terms' => $attr['query_obj_term'],
-                        'operator' => 'IN'
-                    ];
-                }
-                if( isset($params['target_block_attr']['queryCat']) && $params['target_block_attr']['queryCat'] ) {
-                    $tax_query[] = array(
-                        'taxonomy' => 'product_cat',
-                        'field' => 'slug',
-                        'terms' => json_decode(stripslashes($params['target_block_attr']['queryCat'])),
-                        'operator' => 'IN',
-                    );
-                }
-                if( ! empty( $params['target_block_attr']['queryTaxValue'] ) ) {
-                    $tax_value = json_decode( $params['target_block_attr']['queryTaxValue'] );
-                    if ( ! empty( $tax_value ) && is_array( $tax_value ) ) {
-                        $query_tax = ['relation' => 'or'];
-                        foreach ( $tax_value as $tax ) {
-                            if( isset( $tax->value ) ) {
-                                $query_tax[] = array(
-                                    'taxonomy' => $params['target_block_attr']['queryTax'],
-                                    'field' => 'slug',
-                                    'terms' => $tax->value,
-                                    'operator' => 'IN',
-                                );
-                            }
-                        }
-                        $tax_query[] = $query_tax;
-                    }
-                }
-                $query_args['tax_query'] = $tax_query;
-                if(isset($query_vars['post__not_in']) && !empty($query_vars['post__not_in'])) {
-                    $query_args['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
-                }elseif(isset($attr['post__not_in']) && !empty($attr['post__not_in'])) {
-                    $query_args['post__not_in'] = $attr['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
-                }
-                $recent_posts = new \WP_Query( $query_args);
-                $term->product_count = count($recent_posts->posts);
+            foreach ( $params['terms'] as $term ) {
                 $extended_item_class = isset($params['show_more']) ? 'wopb-filter-extended-item' : '';
-                if (isset($params['term_type']) && $params['term_type'] == 'child' && !$term->product_count) {
-                    continue;
-                }
         ?>
-            <div class="wopb-filter-check-item-section <?php echo esc_attr($extended_item_class) ?>"
-                 data-hidden-term-count="<?php echo esc_attr($params['hiddenTermCount']) ?>">
-                <div class="wopb-filter-check-item">
+            <div class="wopb-filter-item <?php echo esc_attr($extended_item_class) ?>">
+                <div class="wopb-item-content">
                     <label for="tax_term_<?php echo esc_attr($term->name . '_' . $term->term_id) ?>">
                         <input
                             type="checkbox"
@@ -572,12 +559,15 @@ class Filter {
                             data-label="<?php echo esc_attr($term->name) ?>"
                         />
                         <?php
-                        if( isset( $taxonomy->attribute ) && $taxonomy->attribute->attribute_type ) {
-                            $attr_value = get_term_meta($term->term_id, $taxonomy->attribute->attribute_type, true);
-                            if ( $taxonomy->attribute->attribute_type === 'color' ) {
+                        if(
+                            strpos( $query_params['taxonomy'], 'pa_') === 0 &&
+                            $tax_attribute = wopb_function()->get_attribute_by_taxonomy( $query_params['taxonomy'] )
+                        ) {
+                            $attr_value = get_term_meta($term->term_id, $tax_attribute->attribute_type, true);
+                            if ( $tax_attribute->attribute_type === 'color' ) {
                                 $color_html = $attr_value ? '<span class="wopb-filter-tax-color" style="background-color: ' . esc_attr($attr_value) . ';"></span>' : '';
                                 echo $color_html; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-                            }elseif ( $taxonomy->attribute->attribute_type === 'image' ) {
+                            }elseif ( $tax_attribute->attribute_type === 'image' ) {
                                 if( $attr_value ) {
                                     echo wp_get_attachment_image($attr_value);
                                 }else {
@@ -589,11 +579,14 @@ class Filter {
                        <span><?php echo esc_html($term->name) ?> <?php echo $attr['productCount'] ? esc_html('(' . $term->product_count .')') : '' ?></span>
                     </label>
                     <?php
-                        if($term->child_terms) {
-                            $params['taxonomy']->terms = $term->child_terms;
-                            $params['term_type'] = 'child';
+                    if(  ! str_starts_with($query_params['taxonomy'], 'pa_') ) {
+                        $query_params['parent'] = $term->term_id;
+                        $query_params['child_check'] = true;
+                        $child_data = $this->get_term_data($query_params);
+                        if ( ! empty( $child_data['terms'] ) ) {
+                            $params = array_merge($child_data, array( 'taxonomy' => $query_params['taxonomy'] ));
                     ?>
-                         <div class="wopb-filter-check-list wopb-filter-child-check-list<?php
+                         <div class="wopb-filter-check-list<?php
                                 isset($attr['expandTaxonomy']) && $attr['expandTaxonomy'] == 'true'
                                     ? ''
                                     : esc_attr_e(' wopb-d-none')
@@ -601,9 +594,9 @@ class Filter {
                         >
                             <?php $this->product_taxonomy_terms($attr, $params);?>
                         </div>
-                    <?php } ?>
+                    <?php } } ?>
                 </div>
-                <?php if($term->child_terms) { ?>
+                <?php if ( ! empty( $child_data['terms'] ) ) { ?>
                     <div class="wopb-filter-child-toggle">
                         <span class="dashicons dashicons-arrow-right-alt2 wopb-filter-right-toggle<?php echo $attr['expandTaxonomy'] == 'true' ? ' wopb-d-none' : '' ?>"></span>
                         <span class="dashicons dashicons-arrow-down-alt2 wopb-filter-down-toggle<?php echo $attr['expandTaxonomy'] == 'true' ? '' : ' wopb-d-none' ?>"></span>
@@ -615,26 +608,20 @@ class Filter {
 
     }
 
-    public function sorting_filter($attr, $params) {
+    public function sorting_filter($attr) {
 ?>
-        <div class="wopb-filter-section wopb-filter-sorting">
-            <?php $this->filter_header_content($attr, $params); ?>
-
-            <div class="wopb-filter-body">
-                <input type="hidden" class="wopb-filter-slug" value="sorting">
-                <select name="sortBy" class="select wopb-filter-sorting-input">
-                    <?php foreach ($attr['sortingItems'] as $item) { ?>
-                        <option value="<?php echo esc_attr($item->value)?>">
-                            <?php echo esc_html__($item->label, 'product-blocks')?>
-                        </option>
-                   <?php } ?>
-                </select>
-            </div>
-        </div>
+        <input type="hidden" class="wopb-filter-slug" value="sorting">
+        <select name="sortBy" class="select wopb-filter-sorting-input">
+            <?php foreach ($attr['sortingItems'] as $item) { ?>
+                <option value="<?php echo esc_attr($item->value)?>">
+                    <?php echo esc_html__($item->label, 'product-blocks')?>
+                </option>
+           <?php } ?>
+        </select>
 <?php
     }
 
-    public function reset_filter($attr) {
+    public function reset_filter() {
         $queried_object = get_queried_object();
         $slug = '';
         $current_page_value = '';
@@ -659,52 +646,13 @@ class Filter {
 <?php
     }
 
-    public function get_highest_price() {
-        $queried_object = get_queried_object();
-        $args = array(
-            'post_type' => 'product',
-            'posts_per_page' => -1,
-        );
-
-        if(is_product_taxonomy()) {
-            $args['tax_query'][] = [
-                'taxonomy' => $queried_object->taxonomy,
-                'field' => 'id',
-                'terms' => $queried_object->term_id,
-                'operator' => 'IN'
-            ];
-        }
-
-        $query = new \WP_Query($args);
-        $max_price = '';
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                $product = wc_get_product(get_the_ID());
-                if($product->is_type('variable')) {
-                    if($product->get_stock_status() != 'outofstock') {
-                        $variation_ids = $product->get_children();
-                        foreach ($variation_ids as $variation_id) {
-                            $variation = wc_get_product($variation_id);
-                            if( $variation ) {
-                                if ( $variation->get_sale_price() ) {
-                                    $max_price = $max_price < $variation->get_sale_price() ? $variation->get_sale_price() : $max_price;
-                                } else {
-                                    $max_price = $max_price < $variation->get_regular_price() ? $variation->get_regular_price() : $max_price;
-                                }
-                            }
-                        }
-                    }
-                }else {
-                    if($product->get_sale_price()) {
-                        $max_price = $max_price < $product->get_sale_price() ? $product->get_sale_price() : $max_price;
-                    }else {
-                        $max_price = $max_price < $product->get_regular_price() ? $product->get_regular_price() : $max_price;
-                    }
-                }
-            }
-        }
-        wp_reset_postdata();
+    public function max_price() {
+        global $wpdb;
+        $max_price = $wpdb->get_var("
+            SELECT MAX(CAST(meta_value AS DECIMAL(10,2)))
+            FROM {$wpdb->postmeta} 
+            WHERE meta_key = '_price'
+        ");
         return ceil((float)$max_price);
     }
 
@@ -713,50 +661,17 @@ class Filter {
 	 * Show more filter item by ajax
      *
      * @since v.2.5.3
-	 * @return HTML
+	 * @return null
 	 */
-    public function wopb_show_more_filter_item_callback() {
+    public function show_more_callback() {
         //phpcs:disable WordPress.Security.NonceVerification.Missing
-        $attr = isset( $_POST['attributes'])? $_POST['attributes']:array();
-        $taxonomy = new \stdClass();
-        $taxonomy->name = isset($_POST['taxonomy'])? sanitize_text_field($_POST['taxonomy']):'';
-        $exclude_terms = [];
-        $params = [
-            'taxonomy' => $taxonomy,
-            'show_more' => true,
-            'target_block_attr' => $_POST['target_block_attr'],
-            'hiddenTermCount' => isset($_POST['hiddenTermCount'])?sanitize_text_field($_POST['hiddenTermCount']):0,
-        ];
-        $term_query = array (
-            'taxonomy' => $taxonomy->name,
-            'hide_empty' => true,
-        );
-
-        if(wopb_function()->get_attribute_by_taxonomy($taxonomy->name)) {
-            $taxonomy->attribute = wopb_function()->get_attribute_by_taxonomy($taxonomy->name);
-        }elseif($taxonomy->name !== 'product_tag') {
-            $term_query['parent'] = 0;
+        $query = $_POST['query'];
+        $query['offset'] = ($_POST['current_page'] - 1) * $query['limit'];
+        $params = $this->get_term_data($query);
+        if ( ! empty( $params['terms'] ) ) {
+            $params['show_more'] = true;
+            echo $this->product_taxonomy_terms($_POST['attributes'], $params); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
         }
-        if( ! empty( $_POST['parent'] ) ) {
-            $term_query['parent'] = $_POST['parent'];
-        }
-        $term_offset = ((isset($_POST['item_page'])?sanitize_text_field($_POST['item_page']):1) - 1) * (isset($_POST['term_limit'])? sanitize_text_field( $_POST['term_limit']):1);
-        $term_offset = $params['hiddenTermCount'] > 0 ? $term_offset + $params['hiddenTermCount'] : $term_offset;
-        $term_query = array_merge(
-            [
-                'offset' => $term_offset,
-                'number' => isset($_POST['term_limit'])? sanitize_text_field($_POST['term_limit']):1
-            ], $term_query);
-        if((isset($attr['is_product_taxonomy']) && $attr['is_product_taxonomy']) || (isset($attr['post__not_in']) && !empty($attr['post__not_in']))) {
-            $exclude_terms = $this->exclude_terms(get_terms($term_query), $attr);
-            $params['hiddenTermCount'] = count($exclude_terms) > 0 ? count($exclude_terms) : $params['hiddenTermCount'];
-        }
-
-        $taxonomy->terms = get_terms($term_query);
-        if(count($taxonomy->terms) == 0) {
-            return false;
-        }
-        echo $this->product_taxonomy_terms($attr, $params); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
         wp_die();
     }
 
@@ -772,65 +687,16 @@ class Filter {
     public function getTargetBlockAttributes ($attr, $blocks, &$target_block_attr) {
         foreach ($blocks as $block) {
             if($block['blockName'] == 'product-blocks/'.$attr['blockTarget'] ) {
-                $target_block_attr = $block['attrs'];
+                if( ! empty( $block['attrs']['queryTaxValue'] ) ) {
+                    $target_block_attr = array_merge($target_block_attr, array(
+                        'query_tax' => !empty($block['attrs']['queryTax']) ? $block['attrs']['queryTax'] : 'product_cat',
+                        'queryTaxValue' => json_decode( $block['attrs']['queryTaxValue'] ),
+                    ));
+                }
             } elseif (count($block['innerBlocks']) > 0) {
                 $this->getTargetBlockAttributes($attr, $block['innerBlocks'], $target_block_attr);
             }
         }
         return $target_block_attr;
-    }
-
-    /**
-     * Exclude any terms of taxonomy
-     *
-     * @param $terms
-     * @param $attr
-     * @return array
-     * @since v.3.1.0
-     */
-    public function exclude_terms($terms, $attr = []) {
-        $exclude_args = [];
-        foreach($terms as $key => $term) {
-            $query_args = array(
-                'posts_per_page' => -1,
-                'post_type' => 'product',
-                'post_status' => 'publish',
-            );
-            $query_args['tax_query'][] = array(
-                'taxonomy' => $term->taxonomy,
-                'field' => 'term_id',
-                'terms'    => $term->term_id,
-            );
-            $query_args['tax_query'][] = array(
-                'taxonomy' => 'product_visibility',
-                'field' => 'name',
-                'terms' => 'exclude-from-catalog',
-                'operator' => 'NOT IN',
-            );
-            if(isset($attr['is_product_taxonomy']) && $attr['is_product_taxonomy']) {
-                $query_args['tax_query'][] = [
-                    'taxonomy' => $attr['query_obj_taxonomy'],
-                    'field' => 'id',
-                    'terms' => $attr['query_obj_term'],
-                    'operator' => 'IN'
-                ];
-            }
-
-            if(isset($attr['post__not_in']) && !empty($attr['post__not_in'])) {
-                $query_args['post__not_in'] = $attr['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
-            }
-            $recent_posts = new \WP_Query( $query_args);
-            if(count($recent_posts->posts) == 0) {
-                $exclude_args[] = $term->term_id;
-            }
-        }
-
-        if(!empty($exclude_args)) {
-            add_filter( 'get_terms_args', function ($args) use($exclude_args) {
-                $args['exclude'] = $exclude_args; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
-                return $args;
-            } );
-        }
-        return $exclude_args;
     }
 }

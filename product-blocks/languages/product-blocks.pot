@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore 4.1.0\n"
+"Project-Id-Version: WowStore 4.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-21T04:11:08+00:00\n"
+"POT-Creation-Date: 2024-11-05T04:40:44+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: product-blocks\n"
@@ -148,11 +148,11 @@ msgstr ""
 
 #: addons/animated_cart/backend.php:50
 #: addons/compare/backend.php:124
-#: addons/flip_image/backend.php:69
+#: addons/flip_image/backend.php:70
 #: addons/quick_view/backend.php:120
 #: build/addons/animated_cart/backend.php:50
 #: build/addons/compare/backend.php:124
-#: build/addons/flip_image/backend.php:69
+#: build/addons/flip_image/backend.php:70
 #: build/addons/quick_view/backend.php:120
 #: assets/js/editor.blocks.js:1185
 #: assets/js/editor.blocks.js:2494
@@ -283,10 +283,10 @@ msgstr ""
 
 #: addons/beaver_builder/beaverbuilder.php:26
 #: addons/divi/divi.php:21
-#: addons/oxygen/oxygen.php:62
+#: addons/oxygen/oxygen.php:61
 #: build/addons/beaver_builder/beaverbuilder.php:26
 #: build/addons/divi/divi.php:21
-#: build/addons/oxygen/oxygen.php:62
+#: build/addons/oxygen/oxygen.php:61
 msgid "Select Your Template"
 msgstr ""
 
@@ -319,11 +319,11 @@ msgstr ""
 #: addons/beaver_builder/includes/frontend.php:18
 #: addons/divi/divi.php:55
 #: addons/elementor/Elementor_Widget.php:79
-#: addons/oxygen/oxygen.php:53
+#: addons/oxygen/oxygen.php:52
 #: build/addons/beaver_builder/includes/frontend.php:18
 #: build/addons/divi/divi.php:55
 #: build/addons/elementor/Elementor_Widget.php:79
-#: build/addons/oxygen/oxygen.php:53
+#: build/addons/oxygen/oxygen.php:52
 msgid "Pick a Template from your saved ones. Or create a template from: %s."
 msgstr ""
 
@@ -480,13 +480,11 @@ msgstr ""
 #: addons/quick_view/backend.php:34
 #: addons/quick_view/Quickview.php:780
 #: addons/wishlist/Wishlist.php:261
-#: blocks/Filter.php:317
 #: build/addons/compare/backend.php:43
 #: build/addons/compare/Compare.php:1181
 #: build/addons/quick_view/backend.php:34
 #: build/addons/quick_view/Quickview.php:780
 #: build/addons/wishlist/Wishlist.php:261
-#: build/blocks/Filter.php:317
 #: assets/js/blocks-placeholder.js:50
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:107
@@ -564,7 +562,6 @@ msgstr ""
 #: build/addons/quick_view/backend.php:37
 #: build/addons/quick_view/Quickview.php:783
 #: build/addons/wishlist/Wishlist.php:263
-#: assets/js/editor.blocks.js:360
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
@@ -871,10 +868,10 @@ msgid "Shrink In"
 msgstr ""
 
 #: addons/compare/backend.php:126
-#: addons/flip_image/backend.php:68
+#: addons/flip_image/backend.php:69
 #: addons/quick_view/backend.php:122
 #: build/addons/compare/backend.php:126
-#: build/addons/flip_image/backend.php:68
+#: build/addons/flip_image/backend.php:69
 #: build/addons/quick_view/backend.php:122
 msgid "Fade In"
 msgstr ""
@@ -1362,17 +1359,17 @@ msgid "Choose Comparison Table Layout"
 msgstr ""
 
 #: addons/compare/backend.php:457
-#: addons/quick_view/backend.php:360
+#: addons/quick_view/backend.php:370
 #: build/addons/compare/backend.php:457
-#: build/addons/quick_view/backend.php:360
+#: build/addons/quick_view/backend.php:370
 msgid "Browse Presets"
 msgstr ""
 
 #: addons/compare/backend.php:491
-#: addons/quick_view/backend.php:384
+#: addons/quick_view/backend.php:394
 #: addons/wishlist/backend.php:213
 #: build/addons/compare/backend.php:491
-#: build/addons/quick_view/backend.php:384
+#: build/addons/quick_view/backend.php:394
 #: build/addons/wishlist/backend.php:213
 msgid "Shop/Archive Page Button Style"
 msgstr ""
@@ -1380,14 +1377,14 @@ msgstr ""
 #: addons/compare/backend.php:495
 #: addons/compare/backend.php:564
 #: addons/compare/backend.php:621
-#: addons/quick_view/backend.php:388
+#: addons/quick_view/backend.php:398
 #: addons/wishlist/backend.php:217
 #: addons/wishlist/backend.php:286
 #: addons/wishlist/backend.php:343
 #: build/addons/compare/backend.php:495
 #: build/addons/compare/backend.php:564
 #: build/addons/compare/backend.php:621
-#: build/addons/quick_view/backend.php:388
+#: build/addons/quick_view/backend.php:398
 #: build/addons/wishlist/backend.php:217
 #: build/addons/wishlist/backend.php:286
 #: build/addons/wishlist/backend.php:343
@@ -1450,9 +1447,9 @@ msgstr ""
 #: addons/compare/backend.php:640
 #: addons/compare/backend.php:696
 #: addons/name_price/backend.php:142
-#: addons/quick_view/backend.php:402
-#: addons/quick_view/backend.php:407
-#: addons/quick_view/backend.php:496
+#: addons/quick_view/backend.php:412
+#: addons/quick_view/backend.php:417
+#: addons/quick_view/backend.php:506
 #: addons/sales_notification/backend.php:137
 #: addons/sales_notification/backend.php:142
 #: addons/wishlist/backend.php:231
@@ -1470,9 +1467,9 @@ msgstr ""
 #: build/addons/compare/backend.php:640
 #: build/addons/compare/backend.php:696
 #: build/addons/name_price/backend.php:142
-#: build/addons/quick_view/backend.php:402
-#: build/addons/quick_view/backend.php:407
-#: build/addons/quick_view/backend.php:496
+#: build/addons/quick_view/backend.php:412
+#: build/addons/quick_view/backend.php:417
+#: build/addons/quick_view/backend.php:506
 #: build/addons/sales_notification/backend.php:137
 #: build/addons/sales_notification/backend.php:142
 #: build/addons/wishlist/backend.php:231
@@ -1501,14 +1498,14 @@ msgstr ""
 #: addons/compare/backend.php:518
 #: addons/compare/backend.php:587
 #: addons/compare/backend.php:644
-#: addons/quick_view/backend.php:411
+#: addons/quick_view/backend.php:421
 #: addons/wishlist/backend.php:240
 #: addons/wishlist/backend.php:309
 #: addons/wishlist/backend.php:366
 #: build/addons/compare/backend.php:518
 #: build/addons/compare/backend.php:587
 #: build/addons/compare/backend.php:644
-#: build/addons/quick_view/backend.php:411
+#: build/addons/quick_view/backend.php:421
 #: build/addons/wishlist/backend.php:240
 #: build/addons/wishlist/backend.php:309
 #: build/addons/wishlist/backend.php:366
@@ -1560,7 +1557,7 @@ msgstr ""
 #: addons/compare/backend.php:597
 #: addons/compare/backend.php:654
 #: addons/compare/backend.php:762
-#: addons/quick_view/backend.php:421
+#: addons/quick_view/backend.php:431
 #: addons/wishlist/backend.php:250
 #: addons/wishlist/backend.php:319
 #: addons/wishlist/backend.php:376
@@ -1569,7 +1566,7 @@ msgstr ""
 #: build/addons/compare/backend.php:597
 #: build/addons/compare/backend.php:654
 #: build/addons/compare/backend.php:762
-#: build/addons/quick_view/backend.php:421
+#: build/addons/quick_view/backend.php:431
 #: build/addons/wishlist/backend.php:250
 #: build/addons/wishlist/backend.php:319
 #: build/addons/wishlist/backend.php:376
@@ -1627,14 +1624,14 @@ msgstr ""
 #: addons/compare/backend.php:536
 #: addons/compare/backend.php:605
 #: addons/compare/backend.php:662
-#: addons/quick_view/backend.php:429
+#: addons/quick_view/backend.php:439
 #: addons/wishlist/backend.php:258
 #: addons/wishlist/backend.php:327
 #: addons/wishlist/backend.php:384
 #: build/addons/compare/backend.php:536
 #: build/addons/compare/backend.php:605
 #: build/addons/compare/backend.php:662
-#: build/addons/quick_view/backend.php:429
+#: build/addons/quick_view/backend.php:439
 #: build/addons/wishlist/backend.php:258
 #: build/addons/wishlist/backend.php:327
 #: build/addons/wishlist/backend.php:384
@@ -1689,14 +1686,14 @@ msgstr ""
 #: addons/compare/backend.php:541
 #: addons/compare/backend.php:610
 #: addons/compare/backend.php:667
-#: addons/quick_view/backend.php:434
+#: addons/quick_view/backend.php:444
 #: addons/wishlist/backend.php:263
 #: addons/wishlist/backend.php:332
 #: addons/wishlist/backend.php:389
 #: build/addons/compare/backend.php:541
 #: build/addons/compare/backend.php:610
 #: build/addons/compare/backend.php:667
-#: build/addons/quick_view/backend.php:434
+#: build/addons/quick_view/backend.php:444
 #: build/addons/wishlist/backend.php:263
 #: build/addons/wishlist/backend.php:332
 #: build/addons/wishlist/backend.php:389
@@ -1716,21 +1713,21 @@ msgid "Icon Size"
 msgstr ""
 
 #: addons/compare/backend.php:546
-#: addons/quick_view/backend.php:439
+#: addons/quick_view/backend.php:449
 #: addons/wishlist/backend.php:268
 #: build/addons/compare/backend.php:546
-#: build/addons/quick_view/backend.php:439
+#: build/addons/quick_view/backend.php:449
 #: build/addons/wishlist/backend.php:268
 msgid "Button Alignment"
 msgstr ""
 
 #: addons/compare/backend.php:551
-#: addons/quick_view/backend.php:444
+#: addons/quick_view/backend.php:454
 #: addons/sales_notification/backend.php:57
 #: addons/variation_swatches/backend.php:158
 #: addons/wishlist/backend.php:273
 #: build/addons/compare/backend.php:551
-#: build/addons/quick_view/backend.php:444
+#: build/addons/quick_view/backend.php:454
 #: build/addons/sales_notification/backend.php:57
 #: build/addons/variation_swatches/backend.php:158
 #: build/addons/wishlist/backend.php:273
@@ -1746,11 +1743,11 @@ msgid "Left"
 msgstr ""
 
 #: addons/compare/backend.php:552
-#: addons/quick_view/backend.php:445
+#: addons/quick_view/backend.php:455
 #: addons/variation_swatches/backend.php:159
 #: addons/wishlist/backend.php:274
 #: build/addons/compare/backend.php:552
-#: build/addons/quick_view/backend.php:445
+#: build/addons/quick_view/backend.php:455
 #: build/addons/variation_swatches/backend.php:159
 #: build/addons/wishlist/backend.php:274
 #: assets/js/editor.blocks.js:63
@@ -1759,12 +1756,12 @@ msgid "Center"
 msgstr ""
 
 #: addons/compare/backend.php:553
-#: addons/quick_view/backend.php:446
+#: addons/quick_view/backend.php:456
 #: addons/sales_notification/backend.php:58
 #: addons/variation_swatches/backend.php:160
 #: addons/wishlist/backend.php:275
 #: build/addons/compare/backend.php:553
-#: build/addons/quick_view/backend.php:446
+#: build/addons/quick_view/backend.php:456
 #: build/addons/sales_notification/backend.php:58
 #: build/addons/variation_swatches/backend.php:160
 #: build/addons/wishlist/backend.php:275
@@ -1888,9 +1885,9 @@ msgid "Compare Products"
 msgstr ""
 
 #: addons/compare/Compare.php:622
-#: blocks/Filter.php:286
+#: blocks/Filter.php:399
 #: build/addons/compare/Compare.php:622
-#: build/blocks/Filter.php:286
+#: build/blocks/Filter.php:399
 #: assets/js/editor.blocks.js:338
 msgid "Clear All"
 msgstr ""
@@ -1941,10 +1938,10 @@ msgstr ""
 #: blocks/Product_Slider.php:347
 #: build/addons/compare/Compare.php:891
 #: build/blocks/Product_Slider.php:347
-#: build/classes/Functions.php:3006
-#: build/classes/Functions.php:3008
-#: classes/Functions.php:3006
-#: classes/Functions.php:3008
+#: build/classes/Functions.php:2990
+#: build/classes/Functions.php:2992
+#: classes/Functions.php:2990
+#: classes/Functions.php:2992
 msgid "View Cart"
 msgstr ""
 
@@ -2329,9 +2326,9 @@ msgid "It allows you to display a different image of products when the shoppers 
 msgstr ""
 
 #: addons/flip_image/backend.php:35
-#: addons/flip_image/FlipImage.php:99
+#: addons/flip_image/FlipImage.php:103
 #: build/addons/flip_image/backend.php:35
-#: build/addons/flip_image/FlipImage.php:99
+#: build/addons/flip_image/FlipImage.php:103
 msgid "Flip Image"
 msgstr ""
 
@@ -2370,63 +2367,90 @@ msgstr ""
 msgid "Product Flip Animation Type"
 msgstr ""
 
-#: addons/flip_image/backend.php:70
-#: build/addons/flip_image/backend.php:70
-msgid "Fade In & Zoom In"
+#: addons/flip_image/backend.php:68
+#: build/addons/flip_image/backend.php:68
+#: addons/builder/assets/js/conditions.js:140
+#: assets/js/editor.blocks.js:63
+#: assets/js/editor.blocks.js:107
+#: assets/js/editor.blocks.js:151
+#: assets/js/editor.blocks.js:217
+#: assets/js/editor.blocks.js:459
+#: assets/js/editor.blocks.js:503
+#: assets/js/editor.blocks.js:547
+#: assets/js/editor.blocks.js:602
+#: assets/js/editor.blocks.js:657
+#: assets/js/editor.blocks.js:712
+#: assets/js/editor.blocks.js:767
+#: assets/js/editor.blocks.js:822
+#: assets/js/editor.blocks.js:877
+#: assets/js/editor.blocks.js:998
+#: assets/js/editor.blocks.js:1141
+#: assets/js/editor.blocks.js:1867
+#: assets/js/editor.blocks.js:1878
+#: assets/js/editor.blocks.js:2494
+#: assets/js/editor.blocks.js:2934
+#: assets/js/wopb_dashboard_min.js:2
+#: build/assets/js/wopb_dashboard_min.js:2
+msgid "None"
 msgstr ""
 
 #: addons/flip_image/backend.php:71
 #: build/addons/flip_image/backend.php:71
-msgid "Slide From Right"
+msgid "Fade In & Zoom In"
 msgstr ""
 
 #: addons/flip_image/backend.php:72
 #: build/addons/flip_image/backend.php:72
+msgid "Slide From Right"
+msgstr ""
+
+#: addons/flip_image/backend.php:73
+#: build/addons/flip_image/backend.php:73
 msgid "Flip Right to Left"
 msgstr ""
 
-#: addons/flip_image/backend.php:75
-#: build/addons/flip_image/backend.php:75
+#: addons/flip_image/backend.php:76
+#: build/addons/flip_image/backend.php:76
 msgid "Select Option For What You Want to Show on Product After Mouse Hover."
 msgstr ""
 
-#: addons/flip_image/backend.php:80
-#: build/addons/flip_image/backend.php:80
+#: addons/flip_image/backend.php:81
+#: build/addons/flip_image/backend.php:81
 msgid "Disable For Group & Variable Product"
 msgstr ""
 
-#: addons/flip_image/backend.php:82
-#: build/addons/flip_image/backend.php:82
+#: addons/flip_image/backend.php:83
+#: build/addons/flip_image/backend.php:83
 msgid "This option will disable image flipper to group & variable products."
 msgstr ""
 
-#: addons/flip_image/backend.php:86
-#: build/addons/flip_image/backend.php:86
+#: addons/flip_image/backend.php:87
+#: build/addons/flip_image/backend.php:87
 msgid "Disable For Mobile Device"
 msgstr ""
 
-#: addons/flip_image/backend.php:88
-#: build/addons/flip_image/backend.php:88
+#: addons/flip_image/backend.php:89
+#: build/addons/flip_image/backend.php:89
 msgid "This option will disable image flipper to mobile devices."
 msgstr ""
 
-#: addons/flip_image/FlipImage.php:115
-#: build/addons/flip_image/FlipImage.php:115
+#: addons/flip_image/FlipImage.php:119
+#: build/addons/flip_image/FlipImage.php:119
 msgid "Select Flip Image"
 msgstr ""
 
-#: addons/flip_image/FlipImage.php:115
-#: build/addons/flip_image/FlipImage.php:115
+#: addons/flip_image/FlipImage.php:119
+#: build/addons/flip_image/FlipImage.php:119
 msgid "Set Flip Image"
 msgstr ""
 
-#: addons/flip_image/FlipImage.php:115
-#: build/addons/flip_image/FlipImage.php:115
+#: addons/flip_image/FlipImage.php:119
+#: build/addons/flip_image/FlipImage.php:119
 msgid "Remove Flip Image"
 msgstr ""
 
-#: addons/flip_image/FlipImage.php:115
-#: build/addons/flip_image/FlipImage.php:115
+#: addons/flip_image/FlipImage.php:119
+#: build/addons/flip_image/FlipImage.php:119
 msgid "Set Flip Image Source"
 msgstr ""
 
@@ -2893,14 +2917,14 @@ msgstr ""
 msgid "Choose Quick View Modal Layout"
 msgstr ""
 
-#: addons/quick_view/backend.php:453
-#: build/addons/quick_view/backend.php:453
+#: addons/quick_view/backend.php:463
+#: build/addons/quick_view/backend.php:463
 msgid "Modal Style"
 msgstr ""
 
-#: addons/quick_view/backend.php:457
+#: addons/quick_view/backend.php:467
 #: addons/sales_notification/backend.php:170
-#: build/addons/quick_view/backend.php:457
+#: build/addons/quick_view/backend.php:467
 #: build/addons/sales_notification/backend.php:170
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:547
@@ -2924,8 +2948,8 @@ msgstr ""
 msgid "Title Typography"
 msgstr ""
 
-#: addons/quick_view/backend.php:469
-#: build/addons/quick_view/backend.php:469
+#: addons/quick_view/backend.php:479
+#: build/addons/quick_view/backend.php:479
 #: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1658
 #: assets/js/editor.blocks.js:2076
@@ -2933,30 +2957,30 @@ msgstr ""
 msgid "Button Typography"
 msgstr ""
 
-#: addons/quick_view/backend.php:481
-#: build/addons/quick_view/backend.php:481
+#: addons/quick_view/backend.php:491
+#: build/addons/quick_view/backend.php:491
 #: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1229
 #: assets/js/editor.blocks.js:1658
 msgid "Button Border"
 msgstr ""
 
-#: addons/quick_view/backend.php:491
-#: build/addons/quick_view/backend.php:491
+#: addons/quick_view/backend.php:501
+#: build/addons/quick_view/backend.php:501
 #: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1229
 #: assets/js/editor.blocks.js:1658
 msgid "Button Background"
 msgstr ""
 
-#: addons/quick_view/backend.php:500
-#: build/addons/quick_view/backend.php:500
+#: addons/quick_view/backend.php:510
+#: build/addons/quick_view/backend.php:510
 msgid "Modal Background"
 msgstr ""
 
-#: addons/quick_view/backend.php:502
+#: addons/quick_view/backend.php:512
 #: addons/sales_notification/backend.php:201
-#: build/addons/quick_view/backend.php:502
+#: build/addons/quick_view/backend.php:512
 #: build/addons/sales_notification/backend.php:201
 #: addons/builder/assets/js/conditions.js:129
 #: assets/js/editor.blocks.js:338
@@ -3012,18 +3036,18 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: addons/quick_view/backend.php:507
-#: build/addons/quick_view/backend.php:507
+#: addons/quick_view/backend.php:517
+#: build/addons/quick_view/backend.php:517
 msgid "Inner Content Gap"
 msgstr ""
 
-#: addons/quick_view/backend.php:512
-#: build/addons/quick_view/backend.php:512
+#: addons/quick_view/backend.php:522
+#: build/addons/quick_view/backend.php:522
 msgid "Thumbnail Ratio"
 msgstr ""
 
-#: addons/quick_view/backend.php:514
-#: build/addons/quick_view/backend.php:514
+#: addons/quick_view/backend.php:524
+#: build/addons/quick_view/backend.php:524
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:1020
 #: assets/js/editor.blocks.js:1141
@@ -3031,21 +3055,21 @@ msgstr ""
 msgid "Default"
 msgstr ""
 
-#: addons/quick_view/backend.php:515
-#: build/addons/quick_view/backend.php:515
+#: addons/quick_view/backend.php:525
+#: build/addons/quick_view/backend.php:525
 #: assets/js/editor.blocks.js:261
 #: assets/js/editor.blocks.js:1141
 #: assets/js/editor.blocks.js:2494
 msgid "Custom"
 msgstr ""
 
-#: addons/quick_view/backend.php:521
-#: build/addons/quick_view/backend.php:521
+#: addons/quick_view/backend.php:531
+#: build/addons/quick_view/backend.php:531
 msgid "Thumbnail Height"
 msgstr ""
 
-#: addons/quick_view/backend.php:527
-#: build/addons/quick_view/backend.php:527
+#: addons/quick_view/backend.php:537
+#: build/addons/quick_view/backend.php:537
 msgid "Thumbnail Width"
 msgstr ""
 
@@ -3057,16 +3081,16 @@ msgstr ""
 #: addons/quick_view/Quickview.php:443
 #: addons/wishlist/Wishlist.php:283
 #: addons/wishlist/Wishlist.php:285
-#: blocks/Product_Grid_1.php:221
-#: blocks/Product_Grid_2.php:224
-#: blocks/Product_Grid_3.php:233
+#: blocks/Product_Grid_1.php:224
+#: blocks/Product_Grid_2.php:227
+#: blocks/Product_Grid_3.php:236
 #: blocks/woo/Product_Stock.php:31
 #: build/addons/quick_view/Quickview.php:443
 #: build/addons/wishlist/Wishlist.php:283
 #: build/addons/wishlist/Wishlist.php:285
-#: build/blocks/Product_Grid_1.php:221
-#: build/blocks/Product_Grid_2.php:224
-#: build/blocks/Product_Grid_3.php:233
+#: build/blocks/Product_Grid_1.php:224
+#: build/blocks/Product_Grid_2.php:227
+#: build/blocks/Product_Grid_3.php:236
 #: build/blocks/woo/Product_Stock.php:31
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:734
@@ -3079,13 +3103,13 @@ msgid "In Stock"
 msgstr ""
 
 #: addons/quick_view/Quickview.php:445
-#: blocks/Product_Grid_1.php:217
-#: blocks/Product_Grid_2.php:220
-#: blocks/Product_Grid_3.php:229
+#: blocks/Product_Grid_1.php:220
+#: blocks/Product_Grid_2.php:223
+#: blocks/Product_Grid_3.php:232
 #: build/addons/quick_view/Quickview.php:445
-#: build/blocks/Product_Grid_1.php:217
-#: build/blocks/Product_Grid_2.php:220
-#: build/blocks/Product_Grid_3.php:229
+#: build/blocks/Product_Grid_1.php:220
+#: build/blocks/Product_Grid_2.php:223
+#: build/blocks/Product_Grid_3.php:232
 #: assets/js/editor.blocks.js:734
 #: assets/js/editor.blocks.js:789
 #: assets/js/editor.blocks.js:844
@@ -3098,14 +3122,14 @@ msgid "Buy Now"
 msgstr ""
 
 #: addons/quick_view/Quickview.php:569
-#: blocks/Product_Grid_1.php:176
-#: blocks/Product_Grid_2.php:180
-#: blocks/Product_Grid_3.php:180
+#: blocks/Product_Grid_1.php:177
+#: blocks/Product_Grid_2.php:181
+#: blocks/Product_Grid_3.php:181
 #: blocks/Product_Slider.php:254
 #: build/addons/quick_view/Quickview.php:569
-#: build/blocks/Product_Grid_1.php:176
-#: build/blocks/Product_Grid_2.php:180
-#: build/blocks/Product_Grid_3.php:180
+#: build/blocks/Product_Grid_1.php:177
+#: build/blocks/Product_Grid_2.php:181
+#: build/blocks/Product_Grid_3.php:181
 #: build/blocks/Product_Slider.php:254
 #: assets/js/editor.blocks.js:734
 #: assets/js/editor.blocks.js:789
@@ -3567,8 +3591,8 @@ msgstr ""
 msgid "Add new"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:697
-#: build/addons/variation_swatches/VariationSwatches.php:697
+#: addons/variation_swatches/VariationSwatches.php:701
+#: build/addons/variation_swatches/VariationSwatches.php:701
 msgid "Clear"
 msgstr ""
 
@@ -3802,8 +3826,8 @@ msgstr ""
 msgid "Wishlist Not Added."
 msgstr ""
 
-#: blocks/Filter.php:143
-#: build/blocks/Filter.php:143
+#: blocks/Filter.php:136
+#: build/blocks/Filter.php:136
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
@@ -3812,25 +3836,25 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: blocks/Filter.php:315
-#: build/blocks/Filter.php:315
+#: blocks/Filter.php:409
+#: build/blocks/Filter.php:409
 msgid "Search Products"
 msgstr ""
 
-#: blocks/Filter.php:414
-#: build/blocks/Filter.php:414
+#: blocks/Filter.php:478
+#: build/blocks/Filter.php:478
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:2494
 msgid "Taxonomy Relation"
 msgstr ""
 
-#: blocks/Filter.php:468
-#: build/blocks/Filter.php:468
+#: blocks/Filter.php:522
+#: build/blocks/Filter.php:522
 msgid "Show More"
 msgstr ""
 
-#: blocks/Filter.php:471
-#: build/blocks/Filter.php:471
+#: blocks/Filter.php:529
+#: build/blocks/Filter.php:529
 msgid "Show Less"
 msgstr ""
 
@@ -3857,23 +3881,23 @@ msgstr ""
 msgid "Read More"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:177
-#: blocks/Product_Grid_2.php:181
-#: blocks/Product_Grid_3.php:181
+#: blocks/Product_Grid_1.php:178
+#: blocks/Product_Grid_2.php:182
+#: blocks/Product_Grid_3.php:182
 #: blocks/Product_Slider.php:256
-#: build/blocks/Product_Grid_1.php:177
-#: build/blocks/Product_Grid_2.php:181
-#: build/blocks/Product_Grid_3.php:181
+#: build/blocks/Product_Grid_1.php:178
+#: build/blocks/Product_Grid_2.php:182
+#: build/blocks/Product_Grid_3.php:182
 #: build/blocks/Product_Slider.php:256
 msgid " Off"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:182
-#: blocks/Product_Grid_2.php:186
-#: blocks/Product_Grid_3.php:186
-#: build/blocks/Product_Grid_1.php:182
-#: build/blocks/Product_Grid_2.php:186
-#: build/blocks/Product_Grid_3.php:186
+#: blocks/Product_Grid_1.php:183
+#: blocks/Product_Grid_2.php:187
+#: blocks/Product_Grid_3.php:187
+#: build/blocks/Product_Grid_1.php:183
+#: build/blocks/Product_Grid_2.php:187
+#: build/blocks/Product_Grid_3.php:187
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:734
 #: assets/js/editor.blocks.js:767
@@ -3883,14 +3907,14 @@ msgstr ""
 msgid "Hot"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:326
-#: blocks/Product_Grid_2.php:354
-#: blocks/Product_Grid_3.php:343
-#: blocks/Product_List_1.php:260
-#: build/blocks/Product_Grid_1.php:326
-#: build/blocks/Product_Grid_2.php:354
-#: build/blocks/Product_Grid_3.php:343
-#: build/blocks/Product_List_1.php:260
+#: blocks/Product_Grid_1.php:329
+#: blocks/Product_Grid_2.php:357
+#: blocks/Product_Grid_3.php:346
+#: blocks/Product_List_1.php:263
+#: build/blocks/Product_Grid_1.php:329
+#: build/blocks/Product_Grid_2.php:357
+#: build/blocks/Product_Grid_3.php:346
+#: build/blocks/Product_List_1.php:263
 msgid "No products were found of your matching selection"
 msgstr ""
 
@@ -4095,13 +4119,13 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
-#: build/classes/Blocks.php:380
-#: classes/Blocks.php:380
+#: build/classes/Blocks.php:383
+#: classes/Blocks.php:383
 msgid "Username or Email is required."
 msgstr ""
 
-#: build/classes/Blocks.php:384
-#: classes/Blocks.php:384
+#: build/classes/Blocks.php:387
+#: classes/Blocks.php:387
 msgid "Password is required."
 msgstr ""
 
@@ -4342,48 +4366,48 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: build/classes/Functions.php:1607
-#: classes/Functions.php:1607
+#: build/classes/Functions.php:1590
+#: classes/Functions.php:1590
 msgid "Select Page"
 msgstr ""
 
-#: build/classes/Functions.php:1623
-#: classes/Functions.php:1623
+#: build/classes/Functions.php:1606
+#: classes/Functions.php:1606
 msgid "Select Location"
 msgstr ""
 
-#: build/classes/Functions.php:2555
-#: classes/Functions.php:2555
+#: build/classes/Functions.php:2538
+#: classes/Functions.php:2538
 msgid "- Select Template -"
 msgstr ""
 
-#: build/classes/Initialization.php:395
-#: classes/Initialization.php:395
+#: build/classes/Initialization.php:393
+#: classes/Initialization.php:393
 msgid "WooCommerce Blocks (WowStore)"
 msgstr ""
 
-#: build/classes/Initialization.php:399
-#: classes/Initialization.php:399
+#: build/classes/Initialization.php:397
+#: classes/Initialization.php:397
 msgid "Single Product (WowStore)"
 msgstr ""
 
-#: build/classes/Initialization.php:403
-#: classes/Initialization.php:403
+#: build/classes/Initialization.php:401
+#: classes/Initialization.php:401
 msgid "Cart (WowStore)"
 msgstr ""
 
-#: build/classes/Initialization.php:407
-#: classes/Initialization.php:407
+#: build/classes/Initialization.php:405
+#: classes/Initialization.php:405
 msgid "Checkout (WowStore)"
 msgstr ""
 
-#: build/classes/Initialization.php:411
-#: classes/Initialization.php:411
+#: build/classes/Initialization.php:409
+#: classes/Initialization.php:409
 msgid "Thank You (WowStore)"
 msgstr ""
 
-#: build/classes/Initialization.php:415
-#: classes/Initialization.php:415
+#: build/classes/Initialization.php:413
+#: classes/Initialization.php:413
 msgid "My Account (WowStore)"
 msgstr ""
 
@@ -4781,31 +4805,6 @@ msgstr ""
 #: assets/js/wopb_dashboard_min.js:2
 #: build/assets/js/wopb_dashboard_min.js:2
 msgid "We are sorry. Unfortunately, the free version of WowStore lets you create only one template. Please upgrade to a pro version that unlocks the full capabilities of the WooCommerce builder."
-msgstr ""
-
-#: addons/builder/assets/js/conditions.js:140
-#: assets/js/editor.blocks.js:63
-#: assets/js/editor.blocks.js:107
-#: assets/js/editor.blocks.js:151
-#: assets/js/editor.blocks.js:217
-#: assets/js/editor.blocks.js:459
-#: assets/js/editor.blocks.js:503
-#: assets/js/editor.blocks.js:547
-#: assets/js/editor.blocks.js:602
-#: assets/js/editor.blocks.js:657
-#: assets/js/editor.blocks.js:712
-#: assets/js/editor.blocks.js:767
-#: assets/js/editor.blocks.js:822
-#: assets/js/editor.blocks.js:877
-#: assets/js/editor.blocks.js:998
-#: assets/js/editor.blocks.js:1141
-#: assets/js/editor.blocks.js:1867
-#: assets/js/editor.blocks.js:1878
-#: assets/js/editor.blocks.js:2494
-#: assets/js/editor.blocks.js:2934
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "None"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:151
@@ -6434,6 +6433,10 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:294
 msgid "button group"
+msgstr ""
+
+#: assets/js/editor.blocks.js:305
+msgid "How to use currency switcher"
 msgstr ""
 
 #: assets/js/editor.blocks.js:305
@@ -8288,6 +8291,7 @@ msgid "Quantity Padding"
 msgstr ""
 
 #: assets/js/editor.blocks.js:998
+#: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1779
 msgid "Plus Minus"
 msgstr ""
@@ -10067,6 +10071,10 @@ msgid "Product Image Spacing"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1867
+msgid "Hover Zoom"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1867
 #: assets/js/editor.blocks.js:1878
 msgid "Image View"
 msgstr ""
@@ -10121,10 +10129,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1867
 msgid "Lightbox Zoom"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1867
-msgid "Hover Zoom"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1867
@@ -11461,6 +11465,10 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:2494
 msgid "Spacer"
+msgstr ""
+
+#: assets/js/editor.blocks.js:2494
+msgid "Visible Only Hover"
 msgstr ""
 
 #: assets/js/editor.blocks.js:2494

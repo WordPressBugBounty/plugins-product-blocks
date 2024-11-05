@@ -65,6 +65,7 @@ class Product_List_1{
             'tooltipPosition' => 'left',
             'ovrMetaInline' => true,
             'currentPostId' =>  '',
+            'hoverMeta' =>  true,
         );
     }
 
@@ -103,7 +104,7 @@ class Product_List_1{
             )
         );
 
-    
+
         if ( $recent_posts->have_posts() ) {
             $attr['className'] = !empty($attr['className']) ? preg_replace('/[^A-Za-z0-9_ -]/', '', $attr['className']) : '';
             $attr['align'] = !empty($attr['align']) ? 'align' . preg_replace('/[^A-Za-z0-9_ -]/', '', $attr['align']) : '';
@@ -114,10 +115,10 @@ class Product_List_1{
                     if ($attr['headingShow'] || $attr['filterShow'] ) {
                         $wraper_before .= '<div class="wopb-heading-filter">';
                             $wraper_before .= '<div class="wopb-heading-filter-in">';
-                                
+
                                 // Heading
                                 include WOPB_PATH . 'blocks/template/heading.php';
-                                
+
                                 if ( $attr['filterShow'] && $attr['productView'] == 'grid' ) {
                                     $wraper_before .= '<div class="wopb-filter-navigation">';
 
@@ -168,7 +169,9 @@ class Product_List_1{
 
 
                                                     if ( !empty($parsedOverlayMetaList) ) {
-                                                        $post_loop .= '<div class="wopb-product-new-meta '.($attr['ovrMetaInline'] ? 'wopb_f_inline' : '') .'">';
+                                                        $meta_class = $attr['ovrMetaInline'] ? ' wopb_f_inline' : '';
+                                                        $meta_class .= ! $attr['hoverMeta'] ? ' wopb-is-visible' : '';
+                                                        $post_loop .= '<div class="wopb-product-new-meta'. $meta_class .'">';
                                                         foreach( $parsedOverlayMetaList as $meta_val ) {
                                                             if ( $meta_val == '_wishlist' ) {
                                                                 $post_loop .= apply_filters( 'wopb_grid_wishlist', '', $post_id, $attr['tooltipPosition'] );

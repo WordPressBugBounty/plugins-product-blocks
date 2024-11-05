@@ -80,6 +80,7 @@ class Product_Grid_3{
             'tooltipPosition' => 'left',
             'ovrMetaInline' => false,
             'currentPostId' =>  '',
+            'hoverMeta' =>  true,
         );
     }
 
@@ -190,7 +191,9 @@ class Product_Grid_3{
                                                     }
 
                                                     if ( !empty($parsedOverlayMetaList) ) {
-                                                        $image_data .= '<div class="wopb-product-new-meta '.($attr['ovrMetaInline'] ? 'wopb_f_inline' : '') .'">';
+                                                        $meta_class = $attr['ovrMetaInline'] ? ' wopb_f_inline' : '';
+                                                        $meta_class .= ! $attr['hoverMeta'] ? ' wopb-is-visible' : '';
+                                                        $image_data .= '<div class="wopb-product-new-meta'. $meta_class .'">';
                                                         foreach( $parsedOverlayMetaList as $meta_val ) {
                                                             if ( $meta_val == '_wishlist' ) {
                                                                 $image_data .= apply_filters( 'wopb_grid_wishlist', '', $post_id, $attr['tooltipPosition'] );

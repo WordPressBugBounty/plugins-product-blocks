@@ -22,6 +22,7 @@ class Product_Image{
             'saleText' => 'Sale!',
             'saleDesign' => 'text',
             'currentPostId' =>  '',
+            'hoverZoom' =>  true,
         );
     }
 
@@ -86,6 +87,7 @@ class Product_Image{
             $productx_settings['showGalleryArrow'] = $attr['arrowGalleryImage'];
             $productx_settings['column'] = (array)$attr['galleryColumns'];
             $productx_settings['showGallery'] = $attr['showGallery'];
+            $productx_settings['hoverZoom'] = $attr['hoverZoom'];
 
             $slick_html = function() {
                 global $product;
@@ -139,7 +141,7 @@ class Product_Image{
                     $image_thumb .= '<div class="wopb-nav-slide"><img src="'.esc_url($thumbnail_src[0]).'" alt="'.esc_attr($alt_text).'" /></div>';
                 }
 
-                echo '<div class="wopb-product-gallery-wrapper' . ($productx_settings['showlight'] ? ' wopb-product-zoom-wrapper' : '' ). '">';
+                echo '<div class="wopb-product-gallery-wrapper' . ($productx_settings['showlight'] ? ' wopb-product-zoom-wrapper' : '' ). '" data-hover-zoom="' . $productx_settings['hoverZoom'] . '">';
                     if ($productx_settings['showlight']) {
                         echo '<a href="#" class="wopb-product-zoom"><svg enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path d="m243.96 340.18-206.3 206.32 0.593-125.75c0-10.557-8.568-19.125-19.125-19.125s-19.125 8.568-19.125 19.125v172.12c0 5.661 2.333 10.232 6.043 13.368 3.462 3.538 8.282 5.757 13.637 5.757h171.57c10.557 0 19.125-8.567 19.125-19.125 0-10.557-8.568-19.125-19.125-19.125h-126.78l206.53-206.51-27.043-27.061zm362-334.42c-3.461-3.538-8.28-5.757-13.616-5.757h-171.59c-10.557 0-19.125 8.568-19.125 19.125s8.568 19.125 19.125 19.125h126.76l-206.51 206.53 27.042 27.042 206.32-206.32-0.612 125.75c0 10.557 8.568 19.125 19.125 19.125s19.125-8.568 19.125-19.125v-172.12c0-5.661-2.333-10.231-6.044-13.368z"/></svg></a>';
                     }

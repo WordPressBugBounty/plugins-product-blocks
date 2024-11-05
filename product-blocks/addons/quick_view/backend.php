@@ -340,18 +340,28 @@ function wopb_get_quickview_settings( $config ) {
                                     'variations' => [
                                         1 => [
                                             'quick_view_click_action' => 'popup',
+                                            'quick_view_image_type' => 'image_with_gallery',
+                                            'quick_view_image_gallery' => 'bottom',
                                         ],
                                         2 => [
                                             'quick_view_click_action' => 'popup',
+                                            'quick_view_image_type' => 'image_with_gallery',
+                                            'quick_view_image_gallery' => 'bottom',
                                         ],
                                         3 => [
                                             'quick_view_click_action' => 'popup',
+                                            'quick_view_image_type' => 'image_with_pagination',
+                                            'quick_view_image_pagination' => 'line',
                                         ],
                                         4 => [
                                             'quick_view_click_action' => 'right_sidebar',
+                                            'quick_view_image_type' => 'image_with_gallery',
+                                            'quick_view_image_gallery' => 'bottom',
                                         ],
                                         5 => [
                                             'quick_view_click_action' => 'left_sidebar',
+                                            'quick_view_image_type' => 'image_with_gallery',
+                                            'quick_view_image_gallery' => 'bottom',
                                         ],
                                     ],
                                 ),

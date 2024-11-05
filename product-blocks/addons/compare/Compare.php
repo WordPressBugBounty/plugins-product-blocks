@@ -872,7 +872,11 @@ class Compare {
                                                     case 'add_to_cart':
                                                         $cart_btn_class = '';
                                                         $cart_text = $product->add_to_cart_text();
-                                                        if ( $product->is_type('simple') && $product->is_in_stock() ) {
+                                                        if (
+                                                            $product->is_type('simple') &&
+                                                            $product->is_in_stock() &&
+                                                            $product->is_purchasable()
+                                                        ) {
                                                             $cart_btn_class = 'ajax_add_to_cart';
                                                         }
                                             ?>

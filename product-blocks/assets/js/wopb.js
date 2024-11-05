@@ -129,15 +129,21 @@
         photoswipe.init();
         photoswipe.options.escKey = true;
 
-        photoswipe.listen('close', function() {
-            $('.wopb-builder-slider-for .slick-slide').zoom({magnify: 2});
-        });
+        // photoswipe.listen('close', function() {
+        //     $('.wopb-builder-slider-for .slick-slide').zoom({magnify: 2});
+        // });
     });
 
     $(document).ready(function() {
-        if (typeof $('.wopb-product-zoom-wrapper .wopb-builder-slider-for .slick-slide').zoom != 'undefined') {
-            $('.wopb-product-zoom-wrapper .wopb-builder-slider-for .slick-slide').zoom({magnify: 2});
-        }
+        setTimeout(function() {
+            let zoomWrapper = $('.wopb-product-zoom-wrapper');
+            let slickSLide = $('.wopb-product-zoom-wrapper .wopb-builder-slider-for .slick-slide');
+            if ( zoomWrapper.attr('data-hover-zoom') &&
+                typeof slickSLide.zoom != 'undefined'
+            ) {
+                slickSLide.zoom({magnify: 2});
+            }
+        }, 200);
     });
 
     // ----------------------------
@@ -164,8 +170,14 @@
         }
 
     }
-    $(document).on('mousedown', '.wopb-builder-cart-plus, .wopb-builder-cart-minus', function(e){
-        event.preventDefault();
+    $(document).on(
+        'mousedown',
+        '.wopb-builder-cart-plus, ' +
+        '.wopb-builder-cart-minus, ' +
+        '.wopb-add-to-cart-plus, ' +
+        'wopb-add-to-cart-minus',
+        function(e){
+        e.preventDefault();
     });
     $(document).on('click', '.wopb-builder-cart-plus', function(e){
         e.preventDefault();
@@ -739,23 +751,27 @@
     // ------------------------
     $(document).on('click', '.wopb-add-to-cart-plus', function(e){
         e.preventDefault();
-        const parents = $(this).closest('form.cart');
-        let parentQuantity = $(this).parents('.quantity:first').find('input.qty');
-        parentQuantity = parentQuantity.length ? parentQuantity : $(this).parents('.quantity:first').find('input.wopb-qty');
-        let max = parentQuantity.attr('max');
-        let _val = isNaN(parseInt(parentQuantity.val())) ? 0 : parseInt(parentQuantity.val());
+        const that = $(this)
+        const form = that.closest('form.cart');
+        let qtyParent = that.parents('.wopb-qty-wrap:first');
+        qtyParent = ! qtyParent.length ? that.parents('.quantity:first') : qtyParent;
+        let qty = qtyParent.find('input.wopb-qty');
+        qty = ! qty.length ? qtyParent.find('input.qty') : qty;
+        let max = qty.attr('max');
+        let _val = isNaN(parseInt(qty.val())) ? 0 : parseInt(qty.val());
         if ( max && typeof max !== typeof undefined ) {
             if ( _val < parseInt(max) ) {
                 _val = _val + 1;
             }else{
-                $(this).addClass('disable');
+                that.addClass('disable');
             }
         } else {
             _val = _val + 1;
         }
-        parents.find('.single_add_to_cart_button').attr('data-quantity', _val );
-        parentQuantity.val( _val );
+        form.find('.single_add_to_cart_button').attr('data-quantity', _val );
+        qty.val( _val );
         $('.wopb-add-to-cart-minus').removeClass('disable');
+        $('.wopb-cart-update-btn').removeAttr('disabled');
     });
 
     // ------------------------
@@ -763,18 +779,22 @@
     // ------------------------
     $(document).on('click', '.wopb-add-to-cart-minus', function(e){
         e.preventDefault();
-        const parents = $(this).closest('form.cart');
-        let parentQuantity = $(this).parents('.quantity:first').find('input.qty');
-        parentQuantity = parentQuantity.length ? parentQuantity : $(this).parents('.quantity:first').find('input.wopb-qty');
-        let _val = parseInt(parentQuantity.val());
+        const that = $(this)
+        const form = that.closest('form.cart');
+        let qtyParent = that.parents('.wopb-qty-wrap:first');
+        qtyParent = ! qtyParent.length ? that.parents('.quantity:first') : qtyParent;
+        let qty = qtyParent.find('input.wopb-qty');
+        qty = ! qty.length ? qtyParent.find('input.qty') : qty;
+        let _val = parseInt(qty.val());
         if ( _val >= 2 ) {
             _val = _val - 1;
         } else {
             $(this).addClass('disable');
         }
-        parents.find('.single_add_to_cart_button').attr('data-quantity', _val );
-        parentQuantity.val( _val );
+        form.find('.single_add_to_cart_button').attr('data-quantity', _val );
+        qty.val( _val );
         $('.wopb-add-to-cart-plus').removeClass('disable');
+        $('.wopb-cart-update-btn').removeAttr('disabled');
     });
 
     // ------------------------
@@ -1196,15 +1216,16 @@
     })
 
     $(document).on("click", ".wopb-filter-child-toggle span.dashicons", function (e) {
-        let parent = $(this).parent('.wopb-filter-child-toggle');
+        let that = $(this)
+        let parent = that.parents('.wopb-filter-item:first');
         let rightToggle = parent.find('.wopb-filter-right-toggle');
         let downToggle = parent.find('.wopb-filter-down-toggle');
-        let filterChildItem = parent.siblings('.wopb-filter-check-item').find('.wopb-filter-child-check-list:first');
-        if($(this).hasClass('wopb-filter-right-toggle')) {
+        let filterChildItem = parent.find('.wopb-filter-check-list:first');
+        if(that.hasClass('wopb-filter-right-toggle')) {
             rightToggle.addClass('wopb-d-none');
             downToggle.removeClass('wopb-d-none');
             filterChildItem.removeClass('wopb-d-none');
-        }else if($(this).hasClass('wopb-filter-down-toggle')) {
+        }else if(that.hasClass('wopb-filter-down-toggle')) {
             downToggle.addClass('wopb-d-none');
             rightToggle.removeClass('wopb-d-none');
             filterChildItem.addClass('wopb-d-none');
@@ -1233,9 +1254,9 @@
         let that = $(this);
         let parent = $('.wopb-product-wrapper.wopb-filter-block-front-end');
         if($(e.target).hasClass('wopb-filter-price-input')) {
-            let minPriceInput = parent.find('.wopb-filter-price-min');
-            let maxPriceInput = parent.find('.wopb-filter-price-max');
-            let maxRangeInput = that.find('.wopb-price-range .wopb-price-range-input-max');
+            let minPriceInput = parent.find('.wopb-min-price');
+            let maxPriceInput = parent.find('.wopb-max-price');
+            let maxRangeInput = that.find('.wopb-price-range .wopb-max-range');
             if(minPriceInput.val() < 0 || minPriceInput.val() == -0) {
                 minPriceInput.val(0)
             }
@@ -1250,7 +1271,7 @@
             $(e.target).priceSliderRange(minPriceInputValue, maxPriceInputValue)
         }
         filterSlug = that.find('.wopb-filter-slug').val();
-        parent.find('.wopb-filter-active-item-list .wopb-filter-active-item[data-slug="' + filterSlug + '"]').remove();
+        parent.find('.wopb-active-items .wopb-filter-active-item[data-slug="' + filterSlug + '"]').remove();
         switch(filterSlug) {
             case 'reset':
                 productFilters = resetProductFilter();
@@ -1262,45 +1283,45 @@
                 }
             break;
             case 'price':
-                let minRangeInputValue = Number(that.find('.wopb-filter-price-input-group .wopb-filter-price-min').val());
-                let maxRangeInput = that.find('.wopb-price-range .wopb-price-range-input-max');
-                let maxRangeInputValue = Number(that.find('.wopb-filter-price-input-group .wopb-filter-price-max').val());
+                let minRangeInputValue = Number(that.find('.wopb-input-group .wopb-min-price').val());
+                let maxRangeInput = that.find('.wopb-price-range .wopb-max-range');
+                let maxRangeInputValue = Number(that.find('.wopb-input-group .wopb-max-price').val());
 
                 if(minRangeInputValue > 0){
-                    that.addToClearProductFilterSection(('Min: ' + priceFormat(minRangeInputValue)), 'wopb-price-range-input-min')
+                    that.addToClearProductFilterSection(('Min: ' + priceFormat(minRangeInputValue)), 'wopb-min-range')
                 }
                 if(maxRangeInputValue != maxRangeInput.attr('max') && maxRangeInputValue != 0) {
-                    that.addToClearProductFilterSection(('Max: ' + priceFormat(maxRangeInputValue)), 'wopb-price-range-input-max')
+                    that.addToClearProductFilterSection(('Max: ' + priceFormat(maxRangeInputValue)), 'wopb-max-range')
                 }
                 filterSlugValue = {'minPrice': minRangeInputValue, 'maxPrice': maxRangeInputValue}
             break;
             case 'category':
                 filterSlugValue = [];
-                that.find('.wopb-filter-check-item .wopb-filter-category-input:checked').each(function() {
+                that.find('.wopb-item-content .wopb-filter-category-input:checked').each(function() {
                     filterSlugValue.push($(this).val());
                     that.addToClearProductFilterSection(('Cat: ' + $(this).data('label')), $(this).val())
                 });
             break;
             case 'status':
                 filterSlugValue = [];
-                that.find('.wopb-filter-check-item .wopb-filter-status-input:checked').each(function() {
+                that.find('.wopb-item-content .wopb-status-input:checked').each(function() {
                     filterSlugValue.push($(this).val());
                     that.addToClearProductFilterSection($(this).val(), $(this).val())
                 });
             break;
             case 'rating':
                 filterSlugValue = [];
-                that.find('.wopb-filter-check-item .wopb-filter-rating-input:checked').each(function() {
+                that.find('.wopb-item-content .wopb-rating-input:checked').each(function() {
                   filterSlugValue.push($(this).val());
                   that.addToClearProductFilterSection(('Rating: ' + $(this).val()), $(this).val())
                 });
             break;
             case 'product_taxonomy':
                 filterSlugValue = [];
-                let taxonomyParent = parent.find('.wopb-filter-check-item .wopb-filter-tax-term-input:checked').parents('.wopb-filter-body');
+                let taxonomyParent = parent.find('.wopb-item-content .wopb-filter-tax-term-input:checked').parents('.wopb-filter-body');
                 taxonomyParent.each(function() {
                     let taxonomy_terms = [];
-                    $(this).find('.wopb-filter-check-item .wopb-filter-tax-term-input:checked').each(function() {
+                    $(this).find('.wopb-item-content .wopb-filter-tax-term-input:checked').each(function() {
                         taxonomy_terms.push($(this).val())
                         that.addToClearProductFilterSection($(this).data('label'), $(this).val())
                     });
@@ -1322,17 +1343,16 @@
         productFilters['tax_relation'] = parent.find('.wopb-taxonomy-relation .wopb-filter-tax-relation:checked').val();
         $(this).productFilterCurrentPage();
         filterSlugValue = '';
-        if(parent.find('.wopb-filter-active-item-list .wopb-filter-active-item').length < 1){
+        if(parent.find('.wopb-active-items .wopb-filter-active-item').length < 1){
             parent.find('.wopb-filter-remove-section').hide(400)
         }
         let blockItemWrapper = $('.wp-block-product-blocks-' + parent.data('block-target')).find('.wopb-wrapper-main-content');
-        const post_ID = (that.parents('.wopb-shortcode:first').length != 0) ? that.parents('.wopb-shortcode:first').data('postid') : parent.data('postid');
         block(blockItemWrapper);
         wp.apiFetch( {
             path: '/wopb/product-filter',
             method: 'POST',
             data: {
-                post_id: post_ID,
+                post_id: parent.data('postid') ? parent.data('postid') : '',
                 block_name: ('product-blocks_' + parent.data('block-target')),
                 product_filters: productFilters,
                 current_url: parent.data('current-url'),
@@ -1388,7 +1408,7 @@
         html += `<span class="wopb-filter-active-item" data-slug="${filterSlug}" data-value="${filterSlugValue}" >`;
             html += `${activeFilterItem} <span class="dashicons dashicons-no-alt wopb-filter-remove-icon"></span>`;
         html += `</span>`;
-        parent.find('.wopb-filter-remove-section .wopb-filter-active-item-list').append(html)
+        parent.find('.wopb-filter-remove-section .wopb-active-items').append(html)
         if(parent.find('.wopb-filter-remove-section:visible').length === 0) {
             parent.find('.wopb-filter-remove-section').show().css('display', 'flex')
         }
@@ -1414,23 +1434,23 @@
                  rootBlock.find('.wopb-filter-body .wopb-filter-search-input').val('');
             }
             if((filterSlug !== 'removeAll' && filterSlug.val() === 'price') || filterSlug === 'removeAll') {
-                if(activeItemParent.data('value') === 'wopb-price-range-input-min' || filterSlug === 'removeAll') {
-                    rootBlock.find('.wopb-filter-body .wopb-price-range-input-min').val(0);
-                    rootBlock.find('.wopb-filter-body .wopb-price-range-input-min').trigger('input');
+                if(activeItemParent.data('value') === 'wopb-min-range' || filterSlug === 'removeAll') {
+                    rootBlock.find('.wopb-filter-body .wopb-min-range').val(0);
+                    rootBlock.find('.wopb-filter-body .wopb-min-range').trigger('input');
                 }
-                if(activeItemParent.data('value') === 'wopb-price-range-input-max' || filterSlug === 'removeAll') {
-                    let maxPriceInput = rootBlock.find('.wopb-filter-body .wopb-price-range-input-max');
+                if(activeItemParent.data('value') === 'wopb-max-range' || filterSlug === 'removeAll') {
+                    let maxPriceInput = rootBlock.find('.wopb-filter-body .wopb-max-range');
                     maxPriceInput.val(maxPriceInput.attr('max'));
                     maxPriceInput.trigger('input');
                 }
             }
             if(filterSlug === 'removeAll') {
                 rootBlock.find('.wopb-filter-remove-section .wopb-filter-active-item').remove();
-                rootBlock.find('.wopb-filter-body .wopb-filter-check-item input').prop('checked', false)
+                rootBlock.find('.wopb-filter-body .wopb-item-content input').prop('checked', false)
                 rootBlock.find('.wopb-filter-body .wopb-filter-sorting-input').val('default')
                 rootBlock.find('.wopb-filter-slug-reset').parent('.wopb-filter-body').trigger('change');
             }else {
-                let checkBoxFilterItem = filterSlug.parent('.wopb-filter-body').find('.wopb-filter-check-item');
+                let checkBoxFilterItem = filterSlug.parent('.wopb-filter-body').find('.wopb-item-content');
                 if(checkBoxFilterItem) {
                     checkBoxFilterItem.find('input[value='+ activeItemParent.data('value') +']').prop('checked', false)
                 }
@@ -1447,14 +1467,14 @@
      $(document).on("input", ".wopb-filter-block-front-end .wopb-filter-body .wopb-price-range-input", function (e) {
         let that = $(this);
         let parent = $(this).parents('.wopb-price-range-slider:first');
-        let minRangeInput = parent.find('.wopb-price-range-input-min');
-        let maxRangeInput = parent.find('.wopb-price-range-input-max');
+        let minRangeInput = parent.find('.wopb-min-range');
+        let maxRangeInput = parent.find('.wopb-max-range');
         let minRangeInputValue = Number(minRangeInput.val());
         let maxRangeInputValue = Number(maxRangeInput.val());
         let {rangeBarGap, rangeBarMinGap} = that.priceSliderRange(minRangeInputValue, maxRangeInputValue);
          if(rangeBarGap > rangeBarMinGap) {
-             parent.find('.wopb-filter-price-min').val(minRangeInputValue)
-             parent.find('.wopb-filter-price-max').val(maxRangeInputValue)
+             parent.find('.wopb-min-price').val(minRangeInputValue)
+             parent.find('.wopb-max-price').val(maxRangeInputValue)
          }
     })
 
@@ -1464,8 +1484,8 @@
     $.fn.priceSliderRange = function (minPrice, maxPrice) {
         let that = $(this);
         let parent = that.parents('.wopb-price-range-slider:first');
-        let minRangeInput = parent.find('.wopb-price-range-input-min');
-        let maxRangeInput = parent.find('.wopb-price-range-input-max');
+        let minRangeInput = parent.find('.wopb-min-range');
+        let maxRangeInput = parent.find('.wopb-max-range');
 
         let rangeBar = parent.find('.wopb-price-range-bar');
         let rangeBarLeft = Math.round((minPrice / maxRangeInput.attr('max')) * 100);
@@ -1489,10 +1509,10 @@
             if( rangeMaxValueFixed === '') {
                 rangeMaxValueFixed = Number(maxPrice + 1);
             }
-            if(that.hasClass('wopb-price-range-input-min')) {
+            if(that.hasClass('wopb-min-range')) {
                 minRangeInput.val( rangeMinValueFixed )
             }
-            if(that.hasClass('wopb-price-range-input-max')) {
+            if(that.hasClass('wopb-max-range')) {
                 maxRangeInput.val( rangeMaxValueFixed )
             }
         }
@@ -1506,30 +1526,28 @@
      * Extend/Collapse Filter Item
      */
     $(document).on("click", ".wopb-filter-block-front-end .wopb-filter-section .wopb-filter-extend-control", function () {
-        let extendedElement = $(this).parent().find('.wopb-filter-extended-item');
-        let showMoreBtn = $(this).parent().find('.wopb-filter-show-more');
-        let showLessBtn = $(this).parent().find('.wopb-filter-show-less');
-        let filterSlug = $(this).parents('.wopb-filter-body:first').find('.wopb-filter-slug');
-        let filterCheckList = filterSlug.parents('.wopb-filter-body:first').find('.wopb-filter-check-list:not(.wopb-filter-child-check-list)');
-        let itemTotalPage = Number(showMoreBtn.data('item-total-page'));
-        let currentItemPage = 1;
-        if($(this).hasClass('wopb-filter-show-more')) {
-            currentItemPage = Number(showMoreBtn.attr('data-item-page')) + 1;
-            if(itemTotalPage >= currentItemPage) {
-                showMoreBtn.attr('data-item-page', currentItemPage)
-                let hiddenTermCount = $(this).parents('.wopb-filter-body:first').find('.wopb-filter-check-item-section:last').data('hidden-term-count');
+        let that = $(this);
+        let parent = that.parents('.wopb-filter-body:first');
+        let extendedElement = parent.find('.wopb-filter-extended-item');
+        let showMoreBtn = parent.find('.wopb-filter-show-more');
+        let showLessBtn = parent.find('.wopb-filter-show-less');
+        let filterSlug = parent.find('.wopb-filter-slug');
+        let filterCheckList = parent.find('.wopb-filter-check-list:first');
+        let itemTotalPage = Number(showMoreBtn.attr('data-total-page'));
+        let currentPage = 1;
+        if(that.hasClass('wopb-filter-show-more')) {
+            currentPage = Number(showMoreBtn.attr('data-current-page')) + 1;
+            if(itemTotalPage >= currentPage) {
+                showMoreBtn.attr('data-current-page', currentPage)
                 $.ajax({
                     url: wopb_core.ajax_show_more_filter_item,
                     type: 'POST',
                     data: {
                         action: 'wopb_show_more_filter_item',
+                        query: filterSlug.data('query'),
                         attributes: filterSlug.data('attributes'),
-                        target_block_attr: filterSlug.data('target-block-attributes'),
                         taxonomy: filterSlug.data('taxonomy'),
-                        parent: filterSlug.data('parent'),
-                        term_limit: filterSlug.data('term-limit'),
-                        item_page: currentItemPage,
-                        hiddenTermCount: hiddenTermCount,
+                        current_page: currentPage,
                         wpnonce: wopb_core.security
                     },
                     beforeSend: function() {
@@ -1548,12 +1566,12 @@
                     },
                 });
             }
-            if(itemTotalPage == currentItemPage || currentItemPage > itemTotalPage) {
+            if(itemTotalPage == currentPage || currentPage > itemTotalPage) {
                 showMoreBtn.hide();
                  showLessBtn.show();
             }
             extendedElement.show(500);
-        }else if($(this).hasClass('wopb-filter-show-less')) {
+        }else if(that.hasClass('wopb-filter-show-less')) {
             showLessBtn.hide();
             showMoreBtn.show();
             extendedElement.hide(500);

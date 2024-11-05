@@ -315,7 +315,7 @@ class Product_Slider {
             <div class="wopb-product-cart-section wopb-cart-action">
                 <form action="#" class="cart">
                     <?php if($attr['showQty'] && $product->is_type('simple')) { ?>
-                        <div class="quantity">
+                        <div class="quantity wopb-qty-wrap">
                             <?php if($attr['showPlusMinus'] && $attr['plusMinusPosition'] == 'both') { ?>
                                 <span class="wopb-cart-minus wopb-add-to-cart-minus"><?php echo wopb_function()->svg_icon('minus'); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
                         <?php } ?>
@@ -337,14 +337,24 @@ class Product_Slider {
                         }
                         $cart_btn_class = '';
                         $cart_text = $product->add_to_cart_text();
-                        if($product->is_type('simple')) {
+                        if( $product->is_type('simple') && $product->is_purchasable() ) {
                             $cart_btn_class = 'single_add_to_cart_button ajax_add_to_cart';
-                            if($attr['cartText'])
-                                $cart_text = $attr['cartText'] ? $attr['cartText'] : $cart_text;
+                            $cart_text = ! empty( $attr['cartText'] ) ? $attr['cartText'] : $cart_text;
                         }
                     ?>
-                            <a href="<?php echo esc_url($product->add_to_cart_url()) ?>" class="wopb-product-cart <?php echo esc_html($cart_btn_class); ?>" data-postid="<?php echo esc_attr($product->get_id()) ?>"><?php echo esc_html( $cart_text ); ?></a>
-                            <a href="<?php echo esc_url(wc_get_cart_url()) ?>" class="wopb-product-cart wopb-view-cart wopb-d-none"><?php echo esc_html__('View Cart', 'product-blocks'); ?></a>
+                        <a
+                            href="<?php echo esc_url($product->add_to_cart_url()) ?>"
+                            class="wopb-product-cart <?php echo esc_html($cart_btn_class); ?>"
+                            data-postid="<?php echo esc_attr($product->get_id()) ?>"
+                        >
+                            <?php echo esc_html( $cart_text ); ?>
+                        </a>
+                        <a
+                            href="<?php echo esc_url(wc_get_cart_url()) ?>"
+                            class="wopb-product-cart wopb-view-cart wopb-d-none"
+                        >
+                            <?php echo esc_html__('View Cart', 'product-blocks'); ?>
+                        </a>
                 </form>
             </div>
 <?php

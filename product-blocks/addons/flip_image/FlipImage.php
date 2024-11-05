@@ -81,7 +81,11 @@ class FlipImage {
      public function flip_image_default_callback( $html ) {
          global $product;
          global $woocommerce_loop;
-         if ( ! is_product() && $product && $woocommerce_loop ) {
+         if (
+             ! is_product() &&
+             $product &&
+             ( is_archive() || $woocommerce_loop )
+         ) {
              $html .= $this->flip_image_callback( '', $product );
              return $html;
          }

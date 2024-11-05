@@ -138,26 +138,31 @@ defined( 'ABSPATH' ) || exit;
                             </td>
 
                             <td class="wopb-product-qty" data-title="<?php echo esc_attr( $attr['qtyHead'], 'product-blocks' ); ?>">
-                                <?php
-                                    remove_action('woocommerce_before_quantity_input_field', 'botiga_woocommerce_before_quantity_input_field');
-                                    remove_action('woocommerce_after_quantity_input_field', 'botiga_woocommerce_after_quantity_input_field');
-                                    if ( $product->is_sold_individually() ) {
-                                        $product_quantity = sprintf( '1 <input type="hidden" class="qty wopb-quantity" name="cart[%s][qty]" value="1" />', $args['cart_item_key'] );
-                                    } else {
-                                        $product_quantity = woocommerce_quantity_input(
-                                            array(
-                                                'input_name' => "cart[{$args['cart_item_key']}][qty]",
-                                                'input_value' => $args['cart_item']['quantity'],
-                                                'max_value' => $product->get_max_purchase_quantity(),
-                                                'min_value' => '0',
-                                                'product_name' => $product->get_name(),
-                                            ),
-                                            $product,
-                                            false
-                                        );
-                                    }
-                                    echo apply_filters( 'woocommerce_cart_item_quantity', $product_quantity, $args['cart_item_key'], $args['cart_item'] ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-                                ?>
+                                <div class="wopb-qty-wrap">
+                                    <?php if ( $product->is_sold_individually() ) { ?>
+                                        1 <input
+                                            type="hidden"
+                                            class="qty wopb-quantity"
+                                            name="cart[<?php echo $args['cart_item_key']; ?>][qty]"
+                                            value="1"
+                                        />
+                                    <?php
+                                        }else {
+                                            if( ! empty( $attr['plusMinusShow'] ) ) {
+                                    ?>
+                                        <span class="wopb-add-to-cart-minus wopb wopb-qty-ctrl"><?php echo wopb_function()->svg_icon('minus_2'); ?></span>
+                                    <?php } ?>
+                                        <input
+                                            type="number"
+                                            class="qty wopb-qty"
+                                            name="cart[<?php echo $args['cart_item_key']; ?>][qty]"
+                                            value="<?php echo  $args['cart_item']['quantity']; ?>"
+                                            min="0"
+                                        />
+                                    <?php if( ! empty( $attr['plusMinusShow'] ) ) { ?>
+                                        <span class="wopb-add-to-cart-plus wopb-qty-ctrl"><?php echo wopb_function()->svg_icon('plus_2'); ?></span>
+                                    <?php } } ?>
+                                </div>
                             </td>
 
                             <td class="wopb-product-subtotal" data-title="<?php echo esc_html( $attr['subTotalHead'] ); ?>">
