@@ -1145,6 +1145,10 @@ Product Video Addon [START]
     color: #646970;
     font-style: italic;
 }
+.wopb-video-meta-fields .wopb-video-single-position {
+    width: 100%;
+    margin-top: 5px;
+}
 /* ----------------------------------------
 Product Video Addon [STOP]
 ---------------------------------------- */

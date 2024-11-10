@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.6.1
 Requires PHP: 7.0
-Stable tag: 4.1.1
+Stable tag: 4.1.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -154,6 +154,11 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.1.2 – 10 November 2024 =
+* Update: Video position added to the image gallery on the single product page
+* Fix: Quantity input is broken in the Compare table with the Avada theme
+* Fix: Header logo appears enlarged for the Flip Image effect
+
 = 4.1.1 – 05 November 2024 =
 * Update: Plus/Minus control added to the Cart Table block in the Cart Builder
 * Update: Product Grid/List block overlay meta(Wishlist, Compare, Quickview) show only on hover option added

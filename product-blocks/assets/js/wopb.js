@@ -2198,16 +2198,18 @@
 
         //Add Class to Product Video Wrapper Parent
         if( singleVideoWrapper.length ) {
-            $('.wopb-product-video-wrapper').each(function (index) {
-                let parent = $(this).parents('.wopb-product-video-section:first');
-                if( ! parent.length && $(this).parents('.wopb-builder-slider-for:first').length ) {
-                    parent = $(this).parents('.slick-slide:first');
+            $('.wopb-product-video-wrapper').each(function () {
+                let that = $(this);
+                let parent = that.parents('.wopb-product-video-section:first');
+                if( ! parent.length && that.parents('.wopb-builder-slider-for:first').length ) {
+                    parent = that.parents('.slick-slide:first');
                 }
                 let playIcon = parent.find('.wopb-video-play-icon').clone()
                 playIcon.removeClass('wopb-d-none')
                 let navItem = $('.wopb-nav-slide.wopb-video-nav');
                 if( ! navItem.length ) {
-                    navItem = $('.flex-control-nav li').eq(index);
+                    let position = that.attr('data-single-position')
+                    navItem = position === 'after_first_image' ? $('.flex-control-nav li').eq(1) : $('.flex-control-nav li:' + position);
                     navItem.addClass('wopb-video-nav')
                 }
                 if( !navItem.find('.wopb-video-play-icon').length ) {

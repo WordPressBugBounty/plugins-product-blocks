@@ -175,7 +175,7 @@
     // ------------------------
     // Add to cart on input
     // ------------------------
-    $(document).on('input', '.wopb-quantity-wrapper .input-text.qty', function(e){
+    $(document).on('input', '.wopb-qty-wrap .wopb-qty', function(e){
         if($(this).val() === '' || $(this).val() < 1) {
             $(this).val(1)
         }
@@ -189,8 +189,8 @@
         if (!that.parent('.wopb-cart-action').hasClass('wopb-active')) {
             e.preventDefault();
         }
-        let compareWrapper = that.parents('.wopb-compare-modal:first')
-        let quantity = compareWrapper.find('.wopb-compare-item-' + that.data('postid') + ' .wopb-quantity-wrapper input.qty').val()
+        let compareWrapper = that.parents('.wopb-compare-table:first')
+        let quantity = compareWrapper.find('.wopb-compare-item-' + that.data('postid') + ' .wopb-qty-wrap .wopb-qty').val()
         $.ajax({
             url: wopb_compare.ajax,
             type: 'POST',

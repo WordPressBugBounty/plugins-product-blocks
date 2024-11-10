@@ -849,9 +849,9 @@ class Compare {
                                                         break;
                                                     case 'quantity':
                                             ?>
-                                                        <div class="wopb-quantity-wrapper quantity">
+                                                        <div class="wopb-qty-wrap">
                                                             <a class="wopb-add-to-cart-minus"><?php echo wopb_function()->svg_icon('minus_2') ?></a>
-                                                            <input type="number" class="input-text qty text" value="1">
+                                                            <input type="number" class="wopb-qty" value="1">
                                                             <a class="wopb-add-to-cart-plus"><?php echo wopb_function()->svg_icon('plus_2') ?></a>
                                                         </div>
                                             <?php

@@ -28,7 +28,9 @@ class FlipImage {
             add_action( 'add_meta_boxes', array( $this, 'feature_image_add_metabox' ) );
             add_action( 'save_post', array( $this, 'feature_image_save' ), 10, 1 );
         }
-        add_filter( 'wp_get_attachment_image', array( $this, 'flip_image_default_callback' ), 10, 1 );
+        add_action( 'woocommerce_before_shop_loop_item', function () {
+            add_filter( 'wp_get_attachment_image', array( $this, 'flip_image_default_callback' ), 10, 1 );
+        }, 10 );
         add_filter( 'wopb_flip_image', array( $this, 'flip_image_callback' ), 10, 3 );
     }
 
@@ -82,7 +84,6 @@ class FlipImage {
          global $product;
          global $woocommerce_loop;
          if (
-             ! is_product() &&
              $product &&
              ( is_archive() || $woocommerce_loop )
          ) {

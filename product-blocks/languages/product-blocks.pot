@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore 4.1.1\n"
+"Project-Id-Version: WowStore 4.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-05T04:40:44+00:00\n"
+"POT-Creation-Date: 2024-11-10T05:31:21+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: product-blocks\n"
@@ -476,12 +476,12 @@ msgid "Let your shoppers compare multiple products by displaying a pop-up or red
 msgstr ""
 
 #: addons/compare/backend.php:43
-#: addons/compare/Compare.php:1181
+#: addons/compare/Compare.php:1185
 #: addons/quick_view/backend.php:34
 #: addons/quick_view/Quickview.php:780
 #: addons/wishlist/Wishlist.php:261
 #: build/addons/compare/backend.php:43
-#: build/addons/compare/Compare.php:1181
+#: build/addons/compare/Compare.php:1185
 #: build/addons/quick_view/backend.php:34
 #: build/addons/quick_view/Quickview.php:780
 #: build/addons/wishlist/Wishlist.php:261
@@ -529,11 +529,11 @@ msgid "Image"
 msgstr ""
 
 #: addons/compare/backend.php:44
-#: addons/compare/Compare.php:1182
+#: addons/compare/Compare.php:1186
 #: addons/quick_view/backend.php:35
 #: addons/quick_view/Quickview.php:781
 #: build/addons/compare/backend.php:44
-#: build/addons/compare/Compare.php:1182
+#: build/addons/compare/Compare.php:1186
 #: build/addons/quick_view/backend.php:35
 #: build/addons/quick_view/Quickview.php:781
 #: assets/js/editor.blocks.js:547
@@ -553,12 +553,12 @@ msgid "Title"
 msgstr ""
 
 #: addons/compare/backend.php:45
-#: addons/compare/Compare.php:1183
+#: addons/compare/Compare.php:1187
 #: addons/quick_view/backend.php:37
 #: addons/quick_view/Quickview.php:783
 #: addons/wishlist/Wishlist.php:263
 #: build/addons/compare/backend.php:45
-#: build/addons/compare/Compare.php:1183
+#: build/addons/compare/Compare.php:1187
 #: build/addons/quick_view/backend.php:37
 #: build/addons/quick_view/Quickview.php:783
 #: build/addons/wishlist/Wishlist.php:263
@@ -576,11 +576,11 @@ msgid "Price"
 msgstr ""
 
 #: addons/compare/backend.php:46
-#: addons/compare/Compare.php:1184
+#: addons/compare/Compare.php:1188
 #: addons/quick_view/backend.php:39
 #: addons/quick_view/Quickview.php:785
 #: build/addons/compare/backend.php:46
-#: build/addons/compare/Compare.php:1184
+#: build/addons/compare/Compare.php:1188
 #: build/addons/quick_view/backend.php:39
 #: build/addons/quick_view/Quickview.php:785
 #: assets/js/editor.blocks.js:712
@@ -589,9 +589,9 @@ msgid "Stock Status"
 msgstr ""
 
 #: addons/compare/backend.php:47
-#: addons/compare/Compare.php:1185
+#: addons/compare/Compare.php:1189
 #: build/addons/compare/backend.php:47
-#: build/addons/compare/Compare.php:1185
+#: build/addons/compare/Compare.php:1189
 #: assets/js/editor.blocks.js:998
 #: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1229
@@ -600,11 +600,11 @@ msgid "Quantity"
 msgstr ""
 
 #: addons/compare/backend.php:48
-#: addons/compare/Compare.php:1186
+#: addons/compare/Compare.php:1190
 #: addons/quick_view/backend.php:40
 #: addons/quick_view/Quickview.php:786
 #: build/addons/compare/backend.php:48
-#: build/addons/compare/Compare.php:1186
+#: build/addons/compare/Compare.php:1190
 #: build/addons/quick_view/backend.php:40
 #: build/addons/quick_view/Quickview.php:786
 #: assets/js/editor.blocks.js:1812
@@ -612,9 +612,9 @@ msgid "Add To Cart"
 msgstr ""
 
 #: addons/compare/backend.php:49
-#: addons/compare/Compare.php:1187
+#: addons/compare/Compare.php:1191
 #: build/addons/compare/backend.php:49
-#: build/addons/compare/Compare.php:1187
+#: build/addons/compare/Compare.php:1191
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
@@ -636,19 +636,19 @@ msgid "Select Column"
 msgstr ""
 
 #: addons/compare/backend.php:54
-#: addons/compare/Compare.php:1192
+#: addons/compare/Compare.php:1196
 #: build/addons/compare/backend.php:54
-#: build/addons/compare/Compare.php:1192
+#: build/addons/compare/Compare.php:1196
 #: assets/js/editor.blocks.js:1339
 msgid "Additional"
 msgstr ""
 
 #: addons/compare/backend.php:55
-#: addons/compare/Compare.php:1193
+#: addons/compare/Compare.php:1197
 #: addons/quick_view/backend.php:38
 #: addons/quick_view/Quickview.php:784
 #: build/addons/compare/backend.php:55
-#: build/addons/compare/Compare.php:1193
+#: build/addons/compare/Compare.php:1197
 #: build/addons/quick_view/backend.php:38
 #: build/addons/quick_view/Quickview.php:784
 #: assets/js/editor.blocks.js:547
@@ -667,33 +667,33 @@ msgid "Description"
 msgstr ""
 
 #: addons/compare/backend.php:56
-#: addons/compare/Compare.php:1194
+#: addons/compare/Compare.php:1198
 #: build/addons/compare/backend.php:56
-#: build/addons/compare/Compare.php:1194
+#: build/addons/compare/Compare.php:1198
 #: assets/js/editor.blocks.js:2934
 msgid "Weight"
 msgstr ""
 
 #: addons/compare/backend.php:57
-#: addons/compare/Compare.php:1195
+#: addons/compare/Compare.php:1199
 #: build/addons/compare/backend.php:57
-#: build/addons/compare/Compare.php:1195
+#: build/addons/compare/Compare.php:1199
 msgid "Dimensions"
 msgstr ""
 
 #: addons/compare/backend.php:58
-#: addons/compare/Compare.php:1196
+#: addons/compare/Compare.php:1200
 #: build/addons/compare/backend.php:58
-#: build/addons/compare/Compare.php:1196
+#: build/addons/compare/Compare.php:1200
 #: assets/js/editor.blocks.js:1911
 #: assets/js/editor.blocks.js:2494
 msgid "SKU"
 msgstr ""
 
 #: addons/compare/backend.php:62
-#: addons/compare/Compare.php:1156
+#: addons/compare/Compare.php:1160
 #: build/addons/compare/backend.php:62
-#: build/addons/compare/Compare.php:1156
+#: build/addons/compare/Compare.php:1160
 #: assets/js/editor.blocks.js:2494
 #: assets/js/editor.blocks.js:2989
 msgid "Compare"
@@ -1934,10 +1934,10 @@ msgstr ""
 msgid "in stock"
 msgstr ""
 
-#: addons/compare/Compare.php:891
-#: blocks/Product_Slider.php:347
-#: build/addons/compare/Compare.php:891
-#: build/blocks/Product_Slider.php:347
+#: addons/compare/Compare.php:895
+#: blocks/Product_Slider.php:356
+#: build/addons/compare/Compare.php:895
+#: build/blocks/Product_Slider.php:356
 #: build/classes/Functions.php:2990
 #: build/classes/Functions.php:2992
 #: classes/Functions.php:2990
@@ -1945,33 +1945,33 @@ msgstr ""
 msgid "View Cart"
 msgstr ""
 
-#: addons/compare/Compare.php:975
-#: build/addons/compare/Compare.php:975
+#: addons/compare/Compare.php:979
+#: build/addons/compare/Compare.php:979
 msgid "Search for products by name..."
 msgstr ""
 
-#: addons/compare/Compare.php:1040
-#: build/addons/compare/Compare.php:1040
+#: addons/compare/Compare.php:1044
+#: build/addons/compare/Compare.php:1044
 msgid "No products were added to compare list"
 msgstr ""
 
-#: addons/compare/Compare.php:1041
-#: build/addons/compare/Compare.php:1041
+#: addons/compare/Compare.php:1045
+#: build/addons/compare/Compare.php:1045
 msgid "Return to Shop"
-msgstr ""
-
-#: addons/compare/Compare.php:1064
-#: build/addons/compare/Compare.php:1064
-msgid "has been added on compare list."
 msgstr ""
 
 #: addons/compare/Compare.php:1068
 #: build/addons/compare/Compare.php:1068
+msgid "has been added on compare list."
+msgstr ""
+
+#: addons/compare/Compare.php:1072
+#: build/addons/compare/Compare.php:1072
 msgid "View Compare List"
 msgstr ""
 
-#: addons/compare/Compare.php:1190
-#: build/addons/compare/Compare.php:1190
+#: addons/compare/Compare.php:1194
+#: build/addons/compare/Compare.php:1194
 #: assets/js/editor.blocks.js:2494
 msgid "- Select -"
 msgstr ""
@@ -2326,9 +2326,9 @@ msgid "It allows you to display a different image of products when the shoppers 
 msgstr ""
 
 #: addons/flip_image/backend.php:35
-#: addons/flip_image/FlipImage.php:103
+#: addons/flip_image/FlipImage.php:104
 #: build/addons/flip_image/backend.php:35
-#: build/addons/flip_image/FlipImage.php:103
+#: build/addons/flip_image/FlipImage.php:104
 msgid "Flip Image"
 msgstr ""
 
@@ -2434,23 +2434,23 @@ msgstr ""
 msgid "This option will disable image flipper to mobile devices."
 msgstr ""
 
-#: addons/flip_image/FlipImage.php:119
-#: build/addons/flip_image/FlipImage.php:119
+#: addons/flip_image/FlipImage.php:120
+#: build/addons/flip_image/FlipImage.php:120
 msgid "Select Flip Image"
 msgstr ""
 
-#: addons/flip_image/FlipImage.php:119
-#: build/addons/flip_image/FlipImage.php:119
+#: addons/flip_image/FlipImage.php:120
+#: build/addons/flip_image/FlipImage.php:120
 msgid "Set Flip Image"
 msgstr ""
 
-#: addons/flip_image/FlipImage.php:119
-#: build/addons/flip_image/FlipImage.php:119
+#: addons/flip_image/FlipImage.php:120
+#: build/addons/flip_image/FlipImage.php:120
 msgid "Remove Flip Image"
 msgstr ""
 
-#: addons/flip_image/FlipImage.php:119
-#: build/addons/flip_image/FlipImage.php:119
+#: addons/flip_image/FlipImage.php:120
+#: build/addons/flip_image/FlipImage.php:120
 msgid "Set Flip Image Source"
 msgstr ""
 
