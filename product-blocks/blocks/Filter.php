@@ -101,18 +101,17 @@ class Filter {
                     $this->removeFilterItem();
                     $html .= ob_get_clean();
                 }
-                $filter_content = $this->filter_content( $attr, $post );
-                $html .= ! $is_mobile ? $filter_content : '';
+                $html .= $this->filter_content( $attr, $post );
                 $wraper_after = '</div>';
             $wraper_after .= '</div>';
 
-            if( $is_mobile ) {
-                $modal_content = $wraper_before . $html . $filter_content . $wraper_after;
-                add_action( 'wopb_footer', function () use( $modal_content ) {
-                    echo $this->filter_in_footer($modal_content);
-                } );
-            }
-            return $wraper_before . $html . $wraper_after;
+
+            $content = $wraper_before . $html . $wraper_after;
+            add_action( 'wopb_footer', function () use( $content ) {
+                echo $this->filter_in_footer($content);
+            } );
+
+            return $content;
         }
     }
 
@@ -267,15 +266,44 @@ class Filter {
         global $wp_query;
         $query_vars = $wp_query->query_vars;
         $conditions = array();
-        $post_conditions = array();
         $where_clause = '';
         if( ! str_starts_with($args['taxonomy'], 'pa_') && empty( $args['parent'] ) ) {
             $args['parent'] = 0;
         }
+
+        $query_args = array(
+            'posts_per_page' => -1,
+            'post_type' => 'product',
+            'post_status' => 'publish',
+            'fields' => 'ids',
+        );
+        if( ! empty( $args['search_query'] ) ) {
+            $query_args['s'] = $args['search_query'];
+        }
+        $tax_query = [];
+        $tax_query[] = array(
+            'taxonomy' => $args['taxonomy'],
+            'field'    => 'term_id',
+            'terms'    => '',
+            'operator' => 'EXISTS',
+        );
+        $tax_query[] = array(
+            'taxonomy' => 'product_visibility',
+            'field' => 'name',
+            'terms' => 'exclude-from-catalog',
+            'operator' => 'NOT IN',
+        );
+
         //exclude category from wholesalex
-        if ( $args['taxonomy'] == 'product_cat' && ! empty( $query_vars['__wholesalex_exclude_cat'] ) ) {
-            $exclude_cat = implode(',', $query_vars['__wholesalex_exclude_cat']);
-            $conditions[] = " terms.term_id NOT IN ($exclude_cat)";
+        if ( $args['taxonomy'] == 'product_cat' ) {
+            if( ! empty( $query_vars['__wholesalex_exclude_cat'] ) ) {
+                $exclude_cat = implode(',', $query_vars['__wholesalex_exclude_cat']);
+                $conditions[] = " terms.term_id NOT IN ($exclude_cat)";
+            }
+            if( ! empty( $query_vars['__wholesalex_include_cat'] ) ) {
+                $include_cat = implode(',', $query_vars['__wholesalex_include_cat']);
+                $conditions[] = " terms.term_id IN ($include_cat)";
+            }
         }
 
         //get taxonomy from grid and sync with query
@@ -298,49 +326,42 @@ class Filter {
             //match taxonomy with value from $tax_slug variable
             if( ! empty( $tax_slug ) ) {
                 $tax_slug = rtrim($tax_slug, ',');
-                $post_conditions[] = $conditions[] = " terms.slug IN ($tax_slug)";
+                $tax_query[] = array(
+                    'taxonomy' => 'product_cat',
+                    'field' => 'slug',
+                    'terms' => $tax_slug,
+                    'operator' => 'IN',
+                );
+                $conditions[] = " terms.slug IN ($tax_slug)";
                 unset( $args['parent'] );
             }
         }
 
-        $join_2 = "INNER JOIN {$wpdb->prefix}term_taxonomy AS term_taxonomy_2 ON 
-                    term_relation_2.term_taxonomy_id = term_taxonomy_2.term_taxonomy_id
-                INNER JOIN {$wpdb->prefix}terms AS terms_2 ON 
-                    term_taxonomy_2.term_id = terms_2.term_id";
-
         //get taxonomy from taxonomy / archive page
         if( ! empty( $args['query_term'] ) ) {
-            $post_conditions[] = " terms_2.term_id IN ({$args['query_term']})
-            OR terms_2.term_id IN (
-                SELECT child_term_tax.term_id FROM
-                    {$wpdb->prefix}term_taxonomy AS child_term_tax
-                WHERE child_term_tax.parent = {$args['query_term']}
-            )";
-        }
-        //product in query specific term
-        if( ! empty( $post_conditions ) ) {
-            $post_conditions = implode( ' OR ', $post_conditions );
-            $conditions[] = "posts.ID IN (
-                SELECT term_relation_2.object_id FROM 
-                    {$wpdb->prefix}term_relationships AS term_relation_2 $join_2 
-                WHERE term_taxonomy_2.taxonomy = '{$args['query_tax']}' 
-                AND $post_conditions
-            )";
+            $tax_query[] = [
+                'taxonomy' => $args['query_tax'],
+                'field' => 'id',
+                'terms' => $args['query_term'],
+                'operator' => 'IN'
+            ];
         }
 
 
         //post not in query from $query_vars
         if ( ! empty( $query_vars['post__not_in'] ) ) {
-            $product_not_in = implode(',', array_map('intval', $query_vars['post__not_in']));
-            $conditions[] = " posts.ID NOT IN ($product_not_in)";
+            $query_args['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
         }
         //term fetch by parent
         if( isset( $args['parent'] ) &&  $args['parent'] !== '' ) {
             $conditions[] = ' term_taxonomy_1.parent=' . $args['parent'];
         }
-        //query if search page
-        if( ! empty( $args['search_query'] ) ) {
-            $conditions[] = " posts.post_title LIKE '%{$args['search_query']}%'";
+
+        $query_args['tax_query'] = $tax_query;
+        $product_ids = get_posts($query_args);
+        if( ! empty( $product_ids ) ) {
+            $product_ids = implode(',', array_map('intval', $product_ids));
+            $conditions[] = "term_relation_1.object_id IN ($product_ids)";
         }
         //Merge all where condition
         if( ! empty( $conditions ) ) {
@@ -355,18 +376,8 @@ class Filter {
             LEFT JOIN {$wpdb->prefix}term_relationships AS term_relation_1 ON  /* count product by main term and child term */
                 term_relation_1.term_taxonomy_id IN 
                     (term_taxonomy_1.term_id, child_term_tax.term_id)
-            LEFT JOIN {$wpdb->prefix}posts AS posts ON 
-                term_relation_1.object_id = posts.ID
-            WHERE term_taxonomy_1.taxonomy = '{$args['taxonomy']}'
-                AND posts.post_type = 'product'
-                AND posts.post_status = 'publish'
-                AND posts.ID NOT IN (   /* ignore hidden product from catalog visibility */
-                    SELECT term_relation_2.object_id FROM 
-                        {$wpdb->prefix}term_relationships AS term_relation_2 $join_2
-                    WHERE term_taxonomy_2.taxonomy = 'product_visibility'
-                    AND terms_2.slug = 'exclude-from-catalog'
-            ) $where_clause";
-        $sql = $wpdb->prepare("SELECT terms.term_id, terms.name, terms.slug, COUNT(DISTINCT posts.ID) as product_count
+            WHERE term_taxonomy_1.taxonomy = '{$args['taxonomy']}' $where_clause";
+        $sql = $wpdb->prepare("SELECT terms.term_id, terms.name, terms.slug, COUNT(DISTINCT term_relation_1.object_id) as product_count
             $inner_query
             GROUP BY terms.term_id
             LIMIT %d OFFSET %d", $args['limit'], ! empty( $args['offset'] ) ? $args['offset'] : 0);

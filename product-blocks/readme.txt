@@ -2,9 +2,9 @@
 Contributors: wpxpo, anik4e, jakirhasan
 Tags: woocommerce builder, woocommerce blocks, product filter, variation swatches, woocommerce compare
 Requires at least: 5.0
-Tested up to: 6.6.1
+Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.1.2
+Stable tag: 4.1.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,12 +14,18 @@ Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCom
 
 <a href="https://www.wpxpo.com/wowstore/" target="_blank">WowStore</a> is an all-in-one WooCommerce solution with 100s of features that help you build professional-looking eCommerce websites, boost earnings, enjoy better conversion rates, reduce cart abandonment rates, and increase the average order value of your store.
 
-👉 Learn more about WowStore: <a href="https://www.wpxpo.com/wowstore/" target="_blank">WowStore Pro</a>
-👉 Check features of WowStore: <a href="https://www.wpxpo.com/wowstore/features/" target="_blank">All Features</a>
-👉 Try WowStore for free: <a href="https://trywowstore.wpxpo.com/?admin_login" target="_blank">Try Demo</a>
+== WowStore Black Friday Deal! ==
+
+🎁 Get up to **65% Discount** on WowStore this **Black Friday** - Build the WooCommerce Store of Your Dreams 😍
+
+👉 [Grab Now](https://www.wpxpo.com/wowstore/?utm_source=wowstore-org&utm_medium=offer&utm_campaign=bfcm)
 
 == WowStore - #1 WooCommerce Builder & Blocks Plugin with Sales Boosting Features! ==
 [youtube https://www.youtube.com/watch?v=6t9JSvAR-to]
+
+👉 Learn more about WowStore: <a href="https://www.wpxpo.com/wowstore/" target="_blank">WowStore Pro</a>
+👉 Check features of WowStore: <a href="https://www.wpxpo.com/wowstore/features/" target="_blank">All Features</a>
+👉 Try WowStore for free: <a href="https://trywowstore.wpxpo.com/?admin_login" target="_blank">Try Demo</a>
 
 WowStore has been designed and developed to - build an awesome WooCommerce store, manage stellar features, and boost WooCommerce Sales! Explore the amazing features mentioned. Realize why it is the ultimate WooCommerce solution:
 
@@ -154,6 +160,12 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.1.3 – 14 November 2024 =
+* Fix: Product Filtering block is not displaying properly on the iPad device
+* Fix: Category hide conflict with WholesaleX in Product Filtering block
+* Fix: Product image gallery broken issue
+* Fix: Checkout field broken for Grevo theme in Checkout Builder
+
 = 4.1.2 – 10 November 2024 =
 * Update: Video position added to the image gallery on the single product page
 * Fix: Quantity input is broken in the Compare table with the Avada theme

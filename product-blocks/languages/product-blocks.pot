@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore 4.1.2\n"
+"Project-Id-Version: WowStore 4.1.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-10T05:31:21+00:00\n"
+"POT-Creation-Date: 2024-11-14T09:16:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: product-blocks\n"
@@ -1885,9 +1885,9 @@ msgid "Compare Products"
 msgstr ""
 
 #: addons/compare/Compare.php:622
-#: blocks/Filter.php:399
+#: blocks/Filter.php:410
 #: build/addons/compare/Compare.php:622
-#: build/blocks/Filter.php:399
+#: build/blocks/Filter.php:410
 #: assets/js/editor.blocks.js:338
 msgid "Clear All"
 msgstr ""
@@ -3826,8 +3826,8 @@ msgstr ""
 msgid "Wishlist Not Added."
 msgstr ""
 
-#: blocks/Filter.php:136
-#: build/blocks/Filter.php:136
+#: blocks/Filter.php:135
+#: build/blocks/Filter.php:135
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
@@ -3836,25 +3836,25 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: blocks/Filter.php:409
-#: build/blocks/Filter.php:409
+#: blocks/Filter.php:420
+#: build/blocks/Filter.php:420
 msgid "Search Products"
 msgstr ""
 
-#: blocks/Filter.php:478
-#: build/blocks/Filter.php:478
+#: blocks/Filter.php:489
+#: build/blocks/Filter.php:489
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:2494
 msgid "Taxonomy Relation"
 msgstr ""
 
-#: blocks/Filter.php:522
-#: build/blocks/Filter.php:522
+#: blocks/Filter.php:533
+#: build/blocks/Filter.php:533
 msgid "Show More"
 msgstr ""
 
-#: blocks/Filter.php:529
-#: build/blocks/Filter.php:529
+#: blocks/Filter.php:540
+#: build/blocks/Filter.php:540
 msgid "Show Less"
 msgstr ""
 
@@ -4447,33 +4447,33 @@ msgstr ""
 msgid "Activate WooCommerce"
 msgstr ""
 
-#: build/classes/Notice.php:1115
-#: classes/Notice.php:1115
+#: build/classes/Notice.php:1118
+#: classes/Notice.php:1118
 msgid "Introducing <span class=\"wopb-bold\">WholesaleX</span> - The Most Complete <span class=\"wopb-bold\">B2B Solution"
 msgstr ""
 
-#: build/classes/Notice.php:1122
-#: classes/Notice.php:1122
+#: build/classes/Notice.php:1125
+#: classes/Notice.php:1125
 msgid "Start wholesaling in your WooCommerce store and enjoy up to <span class=\"wopb-bold\">300% revenue</span>"
 msgstr ""
 
-#: build/classes/Notice.php:1124
-#: classes/Notice.php:1124
+#: build/classes/Notice.php:1127
+#: classes/Notice.php:1127
 msgid "Get WholesaleX"
 msgstr ""
 
-#: build/classes/Notice.php:1131
-#: classes/Notice.php:1131
+#: build/classes/Notice.php:1134
+#: classes/Notice.php:1134
 msgid "Installing WholesaleX"
 msgstr ""
 
-#: build/classes/Notice.php:1144
-#: classes/Notice.php:1144
+#: build/classes/Notice.php:1147
+#: classes/Notice.php:1147
 msgid "Installed"
 msgstr ""
 
-#: build/classes/Notice.php:1212
-#: classes/Notice.php:1212
+#: build/classes/Notice.php:1215
+#: classes/Notice.php:1215
 msgid "Successfully Installed and Activated"
 msgstr ""
 
@@ -12707,7 +12707,7 @@ msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:2
 #: build/assets/js/wopb_dashboard_min.js:2
-msgid "Spooky Halloween Deals "
+msgid "Exciting Black Friday Deals "
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:2
@@ -12717,7 +12717,7 @@ msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:2
 #: build/assets/js/wopb_dashboard_min.js:2
-msgid "up to 60% OFF"
+msgid "up to 65% OFF"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:2

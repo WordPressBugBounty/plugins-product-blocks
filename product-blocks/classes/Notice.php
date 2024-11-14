@@ -76,7 +76,7 @@ class Notice {
 			case 'pro_4':
 				//
 				// Will Get Free User
-				$url         = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=wstore_topbar&utm_medium=flash_sale_pro&utm_campaign=wstore-dashboard';
+				$url         = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=db-wstore-global&utm_medium=blackfriday-sale&utm_campaign=wstore-dashboard';
                 $this->wc_notice_css();
 				ob_start();
 				?>
@@ -149,7 +149,7 @@ class Notice {
 				// Will Get single
 				// Lifetime and Ultimited
 				$icon = WOPB_URL . 'assets/img/logo-sm.svg';
-				$url  = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=db-wstore-global&utm_medium=discount_upgrade_now&utm_campaign=wstore-dashboard';
+				$url  = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=db-wstore-global&utm_medium=blackfriday-sale&utm_campaign=wstore-dashboard';
 				$access_url = 'https://www.wpxpo.com/wowstore/?utm_source=db-wstore-global&utm_medium=discount_explore_now&utm_campaign=wstore-dashboard';
 				ob_start();
 				?>
@@ -157,9 +157,9 @@ class Notice {
                         <div class="wopb-notice-wrapper wopb-notice-type-1">
                             <div class="wopb-notice-icon"> <img src="<?php echo esc_url( $icon ); ?>"/>  </div>
                             <div class="wopb-notice-content-wrapper">
-                                <div class="wopb-notice-content"> <strong>Halloween Discount Alert:</strong> WowStore is on Sale - Enjoy <strong style="color: #ff176b;">up to 60% OFF</strong> on the complete WooCommerce solution</div>
+                                <div class="wopb-notice-content"> <strong>Black Friday Deal Alert:</strong> WowStore on Sale - Enjoy <strong style="color: #ff176b;">up to 65% OFF</strong> on this Complete WooCommerce Solution</div>
                             <div class="wopb-notice-buttons">
-                                <a class="wopb-notice-btn button button-primary" href="<?php echo esc_url( $url ); ?>" target="_blank"> SAVE 60% NOW!  </a>
+                                <a class="wopb-notice-btn button button-primary" href="<?php echo esc_url( $url ); ?>" target="_blank"> SAVE 65% NOW!  </a>
                                 <a class="wopb-notice-btn button" href="<?php echo esc_url( $access_url ); ?>" target="_blank">Explore WowStore</a>
                                 <a href="<?php echo esc_url( $close_url ); ?>" class="wopb-notice-dont-save-money"> I Don’t Want to Save Money </a>
                             </div>
@@ -521,8 +521,8 @@ class Notice {
 			// $is_already_collect 	= get_transient( 'wpxpo_data_collect_productx' ) == 'yes';
 
 			$this->available_notice = array(
-				'wopb_halloween_1'        => $this->set_new_notice( 'wopb_halloween_1', 'promotion', 'pro_1', '21-10-2024', '28-10-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
-				'wopb_halloween_2'        => $this->set_new_notice( 'wopb_halloween_2', 'promotion', 'pro_4', '29-10-2024', '02-11-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
+				'wopb_halloween_1'        => $this->set_new_notice( 'wopb_halloween_1', 'promotion', 'pro_1', '13-11-2024', '17-11-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
+				'wopb_halloween_2'        => $this->set_new_notice( 'wopb_halloween_2', 'promotion', 'pro_4', '18-11-2024', '12-12-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
 				/*
 				// Welcome
 				'welcome_notice'           => array(
@@ -641,6 +641,9 @@ class Notice {
 			}
 			.wopb-install-body.wopb-image-banner{
 				padding: 0px;
+			}
+			.wopb-install-body.wopb-image-banner img {
+				width: 100%;
 			}
 			.wopb-install-body > div {
 				max-width: 450px;
