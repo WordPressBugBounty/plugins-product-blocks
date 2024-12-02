@@ -32,7 +32,11 @@ do_action( 'wopb_before_content' );
 $width = wopb_function()->get_setting( 'container_width' );
 $width = $width ? $width : '1140';
 ?>
-<div class="wopb-template-container" style="margin:0 auto; max-width:<?php echo esc_attr($width); ?>px; padding: 0 15px; width: -webkit-fill-available; width: -moz-available;">
+<div 
+	class="wopb-template-container" 
+	style="margin:0 auto; max-width:<?php echo esc_attr($width); ?>px; padding: 0 15px; width: -webkit-fill-available; width: -moz-available;"
+	<?php if( wopb_function()->get_theme_name() == 'Divi' ) { echo 'id="main-content"'; } ?>
+>
 	<?php
 		while ( have_posts() ) : the_post();
 			the_content();

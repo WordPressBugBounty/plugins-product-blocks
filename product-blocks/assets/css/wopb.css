@@ -932,6 +932,9 @@ Product Video Addon [START]
 .wopb-block-loop-video-wrap {
     position: relative;
 }
+.theme-storefront.single-product .wopb-video-nav .wopb-video-play-icon svg {
+    width: 30px;
+}
 
 /* ----------------------------------------
 Product Video Addon [STOP]
@@ -1028,6 +1031,9 @@ Size Chart Addon [START]
 .wopb-size-chart-image img {
     width: 100%;
     box-shadow: none;
+}
+body div.product form.cart .wopb-size-chart-modal .wopb-sc-table td {
+    padding: .7em 1em;
 }
 /* ----------------------------------------
 Size Chart Addon [STOP]

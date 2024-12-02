@@ -823,22 +823,6 @@
     $('.wopb-builder-cart').find('.stock, .ast-stock-detail, .wopb-stock-progress-bar-section').remove();
 
     /*
-        if ($('.wopb-tooltip-text-top').length > 0) {
-            $('.wopb-tooltip-text-top').each(function(i, obj) {
-                let html = $(obj).html()
-                if (html.indexOf('span') >= 0 ) {
-                    const itm1 = $(obj).find('span').eq(0)
-                    const itm2 = $(obj).find('span').eq(1)
-                    itm1.parents('span').css('left', -1 * (itm1.text().length * 4) + 'px');
-                    itm2.parents('span').css('left', -1 * (itm2.text().length * 4) + 'px');
-                } else {
-                    $(obj).css('left', -1 * ($(obj).text().length * 4) + 'px');
-                }
-            });
-        }
-    */
-
-    /*
     * Cart Builder Script
      */
     // Cart Coupon Toggle Button Functionality
@@ -1176,9 +1160,11 @@
                 } else {
                     thumbnail.attr(attributes);
                 }
+
+                form.find('.wopb-buy-button').removeClass('wc-variation-selection-needed button disabled')
             })
-            if( ! form.find('.wopb-variation-selector').length ) {
-                form.on("reset_data", function () {
+            form.on("reset_data", function () {
+                if( ! form.find('.wopb-variation-selector').length ) {
                     let attributes = {
                         src: defaultProductImage.attr('data-backup_src'),
                     };
@@ -1190,8 +1176,10 @@
                     } else {
                         defaultProductImage.attr(attributes);
                     }
-                })
-            }
+                }
+                
+                form.find('.wopb-buy-button').addClass('wc-variation-selection-needed button disabled')
+            })
         }
     }
 

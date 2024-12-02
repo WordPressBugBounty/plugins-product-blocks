@@ -7,7 +7,6 @@ class Filter {
 
     public function __construct() {
         add_action( 'init', array( $this, 'register' ) );
-
         add_action( 'wc_ajax_wopb_show_more_filter_item', array( $this, 'show_more_callback' ) );
 		add_action( 'wp_ajax_nopriv_wopb_show_more_filter_item', array( $this, 'show_more_callback' ) );
     }
@@ -262,14 +261,78 @@ class Filter {
      * @since v.4.1.1
      */
     public function get_term_data( $args ) {
-        global $wpdb;
         global $wp_query;
         $query_vars = $wp_query->query_vars;
-        $conditions = array();
-        $where_clause = '';
+        
         if( ! str_starts_with($args['taxonomy'], 'pa_') && empty( $args['parent'] ) ) {
             $args['parent'] = 0;
         }
+
+        $term_query = array (
+            'taxonomy' => $args['taxonomy'],
+            'hide_empty' => true,
+        );
+
+        //exclude category from wholesalex
+        if ( $args['taxonomy'] == 'product_cat' ) {
+            if( ! empty( $query_vars['__wholesalex_exclude_cat'] ) ) {
+                $term_query['exclude'] = $query_vars['__wholesalex_exclude_cat']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
+            }
+            if( ! empty( $query_vars['__wholesalex_include_cat'] ) ) {
+                $term_query['include'] = $query_vars['__wholesalex_include_cat']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostIn_include
+            }
+        }
+
+        //check taxonomy from grid and sync with query
+        if( ! empty( $args['queryTaxValue'] ) && is_array( $args['queryTaxValue'] ) ) {
+            foreach ( $args['queryTaxValue'] as $tax ) {
+                if( ! is_array( $tax ) ) {
+                    $tax = (array)$tax;
+                }
+                if(
+                    empty( $args['query_term'] ) &&
+                    empty( $args['child_check'] ) &&
+                    ! empty( $tax['value'] )
+                ) {
+                    if( $args['taxonomy'] == $args['query_tax'] ) {
+                        $term_query['slug'][] = $tax['value'];
+                        unset( $args['parent'] );
+                    }
+                    $args['tax_slug'][] = $tax['value'];
+                }
+            }
+        }
+        
+        //term fetch by parent
+        if( isset( $args['parent'] ) && $args['parent'] !== '' ) {
+            $term_query['parent'] = $args['parent'];
+        }
+        $product_ids = $this->get_product_ids( $args );
+        $term_query['object_ids'] = empty( $product_ids ) ? 'wopb_empty' : $product_ids;
+        $total_terms = count( get_terms( array_merge( array( 'fields' => 'ids' ),  $term_query ) ) ) ;
+        $term_query['number'] = $args['limit'];
+        $term_query['offset'] = ! empty( $args['offset'] ) ? $args['offset'] : 0;
+        $terms = get_terms( $term_query );
+
+        return array(
+            'query_params' => array(
+                'taxonomy' => $args['taxonomy'],
+                'query_tax' => $args['query_tax'],
+                'query_term' => $args['query_term'],
+                'queryTaxValue' => ! empty( $args['queryTaxValue'] ) ? $args['queryTaxValue'] : '',
+                'parent' => ! empty( $args['parent'] ) ? $args['parent'] : '',
+                'limit' => $args['limit'],
+                'search_query' => ! empty( $term_query['search_query'] ) ? $term_query['search_query'] : '',
+                'tax_slug' => ! empty( $args['tax_slug'] ) ? $args['tax_slug'] : '',
+            ),
+            'total_terms' => $total_terms,
+            'terms' =>  $terms,
+        );
+    }
+
+    public function get_product_ids( $args ) {
+        global $wp_query;
+        $query_vars = $wp_query->query_vars;
 
         $query_args = array(
             'posts_per_page' => -1,
@@ -294,50 +357,17 @@ class Filter {
             'operator' => 'NOT IN',
         );
 
-        //exclude category from wholesalex
-        if ( $args['taxonomy'] == 'product_cat' ) {
-            if( ! empty( $query_vars['__wholesalex_exclude_cat'] ) ) {
-                $exclude_cat = implode(',', $query_vars['__wholesalex_exclude_cat']);
-                $conditions[] = " terms.term_id NOT IN ($exclude_cat)";
-            }
-            if( ! empty( $query_vars['__wholesalex_include_cat'] ) ) {
-                $include_cat = implode(',', $query_vars['__wholesalex_include_cat']);
-                $conditions[] = " terms.term_id IN ($include_cat)";
-            }
+        //check taxonomy from grid and sync with query
+        if( ! empty( $args['query_tax'] ) && ! empty( $args['tax_slug'] ) ) {
+            $tax_query[] = array(
+                'taxonomy' => $args['query_tax'],
+                'field' => 'slug',
+                'terms' => $args['tax_slug'],
+                'operator' => 'IN',
+            );
         }
 
-        //get taxonomy from grid and sync with query
-        if( ! empty( $args['queryTaxValue'] ) && is_array( $args['queryTaxValue'] ) ) {
-            $tax_slug = '';
-            foreach ( $args['queryTaxValue'] as $tax ) {
-                if( ! is_array( $tax ) ) {
-                    $tax = (array)$tax;
-                }
-                if(
-                    $args['taxonomy'] == $args['query_tax'] &&
-                    empty( $args['query_term'] ) &&
-                    empty( $args['child_check'] ) &&
-                    ! empty( $tax['value'] )
-                ) {
-                    $tax_slug .= "'" . $tax['value'] . "',";
-                }
-            }
-
-            //match taxonomy with value from $tax_slug variable
-            if( ! empty( $tax_slug ) ) {
-                $tax_slug = rtrim($tax_slug, ',');
-                $tax_query[] = array(
-                    'taxonomy' => 'product_cat',
-                    'field' => 'slug',
-                    'terms' => $tax_slug,
-                    'operator' => 'IN',
-                );
-                $conditions[] = " terms.slug IN ($tax_slug)";
-                unset( $args['parent'] );
-            }
-        }
-
-        //get taxonomy from taxonomy / archive page
+        //check taxonomy in taxonomy / archive page
         if( ! empty( $args['query_term'] ) ) {
             $tax_query[] = [
                 'taxonomy' => $args['query_tax'],
@@ -347,61 +377,25 @@ class Filter {
             ];
         }
 
+        //check taxonomy and term when product count
+        if( ! empty( $args['taxonomy'] ) && ! empty( $args['query_count_term'] ) ) {
+            $tax_query[] = [
+                'taxonomy' => $args['taxonomy'],
+                'field' => 'id',
+                'terms' => $args['query_count_term'],
+                'operator' => 'IN'
+            ];
+        }
 
         //post not in query from $query_vars
         if ( ! empty( $query_vars['post__not_in'] ) ) {
             $query_args['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
         }
-        //term fetch by parent
-        if( isset( $args['parent'] ) &&  $args['parent'] !== '' ) {
-            $conditions[] = ' term_taxonomy_1.parent=' . $args['parent'];
-        }
-
         $query_args['tax_query'] = $tax_query;
-        $product_ids = get_posts($query_args);
-        if( ! empty( $product_ids ) ) {
-            $product_ids = implode(',', array_map('intval', $product_ids));
-            $conditions[] = "term_relation_1.object_id IN ($product_ids)";
-        }
-        //Merge all where condition
-        if( ! empty( $conditions ) ) {
-            $where_clause = ' AND ' . implode(' AND ', $conditions);
-        }
-
-        $inner_query = "FROM {$wpdb->prefix}terms AS terms
-            INNER JOIN {$wpdb->prefix}term_taxonomy AS term_taxonomy_1 ON 
-                terms.term_id = term_taxonomy_1.term_id
-            LEFT JOIN {$wpdb->prefix}term_taxonomy AS child_term_tax ON    /* join child terms to show total products in parent term by both parent and child terms */
-                child_term_tax.parent = term_taxonomy_1.term_id
-            LEFT JOIN {$wpdb->prefix}term_relationships AS term_relation_1 ON  /* count product by main term and child term */
-                term_relation_1.term_taxonomy_id IN 
-                    (term_taxonomy_1.term_id, child_term_tax.term_id)
-            WHERE term_taxonomy_1.taxonomy = '{$args['taxonomy']}' $where_clause";
-        $sql = $wpdb->prepare("SELECT terms.term_id, terms.name, terms.slug, COUNT(DISTINCT term_relation_1.object_id) as product_count
-            $inner_query
-            GROUP BY terms.term_id
-            LIMIT %d OFFSET %d", $args['limit'], ! empty( $args['offset'] ) ? $args['offset'] : 0);
-        $terms = $wpdb->get_results($sql);
-
-        $total_terms = '';
-        if( ! empty( $terms ) ) {
-            $total_terms = $wpdb->get_var("SELECT COUNT(DISTINCT terms.term_id) AS total_terms $inner_query");
-        }
-
-        return array(
-            'query_params' => array(
-                'taxonomy' => $args['taxonomy'],
-                'query_tax' => $args['query_tax'],
-                'query_term' => $args['query_term'],
-                'queryTaxValue' => ! empty( $args['queryTaxValue'] ) ? $args['queryTaxValue'] : '',
-                'parent' => ! empty( $args['parent'] ) ? $args['parent'] : '',
-                'limit' => $args['limit'],
-                'search_query' => ! empty( $term_query['search_query'] ) ? $term_query['search_query'] : '',
-            ),
-            'total_terms' => $total_terms,
-            'terms' =>  $terms,
-        );
+        return get_posts($query_args); 
     }
+
+
     public function removeFilterItem() {
 ?>
         <div class="wopb-filter-remove-section">
@@ -558,6 +552,7 @@ class Filter {
         <?php
             foreach ( $params['terms'] as $term ) {
                 $extended_item_class = isset($params['show_more']) ? 'wopb-filter-extended-item' : '';
+                $query_params['query_count_term'] = $term->term_id;
         ?>
             <div class="wopb-filter-item <?php echo esc_attr($extended_item_class) ?>">
                 <div class="wopb-item-content">
@@ -587,7 +582,12 @@ class Filter {
                             }
                         }
                         ?>
-                       <span><?php echo esc_html($term->name) ?> <?php echo $attr['productCount'] ? esc_html('(' . $term->product_count .')') : '' ?></span>
+                       <span>
+                            <?php 
+                                echo esc_html($term->name);
+                                echo $attr['productCount'] ? esc_html(' (' . count( $this->get_product_ids( $query_params ) ) .')') : ''
+                            ?> 
+                        </span>
                     </label>
                     <?php
                     if(  ! str_starts_with($query_params['taxonomy'], 'pa_') ) {

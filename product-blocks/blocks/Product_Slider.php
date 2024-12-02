@@ -171,8 +171,10 @@ class Product_Slider {
             ?>
                 <div class="wopb-product-excerpt">
                     <?php
-                        $product_excerpt = strlen($product->get_short_description()) > $attr['descriptionLimit'] ? wp_trim_words($product->get_short_description(), $attr['descriptionLimit']) . '...' : $product->get_short_description();
-                        echo $product_excerpt; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                        $product_excerpt = wpautop($product->get_short_description());
+                        echo strlen($product_excerpt) > $attr['descriptionLimit'] 
+                            ? mb_substr($product_excerpt, 0, $attr['descriptionLimit']) . '...' 
+                            : $product_excerpt; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     ?>
                 </div>
             <?php
@@ -356,6 +358,11 @@ class Product_Slider {
                             <?php echo esc_html__('View Cart', 'product-blocks'); ?>
                         </a>
                 </form>
+                <?php
+                    if( $after_loop = apply_filters( 'wopb_after_loop_item', $content = '' ) ) {
+                        echo '<div class="wopb-after-loop-item">' . $after_loop . '</div>';
+                    }
+                ?>
             </div>
 <?php
         }

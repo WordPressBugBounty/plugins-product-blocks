@@ -7,6 +7,7 @@ class Product_Cart{
 
     public function __construct() {
         add_action( 'init', array( $this, 'register' ) );
+        add_action( 'template_redirect', array( $this, 'buy_now_submit' ) );
     }
 
     public function get_attributes() {
@@ -15,6 +16,9 @@ class Product_Cart{
             'quantityBtnPosition' => 'right',
             'showQuantityBtn' => true,
             'currentPostId' =>  '',
+            'showBuyNow' =>  false,
+            'removeProduct' =>  true,
+            'btnBuyText' =>  'Buy Now',
         );
     }
 
@@ -38,6 +42,26 @@ class Product_Cart{
         if ( ! empty( $product ) ) {
             global $productx_cart;
             $cart_class = '';
+
+            if( ! empty( $attr['showBuyNow'] ) ) {
+                add_filter('wopb_bottom_add_to_cart', function ( $content ) use ($attr, $product) {
+
+                    if( ! empty( $attr['removeProduct'] ) ) {
+                        $content .= '<input type="hidden" name="wopb-remove-product" value="true">';
+                    }
+
+                    $content .= '<button ';
+                        $content .= 'type="submit" ';
+                        $content .= 'name="wopb-buy-now" ';
+                        $content .= 'class="wopb-buy-button ' . ( $product->is_type('variable') ? 'wc-variation-selection-needed button disabled' : '' ) . '" ';
+                        $content .= 'value="' . $product->get_id() . '" ';
+                        $content .= 'data-product_id="' . $product->get_id() . '" ';
+                    $content .= '>';
+                        $content .= __( ! empty( $attr['btnBuyText'] ) ? $attr['btnBuyText'] : 'Buy Now', 'product-blocks');
+                    $content .= '</button>';
+                    return $content;
+                });
+            }
             
             if ( wopb_function()->isPro() ) {
                 $methods = get_class_methods( wopb_pro_function() );
@@ -108,5 +132,47 @@ class Product_Cart{
 
     public function remove_quantity_fields( $return, $product ) {
         return true;
+    }
+
+    /**
+     * Click Buy Now and Redirect to Checkout Page
+     *
+     * @return null
+     * @since v.4.1.4
+     */
+    public function buy_now_submit() {
+        if ( ! empty( $_REQUEST[ 'wopb-buy-now' ] ) ) {
+            $product_id = $_REQUEST['wopb-buy-now'];
+            $qty = floatval(! empty( $_REQUEST['quantity'] ) ? $_REQUEST['quantity'] : 1);
+            $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $qty);
+            if ( $passed_validation ) {
+                $redirect = false;
+                if ( ! empty( $_REQUEST['wopb-remove-product'] ) ) {
+                    WC()->cart->empty_cart();
+                    if ( ! empty( $_REQUEST['variation_id'] ) ) {
+                        $variation = [];
+                        foreach ( $_REQUEST as $name => $value ) {
+                            if ( str_starts_with($name, 'attribute_') ) {
+                                $variation[$name] = $value;
+                            }
+                        }
+                        WC()->cart->add_to_cart($product_id, $qty, $_REQUEST['variation_id'], $variation);
+                    }
+                }
+
+                if ( ! isset( $_REQUEST['variation_id'] ) ) {
+                    WC()->cart->add_to_cart($product_id, $qty);
+                    $redirect = true;
+                }elseif( ! empty( $_REQUEST['variation_id'] ) ) {
+                    $redirect = true;
+                }
+                if( $redirect ) {
+                    wp_safe_redirect(wc_get_checkout_url());
+                    exit;
+                }else {
+                    return;
+                }
+            }
+        }
     }
 }

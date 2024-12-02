@@ -38,7 +38,13 @@ $sidebar = $page_id ? get_post_meta($page_id, 'wopb-builder-sidebar', true) : ''
 $widget_area = $page_id ? get_post_meta($page_id, 'wopb-builder-widget-area', true) : '';
 $has_widget = ($sidebar && $widget_area != '') ? true : false;
 if ($width) {
-    echo '<div class="wopb-builder-container product '.(($has_widget?' wopb-widget-'.esc_attr($sidebar):'')).'" style="max-width: '.esc_attr($width).'px; margin: 0 auto;">';
+    echo '<div ';
+        if( wopb_function()->get_theme_name() == 'Divi' ) {
+            echo 'id="main-content"';
+        }
+        echo 'class="wopb-builder-container product '.(($has_widget?' wopb-widget-'.esc_attr($sidebar):'')).'"';
+        echo 'style="max-width: '.esc_attr($width).'px; margin: 0 auto;"';
+    echo '>';
     if( is_product() ) {
         echo "<div style='width: 100%;'>";
             do_action( 'woocommerce_before_single_product' );

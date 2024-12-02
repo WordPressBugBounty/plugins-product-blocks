@@ -135,9 +135,18 @@ class SalesNotification {
                 $user_info = get_userdata( $order->get_user_id() );
                 $time_deff = isset( $date['date'] ) ? human_time_diff( strtotime( $date['date'] ), time() ) : '0';
                 if ( $user_info ) {
-                    $customer_name = $name == 'display' || ( $user_info->first_name == '' && $user_info->last_name == '' )
-                        ? $user_info->display_name
-                        : ( $user_info->first_name . ' ' . $user_info->last_name );
+                    if(
+                        $name == 'display' ||
+                        ( $user_info->first_name == '' && $user_info->last_name == '' )
+                    ) {
+                        $customer_name = $user_info->display_name;
+                    }elseif( $name == 'user_name' && $user_info->user_login ) {
+                        $customer_name = $user_info->user_login;
+                    }elseif( $name == 'nick_name' && $user_info->nickname ) {
+                        $customer_name = $user_info->nickname;
+                    }else {
+                        $customer_name = $user_info->first_name . ' ' . $user_info->last_name;
+                    }
                 } else {
                     $customer_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
                 }

@@ -19,7 +19,6 @@ class Notice {
 	 *
 	 * @since v.1.0.0
 	 */
-	private $notice_version   = 'v26';
 	private $available_notice = array();
 	private $price_id         = '';
 	private $type;
@@ -522,7 +521,7 @@ class Notice {
 
 			$this->available_notice = array(
 				'wopb_halloween_1'        => $this->set_new_notice( 'wopb_halloween_1', 'promotion', 'pro_1', '13-11-2024', '17-11-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
-				'wopb_halloween_2'        => $this->set_new_notice( 'wopb_halloween_2', 'promotion', 'pro_4', '18-11-2024', '12-12-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
+				'wopb_black_friday_1'        => $this->set_new_notice( 'wopb_black_friday_1', 'promotion', 'pro_4', '18-11-2024', '12-12-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
 				/*
 				// Welcome
 				'welcome_notice'           => array(

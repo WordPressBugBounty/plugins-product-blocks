@@ -283,7 +283,7 @@ class Functions{
 	 */
     public function excerpt( $post_id, $limit = 55 ) {
         global $product;
-        return wp_trim_words( $product->get_short_description() , $limit );
+        return mb_substr( $product->get_short_description(), 0 , $limit );
     }
 
     /**
@@ -2882,15 +2882,22 @@ class Functions{
     }
 
     /**
-	 * Grid Add to Cart HTML
-     * 
+     * Grid Add to Cart HTML
+     *
+     * @param $product
+     * @param $params
+     * @return STRING | Add to cart HTML as String
      * @since v.1.0.0
-     * @param MIXED | Product Object (OBJECT), Cart Text (STRING)
-	 * @return STRING | Add to cart HTML as String
-	 */
-    public function get_add_to_cart( $product , $cart_text = '', $cart_active = '', $tooltip_position = 'left', $is_icon = false ) {
+     */
+    public function get_add_to_cart( $product , $params ) {
         $data = '';
+        $cart_text = isset( $params['cartText'] ) ? $params['cartText'] : '';
+        $cart_active = isset( $params['cartActive'] ) ? $params['cartActive'] : '';
+        $tooltip_position = isset( $params['tooltipPosition'] ) ? $params['tooltipPosition'] : '';
+        $is_icon = isset( $params['isIcon'] ) ? $params['isIcon'] : '';
+        $no_follow = ! empty( $params['cartNoFollow'] ) ? $params['cartNoFollow'] : '';
         $is_purchasable = $product->is_purchasable();
+
         if ( $this->isPro() && $is_purchasable ) {
             $methods = get_class_methods( wopb_pro_function() );
             if ( in_array( 'is_simple_preorder', $methods ) ) {
@@ -2915,8 +2922,10 @@ class Functions{
             'data-quantity'    => '1',
             'data-product_id'  => $product->get_id(),
             'data-product_sku' => $product->get_sku(),
-            'rel'              => 'nofollow'
         ); 
+        if( $no_follow ) {
+            $attributes['rel'] = 'nofollow';
+        }
     
         if ( $product->is_type( 'external' ) ) {
             $attributes['target'] = '_blank';

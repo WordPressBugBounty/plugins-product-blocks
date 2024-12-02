@@ -66,6 +66,7 @@ class Product_List_1{
             'ovrMetaInline' => true,
             'currentPostId' =>  '',
             'hoverMeta' =>  true,
+            'cartNoFollow' =>  true,
         );
     }
 
@@ -108,6 +109,13 @@ class Product_List_1{
         if ( $recent_posts->have_posts() ) {
             $attr['className'] = !empty($attr['className']) ? preg_replace('/[^A-Za-z0-9_ -]/', '', $attr['className']) : '';
             $attr['align'] = !empty($attr['align']) ? 'align' . preg_replace('/[^A-Za-z0-9_ -]/', '', $attr['align']) : '';
+            $cart_params = array(
+                'cartText' => $attr['cartText'],
+                'cartActive' => $attr['cartActive'],
+                'tooltipPosition' => $attr['tooltipPosition'],
+                'cartNoFollow' => $attr['cartNoFollow'],
+                'isIcon' => true,
+            );
 
             $wraper_before .= '<div '.(isset($attr['advanceId'])?'id="'.sanitize_html_class($attr['advanceId']).'" ':'').' class="wp-block-product-blocks-'.esc_attr($block_name).' wopb-block-'.sanitize_html_class($attr["blockId"]).' '. $attr['className'] . $attr['align'] . '">';
                 $wraper_before .= '<div class="wopb-block-wrapper'.( isset($attr['layout']) ? ' wopb-has-gridlay' : '').'">';
@@ -183,7 +191,7 @@ class Product_List_1{
                                                                 $post_loop .= apply_filters( 'wopb_grid_compare', '', $post_id, $attr['tooltipPosition'] );
                                                             }
                                                             if ( $meta_val == '_cart' ) {
-                                                                $post_loop .= wopb_function()->get_add_to_cart( $product, $attr['cartText'], $attr['cartActive'], $attr['tooltipPosition'], true );
+                                                                $post_loop .= wopb_function()->get_add_to_cart( $product, $cart_params );
                                                             }
                                                         }
                                                         $post_loop .= '</div>';
@@ -215,7 +223,8 @@ class Product_List_1{
 
                                                 // Add to Cart URL
                                                 if ( $attr['showCart'] && in_array('cart',$is_show) ){
-                                                    $cart_data .= wopb_function()->get_add_to_cart( $product, $attr['cartText'], $attr['cartActive'], $attr['tooltipPosition'], false );
+                                                    $cart_params['isIcon'] = false;
+                                                    $cart_data .= wopb_function()->get_add_to_cart( $product, $cart_params );
                                                 }
 
                                                 foreach ($is_show as $value) {

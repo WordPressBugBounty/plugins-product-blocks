@@ -107,53 +107,59 @@ class Product_Image{
                 $image_full = $image_thumb = '';
                 $full_size = apply_filters( 'woocommerce_gallery_full_size', apply_filters( 'woocommerce_product_thumbnails_large_size', 'full' ) );
                 $thumbnail_size = $full_size;
-                ob_start();
-                echo apply_filters( 'wopb_product_video', '', $product, $all_id[0] );
-                $video_thumb = ob_get_clean();
-                $video_meta = get_post_meta( $product->get_id(), '__wopb_product_video', true );
                 $video_image_full = '';
                 $video_image_thumb = '';
                 $video_position = ! empty( $video_meta['single_position'] ) ? $video_meta['single_position'] : 'first';
-                if( $video_thumb ) {
-                    $fallback_url = ! empty( $video_meta['img'] ) ? $video_meta['img'] : '';
-                    $thumbnail_src = wp_get_attachment_image_src( $all_id[0], $thumbnail_size );
-                    if( ! empty( $video_meta['img'] ) && ! empty( $video_meta['img_id'] ) ) {
-                        $thumbnail_src = wp_get_attachment_image_src( $video_meta['img_id'], $thumbnail_size );
-                    }
-                    $fallback_thumb_url = !empty( $thumbnail_src ) ? $thumbnail_src[0] : WOPB_URL . 'assets/img/fallback.svg';
+                if( ! empty( $all_id ) ) {
+                    ob_start();
+                    echo apply_filters('wopb_product_video', '', $product, $all_id[0]);
+                    $video_thumb = ob_get_clean();
+                    $video_meta = get_post_meta($product->get_id(), '__wopb_product_video', true);
+                    if ($video_thumb) {
+                        $fallback_url = !empty($video_meta['img']) ? $video_meta['img'] : '';
+                        $thumbnail_src = wp_get_attachment_image_src($all_id[0], $thumbnail_size);
+                        if (!empty($video_meta['img']) && !empty($video_meta['img_id'])) {
+                            $thumbnail_src = wp_get_attachment_image_src($video_meta['img_id'], $thumbnail_size);
+                        }
+                        $fallback_thumb_url = !empty($thumbnail_src) ? $thumbnail_src[0] : WOPB_URL . 'assets/img/fallback.svg';
 
-                    $full_src = !empty($all_id) ? wp_get_attachment_image_src( $all_id[0], $full_size ) : '';
-                    $fallback_url = !$fallback_url ? (!empty( $full_src ) ? $full_src[0] : WOPB_URL . 'assets/img/fallback.svg') : $fallback_url;
+                        $full_src = !empty($all_id) ? wp_get_attachment_image_src($all_id[0], $full_size) : '';
+                        $fallback_url = !$fallback_url ? (!empty($full_src) ? $full_src[0] : WOPB_URL . 'assets/img/fallback.svg') : $fallback_url;
 
-                    $video_image_full .= '<div class="wopb-main-image wopb-product-video-section">';
+                        $video_image_full .= '<div class="wopb-main-image wopb-product-video-section">';
                         $video_image_full .= '<img src="' . $fallback_url . '" data-width="100" data-height="100"/>';
                         $video_image_full .= $video_thumb;
-                    $video_image_full .= '</div>';
-                    $video_image_thumb .= '<div class="wopb-nav-slide wopb-video-nav">';
+                        $video_image_full .= '</div>';
+                        $video_image_thumb .= '<div class="wopb-nav-slide wopb-video-nav">';
                         $video_image_thumb .= '<img src="' . $fallback_thumb_url . '"/>';
-                    $video_image_thumb .= '</div>';
-                }
-                $total_attachment = count($all_id);
-                foreach ($all_id as $key => $attachment_id) {
-                    $thumbnail_src = wp_get_attachment_image_src( $attachment_id, $thumbnail_size );
-                    $full_src = wp_get_attachment_image_src( $attachment_id, $full_size );
-                    $alt_text = trim( wp_strip_all_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) );
-                    if( ! empty( $video_image_full ) && $video_position == 'first' && $key == 0 ) {
-                        $image_full .= $video_image_full;
-                        $image_thumb .= $video_image_thumb;
+                        $video_image_thumb .= '</div>';
                     }
+                    $total_attachment = count($all_id);
+                    foreach ($all_id as $key => $attachment_id) {
+                        $thumbnail_src = wp_get_attachment_image_src($attachment_id, $thumbnail_size);
+                        $full_src = wp_get_attachment_image_src($attachment_id, $full_size);
+                        $alt_text = trim(wp_strip_all_tags(get_post_meta($attachment_id, '_wp_attachment_image_alt', true)));
+                        if (!empty($video_image_full) && $video_position == 'first' && $key == 0) {
+                            $image_full .= $video_image_full;
+                            $image_thumb .= $video_image_thumb;
+                        }
+                        $image_full .= '<div class="wopb-main-image">';
+                            $image_full .= '<img src="' . esc_url($full_src[0]) . '" alt="' . esc_attr($alt_text) . '" data-width="' . esc_attr($full_src[1]) . '" data-height="' . esc_attr($full_src[2]) . '"/>';
+                        $image_full .= '</div>';
+                        $image_thumb .= '<div class="wopb-nav-slide"><img src="' . esc_url($thumbnail_src[0]) . '" alt="' . esc_attr($alt_text) . '" /></div>';
+                        if (
+                            !empty($video_image_full) &&
+                            ($video_position == 'after_first_image' && ($key == 0 || $total_attachment == 1)) ||
+                            ($video_position == 'last' && $key == $total_attachment - 1)
+                        ) {
+                            $image_full .= $video_image_full;
+                            $image_thumb .= $video_image_thumb;
+                        }
+                    }
+                }else {
                     $image_full .= '<div class="wopb-main-image">';
-                        $image_full .= '<img src="'.esc_url($full_src[0]).'" alt="'.esc_attr($alt_text).'" data-width="'.esc_attr($full_src[1]).'" data-height="'.esc_attr($full_src[2]).'"/>';
+                        $image_full .= '<img src="' . esc_url( wc_placeholder_img_src( 'woocommerce_single' ) ) . '" alt="' . esc_html__( 'Awaiting product image', 'woocommerce' ) . '"/>';
                     $image_full .= '</div>';
-                    $image_thumb .= '<div class="wopb-nav-slide"><img src="'.esc_url($thumbnail_src[0]).'" alt="'.esc_attr($alt_text).'" /></div>';
-                    if(
-                        ! empty( $video_image_full ) &&
-                        ( $video_position == 'after_first_image' && ( $key == 0 || $total_attachment == 1 ) ) ||
-                        ( $video_position == 'last' && $key == $total_attachment - 1 )
-                    ) {
-                        $image_full .= $video_image_full;
-                        $image_thumb .= $video_image_thumb;
-                    }
                 }
 
                 echo '<div class="wopb-product-gallery-wrapper' . ($productx_settings['showlight'] ? ' wopb-product-zoom-wrapper' : '' ). '" data-hover-zoom="' . $productx_settings['hoverZoom'] . '">';
@@ -169,7 +175,7 @@ class Product_Image{
                     }
                     echo '</div>';
                 echo '</div>';
-                if ( count( $all_id ) > 1 || ($video_thumb && count( $all_id ) > 0) ) {
+                if ( count( $all_id ) > 1 || ( ! empty( $video_thumb ) && count( $all_id ) > 0) ) {
                     $lg = isset($productx_settings['column']['lg']) ? $productx_settings['column']['lg'] : 4;
                     $md = isset($productx_settings['column']['md']) ? $productx_settings['column']['md'] : 4;
                     $sm = isset($productx_settings['column']['sm']) ? $productx_settings['column']['sm'] : 2;
@@ -184,8 +190,6 @@ class Product_Image{
                 }
 
             };
-
-
 
             add_action( 'woocommerce_product_thumbnails', $slick_html );
             

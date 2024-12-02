@@ -276,7 +276,7 @@ class Initialization{
                 'isBuilder' => $is_builder,
                 'isVariationSwitchActive' => wopb_function()->get_setting('wopb_variation_swatches'),
                 'settings' => wopb_function()->get_setting(),
-                'productTaxonomyList' => wopb_function()->get_product_taxonomies(['term_limit' => 10]),
+                'productTaxonomyList' => wopb_function()->get_product_taxonomies(['term_limit' => 3]),
                 'product_category' => get_terms( ['taxonomy' => 'product_cat', 'hide_empty' => true, 'number' => 10] ),
                 'builder_type' => $is_builder ? get_post_meta( $post->ID, '_wopb_builder_type', true ) : '',
                 'taxonomyCatUrl' => admin_url( 'edit-tags.php?taxonomy=category' ),

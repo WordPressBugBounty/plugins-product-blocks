@@ -797,6 +797,7 @@ class Compare {
                                 <?php
                                     foreach ($compare_data as $key => $val) {
                                         $product = wc_get_product($val);
+                                        if( $product ) {
                                 ?>
                                         <td class="wopb-compare-item wopb-compare-item-<?php echo esc_attr($product->get_id()) ?>">
                                             <a class="wopb-compare-remove" data-action="remove" data-added-action="popup" data-postid="<?php echo esc_attr($product->get_id()) ?>">
@@ -805,7 +806,7 @@ class Compare {
                                             </a>
                                         </td>
                                 <?php
-                                    }
+                                    } }
                                     for ($i = 0; $i < $demo_column; $i++) {
                                         echo '<td class="wopb-demo-column"><span></span></td>';
                                     }
@@ -832,6 +833,7 @@ class Compare {
                                 <?php
                                     foreach ($compare_data as $key => $val) {
                                         $product = wc_get_product($val);
+                                        if( $product ) {
                                 ?>
                                         <td class="wopb-compare-item-<?php echo esc_attr($product->get_id()) ?>">
                                             <?php
@@ -937,7 +939,7 @@ class Compare {
                                             ?>
                                         </td>
                                 <?php
-                                    }
+                                    } }
                                     for ($i = 0; $i < $demo_column; $i++) {
                                         $demo_content = '';
                                         $demo_column_class = '';
@@ -1009,19 +1011,21 @@ class Compare {
                 $output .= '<div class="wopb-product-list">';
                     foreach ( $compare_data as $key => $val ) {
                         $product = wc_get_product( $val );
-                        $output .= '<div class="wopb-compare-item wopb-compare-item-' . esc_attr( $product->get_id() ) .'">';
-                            $output .= '<div class="wopb-compare-product-details">';
-                                $output .= '<a href="' . esc_url( $product->get_permalink() ) .'" class="wopb-product-image">';
-                                    $output .= $product->get_image( 'woocommerce_thumbnail' );
-                                $output .= '</a>';
-                                $output .= '<a class="wopb-compare-product-name" href="' . esc_url( $product->get_permalink() ) . '" data-action="remove">';
-                                    $output .= $product->get_title();
+                        if( $product ) {
+                            $output .= '<div class="wopb-compare-item wopb-compare-item-' . esc_attr( $product->get_id() ) .'">';
+                                $output .= '<div class="wopb-compare-product-details">';
+                                    $output .= '<a href="' . esc_url( $product->get_permalink() ) .'" class="wopb-product-image">';
+                                        $output .= $product->get_image( 'woocommerce_thumbnail' );
+                                    $output .= '</a>';
+                                    $output .= '<a class="wopb-compare-product-name" href="' . esc_url( $product->get_permalink() ) . '" data-action="remove">';
+                                        $output .= $product->get_title();
+                                    $output .= '</a>';
+                                $output .= '</div>';
+                                $output .= '<a class="wopb-compare-remove" data-action="remove" data-added-action="sidebar" data-postid="' . esc_attr( $product->get_id() ) . '">';
+                                    $output .= wopb_function()->svg_icon( 'delete' );
                                 $output .= '</a>';
                             $output .= '</div>';
-                            $output .= '<a class="wopb-compare-remove" data-action="remove" data-added-action="sidebar" data-postid="' . esc_attr( $product->get_id() ) . '">';
-                                $output .= wopb_function()->svg_icon( 'delete' );
-                            $output .= '</a>';
-                        $output .= '</div>';
+                        }
                     }
                 $output .= '</div>';
             }
@@ -1061,12 +1065,14 @@ class Compare {
 
         if ( $post_id ) {
             $product = wc_get_product( $post_id );
-            $output .= '<div class="wopb-compare-item wopb-compare-item-' . esc_attr( $product->get_id() ) .'">';
-                $output .= '<span class="wopb-compare-image">';
-                    $output .= $product->get_image( 'shop_thumbnail' );
-                $output .= '</span>';
-                $output .= '<div class="wopb-compare-product-name"><span>' . $product->get_title() . '</span> ' . __( 'has been added on compare list.', 'product-blocks' ) . '</div>';
-            $output .= '</div>';
+            if( $product ) {
+                $output .= '<div class="wopb-compare-item wopb-compare-item-' . esc_attr( $product->get_id() ) .'">';
+                    $output .= '<span class="wopb-compare-image">';
+                        $output .= $product->get_image( 'shop_thumbnail' );
+                    $output .= '</span>';
+                    $output .= '<div class="wopb-compare-product-name"><span>' . $product->get_title() . '</span> ' . __( 'has been added on compare list.', 'product-blocks' ) . '</div>';
+                $output .= '</div>';
+            }
         }
         $output .= '<a href="' . esc_url( get_permalink( wopb_function()->get_setting( 'compare_page' ) ) ) . '" class="wopb-compare-view-btn">';
             $output .= __( 'View Compare List', 'product-blocks' );

@@ -80,6 +80,7 @@ class Product_Grid_2{
             'ovrMetaInline' => false,
             'currentPostId' =>  '',
             'hoverMeta' =>  true,
+            'cartNoFollow' =>  true,
         );
     }
 
@@ -121,6 +122,13 @@ class Product_Grid_2{
         if ( $recent_posts->have_posts() ) {
             $attr['className'] = !empty($attr['className']) ? preg_replace('/[^A-Za-z0-9_ -]/', '', $attr['className']) : '';
             $attr['align'] = !empty($attr['align']) ? 'align' . preg_replace('/[^A-Za-z0-9_ -]/', '', $attr['align']) : '';
+            $cart_params = array(
+                'cartText' => $attr['cartText'],
+                'cartActive' => $attr['cartActive'],
+                'tooltipPosition' => $attr['tooltipPosition'],
+                'cartNoFollow' => $attr['cartNoFollow'],
+                'isIcon' => true,
+            );
 
             $wraper_before .= '<div '.(isset($attr['advanceId'])?'id="'.sanitize_html_class($attr['advanceId']).'" ':'').' class="wp-block-product-blocks-'.esc_attr($block_name).' wopb-block-'.sanitize_html_class($attr["blockId"]).' '. $attr['className'] . $attr['align'] . '">';
                 $wraper_before .= '<div class="wopb-block-wrapper'.( isset($attr['layout']) ? ' wopb-has-gridlay' : '').'">';
@@ -204,7 +212,7 @@ class Product_Grid_2{
                                                                 $image_data .= apply_filters( 'wopb_grid_compare', '', $post_id, $attr['tooltipPosition'] );
                                                             }
                                                             if ( $meta_val == '_cart' ) {
-                                                                $image_data .= wopb_function()->get_add_to_cart( $product, $attr['cartText'], $attr['cartActive'], $attr['tooltipPosition'], true );
+                                                                $image_data .= wopb_function()->get_add_to_cart( $product, $cart_params );
                                                             }
                                                         }
                                                         $image_data .= '</div>';
@@ -305,7 +313,8 @@ class Product_Grid_2{
                                                     $content_data .= '<div class="wopb-quick-cart wopb-grid3-quick-cart">';
                                                         // Add to Cart URL
                                                         if ( $attr['showCart'] ) {
-                                                            $content_data .= wopb_function()->get_add_to_cart( $product, $attr['cartText'], $attr['cartActive'], $attr['tooltipPosition'], false );
+                                                            $cart_params['isIcon'] = false;
+                                                            $content_data .= wopb_function()->get_add_to_cart( $product, $cart_params );
                                                         }
                                                     $content_data .= '</div>';
                                                     if ( $attr['variationSwitchPosition'] == 'after_cart' ) {

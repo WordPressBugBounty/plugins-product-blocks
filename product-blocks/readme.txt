@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.1.3
+Stable tag: 4.1.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -28,6 +28,9 @@ Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCom
 👉 Try WowStore for free: <a href="https://trywowstore.wpxpo.com/?admin_login" target="_blank">Try Demo</a>
 
 WowStore has been designed and developed to - build an awesome WooCommerce store, manage stellar features, and boost WooCommerce Sales! Explore the amazing features mentioned. Realize why it is the ultimate WooCommerce solution:
+
+You can explore more about WowStore from the below video.
+[https://www.youtube.com/watch?v=vnrQ54NEnc4]
 
 == Build WooCommerce Stores with Ease! ==
 At first, you will require a solution to build a stunning eCommerce site. The default WooCommerce plugin is a great solution for that. However, it lacks many important features. That’s where WowStore comes in handy! We have ensured you have better control and creative freedom with various essential WooCommerce Blocks and a complete WooCommerce builder. Keep reading to learn more. 
@@ -160,6 +163,19 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.1.4 – 02 December 2024 =
+* Compatibility: Germanized for WooCommerce plugin for compatibility in the Product Slider block
+* Update: Buy Now button added to the Add to Cart block in the Single Product builder
+* Update: Nofollow can be enabled or disabled for the Add to Cart button in the Product Grid block for SEO purposes
+* Update: Username and Nickname options added to the Sales Push Notification
+* Fix: Product image warning displayed if no image is found in the Single Product builder
+* Fix: Variation dropdown is broken in Quickview for a specific theme
+* Fix: Currency Switcher warning displayed if data is not found
+* Fix: Product description does not render HTML tags in the Product Grid block
+* Fix: Equal content height is not working properly in the Product Grid block
+* Fix: Divi header conflict occurring for a specific user
+* Fix: CSS for the dimension field type is removed when no value is provided
+
 = 4.1.3 – 14 November 2024 =
 * Fix: Product Filtering block is not displaying properly on the iPad device
 * Fix: Category hide conflict with WholesaleX in Product Filtering block

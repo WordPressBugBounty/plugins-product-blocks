@@ -69,7 +69,9 @@ function get_sales_notification_settings( $config ) {
                                             'label' => __('Name', 'product-blocks'),
                                             'options' => array(
                                                 'display' => __( 'Display Name','product-blocks' ),
-                                                'full' => __( 'Full Name','product-blocks' )
+                                                'full' => __( 'Full Name','product-blocks' ),
+                                                'user_name' => __( 'Username','product-blocks' ),
+                                                'nick_name' => __( 'Nickname','product-blocks' ),
                                             ),
                                             'default' => 'display'
                                         ),
