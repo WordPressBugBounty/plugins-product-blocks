@@ -520,8 +520,8 @@ class Notice {
 			// $is_already_collect 	= get_transient( 'wpxpo_data_collect_productx' ) == 'yes';
 
 			$this->available_notice = array(
-				'wopb_halloween_1'        => $this->set_new_notice( 'wopb_halloween_1', 'promotion', 'pro_1', '13-11-2024', '17-11-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
-				'wopb_black_friday_1'        => $this->set_new_notice( 'wopb_black_friday_1', 'promotion', 'pro_4', '18-11-2024', '12-12-2024', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
+				'wopb_holiday_1'        => $this->set_new_notice( 'wopb_halloween_1', 'promotion', 'pro_4', '23-12-2024', '01-01-2025', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
+				'wopb_holiday_2'        => $this->set_new_notice( 'wopb_black_friday_1', 'promotion', 'pro_4', '02-01-2025', '10-01-2025', false, 10, ! wopb_function()->get_setting( 'is_lc_active' ) ),
 				/*
 				// Welcome
 				'welcome_notice'           => array(

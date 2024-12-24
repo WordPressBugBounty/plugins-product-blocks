@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.1.4
+Stable tag: 4.1.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -14,11 +14,11 @@ Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCom
 
 <a href="https://www.wpxpo.com/wowstore/" target="_blank">WowStore</a> is an all-in-one WooCommerce solution with 100s of features that help you build professional-looking eCommerce websites, boost earnings, enjoy better conversion rates, reduce cart abandonment rates, and increase the average order value of your store.
 
-== WowStore Black Friday Deal! ==
+== WowStore Holiday Sale! ==
 
-🎁 Get up to **65% Discount** on WowStore this **Black Friday** - Build the WooCommerce Store of Your Dreams 😍
+🎁 Get up to 60% **Discount** on WowStore this **Holiday** - Build the WooCommerce Store of Your Dreams 😍
 
-👉 [Grab Now](https://www.wpxpo.com/wowstore/?utm_source=wowstore-org&utm_medium=offer&utm_campaign=bfcm)
+👉 [Grab Now](https://www.wpxpo.com/wowstore/?utm_source=wowstore-org&utm_medium=offer&utm_campaign=holiday_org)
 
 == WowStore - #1 WooCommerce Builder & Blocks Plugin with Sales Boosting Features! ==
 [youtube https://www.youtube.com/watch?v=6t9JSvAR-to]
@@ -30,7 +30,7 @@ Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCom
 WowStore has been designed and developed to - build an awesome WooCommerce store, manage stellar features, and boost WooCommerce Sales! Explore the amazing features mentioned. Realize why it is the ultimate WooCommerce solution:
 
 You can explore more about WowStore from the below video.
-[https://www.youtube.com/watch?v=vnrQ54NEnc4]
+[youtube https://www.youtube.com/watch?v=vnrQ54NEnc4]
 
 == Build WooCommerce Stores with Ease! ==
 At first, you will require a solution to build a stunning eCommerce site. The default WooCommerce plugin is a great solution for that. However, it lacks many important features. That’s where WowStore comes in handy! We have ensured you have better control and creative freedom with various essential WooCommerce Blocks and a complete WooCommerce builder. Keep reading to learn more. 
@@ -163,6 +163,9 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.1.5 – 24 December 2024 =
+* Fix: Quickview CSS issue fix
+
 = 4.1.4 – 02 December 2024 =
 * Compatibility: Germanized for WooCommerce plugin for compatibility in the Product Slider block
 * Update: Buy Now button added to the Add to Cart block in the Single Product builder
