@@ -109,12 +109,12 @@ class Product_Image{
                 $thumbnail_size = $full_size;
                 $video_image_full = '';
                 $video_image_thumb = '';
+                $video_meta = get_post_meta($product->get_id(), '__wopb_product_video', true);
                 $video_position = ! empty( $video_meta['single_position'] ) ? $video_meta['single_position'] : 'first';
                 if( ! empty( $all_id ) ) {
                     ob_start();
                     echo apply_filters('wopb_product_video', '', $product, $all_id[0]);
                     $video_thumb = ob_get_clean();
-                    $video_meta = get_post_meta($product->get_id(), '__wopb_product_video', true);
                     if ($video_thumb) {
                         $fallback_url = !empty($video_meta['img']) ? $video_meta['img'] : '';
                         $thumbnail_src = wp_get_attachment_image_src($all_id[0], $thumbnail_size);
@@ -127,11 +127,11 @@ class Product_Image{
                         $fallback_url = !$fallback_url ? (!empty($full_src) ? $full_src[0] : WOPB_URL . 'assets/img/fallback.svg') : $fallback_url;
 
                         $video_image_full .= '<div class="wopb-main-image wopb-product-video-section">';
-                        $video_image_full .= '<img src="' . $fallback_url . '" data-width="100" data-height="100"/>';
-                        $video_image_full .= $video_thumb;
+                            $video_image_full .= '<img src="' . $fallback_url . '" data-width="100" data-height="100"/>';
+                            $video_image_full .= $video_thumb;
                         $video_image_full .= '</div>';
                         $video_image_thumb .= '<div class="wopb-nav-slide wopb-video-nav">';
-                        $video_image_thumb .= '<img src="' . $fallback_thumb_url . '"/>';
+                            $video_image_thumb .= '<img src="' . $fallback_thumb_url . '"/>';
                         $video_image_thumb .= '</div>';
                     }
                     $total_attachment = count($all_id);
@@ -191,6 +191,12 @@ class Product_Image{
 
             };
 
+            add_filter( 'wc_get_template', function ( $template, $template_name, $args, $template_path, $default_path ) use( $slick_html ) {
+                if ( 'single-product/product-image.php' == $template_name ) {
+                    return WC_ABSPATH . 'templates/single-product/product-image.php';
+                }
+                return $template;
+            }, 20, 5 );
             add_action( 'woocommerce_product_thumbnails', $slick_html );
             
             add_filter( 'woocommerce_single_product_image_gallery_classes', $gallery_classes );

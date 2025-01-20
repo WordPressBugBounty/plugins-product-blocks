@@ -38,10 +38,9 @@ function progressBar($free_shipping_progress, $attr) {
      } ?>
     <div class="wopb-progress-msg">
         <?php if ($free_shipping_progress == 100) { ?>
-            <span><?php esc_html_e('You have free shipping!', 'product-blocks') ?></span>
+            <span><?php echo esc_html_e($attr['freeShipText']) ?></span>
         <?php } else { ?>
             <span><?php echo wp_kses( $attr['beforePriceText'], wopb_function()->allowed_html_tags()); ?></span>
-            <span><?php echo esc_html( $attr['beforePriceText'] ); ?></span>
             <strong>
                 <span class="woocommerce-Price-amount amount wopb-shippingRemainingAmount">
 <!--                    <span class="woocommerce-Price-currencySymbol">--><?php //echo get_woocommerce_currency_symbol(); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?><!--</span>-->

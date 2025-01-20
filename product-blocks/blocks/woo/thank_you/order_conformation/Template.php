@@ -5,7 +5,8 @@ $order_id = absint( get_query_var('order-received') );
 $order = wc_get_order( $order_id );
 
 if ( $order ) {
-	?>
+    do_action( 'woocommerce_before_thankyou', $order->get_id() );
+?>
 	<div class="wopb-thankyou-order-conformation-container">
 		<?php if($attr['showHead']) { ?>
 			<div class="wopb-order-heading-section" >
@@ -24,16 +25,16 @@ if ( $order ) {
 				</p>
 			</div>
 
+		<?php
+		    } else {
+                if($attr['showMessage']) { ?>
+                <div class="wopb-order-message-section" >
+                    <div class="wopb-order-message"> <?php echo esc_html( $attr['messageText'] ); ?></div>
+                </div>
 		<?php 
-		} 
-		else {?>
-			<?php if($attr['showMessage']) { ?>
-				<div class="wopb-order-message-section" >
-					<div class="wopb-order-message"> <?php echo esc_html( $attr['messageText'] ); ?></div>
-				</div>
-		<?php 
-			}
-		} ?>
+			    }
+		    }
+        ?>
 	</div>
 	<?php
 }

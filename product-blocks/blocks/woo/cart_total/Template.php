@@ -7,6 +7,13 @@
 	}
 	WC()->cart->calculate_totals();
 	WC()->cart->calculate_shipping();
+
+    remove_action('woocommerce_proceed_to_checkout', 'woocommerce_button_proceed_to_checkout', 20);
+    add_action('woocommerce_proceed_to_checkout', function() use( $attr ) {
+        echo '<a href="' . esc_url( wc_get_checkout_url() ) . '" class="checkout-button button alt wc-forward">';
+            echo esc_html( $attr['checkoutTxt'] );
+        echo '</a>';
+    });
 ?>
 
 <div class="wopb-cart-total cart_totals <?php echo ( WC()->customer->has_calculated_shipping() ) ? 'calculated_shipping' : ''; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
@@ -91,9 +98,7 @@
 		</table>
 		
 		<div class="wc-proceed-to-checkout">
-			<a href="<?php echo esc_url( wc_get_checkout_url() ); ?>" class="checkout-button button alt wc-forward">
-				<?php echo esc_html( $attr['checkoutTxt'] ); ?> &rarr;
-			</a>
+            <?php do_action( 'woocommerce_proceed_to_checkout' ); ?>
 		</div>
 	</div>
 	<?php do_action( 'woocommerce_after_cart_totals' ); ?>

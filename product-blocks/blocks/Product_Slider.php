@@ -171,10 +171,7 @@ class Product_Slider {
             ?>
                 <div class="wopb-product-excerpt">
                     <?php
-                        $product_excerpt = wpautop($product->get_short_description());
-                        echo strlen($product_excerpt) > $attr['descriptionLimit'] 
-                            ? mb_substr($product_excerpt, 0, $attr['descriptionLimit']) . '...' 
-                            : $product_excerpt; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                        echo wopb_function()->excerpt($product->get_short_description(), $attr['descriptionLimit']); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     ?>
                 </div>
             <?php

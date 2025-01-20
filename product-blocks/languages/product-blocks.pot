@@ -1,26 +1,23 @@
-# Copyright (C) 2024 WowStore Team
+# Copyright (C) 2025 WowStore Team
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore 4.1.4\n"
+"Project-Id-Version: WowStore 4.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-12-24T08:05:39+00:00\n"
+"POT-Creation-Date: 2025-01-20T04:32:21+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: product-blocks\n"
 
 #. Plugin Name of the plugin
-#: build/classes/Options.php:122
-#: build/classes/Options.php:123
 #: classes/Options.php:122
 #: classes/Options.php:123
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "WowStore"
 msgstr ""
 
@@ -37,65 +34,50 @@ msgid "https://www.wpxpo.com/wowstore/?utm_source=db-wstore-plugin&utm_medium=wp
 msgstr ""
 
 #: addons/add_to_cart_text/backend.php:11
-#: build/addons/add_to_cart_text/backend.php:11
 msgid "Add to Cart Text"
 msgstr ""
 
 #: addons/add_to_cart_text/backend.php:12
-#: build/addons/add_to_cart_text/backend.php:12
 msgid "Change any product type's default Add to Cart Button text in the Shop, Archive, and Product pages."
 msgstr ""
 
 #: addons/add_to_cart_text/backend.php:35
-#: build/addons/add_to_cart_text/backend.php:35
 msgid "Add to Cart Text Settings"
 msgstr ""
 
 #: addons/add_to_cart_text/backend.php:40
-#: build/addons/add_to_cart_text/backend.php:40
 msgid "Enable Add to Cart text"
 msgstr ""
 
 #: addons/add_to_cart_text/backend.php:41
-#: build/addons/add_to_cart_text/backend.php:41
 msgid "Enable add to cart text on your website"
 msgstr ""
 
 #: addons/add_to_cart_text/backend.php:45
 #: addons/animated_cart/backend.php:62
-#: build/addons/add_to_cart_text/backend.php:45
-#: build/addons/animated_cart/backend.php:62
 msgid "Shop & Archive Page"
 msgstr ""
 
 #: addons/add_to_cart_text/backend.php:49
 #: addons/add_to_cart_text/backend.php:75
-#: build/addons/add_to_cart_text/backend.php:49
-#: build/addons/add_to_cart_text/backend.php:75
 #: assets/js/editor.blocks.js:1779
 msgid "Simple Product"
 msgstr ""
 
 #: addons/add_to_cart_text/backend.php:54
 #: addons/add_to_cart_text/backend.php:80
-#: build/addons/add_to_cart_text/backend.php:54
-#: build/addons/add_to_cart_text/backend.php:80
 #: assets/js/editor.blocks.js:1779
 msgid "Grouped Product"
 msgstr ""
 
 #: addons/add_to_cart_text/backend.php:59
 #: addons/add_to_cart_text/backend.php:85
-#: build/addons/add_to_cart_text/backend.php:59
-#: build/addons/add_to_cart_text/backend.php:85
 #: assets/js/editor.blocks.js:1779
 msgid "External/Affiliate Product"
 msgstr ""
 
 #: addons/add_to_cart_text/backend.php:64
 #: addons/add_to_cart_text/backend.php:90
-#: build/addons/add_to_cart_text/backend.php:64
-#: build/addons/add_to_cart_text/backend.php:90
 #: assets/js/editor.blocks.js:1779
 msgid "Variable Product"
 msgstr ""
@@ -103,44 +85,34 @@ msgstr ""
 #: addons/add_to_cart_text/backend.php:71
 #: addons/animated_cart/backend.php:63
 #: addons/title_limit/backend.php:53
-#: build/addons/add_to_cart_text/backend.php:71
-#: build/addons/animated_cart/backend.php:63
-#: build/addons/title_limit/backend.php:53
 msgid "Single Product Page"
 msgstr ""
 
 #: addons/animated_cart/backend.php:11
-#: build/addons/animated_cart/backend.php:11
 msgid "Animated Add to Cart"
 msgstr ""
 
 #: addons/animated_cart/backend.php:12
-#: build/addons/animated_cart/backend.php:12
 msgid "Grab customers attention by animating the Add to Cart button on hover or in the loop."
 msgstr ""
 
 #: addons/animated_cart/backend.php:34
-#: build/addons/animated_cart/backend.php:34
 msgid "Animated Add to Cart Settings"
 msgstr ""
 
 #: addons/animated_cart/backend.php:42
-#: build/addons/animated_cart/backend.php:42
 msgid "Enable Animated Add to Cart"
 msgstr ""
 
 #: addons/animated_cart/backend.php:43
-#: build/addons/animated_cart/backend.php:43
 msgid "Enable animated add to cart on your website"
 msgstr ""
 
 #: addons/animated_cart/backend.php:47
-#: build/addons/animated_cart/backend.php:47
 msgid "Animation"
 msgstr ""
 
 #: addons/animated_cart/backend.php:49
-#: build/addons/animated_cart/backend.php:49
 #: assets/js/editor.blocks.js:1867
 #: assets/js/editor.blocks.js:1878
 msgid "Click"
@@ -150,120 +122,93 @@ msgstr ""
 #: addons/compare/backend.php:124
 #: addons/flip_image/backend.php:70
 #: addons/quick_view/backend.php:120
-#: build/addons/animated_cart/backend.php:50
-#: build/addons/compare/backend.php:124
-#: build/addons/flip_image/backend.php:70
-#: build/addons/quick_view/backend.php:120
 #: assets/js/editor.blocks.js:1185
 #: assets/js/editor.blocks.js:2494
 msgid "Zoom In"
 msgstr ""
 
 #: addons/animated_cart/backend.php:51
-#: build/addons/animated_cart/backend.php:51
 msgid "Shake"
 msgstr ""
 
 #: addons/animated_cart/backend.php:52
-#: build/addons/animated_cart/backend.php:52
 msgid "Bounce"
 msgstr ""
 
 #: addons/animated_cart/backend.php:53
-#: build/addons/animated_cart/backend.php:53
 msgid "Wobble"
 msgstr ""
 
 #: addons/animated_cart/backend.php:54
-#: build/addons/animated_cart/backend.php:54
 msgid "Swing"
 msgstr ""
 
 #: addons/animated_cart/backend.php:60
-#: build/addons/animated_cart/backend.php:60
 msgid "Applied on"
 msgstr ""
 
 #: addons/animated_cart/backend.php:69
-#: build/addons/animated_cart/backend.php:69
 msgid "Animation Interval"
 msgstr ""
 
 #: addons/animated_cart/backend.php:71
-#: build/addons/animated_cart/backend.php:71
 msgid "1 Second"
 msgstr ""
 
 #: addons/animated_cart/backend.php:72
-#: build/addons/animated_cart/backend.php:72
 msgid "2 Second"
 msgstr ""
 
 #: addons/animated_cart/backend.php:73
-#: build/addons/animated_cart/backend.php:73
 msgid "3 Second"
 msgstr ""
 
 #: addons/animated_cart/backend.php:74
-#: build/addons/animated_cart/backend.php:74
 msgid "4 Second"
 msgstr ""
 
 #: addons/animated_cart/backend.php:75
-#: build/addons/animated_cart/backend.php:75
 msgid "5 Second"
 msgstr ""
 
 #: addons/animated_cart/backend.php:76
-#: build/addons/animated_cart/backend.php:76
 msgid "No Interval"
 msgstr ""
 
 #: addons/animated_cart/backend.php:82
-#: build/addons/animated_cart/backend.php:82
 msgid "Animation Showcase"
 msgstr ""
 
 #: addons/animated_cart/backend.php:84
-#: build/addons/animated_cart/backend.php:84
 msgid "All Time (Loop)"
 msgstr ""
 
 #: addons/animated_cart/backend.php:85
-#: build/addons/animated_cart/backend.php:85
 msgid "On Hover"
 msgstr ""
 
 #: addons/beaver_builder/backend.php:7
-#: build/addons/beaver_builder/backend.php:7
 msgid "Beaver Builder"
 msgstr ""
 
 #: addons/beaver_builder/backend.php:8
-#: build/addons/beaver_builder/backend.php:8
 msgid "Use WowStore blocks, patterns, or templates while creating your site with the Beaver Builder."
 msgstr ""
 
 #: addons/beaver_builder/beaverbuilder.php:6
 #: addons/divi/divi.php:14
 #: addons/elementor/Elementor_Widget.php:11
-#: build/addons/beaver_builder/beaverbuilder.php:6
-#: build/addons/divi/divi.php:14
-#: build/addons/elementor/Elementor_Widget.php:11
 msgid "WowStore Template"
 msgstr ""
 
 #: addons/beaver_builder/beaverbuilder.php:8
-#: build/addons/beaver_builder/beaverbuilder.php:8
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Basic"
 msgstr ""
 
 #: addons/beaver_builder/beaverbuilder.php:19
-#: build/addons/beaver_builder/beaverbuilder.php:19
 #: assets/js/editor.blocks.js:151
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:921
@@ -277,30 +222,22 @@ msgid "General"
 msgstr ""
 
 #: addons/beaver_builder/beaverbuilder.php:22
-#: build/addons/beaver_builder/beaverbuilder.php:22
 msgid "Template Settings"
 msgstr ""
 
 #: addons/beaver_builder/beaverbuilder.php:26
 #: addons/divi/divi.php:21
 #: addons/oxygen/oxygen.php:61
-#: build/addons/beaver_builder/beaverbuilder.php:26
-#: build/addons/divi/divi.php:21
-#: build/addons/oxygen/oxygen.php:61
 msgid "Select Your Template"
 msgstr ""
 
 #: addons/beaver_builder/beaverbuilder.php:33
 #: addons/templates/Saved_Templates.php:92
-#: build/addons/beaver_builder/beaverbuilder.php:33
-#: build/addons/templates/Saved_Templates.php:92
 msgid "Edit Template"
 msgstr ""
 
 #: addons/beaver_builder/beaverbuilder.php:34
 #: addons/elementor/Elementor_Widget.php:42
-#: build/addons/beaver_builder/beaverbuilder.php:34
-#: build/addons/elementor/Elementor_Widget.php:42
 msgid "Edit This Template"
 msgstr ""
 
@@ -308,10 +245,6 @@ msgstr ""
 #: addons/elementor/Elementor_Widget.php:49
 #: addons/templates/Saved_Templates.php:90
 #: addons/templates/Saved_Templates.php:91
-#: build/addons/beaver_builder/beaverbuilder.php:39
-#: build/addons/elementor/Elementor_Widget.php:49
-#: build/addons/templates/Saved_Templates.php:90
-#: build/addons/templates/Saved_Templates.php:91
 msgid "Add New Template"
 msgstr ""
 
@@ -320,95 +253,70 @@ msgstr ""
 #: addons/divi/divi.php:55
 #: addons/elementor/Elementor_Widget.php:79
 #: addons/oxygen/oxygen.php:52
-#: build/addons/beaver_builder/includes/frontend.php:18
-#: build/addons/divi/divi.php:55
-#: build/addons/elementor/Elementor_Widget.php:79
-#: build/addons/oxygen/oxygen.php:52
 msgid "Pick a Template from your saved ones. Or create a template from: %s."
 msgstr ""
 
 #: addons/builder/Archive_Template.php:45
 #: addons/builder/templates/page.php:74
-#: build/addons/builder/Archive_Template.php:45
-#: build/addons/builder/templates/page.php:74
 msgid "You must be logged in to checkout."
 msgstr ""
 
 #: addons/builder/backend.php:7
-#: build/addons/builder/backend.php:7
-#: build/classes/Options.php:138
 #: classes/Options.php:138
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Woo Builder"
 msgstr ""
 
 #: addons/builder/backend.php:8
-#: build/addons/builder/backend.php:8
 msgid "Design all pages of your WooCommerce store from scratch or save time by importing premade templates."
 msgstr ""
 
 #: addons/builder/Builder.php:28
-#: build/addons/builder/Builder.php:28
 msgid "WowStore Builder"
 msgstr ""
 
 #: addons/builder/Builder.php:50
-#: build/addons/builder/Builder.php:50
 msgid "Builder Page Container Width"
 msgstr ""
 
 #: addons/builder/Builder.php:54
 #: addons/compare/backend.php:103
-#: build/addons/builder/Builder.php:54
-#: build/addons/compare/backend.php:103
 msgid "Sidebar"
 msgstr ""
 
 #: addons/builder/Builder.php:56
 #: addons/builder/Builder.php:64
-#: build/addons/builder/Builder.php:56
-#: build/addons/builder/Builder.php:64
 msgid "- None -"
 msgstr ""
 
 #: addons/builder/Builder.php:57
-#: build/addons/builder/Builder.php:57
 msgid "Left Sidebar"
 msgstr ""
 
 #: addons/builder/Builder.php:58
-#: build/addons/builder/Builder.php:58
 msgid "Right Sidebar"
 msgstr ""
 
 #: addons/builder/Builder.php:62
-#: build/addons/builder/Builder.php:62
 msgid "Select Sidebar(Widget Area)"
 msgstr ""
 
 #: addons/builder/Builder.php:93
 #: addons/builder/Builder.php:94
-#: build/addons/builder/Builder.php:93
-#: build/addons/builder/Builder.php:94
 msgctxt "Builder"
 msgid "Builder"
 msgstr ""
 
 #: addons/builder/Builder.php:95
 #: addons/builder/Builder.php:97
-#: build/addons/builder/Builder.php:95
-#: build/addons/builder/Builder.php:97
 msgid "Builder"
 msgstr ""
 
 #: addons/builder/Builder.php:96
-#: build/addons/builder/Builder.php:96
 msgid "Parent Builder"
 msgstr ""
 
 #: addons/builder/Builder.php:98
-#: build/addons/builder/Builder.php:98
 msgid "View Builder"
 msgstr ""
 
@@ -416,75 +324,55 @@ msgstr ""
 #: addons/builder/Builder.php:100
 #: addons/custom_font/Custom_Font.php:266
 #: addons/custom_font/Custom_Font.php:267
-#: build/addons/builder/Builder.php:99
-#: build/addons/builder/Builder.php:100
-#: build/addons/custom_font/Custom_Font.php:266
-#: build/addons/custom_font/Custom_Font.php:267
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Add New"
 msgstr ""
 
 #: addons/builder/Builder.php:101
-#: build/addons/builder/Builder.php:101
 msgid "Edit Builder"
 msgstr ""
 
 #: addons/builder/Builder.php:102
-#: build/addons/builder/Builder.php:102
 msgid "Update Builder"
 msgstr ""
 
 #: addons/builder/Builder.php:103
-#: build/addons/builder/Builder.php:103
 msgid "Search Builder"
 msgstr ""
 
 #: addons/builder/Builder.php:104
-#: build/addons/builder/Builder.php:104
 msgid "No Builder Found"
 msgstr ""
 
 #: addons/builder/Builder.php:105
-#: build/addons/builder/Builder.php:105
 msgid "Not Builder found in Trash"
 msgstr ""
 
 #: addons/builder/RequestAPI.php:465
-#: build/addons/builder/RequestAPI.php:465
 msgid "Template has been deleted."
 msgstr ""
 
 #: addons/builder/RequestAPI.php:501
-#: build/addons/builder/RequestAPI.php:501
 msgid "Template has been duplicated."
 msgstr ""
 
 #: addons/builder/RequestAPI.php:508
-#: build/addons/builder/RequestAPI.php:508
 msgid "Status has been changed."
 msgstr ""
 
 #: addons/compare/backend.php:11
-#: build/addons/compare/backend.php:11
 msgid "Product Compare"
 msgstr ""
 
 #: addons/compare/backend.php:12
-#: build/addons/compare/backend.php:12
 msgid "Let your shoppers compare multiple products by displaying a pop-up or redirecting to a compare page."
 msgstr ""
 
 #: addons/compare/backend.php:43
 #: addons/compare/Compare.php:1191
 #: addons/quick_view/backend.php:34
-#: addons/quick_view/Quickview.php:780
+#: addons/quick_view/Quickview.php:786
 #: addons/wishlist/Wishlist.php:261
-#: build/addons/compare/backend.php:43
-#: build/addons/compare/Compare.php:1191
-#: build/addons/quick_view/backend.php:34
-#: build/addons/quick_view/Quickview.php:780
-#: build/addons/wishlist/Wishlist.php:261
 #: assets/js/blocks-placeholder.js:50
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:107
@@ -522,20 +410,14 @@ msgstr ""
 #: assets/js/editor.blocks.js:2428
 #: assets/js/editor.blocks.js:2472
 #: assets/js/editor.blocks.js:2494
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:50
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Image"
 msgstr ""
 
 #: addons/compare/backend.php:44
 #: addons/compare/Compare.php:1192
 #: addons/quick_view/backend.php:35
-#: addons/quick_view/Quickview.php:781
-#: build/addons/compare/backend.php:44
-#: build/addons/compare/Compare.php:1192
-#: build/addons/quick_view/backend.php:35
-#: build/addons/quick_view/Quickview.php:781
+#: addons/quick_view/Quickview.php:787
 #: assets/js/editor.blocks.js:547
 #: assets/js/editor.blocks.js:602
 #: assets/js/editor.blocks.js:657
@@ -547,21 +429,15 @@ msgstr ""
 #: assets/js/editor.blocks.js:1020
 #: assets/js/editor.blocks.js:1306
 #: assets/js/editor.blocks.js:2494
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Title"
 msgstr ""
 
 #: addons/compare/backend.php:45
 #: addons/compare/Compare.php:1193
 #: addons/quick_view/backend.php:37
-#: addons/quick_view/Quickview.php:783
+#: addons/quick_view/Quickview.php:789
 #: addons/wishlist/Wishlist.php:263
-#: build/addons/compare/backend.php:45
-#: build/addons/compare/Compare.php:1193
-#: build/addons/quick_view/backend.php:37
-#: build/addons/quick_view/Quickview.php:783
-#: build/addons/wishlist/Wishlist.php:263
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
@@ -578,11 +454,7 @@ msgstr ""
 #: addons/compare/backend.php:46
 #: addons/compare/Compare.php:1194
 #: addons/quick_view/backend.php:39
-#: addons/quick_view/Quickview.php:785
-#: build/addons/compare/backend.php:46
-#: build/addons/compare/Compare.php:1194
-#: build/addons/quick_view/backend.php:39
-#: build/addons/quick_view/Quickview.php:785
+#: addons/quick_view/Quickview.php:791
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:2494
 msgid "Stock Status"
@@ -590,8 +462,6 @@ msgstr ""
 
 #: addons/compare/backend.php:47
 #: addons/compare/Compare.php:1195
-#: build/addons/compare/backend.php:47
-#: build/addons/compare/Compare.php:1195
 #: assets/js/editor.blocks.js:998
 #: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1229
@@ -602,19 +472,13 @@ msgstr ""
 #: addons/compare/backend.php:48
 #: addons/compare/Compare.php:1196
 #: addons/quick_view/backend.php:40
-#: addons/quick_view/Quickview.php:786
-#: build/addons/compare/backend.php:48
-#: build/addons/compare/Compare.php:1196
-#: build/addons/quick_view/backend.php:40
-#: build/addons/quick_view/Quickview.php:786
+#: addons/quick_view/Quickview.php:792
 #: assets/js/editor.blocks.js:1812
 msgid "Add To Cart"
 msgstr ""
 
 #: addons/compare/backend.php:49
 #: addons/compare/Compare.php:1197
-#: build/addons/compare/backend.php:49
-#: build/addons/compare/Compare.php:1197
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
@@ -628,17 +492,12 @@ msgstr ""
 
 #: addons/compare/backend.php:52
 #: addons/quick_view/backend.php:46
-#: addons/quick_view/Quickview.php:792
-#: build/addons/compare/backend.php:52
-#: build/addons/quick_view/backend.php:46
-#: build/addons/quick_view/Quickview.php:792
+#: addons/quick_view/Quickview.php:798
 msgid "Select Column"
 msgstr ""
 
 #: addons/compare/backend.php:54
 #: addons/compare/Compare.php:1202
-#: build/addons/compare/backend.php:54
-#: build/addons/compare/Compare.php:1202
 #: assets/js/editor.blocks.js:1339
 msgid "Additional"
 msgstr ""
@@ -646,11 +505,7 @@ msgstr ""
 #: addons/compare/backend.php:55
 #: addons/compare/Compare.php:1203
 #: addons/quick_view/backend.php:38
-#: addons/quick_view/Quickview.php:784
-#: build/addons/compare/backend.php:55
-#: build/addons/compare/Compare.php:1203
-#: build/addons/quick_view/backend.php:38
-#: build/addons/quick_view/Quickview.php:784
+#: addons/quick_view/Quickview.php:790
 #: assets/js/editor.blocks.js:547
 #: assets/js/editor.blocks.js:602
 #: assets/js/editor.blocks.js:657
@@ -668,23 +523,17 @@ msgstr ""
 
 #: addons/compare/backend.php:56
 #: addons/compare/Compare.php:1204
-#: build/addons/compare/backend.php:56
-#: build/addons/compare/Compare.php:1204
 #: assets/js/editor.blocks.js:2934
 msgid "Weight"
 msgstr ""
 
 #: addons/compare/backend.php:57
 #: addons/compare/Compare.php:1205
-#: build/addons/compare/backend.php:57
-#: build/addons/compare/Compare.php:1205
 msgid "Dimensions"
 msgstr ""
 
 #: addons/compare/backend.php:58
 #: addons/compare/Compare.php:1206
-#: build/addons/compare/backend.php:58
-#: build/addons/compare/Compare.php:1206
 #: assets/js/editor.blocks.js:1911
 #: assets/js/editor.blocks.js:2494
 msgid "SKU"
@@ -692,15 +541,12 @@ msgstr ""
 
 #: addons/compare/backend.php:62
 #: addons/compare/Compare.php:1166
-#: build/addons/compare/backend.php:62
-#: build/addons/compare/Compare.php:1166
 #: assets/js/editor.blocks.js:2494
 #: assets/js/editor.blocks.js:2989
 msgid "Compare"
 msgstr ""
 
 #: addons/compare/backend.php:66
-#: build/addons/compare/backend.php:66
 msgid "Compare Settings"
 msgstr ""
 
@@ -711,15 +557,6 @@ msgstr ""
 #: addons/sales_notification/backend.php:41
 #: addons/variation_swatches/backend.php:44
 #: addons/wishlist/backend.php:41
-#: build/addons/compare/backend.php:72
-#: build/addons/elementor/Elementor_Widget.php:26
-#: build/addons/name_price/backend.php:40
-#: build/addons/quick_view/backend.php:61
-#: build/addons/sales_notification/backend.php:41
-#: build/addons/variation_swatches/backend.php:44
-#: build/addons/wishlist/backend.php:41
-#: build/classes/Options.php:108
-#: build/classes/Options.php:151
 #: classes/Options.php:108
 #: classes/Options.php:151
 #: assets/js/editor.blocks.js:151
@@ -752,100 +589,78 @@ msgstr ""
 #: assets/js/editor.blocks.js:2351
 #: assets/js/editor.blocks.js:2395
 #: assets/js/editor.blocks.js:2439
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Settings"
 msgstr ""
 
 #: addons/compare/backend.php:77
-#: build/addons/compare/backend.php:77
 msgid "Enable Compare"
 msgstr ""
 
 #: addons/compare/backend.php:78
-#: build/addons/compare/backend.php:78
 msgid "Enable compare on your website"
 msgstr ""
 
 #: addons/compare/backend.php:82
 #: addons/quick_view/backend.php:71
 #: addons/wishlist/backend.php:55
-#: build/addons/compare/backend.php:82
-#: build/addons/quick_view/backend.php:71
-#: build/addons/wishlist/backend.php:55
 #: assets/js/editor.blocks.js:1273
 #: assets/js/editor.blocks.js:2406
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "General Settings"
 msgstr ""
 
 #: addons/compare/backend.php:86
-#: build/addons/compare/backend.php:86
 msgid "Select Compare Page"
 msgstr ""
 
 #: addons/compare/backend.php:88
-#: build/addons/compare/backend.php:88
 msgid "Select the page containing the "
 msgstr ""
 
 #: addons/compare/backend.php:88
-#: build/addons/compare/backend.php:88
 msgid "shortcode."
 msgstr ""
 
 #: addons/compare/backend.php:92
-#: build/addons/compare/backend.php:92
 msgid "Add Compare Page To My Account"
 msgstr ""
 
 #: addons/compare/backend.php:94
-#: build/addons/compare/backend.php:94
 msgid "Enable compare page to my account."
 msgstr ""
 
 #: addons/compare/backend.php:98
-#: build/addons/compare/backend.php:98
 msgid "Action After Click to Compare"
 msgstr ""
 
 #: addons/compare/backend.php:101
 #: addons/wishlist/backend.php:88
-#: build/addons/compare/backend.php:101
-#: build/addons/wishlist/backend.php:88
 msgid "Popup"
 msgstr ""
 
 #: addons/compare/backend.php:102
 #: addons/wishlist/backend.php:89
-#: build/addons/compare/backend.php:102
-#: build/addons/wishlist/backend.php:89
 msgid "Redirect to Page"
 msgstr ""
 
 #: addons/compare/backend.php:104
-#: build/addons/compare/backend.php:104
 msgid "Show Message"
 msgstr ""
 
 #: addons/compare/backend.php:107
-#: build/addons/compare/backend.php:107
 msgid "Select option for what will happen after clicking on the compare button."
 msgstr ""
 
 #: addons/compare/backend.php:111
-#: build/addons/compare/backend.php:111
 msgid "Compare Modal Loading"
 msgstr ""
 
 #: addons/compare/backend.php:116
-#: build/addons/compare/backend.php:116
 msgid "Select loading icon to show before open compare modal."
 msgstr ""
 
 #: addons/compare/backend.php:120
-#: build/addons/compare/backend.php:120
 msgid "Modal Opening Animation"
 msgstr ""
 
@@ -853,33 +668,22 @@ msgstr ""
 #: addons/compare/backend.php:142
 #: addons/quick_view/backend.php:119
 #: addons/quick_view/backend.php:137
-#: build/addons/compare/backend.php:123
-#: build/addons/compare/backend.php:142
-#: build/addons/quick_view/backend.php:119
-#: build/addons/quick_view/backend.php:137
 msgid "Select Animation"
 msgstr ""
 
 #: addons/compare/backend.php:125
 #: addons/quick_view/backend.php:121
-#: build/addons/compare/backend.php:125
-#: build/addons/quick_view/backend.php:121
 msgid "Shrink In"
 msgstr ""
 
 #: addons/compare/backend.php:126
 #: addons/flip_image/backend.php:69
 #: addons/quick_view/backend.php:122
-#: build/addons/compare/backend.php:126
-#: build/addons/flip_image/backend.php:69
-#: build/addons/quick_view/backend.php:122
 msgid "Fade In"
 msgstr ""
 
 #: addons/compare/backend.php:127
 #: addons/quick_view/backend.php:123
-#: build/addons/compare/backend.php:127
-#: build/addons/quick_view/backend.php:123
 msgid "Flip In"
 msgstr ""
 
@@ -887,10 +691,6 @@ msgstr ""
 #: addons/compare/backend.php:147
 #: addons/quick_view/backend.php:124
 #: addons/quick_view/backend.php:142
-#: build/addons/compare/backend.php:128
-#: build/addons/compare/backend.php:147
-#: build/addons/quick_view/backend.php:124
-#: build/addons/quick_view/backend.php:142
 msgid "Slide Up"
 msgstr ""
 
@@ -898,10 +698,6 @@ msgstr ""
 #: addons/compare/backend.php:148
 #: addons/quick_view/backend.php:125
 #: addons/quick_view/backend.php:143
-#: build/addons/compare/backend.php:129
-#: build/addons/compare/backend.php:148
-#: build/addons/quick_view/backend.php:125
-#: build/addons/quick_view/backend.php:143
 msgid "Slide Down"
 msgstr ""
 
@@ -909,10 +705,6 @@ msgstr ""
 #: addons/compare/backend.php:149
 #: addons/quick_view/backend.php:126
 #: addons/quick_view/backend.php:144
-#: build/addons/compare/backend.php:130
-#: build/addons/compare/backend.php:149
-#: build/addons/quick_view/backend.php:126
-#: build/addons/quick_view/backend.php:144
 #: assets/js/editor.blocks.js:1185
 msgid "Slide Left"
 msgstr ""
@@ -921,37 +713,26 @@ msgstr ""
 #: addons/compare/backend.php:150
 #: addons/quick_view/backend.php:127
 #: addons/quick_view/backend.php:145
-#: build/addons/compare/backend.php:131
-#: build/addons/compare/backend.php:150
-#: build/addons/quick_view/backend.php:127
-#: build/addons/quick_view/backend.php:145
 #: assets/js/editor.blocks.js:1185
 msgid "Slide Right"
 msgstr ""
 
 #: addons/compare/backend.php:132
 #: addons/quick_view/backend.php:128
-#: build/addons/compare/backend.php:132
-#: build/addons/quick_view/backend.php:128
 msgid "Unfolding"
 msgstr ""
 
 #: addons/compare/backend.php:133
 #: addons/quick_view/backend.php:129
-#: build/addons/compare/backend.php:133
-#: build/addons/quick_view/backend.php:129
 msgid "Blow Up"
 msgstr ""
 
 #: addons/compare/backend.php:139
-#: build/addons/compare/backend.php:139
 msgid "Modal Closing Animation"
 msgstr ""
 
 #: addons/compare/backend.php:143
 #: addons/quick_view/backend.php:138
-#: build/addons/compare/backend.php:143
-#: build/addons/quick_view/backend.php:138
 #: assets/js/editor.blocks.js:1185
 #: assets/js/editor.blocks.js:2494
 msgid "Zoom Out"
@@ -959,139 +740,100 @@ msgstr ""
 
 #: addons/compare/backend.php:144
 #: addons/quick_view/backend.php:139
-#: build/addons/compare/backend.php:144
-#: build/addons/quick_view/backend.php:139
 msgid "Shrink Out"
 msgstr ""
 
 #: addons/compare/backend.php:145
 #: addons/quick_view/backend.php:140
-#: build/addons/compare/backend.php:145
-#: build/addons/quick_view/backend.php:140
 msgid "Fade Out"
 msgstr ""
 
 #: addons/compare/backend.php:146
 #: addons/quick_view/backend.php:141
-#: build/addons/compare/backend.php:146
-#: build/addons/quick_view/backend.php:141
 msgid "Flip Out"
 msgstr ""
 
 #: addons/compare/backend.php:151
 #: addons/quick_view/backend.php:146
-#: build/addons/compare/backend.php:151
-#: build/addons/quick_view/backend.php:146
 msgid "Folding"
 msgstr ""
 
 #: addons/compare/backend.php:152
 #: addons/quick_view/backend.php:147
-#: build/addons/compare/backend.php:152
-#: build/addons/quick_view/backend.php:147
 msgid "Blow Down"
 msgstr ""
 
 #: addons/compare/backend.php:158
-#: build/addons/compare/backend.php:158
 msgid "Hide Compare Table If Empty"
 msgstr ""
 
 #: addons/compare/backend.php:160
-#: build/addons/compare/backend.php:160
 msgid "Hide compare table if haven't any product."
 msgstr ""
 
 #: addons/compare/backend.php:166
-#: build/addons/compare/backend.php:166
 msgid "Compare in Shop/Archive Page"
 msgstr ""
 
 #: addons/compare/backend.php:170
-#: build/addons/compare/backend.php:170
 msgid "Show Compare In Shop Page"
 msgstr ""
 
 #: addons/compare/backend.php:172
-#: build/addons/compare/backend.php:172
 msgid "Enable compare on your shop page."
 msgstr ""
 
 #: addons/compare/backend.php:176
-#: build/addons/compare/backend.php:176
 msgid "Button Position on Shop Page"
 msgstr ""
 
 #: addons/compare/backend.php:177
-#: build/addons/compare/backend.php:177
 msgid "Choose where will place compare button on shop page."
 msgstr ""
 
 #: addons/compare/backend.php:179
 #: addons/compare/backend.php:247
 #: addons/quick_view/backend.php:174
-#: build/addons/compare/backend.php:179
-#: build/addons/compare/backend.php:247
-#: build/addons/quick_view/backend.php:174
 msgid "After Add to Cart"
 msgstr ""
 
 #: addons/compare/backend.php:180
 #: addons/compare/backend.php:248
 #: addons/quick_view/backend.php:175
-#: build/addons/compare/backend.php:180
-#: build/addons/compare/backend.php:248
-#: build/addons/quick_view/backend.php:175
 msgid "Bottom Add to Cart"
 msgstr ""
 
 #: addons/compare/backend.php:181
 #: addons/compare/backend.php:249
 #: addons/quick_view/backend.php:176
-#: build/addons/compare/backend.php:181
-#: build/addons/compare/backend.php:249
-#: build/addons/quick_view/backend.php:176
 msgid "Top Add to Cart"
 msgstr ""
 
 #: addons/compare/backend.php:182
 #: addons/compare/backend.php:250
 #: addons/quick_view/backend.php:177
-#: build/addons/compare/backend.php:182
-#: build/addons/compare/backend.php:250
-#: build/addons/quick_view/backend.php:177
 msgid "Before Add to Cart"
 msgstr ""
 
 #: addons/compare/backend.php:183
 #: addons/quick_view/backend.php:178
-#: build/addons/compare/backend.php:183
-#: build/addons/quick_view/backend.php:178
 msgid "Above Image"
 msgstr ""
 
 #: addons/compare/backend.php:184
 #: addons/compare/backend.php:251
 #: addons/quick_view/backend.php:179
-#: build/addons/compare/backend.php:184
-#: build/addons/compare/backend.php:251
-#: build/addons/quick_view/backend.php:179
 msgid "Use Shortcode"
 msgstr ""
 
 #: addons/compare/backend.php:188
 #: addons/compare/backend.php:255
-#: build/addons/compare/backend.php:188
-#: build/addons/compare/backend.php:255
 msgid "Use this shortcode [wopb_compare_button] where you want to show compare button."
 msgstr ""
 
 #: addons/compare/backend.php:194
 #: addons/compare/backend.php:261
 #: addons/compare/backend.php:320
-#: build/addons/compare/backend.php:194
-#: build/addons/compare/backend.php:261
-#: build/addons/compare/backend.php:320
 msgid "Compare Button Text"
 msgstr ""
 
@@ -1099,17 +841,11 @@ msgstr ""
 #: addons/compare/backend.php:262
 #: addons/compare/Compare.php:313
 #: addons/compare/Compare.php:322
-#: build/addons/compare/backend.php:195
-#: build/addons/compare/backend.php:262
-#: build/addons/compare/Compare.php:313
-#: build/addons/compare/Compare.php:322
 msgid "Add to Compare"
 msgstr ""
 
 #: addons/compare/backend.php:199
 #: addons/compare/backend.php:267
-#: build/addons/compare/backend.php:199
-#: build/addons/compare/backend.php:267
 msgid "Button Text After Add To Compare"
 msgstr ""
 
@@ -1117,26 +853,17 @@ msgstr ""
 #: addons/compare/backend.php:268
 #: addons/compare/Compare.php:314
 #: addons/compare/Compare.php:323
-#: build/addons/compare/backend.php:200
-#: build/addons/compare/backend.php:268
-#: build/addons/compare/Compare.php:314
-#: build/addons/compare/Compare.php:323
 msgid "Added"
 msgstr ""
 
 #: addons/compare/backend.php:204
 #: addons/compare/backend.php:273
 #: addons/quick_view/backend.php:189
-#: build/addons/compare/backend.php:204
-#: build/addons/compare/backend.php:273
-#: build/addons/quick_view/backend.php:189
 msgid "Button Icon"
 msgstr ""
 
 #: addons/compare/backend.php:206
 #: addons/compare/backend.php:275
-#: build/addons/compare/backend.php:206
-#: build/addons/compare/backend.php:275
 msgid "Enable button icon to display icon on compare button."
 msgstr ""
 
@@ -1144,10 +871,6 @@ msgstr ""
 #: addons/compare/backend.php:279
 #: addons/compare/backend.php:327
 #: addons/quick_view/backend.php:195
-#: build/addons/compare/backend.php:210
-#: build/addons/compare/backend.php:279
-#: build/addons/compare/backend.php:327
-#: build/addons/quick_view/backend.php:195
 #: assets/js/editor.blocks.js:459
 #: assets/js/editor.blocks.js:503
 msgid "Choose Icon"
@@ -1155,8 +878,6 @@ msgstr ""
 
 #: addons/compare/backend.php:215
 #: addons/compare/backend.php:284
-#: build/addons/compare/backend.php:215
-#: build/addons/compare/backend.php:284
 msgid "Choose icon display on compare button."
 msgstr ""
 
@@ -1165,11 +886,6 @@ msgstr ""
 #: addons/compare/backend.php:335
 #: addons/quick_view/backend.php:211
 #: addons/wishlist/backend.php:183
-#: build/addons/compare/backend.php:219
-#: build/addons/compare/backend.php:288
-#: build/addons/compare/backend.php:335
-#: build/addons/quick_view/backend.php:211
-#: build/addons/wishlist/backend.php:183
 #: assets/js/editor.blocks.js:63
 msgid "Icon Position"
 msgstr ""
@@ -1177,164 +893,127 @@ msgstr ""
 #: addons/compare/backend.php:225
 #: addons/compare/backend.php:294
 #: addons/quick_view/backend.php:217
-#: build/addons/compare/backend.php:225
-#: build/addons/compare/backend.php:294
-#: build/addons/quick_view/backend.php:217
 msgid "Before Text"
 msgstr ""
 
 #: addons/compare/backend.php:226
 #: addons/compare/backend.php:295
 #: addons/quick_view/backend.php:218
-#: build/addons/compare/backend.php:226
-#: build/addons/compare/backend.php:295
-#: build/addons/quick_view/backend.php:218
 msgid "After Text"
 msgstr ""
 
 #: addons/compare/backend.php:234
-#: build/addons/compare/backend.php:234
 msgid "Compare in Single Page"
 msgstr ""
 
 #: addons/compare/backend.php:238
-#: build/addons/compare/backend.php:238
 msgid "Show Compare In Single Product Page"
 msgstr ""
 
 #: addons/compare/backend.php:240
-#: build/addons/compare/backend.php:240
 msgid "Enable compare on your single product page."
 msgstr ""
 
 #: addons/compare/backend.php:244
-#: build/addons/compare/backend.php:244
 msgid "Button Position on Single Page"
 msgstr ""
 
 #: addons/compare/backend.php:245
-#: build/addons/compare/backend.php:245
 msgid "Choose where will place compare button on single page."
 msgstr ""
 
 #: addons/compare/backend.php:263
 #: addons/compare/backend.php:323
-#: build/addons/compare/backend.php:263
-#: build/addons/compare/backend.php:323
 msgid "Write your preferable text to show  on compare button"
 msgstr ""
 
 #: addons/compare/backend.php:269
-#: build/addons/compare/backend.php:269
 msgid "Write your preferable text after clicking add to compare"
 msgstr ""
 
 #: addons/compare/backend.php:303
-#: build/addons/compare/backend.php:303
 msgid "Compare Menu in Navbar"
 msgstr ""
 
 #: addons/compare/backend.php:307
-#: build/addons/compare/backend.php:307
 msgid "Add Compare Menu In Navbar"
 msgstr ""
 
 #: addons/compare/backend.php:309
-#: build/addons/compare/backend.php:309
 msgid "Enable compare menu in navbar."
 msgstr ""
 
 #: addons/compare/backend.php:313
 #: addons/wishlist/backend.php:171
-#: build/addons/compare/backend.php:313
-#: build/addons/wishlist/backend.php:171
 msgid "Nav Menu Location"
 msgstr ""
 
 #: addons/compare/backend.php:349
-#: build/addons/compare/backend.php:349
 msgid "Action After Click Menu"
 msgstr ""
 
 #: addons/compare/backend.php:360
-#: build/addons/compare/backend.php:360
 msgid "Compare Menu Custom Position"
 msgstr ""
 
 #: addons/compare/backend.php:362
 #: addons/wishlist/backend.php:196
-#: build/addons/compare/backend.php:362
-#: build/addons/wishlist/backend.php:196
 msgid "Enable shortcode for custom position."
 msgstr ""
 
 #: addons/compare/backend.php:365
-#: build/addons/compare/backend.php:365
 msgid "Use this shortcode [wopb_compare_nav] for custom position of comparison menu on navbar."
 msgstr ""
 
 #: addons/compare/backend.php:373
-#: build/addons/compare/backend.php:373
 msgid "Compare Table Settings"
 msgstr ""
 
 #: addons/compare/backend.php:377
-#: build/addons/compare/backend.php:377
 msgid "Select Fields To Show In Comparison Table"
 msgstr ""
 
 #: addons/compare/backend.php:378
-#: build/addons/compare/backend.php:378
 msgid "Select the fields you want to include in the comparison table. To rearrange these fields, you can also drag and drop. You can also customize the label name according to your preferences."
 msgstr ""
 
 #: addons/compare/backend.php:384
-#: build/addons/compare/backend.php:384
 msgid "Add New Product Button on Table"
 msgstr ""
 
 #: addons/compare/backend.php:386
-#: build/addons/compare/backend.php:386
 msgid "Enable add new product button on compare table."
 msgstr ""
 
 #: addons/compare/backend.php:391
-#: build/addons/compare/backend.php:391
 msgid "Clear Compare Product List"
 msgstr ""
 
 #: addons/compare/backend.php:393
-#: build/addons/compare/backend.php:393
 msgid "Enable clear all button at bottom right corner on compare table."
 msgstr ""
 
 #: addons/compare/backend.php:397
-#: build/addons/compare/backend.php:397
 msgid "Freeze Table First Column"
 msgstr ""
 
 #: addons/compare/backend.php:399
-#: build/addons/compare/backend.php:399
 msgid "Enable freeze the compare table first column when scrolling horizontally."
 msgstr ""
 
 #: addons/compare/backend.php:403
-#: build/addons/compare/backend.php:403
 msgid "Freeze Table First Row"
 msgstr ""
 
 #: addons/compare/backend.php:405
-#: build/addons/compare/backend.php:405
 msgid "Enable freeze the compare table first row when scrolling vertically."
 msgstr ""
 
 #: addons/compare/backend.php:409
-#: build/addons/compare/backend.php:409
 msgid "Close Button on Table"
 msgstr ""
 
 #: addons/compare/backend.php:411
-#: build/addons/compare/backend.php:411
 msgid "Enable close button at top right corner on compare table."
 msgstr ""
 
@@ -1344,33 +1023,21 @@ msgstr ""
 #: addons/sales_notification/backend.php:130
 #: addons/variation_swatches/backend.php:115
 #: addons/wishlist/backend.php:209
-#: build/addons/compare/backend.php:418
-#: build/addons/name_price/backend.php:104
-#: build/addons/quick_view/backend.php:326
-#: build/addons/sales_notification/backend.php:130
-#: build/addons/variation_swatches/backend.php:115
-#: build/addons/wishlist/backend.php:209
 msgid "Design"
 msgstr ""
 
 #: addons/compare/backend.php:422
-#: build/addons/compare/backend.php:422
 msgid "Choose Comparison Table Layout"
 msgstr ""
 
 #: addons/compare/backend.php:457
 #: addons/quick_view/backend.php:370
-#: build/addons/compare/backend.php:457
-#: build/addons/quick_view/backend.php:370
 msgid "Browse Presets"
 msgstr ""
 
 #: addons/compare/backend.php:491
 #: addons/quick_view/backend.php:394
 #: addons/wishlist/backend.php:213
-#: build/addons/compare/backend.php:491
-#: build/addons/quick_view/backend.php:394
-#: build/addons/wishlist/backend.php:213
 msgid "Shop/Archive Page Button Style"
 msgstr ""
 
@@ -1381,13 +1048,6 @@ msgstr ""
 #: addons/wishlist/backend.php:217
 #: addons/wishlist/backend.php:286
 #: addons/wishlist/backend.php:343
-#: build/addons/compare/backend.php:495
-#: build/addons/compare/backend.php:564
-#: build/addons/compare/backend.php:621
-#: build/addons/quick_view/backend.php:398
-#: build/addons/wishlist/backend.php:217
-#: build/addons/wishlist/backend.php:286
-#: build/addons/wishlist/backend.php:343
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:151
 #: assets/js/editor.blocks.js:305
@@ -1460,26 +1120,6 @@ msgstr ""
 #: addons/wishlist/backend.php:357
 #: addons/wishlist/backend.php:362
 #: addons/wishlist/backend.php:419
-#: build/addons/compare/backend.php:509
-#: build/addons/compare/backend.php:514
-#: build/addons/compare/backend.php:578
-#: build/addons/compare/backend.php:583
-#: build/addons/compare/backend.php:635
-#: build/addons/compare/backend.php:640
-#: build/addons/compare/backend.php:696
-#: build/addons/name_price/backend.php:142
-#: build/addons/quick_view/backend.php:412
-#: build/addons/quick_view/backend.php:417
-#: build/addons/quick_view/backend.php:506
-#: build/addons/sales_notification/backend.php:139
-#: build/addons/sales_notification/backend.php:144
-#: build/addons/wishlist/backend.php:231
-#: build/addons/wishlist/backend.php:236
-#: build/addons/wishlist/backend.php:300
-#: build/addons/wishlist/backend.php:305
-#: build/addons/wishlist/backend.php:357
-#: build/addons/wishlist/backend.php:362
-#: build/addons/wishlist/backend.php:419
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:151
 #: assets/js/editor.blocks.js:261
@@ -1504,13 +1144,6 @@ msgstr ""
 #: addons/wishlist/backend.php:240
 #: addons/wishlist/backend.php:309
 #: addons/wishlist/backend.php:366
-#: build/addons/compare/backend.php:518
-#: build/addons/compare/backend.php:587
-#: build/addons/compare/backend.php:644
-#: build/addons/quick_view/backend.php:421
-#: build/addons/wishlist/backend.php:240
-#: build/addons/wishlist/backend.php:309
-#: build/addons/wishlist/backend.php:366
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:151
 #: assets/js/editor.blocks.js:305
@@ -1565,15 +1198,6 @@ msgstr ""
 #: addons/wishlist/backend.php:319
 #: addons/wishlist/backend.php:376
 #: addons/wishlist/backend.php:440
-#: build/addons/compare/backend.php:528
-#: build/addons/compare/backend.php:597
-#: build/addons/compare/backend.php:654
-#: build/addons/compare/backend.php:762
-#: build/addons/quick_view/backend.php:431
-#: build/addons/wishlist/backend.php:250
-#: build/addons/wishlist/backend.php:319
-#: build/addons/wishlist/backend.php:376
-#: build/addons/wishlist/backend.php:440
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:107
 #: assets/js/editor.blocks.js:151
@@ -1631,13 +1255,6 @@ msgstr ""
 #: addons/wishlist/backend.php:258
 #: addons/wishlist/backend.php:327
 #: addons/wishlist/backend.php:384
-#: build/addons/compare/backend.php:536
-#: build/addons/compare/backend.php:605
-#: build/addons/compare/backend.php:662
-#: build/addons/quick_view/backend.php:439
-#: build/addons/wishlist/backend.php:258
-#: build/addons/wishlist/backend.php:327
-#: build/addons/wishlist/backend.php:384
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:151
 #: assets/js/editor.blocks.js:261
@@ -1693,13 +1310,6 @@ msgstr ""
 #: addons/wishlist/backend.php:263
 #: addons/wishlist/backend.php:332
 #: addons/wishlist/backend.php:389
-#: build/addons/compare/backend.php:541
-#: build/addons/compare/backend.php:610
-#: build/addons/compare/backend.php:667
-#: build/addons/quick_view/backend.php:444
-#: build/addons/wishlist/backend.php:263
-#: build/addons/wishlist/backend.php:332
-#: build/addons/wishlist/backend.php:389
 #: assets/js/editor.blocks.js:261
 #: assets/js/editor.blocks.js:459
 #: assets/js/editor.blocks.js:503
@@ -1718,9 +1328,6 @@ msgstr ""
 #: addons/compare/backend.php:546
 #: addons/quick_view/backend.php:449
 #: addons/wishlist/backend.php:268
-#: build/addons/compare/backend.php:546
-#: build/addons/quick_view/backend.php:449
-#: build/addons/wishlist/backend.php:268
 msgid "Button Alignment"
 msgstr ""
 
@@ -1729,11 +1336,6 @@ msgstr ""
 #: addons/sales_notification/backend.php:57
 #: addons/variation_swatches/backend.php:158
 #: addons/wishlist/backend.php:273
-#: build/addons/compare/backend.php:551
-#: build/addons/quick_view/backend.php:454
-#: build/addons/sales_notification/backend.php:57
-#: build/addons/variation_swatches/backend.php:158
-#: build/addons/wishlist/backend.php:273
 #: assets/js/editor.blocks.js:459
 #: assets/js/editor.blocks.js:503
 #: assets/js/editor.blocks.js:1218
@@ -1749,10 +1351,6 @@ msgstr ""
 #: addons/quick_view/backend.php:455
 #: addons/variation_swatches/backend.php:159
 #: addons/wishlist/backend.php:274
-#: build/addons/compare/backend.php:552
-#: build/addons/quick_view/backend.php:455
-#: build/addons/variation_swatches/backend.php:159
-#: build/addons/wishlist/backend.php:274
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:2494
 msgid "Center"
@@ -1763,11 +1361,6 @@ msgstr ""
 #: addons/sales_notification/backend.php:58
 #: addons/variation_swatches/backend.php:160
 #: addons/wishlist/backend.php:275
-#: build/addons/compare/backend.php:553
-#: build/addons/quick_view/backend.php:456
-#: build/addons/sales_notification/backend.php:58
-#: build/addons/variation_swatches/backend.php:160
-#: build/addons/wishlist/backend.php:275
 #: assets/js/editor.blocks.js:459
 #: assets/js/editor.blocks.js:503
 #: assets/js/editor.blocks.js:1218
@@ -1780,54 +1373,41 @@ msgstr ""
 
 #: addons/compare/backend.php:560
 #: addons/wishlist/backend.php:282
-#: build/addons/compare/backend.php:560
-#: build/addons/wishlist/backend.php:282
 msgid "Product Single Page Button Style"
 msgstr ""
 
 #: addons/compare/backend.php:617
 #: addons/wishlist/backend.php:339
-#: build/addons/compare/backend.php:617
-#: build/addons/wishlist/backend.php:339
 msgid "Navbar Button Style"
 msgstr ""
 
 #: addons/compare/backend.php:673
 #: addons/wishlist/backend.php:396
-#: build/addons/compare/backend.php:673
-#: build/addons/wishlist/backend.php:396
 msgid "Table Column Style"
 msgstr ""
 
 #: addons/compare/backend.php:677
-#: build/addons/compare/backend.php:677
 msgid "Cart Button Typography"
 msgstr ""
 
 #: addons/compare/backend.php:691
-#: build/addons/compare/backend.php:691
 msgid "Cart Button Background"
 msgstr ""
 
 #: addons/compare/backend.php:700
-#: build/addons/compare/backend.php:700
 msgid "Cart Button Padding"
 msgstr ""
 
 #: addons/compare/backend.php:710
-#: build/addons/compare/backend.php:710
 msgid "Cart Button Border"
 msgstr ""
 
 #: addons/compare/backend.php:718
-#: build/addons/compare/backend.php:718
 msgid "Cart Button Border Radius"
 msgstr ""
 
 #: addons/compare/backend.php:723
 #: addons/wishlist/backend.php:400
-#: build/addons/compare/backend.php:723
-#: build/addons/wishlist/backend.php:400
 #: assets/js/editor.blocks.js:547
 #: assets/js/editor.blocks.js:602
 #: assets/js/editor.blocks.js:657
@@ -1845,159 +1425,120 @@ msgstr ""
 
 #: addons/compare/backend.php:735
 #: addons/wishlist/backend.php:423
-#: build/addons/compare/backend.php:735
-#: build/addons/wishlist/backend.php:423
 msgid "Body Text Typography"
 msgstr ""
 
 #: addons/compare/backend.php:747
-#: build/addons/compare/backend.php:747
 msgid "Column Padding"
 msgstr ""
 
 #: addons/compare/backend.php:757
 #: addons/wishlist/backend.php:435
-#: build/addons/compare/backend.php:757
-#: build/addons/wishlist/backend.php:435
 msgid "Column Spacing"
 msgstr ""
 
 #: addons/compare/Compare.php:525
-#: build/addons/compare/Compare.php:525
 msgid "Compare Added."
 msgstr ""
 
 #: addons/compare/Compare.php:530
-#: build/addons/compare/Compare.php:530
 msgid "Compare Item Clear."
 msgstr ""
 
 #: addons/compare/Compare.php:534
-#: build/addons/compare/Compare.php:534
 msgid "Compare Removed."
 msgstr ""
 
 #: addons/compare/Compare.php:552
-#: build/addons/compare/Compare.php:552
 msgid "Compare Not Added"
 msgstr ""
 
 #: addons/compare/Compare.php:596
-#: build/addons/compare/Compare.php:596
 msgid "Compare Products"
 msgstr ""
 
 #: addons/compare/Compare.php:622
 #: blocks/Filter.php:404
-#: build/addons/compare/Compare.php:622
-#: build/blocks/Filter.php:404
 #: assets/js/editor.blocks.js:338
 msgid "Clear All"
 msgstr ""
 
 #: addons/compare/Compare.php:634
-#: build/addons/compare/Compare.php:634
 msgid "Let's Compare"
 msgstr ""
 
 #: addons/compare/Compare.php:690
 #: addons/quick_view/Quickview.php:342
 #: blocks/woo/Product_Rating.php:49
-#: build/addons/compare/Compare.php:690
-#: build/addons/quick_view/Quickview.php:342
-#: build/blocks/woo/Product_Rating.php:49
 msgid "customer review"
 msgstr ""
 
 #: addons/compare/Compare.php:796
 #: addons/wishlist/Wishlist.php:264
-#: build/addons/compare/Compare.php:796
-#: build/addons/wishlist/Wishlist.php:264
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Action"
 msgstr ""
 
 #: addons/compare/Compare.php:805
 #: addons/custom_font/Custom_Font.php:181
-#: build/addons/compare/Compare.php:805
-#: build/addons/custom_font/Custom_Font.php:181
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Delete"
 msgstr ""
 
 #: addons/compare/Compare.php:818
-#: build/addons/compare/Compare.php:818
 msgid "Add Product"
 msgstr ""
 
 #: addons/compare/Compare.php:871
-#: build/addons/compare/Compare.php:871
 msgid "in stock"
 msgstr ""
 
 #: addons/compare/Compare.php:897
 #: blocks/Product_Slider.php:358
-#: build/addons/compare/Compare.php:897
-#: build/blocks/Product_Slider.php:358
-#: build/classes/Functions.php:2999
-#: build/classes/Functions.php:3001
-#: classes/Functions.php:2999
-#: classes/Functions.php:3001
+#: classes/Functions.php:3025
+#: classes/Functions.php:3027
 msgid "View Cart"
 msgstr ""
 
 #: addons/compare/Compare.php:981
-#: build/addons/compare/Compare.php:981
 msgid "Search for products by name..."
 msgstr ""
 
 #: addons/compare/Compare.php:1048
-#: build/addons/compare/Compare.php:1048
 msgid "No products were added to compare list"
 msgstr ""
 
 #: addons/compare/Compare.php:1049
-#: build/addons/compare/Compare.php:1049
 msgid "Return to Shop"
 msgstr ""
 
 #: addons/compare/Compare.php:1073
-#: build/addons/compare/Compare.php:1073
 msgid "has been added on compare list."
 msgstr ""
 
 #: addons/compare/Compare.php:1078
-#: build/addons/compare/Compare.php:1078
 msgid "View Compare List"
 msgstr ""
 
 #: addons/compare/Compare.php:1200
-#: build/addons/compare/Compare.php:1200
 #: assets/js/editor.blocks.js:2494
 msgid "- Select -"
 msgstr ""
 
 #: addons/custom_font/backend.php:11
-#: build/addons/custom_font/backend.php:11
-#: build/classes/Options.php:142
 #: classes/Options.php:142
 msgid "Custom Font"
 msgstr ""
 
 #: addons/custom_font/backend.php:12
-#: build/addons/custom_font/backend.php:12
 msgid "It allows you to upload custom fonts and use them on any WowStore blocks with all typographical options."
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:20
-#: build/addons/custom_font/Custom_Font.php:20
 msgid "Add Font Family Name"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:55
-#: build/addons/custom_font/Custom_Font.php:55
 #: addons/builder/assets/js/conditions.js:74
 #: assets/js/editor.blocks.js:1735
 #: assets/js/editor.blocks.js:1823
@@ -2009,72 +1550,54 @@ msgstr ""
 #: assets/js/editor.blocks.js:2087
 #: assets/js/editor.blocks.js:2131
 #: assets/js/editor.blocks.js:2604
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Preview"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:56
-#: build/addons/custom_font/Custom_Font.php:56
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "WOFF"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:57
-#: build/addons/custom_font/Custom_Font.php:57
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "WOFF2"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:58
-#: build/addons/custom_font/Custom_Font.php:58
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "TTF"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:59
-#: build/addons/custom_font/Custom_Font.php:59
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "SVG"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:60
-#: build/addons/custom_font/Custom_Font.php:60
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "EOT"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:62
-#: build/addons/custom_font/Custom_Font.php:62
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Font Family"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:115
-#: build/addons/custom_font/Custom_Font.php:115
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:142
-#: build/addons/custom_font/Custom_Font.php:142
 msgid "Font Vaiations"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:154
-#: build/addons/custom_font/Custom_Font.php:154
 msgid "Weight:  "
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:157
-#: build/addons/custom_font/Custom_Font.php:157
 #: addons/builder/assets/js/conditions.js:151
 #: addons/builder/assets/js/conditions.js:184
 #: assets/js/editor.blocks.js:63
@@ -2091,83 +1614,66 @@ msgstr ""
 #: assets/js/editor.blocks.js:1185
 #: assets/js/editor.blocks.js:2494
 #: assets/js/editor.blocks.js:2934
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Normal"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:158
-#: build/addons/custom_font/Custom_Font.php:158
 msgid "100"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:159
-#: build/addons/custom_font/Custom_Font.php:159
 msgid "200"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:160
-#: build/addons/custom_font/Custom_Font.php:160
 msgid "300"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:161
-#: build/addons/custom_font/Custom_Font.php:161
 msgid "400"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:162
-#: build/addons/custom_font/Custom_Font.php:162
 msgid "500"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:163
-#: build/addons/custom_font/Custom_Font.php:163
 msgid "600"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:164
-#: build/addons/custom_font/Custom_Font.php:164
 msgid "700"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:165
-#: build/addons/custom_font/Custom_Font.php:165
 msgid "800"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:166
-#: build/addons/custom_font/Custom_Font.php:166
 msgid "900"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:177
-#: build/addons/custom_font/Custom_Font.php:177
 msgid "The quick brown fox jumps over the lazy dog"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:179
-#: build/addons/custom_font/Custom_Font.php:179
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Edit"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:180
-#: build/addons/custom_font/Custom_Font.php:180
 #: addons/builder/assets/js/conditions.js:217
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Close"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:186
-#: build/addons/custom_font/Custom_Font.php:186
 msgid "WOFF File"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:187
-#: build/addons/custom_font/Custom_Font.php:187
 msgid "The web open Font Format, Used by Modern Browsers"
 msgstr ""
 
@@ -2176,202 +1682,157 @@ msgstr ""
 #: addons/custom_font/Custom_Font.php:198
 #: addons/custom_font/Custom_Font.php:203
 #: addons/custom_font/Custom_Font.php:208
-#: build/addons/custom_font/Custom_Font.php:188
-#: build/addons/custom_font/Custom_Font.php:193
-#: build/addons/custom_font/Custom_Font.php:198
-#: build/addons/custom_font/Custom_Font.php:203
-#: build/addons/custom_font/Custom_Font.php:208
 #: assets/js/editor.blocks.js:2802
 msgid "Upload"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:191
-#: build/addons/custom_font/Custom_Font.php:191
 msgid "WOFF2 File"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:192
-#: build/addons/custom_font/Custom_Font.php:192
 msgid "The web open Font Format 2, Used by Super Modern Browsers"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:196
-#: build/addons/custom_font/Custom_Font.php:196
 msgid "TTF File"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:197
-#: build/addons/custom_font/Custom_Font.php:197
 msgid "TrueType Fonts, Used for better supporting Safari, Android, iOS"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:201
-#: build/addons/custom_font/Custom_Font.php:201
 msgid "SVG File"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:202
-#: build/addons/custom_font/Custom_Font.php:202
 msgid "SVG font allow SVG to be used as glyphs when displaying text, Used by Legacy iOS"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:206
-#: build/addons/custom_font/Custom_Font.php:206
 msgid "EOT File"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:207
-#: build/addons/custom_font/Custom_Font.php:207
 msgid "Embedded OpenType, Used by IE6-IE9 Browsers"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:226
-#: build/addons/custom_font/Custom_Font.php:226
 msgid "Add Variation"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:260
-#: build/addons/custom_font/Custom_Font.php:260
 msgctxt "Custom Font"
 msgid "Custom Fonts"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:261
-#: build/addons/custom_font/Custom_Font.php:261
 msgctxt "Custom Font"
 msgid "Saved Custom Font"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:262
 #: addons/custom_font/Custom_Font.php:264
-#: build/addons/custom_font/Custom_Font.php:262
-#: build/addons/custom_font/Custom_Font.php:264
 msgid "Saved Custom Font"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:263
-#: build/addons/custom_font/Custom_Font.php:263
 msgid "Parent Custom Font"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:265
-#: build/addons/custom_font/Custom_Font.php:265
 msgid "View Custom Font"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:268
-#: build/addons/custom_font/Custom_Font.php:268
 msgid "Edit Custom Font"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:269
-#: build/addons/custom_font/Custom_Font.php:269
 msgid "Update Custom Font"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:270
-#: build/addons/custom_font/Custom_Font.php:270
 msgid "Search Custom Font"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:271
-#: build/addons/custom_font/Custom_Font.php:271
 msgid "No Custom Font Found"
 msgstr ""
 
 #: addons/custom_font/Custom_Font.php:272
-#: build/addons/custom_font/Custom_Font.php:272
 msgid "Not Custom Font found in Trash"
 msgstr ""
 
 #: addons/divi/backend.php:7
-#: build/addons/divi/backend.php:7
 msgid "Divi"
 msgstr ""
 
 #: addons/divi/backend.php:8
-#: build/addons/divi/backend.php:8
 msgid "Create your custom design with WowStore blocks, and templates and use the design with Divi Builder."
 msgstr ""
 
 #: addons/divi/divi.php:25
-#: build/addons/divi/divi.php:25
 msgid "Pick a Template from your saved ones. Or create a template from: <strong><i>Dashboard > WowStore > Saved Templates</i></strong>"
 msgstr ""
 
 #: addons/elementor/backend.php:7
-#: build/addons/elementor/backend.php:7
 msgid "Elementor"
 msgstr ""
 
 #: addons/elementor/backend.php:8
-#: build/addons/elementor/backend.php:8
 msgid "It allows you to use WowStore blocks, patterns, and templates while building pages with the Elementor."
 msgstr ""
 
 #: addons/elementor/Elementor_Widget.php:33
 #: addons/templates/backend.php:11
-#: build/addons/elementor/Elementor_Widget.php:33
-#: build/addons/templates/backend.php:11
-#: build/classes/Options.php:141
 #: classes/Options.php:141
 msgid "Saved Template"
 msgstr ""
 
 #: addons/flip_image/backend.php:11
-#: build/addons/flip_image/backend.php:11
 msgid "Product Image Flipper"
 msgstr ""
 
 #: addons/flip_image/backend.php:12
-#: build/addons/flip_image/backend.php:12
 msgid "It allows you to display a different image of products when the shoppers of your store hover over a product."
 msgstr ""
 
 #: addons/flip_image/backend.php:35
 #: addons/flip_image/FlipImage.php:104
-#: build/addons/flip_image/backend.php:35
-#: build/addons/flip_image/FlipImage.php:104
 msgid "Flip Image"
 msgstr ""
 
 #: addons/flip_image/backend.php:39
-#: build/addons/flip_image/backend.php:39
 msgid "Flip Image Settings"
 msgstr ""
 
 #: addons/flip_image/backend.php:47
-#: build/addons/flip_image/backend.php:47
 msgid "Enable Image Flipper"
 msgstr ""
 
 #: addons/flip_image/backend.php:48
-#: build/addons/flip_image/backend.php:48
 msgid "Enable product image flipper on your website"
 msgstr ""
 
 #: addons/flip_image/backend.php:52
-#: build/addons/flip_image/backend.php:52
 msgid "Flip Image Source"
 msgstr ""
 
 #: addons/flip_image/backend.php:55
-#: build/addons/flip_image/backend.php:55
 msgid "First Image From Gallery"
 msgstr ""
 
 #: addons/flip_image/backend.php:58
-#: build/addons/flip_image/backend.php:58
 msgid "Specific Flip Image Selection Option"
 msgstr ""
 
 #: addons/flip_image/backend.php:65
-#: build/addons/flip_image/backend.php:65
 msgid "Product Flip Animation Type"
 msgstr ""
 
 #: addons/flip_image/backend.php:68
-#: build/addons/flip_image/backend.php:68
 #: addons/builder/assets/js/conditions.js:140
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:107
@@ -2392,399 +1853,314 @@ msgstr ""
 #: assets/js/editor.blocks.js:1878
 #: assets/js/editor.blocks.js:2494
 #: assets/js/editor.blocks.js:2934
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "None"
 msgstr ""
 
 #: addons/flip_image/backend.php:71
-#: build/addons/flip_image/backend.php:71
 msgid "Fade In & Zoom In"
 msgstr ""
 
 #: addons/flip_image/backend.php:72
-#: build/addons/flip_image/backend.php:72
 msgid "Slide From Right"
 msgstr ""
 
 #: addons/flip_image/backend.php:73
-#: build/addons/flip_image/backend.php:73
 msgid "Flip Right to Left"
 msgstr ""
 
 #: addons/flip_image/backend.php:76
-#: build/addons/flip_image/backend.php:76
 msgid "Select Option For What You Want to Show on Product After Mouse Hover."
 msgstr ""
 
 #: addons/flip_image/backend.php:81
-#: build/addons/flip_image/backend.php:81
 msgid "Disable For Group & Variable Product"
 msgstr ""
 
 #: addons/flip_image/backend.php:83
-#: build/addons/flip_image/backend.php:83
 msgid "This option will disable image flipper to group & variable products."
 msgstr ""
 
 #: addons/flip_image/backend.php:87
-#: build/addons/flip_image/backend.php:87
 msgid "Disable For Mobile Device"
 msgstr ""
 
 #: addons/flip_image/backend.php:89
-#: build/addons/flip_image/backend.php:89
 msgid "This option will disable image flipper to mobile devices."
 msgstr ""
 
 #: addons/flip_image/FlipImage.php:120
-#: build/addons/flip_image/FlipImage.php:120
 msgid "Select Flip Image"
 msgstr ""
 
 #: addons/flip_image/FlipImage.php:120
-#: build/addons/flip_image/FlipImage.php:120
 msgid "Set Flip Image"
 msgstr ""
 
 #: addons/flip_image/FlipImage.php:120
-#: build/addons/flip_image/FlipImage.php:120
 msgid "Remove Flip Image"
 msgstr ""
 
 #: addons/flip_image/FlipImage.php:120
-#: build/addons/flip_image/FlipImage.php:120
 msgid "Set Flip Image Source"
 msgstr ""
 
 #: addons/name_price/backend.php:11
 #: addons/name_price/NamePrice.php:118
-#: build/addons/name_price/backend.php:11
-#: build/addons/name_price/NamePrice.php:118
 msgid "Name Your Price"
 msgstr ""
 
 #: addons/name_price/backend.php:12
-#: build/addons/name_price/backend.php:12
 msgid "Let customers purchase products at their desired prices. Add Min & Max restrictions if required."
 msgstr ""
 
 #: addons/name_price/backend.php:34
-#: build/addons/name_price/backend.php:34
 msgid "Name Your Price Settings"
 msgstr ""
 
 #: addons/name_price/backend.php:45
-#: build/addons/name_price/backend.php:45
 msgid "Enable Name Price"
 msgstr ""
 
 #: addons/name_price/backend.php:46
-#: build/addons/name_price/backend.php:46
 msgid "Enable name price on your website"
 msgstr ""
 
 #: addons/name_price/backend.php:53
-#: build/addons/name_price/backend.php:53
 msgid "Price Label"
 msgstr ""
 
 #: addons/name_price/backend.php:58
-#: build/addons/name_price/backend.php:58
 msgid "Show Minimum Price Label on the Frontend"
 msgstr ""
 
 #: addons/name_price/backend.php:60
-#: build/addons/name_price/backend.php:60
 msgid "Show Minimum Price Text Label on the Frontend"
 msgstr ""
 
 #: addons/name_price/backend.php:64
-#: build/addons/name_price/backend.php:64
 msgid "Minimum Price Label"
 msgstr ""
 
 #: addons/name_price/backend.php:74
 #: addons/name_price/backend.php:76
-#: build/addons/name_price/backend.php:74
-#: build/addons/name_price/backend.php:76
 msgid "Show Maximum Price Label on the Frontend"
 msgstr ""
 
 #: addons/name_price/backend.php:80
-#: build/addons/name_price/backend.php:80
 msgid "Maximum Price Label"
 msgstr ""
 
 #: addons/name_price/backend.php:90
-#: build/addons/name_price/backend.php:90
 msgid "Add to Cart Button Text for Single Product"
 msgstr ""
 
 #: addons/name_price/backend.php:95
-#: build/addons/name_price/backend.php:95
 msgid "Add to Cart Button Text for Shop & Archive"
 msgstr ""
 
 #: addons/name_price/backend.php:111
-#: build/addons/name_price/backend.php:111
 #: assets/js/editor.blocks.js:998
 msgid "Price Label Typography"
 msgstr ""
 
 #: addons/name_price/backend.php:123
-#: build/addons/name_price/backend.php:123
 msgid "Suggested Price Typography"
 msgstr ""
 
 #: addons/name_price/backend.php:137
-#: build/addons/name_price/backend.php:137
 msgid "Suggested Price Background"
 msgstr ""
 
 #: addons/name_price/backend.php:146
-#: build/addons/name_price/backend.php:146
 msgid "Suggested Price Padding"
 msgstr ""
 
 #: addons/name_price/backend.php:156
-#: build/addons/name_price/backend.php:156
 msgid "Suggested Price Border"
 msgstr ""
 
 #: addons/name_price/backend.php:164
-#: build/addons/name_price/backend.php:164
 msgid "Suggested Price  Border Radius"
 msgstr ""
 
 #: addons/name_price/backend.php:169
-#: build/addons/name_price/backend.php:169
 msgid "Min/Max Label Typography"
 msgstr ""
 
 #: addons/name_price/backend.php:181
-#: build/addons/name_price/backend.php:181
 msgid "Min/Max Price Typography"
 msgstr ""
 
 #: addons/name_price/NamePrice.php:119
-#: build/addons/name_price/NamePrice.php:119
 msgid "Turn on custom price / Name Your Price for this Product"
 msgstr ""
 
 #: addons/name_price/NamePrice.php:128
-#: build/addons/name_price/NamePrice.php:128
 msgid "Hide Main Price"
 msgstr ""
 
 #: addons/name_price/NamePrice.php:129
-#: build/addons/name_price/NamePrice.php:129
 msgid "Turn on if you want to hide main price in single product"
 msgstr ""
 
 #: addons/name_price/NamePrice.php:135
-#: build/addons/name_price/NamePrice.php:135
 msgid "Suggested Price"
 msgstr ""
 
 #: addons/name_price/NamePrice.php:142
-#: build/addons/name_price/NamePrice.php:142
 msgid "Price Chunk"
 msgstr ""
 
 #: addons/name_price/NamePrice.php:143
-#: build/addons/name_price/NamePrice.php:143
 msgid "Show Chunked Price Instead of Input Field"
 msgstr ""
 
 #: addons/name_price/NamePrice.php:149
-#: build/addons/name_price/NamePrice.php:149
 msgid "Suggested Chunk"
 msgstr ""
 
 #: addons/name_price/NamePrice.php:151
-#: build/addons/name_price/NamePrice.php:151
 msgid "Suggested Chunk eg: 10, 15, 20"
 msgstr ""
 
 #: addons/name_price/NamePrice.php:156
-#: build/addons/name_price/NamePrice.php:156
 msgid "Minimum Price"
 msgstr ""
 
 #: addons/name_price/NamePrice.php:164
-#: build/addons/name_price/NamePrice.php:164
 msgid "Maximum Price"
 msgstr ""
 
 #: addons/name_price/NamePrice.php:549
-#: build/addons/name_price/NamePrice.php:549
 msgid "Product price must be between "
 msgstr ""
 
 #: addons/name_price/NamePrice.php:550
-#: build/addons/name_price/NamePrice.php:550
 msgid " to "
 msgstr ""
 
 #: addons/name_price/NamePrice.php:551
-#: build/addons/name_price/NamePrice.php:551
 msgid " to add to cart."
 msgstr ""
 
 #: addons/oxygen/backend.php:7
-#: build/addons/oxygen/backend.php:7
 msgid "Oxygen Builder"
 msgstr ""
 
 #: addons/oxygen/backend.php:8
-#: build/addons/oxygen/backend.php:8
 msgid "Create custom designs and save them as saved templates to use with the Oxygen Builder."
 msgstr ""
 
 #: addons/oxygen/oxygen.php:14
-#: build/addons/oxygen/oxygen.php:14
 msgid "WowStore Templates"
 msgstr ""
 
 #: addons/quick_view/backend.php:11
 #: addons/quick_view/Quickview.php:139
-#: build/addons/quick_view/backend.php:11
-#: build/addons/quick_view/Quickview.php:139
 #: assets/js/editor.blocks.js:2494
 #: assets/js/editor.blocks.js:2989
 msgid "Quick View"
 msgstr ""
 
 #: addons/quick_view/backend.php:12
-#: build/addons/quick_view/backend.php:12
 msgid "It allows the shoppers to check out the product details in a pop-up instead of visiting the product pages."
 msgstr ""
 
 #: addons/quick_view/backend.php:36
-#: addons/quick_view/Quickview.php:782
-#: build/addons/quick_view/backend.php:36
-#: build/addons/quick_view/Quickview.php:782
+#: addons/quick_view/Quickview.php:788
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:2032
 msgid "Rating"
 msgstr ""
 
 #: addons/quick_view/backend.php:41
-#: addons/quick_view/Quickview.php:787
-#: build/addons/quick_view/backend.php:41
-#: build/addons/quick_view/Quickview.php:787
+#: addons/quick_view/Quickview.php:793
 msgid "Meta"
 msgstr ""
 
 #: addons/quick_view/backend.php:42
-#: addons/quick_view/Quickview.php:788
-#: build/addons/quick_view/backend.php:42
-#: build/addons/quick_view/Quickview.php:788
+#: addons/quick_view/Quickview.php:794
 #: assets/js/editor.blocks.js:2494
 msgid "View Details"
 msgstr ""
 
 #: addons/quick_view/backend.php:43
-#: addons/quick_view/Quickview.php:644
-#: addons/quick_view/Quickview.php:789
-#: build/addons/quick_view/backend.php:43
-#: build/addons/quick_view/Quickview.php:644
-#: build/addons/quick_view/Quickview.php:789
+#: addons/quick_view/Quickview.php:650
+#: addons/quick_view/Quickview.php:795
 #: assets/js/blocks-placeholder.js:44
 #: assets/js/editor.blocks.js:2296
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:44
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Social Share"
 msgstr ""
 
 #: addons/quick_view/backend.php:51
-#: build/addons/quick_view/backend.php:51
 msgid "QuickView"
 msgstr ""
 
 #: addons/quick_view/backend.php:55
-#: build/addons/quick_view/backend.php:55
 msgid "Quick View Settings"
 msgstr ""
 
 #: addons/quick_view/backend.php:66
-#: build/addons/quick_view/backend.php:66
 msgid "Enable Quickview"
 msgstr ""
 
 #: addons/quick_view/backend.php:67
-#: build/addons/quick_view/backend.php:67
 msgid "Enable quickview on your website"
 msgstr ""
 
 #: addons/quick_view/backend.php:75
-#: build/addons/quick_view/backend.php:75
 msgid "Enable Quick View on Mobile Devices"
 msgstr ""
 
 #: addons/quick_view/backend.php:77
-#: build/addons/quick_view/backend.php:77
 msgid "Enable if you want to show quick view on mobile devices"
 msgstr ""
 
 #: addons/quick_view/backend.php:81
-#: build/addons/quick_view/backend.php:81
 msgid "Show in Shop/Archive Page"
 msgstr ""
 
 #: addons/quick_view/backend.php:83
-#: build/addons/quick_view/backend.php:83
 msgid "Enable if you want to show quick view on shop/archive page"
 msgstr ""
 
 #: addons/quick_view/backend.php:87
-#: build/addons/quick_view/backend.php:87
 msgid "Select option for what will happens when you click quick view"
 msgstr ""
 
 #: addons/quick_view/backend.php:109
-#: build/addons/quick_view/backend.php:109
 msgid "Quick View Display Loading"
 msgstr ""
 
 #: addons/quick_view/backend.php:113
-#: build/addons/quick_view/backend.php:113
 msgid "Select loading icon to show before open quick view."
 msgstr ""
 
 #: addons/quick_view/backend.php:117
-#: build/addons/quick_view/backend.php:117
 msgid "Quick View Opening Animation"
 msgstr ""
 
 #: addons/quick_view/backend.php:135
-#: build/addons/quick_view/backend.php:135
 msgid "Quick View Closing Animation"
 msgstr ""
 
 #: addons/quick_view/backend.php:153
-#: build/addons/quick_view/backend.php:153
 msgid "Product Navigation(Next/Previous)"
 msgstr ""
 
 #: addons/quick_view/backend.php:155
-#: build/addons/quick_view/backend.php:155
 msgid "Enable navigation to quick view next/previous product"
 msgstr ""
 
 #: addons/quick_view/backend.php:161
-#: build/addons/quick_view/backend.php:161
 msgid "Quick View Button Settings"
 msgstr ""
 
 #: addons/quick_view/backend.php:165
 #: addons/wishlist/backend.php:117
 #: addons/wishlist/backend.php:149
-#: build/addons/quick_view/backend.php:165
-#: build/addons/wishlist/backend.php:117
-#: build/addons/wishlist/backend.php:149
 #: assets/js/editor.blocks.js:415
 #: assets/js/editor.blocks.js:1394
 #: assets/js/editor.blocks.js:1405
@@ -2794,142 +2170,113 @@ msgid "Button Text"
 msgstr ""
 
 #: addons/quick_view/backend.php:167
-#: build/addons/quick_view/backend.php:167
 msgid "Write your preferable text to show  on quick view button"
 msgstr ""
 
 #: addons/quick_view/backend.php:171
-#: build/addons/quick_view/backend.php:171
 #: assets/js/editor.blocks.js:415
 msgid "Button Position"
 msgstr ""
 
 #: addons/quick_view/backend.php:172
-#: build/addons/quick_view/backend.php:172
 msgid "Choose where will place quick view button."
 msgstr ""
 
 #: addons/quick_view/backend.php:183
-#: build/addons/quick_view/backend.php:183
 msgid "Use this shortcode [wopb_quick_view_button] where you want to show quick view button."
 msgstr ""
 
 #: addons/quick_view/backend.php:191
-#: build/addons/quick_view/backend.php:191
 msgid "Enable button icon to display icon on quick view button."
 msgstr ""
 
 #: addons/quick_view/backend.php:207
-#: build/addons/quick_view/backend.php:207
 msgid "Choose icon display on quick view button."
 msgstr ""
 
 #: addons/quick_view/backend.php:226
-#: build/addons/quick_view/backend.php:226
 msgid "Quick View Modal Box Settings"
 msgstr ""
 
 #: addons/quick_view/backend.php:230
-#: build/addons/quick_view/backend.php:230
 msgid "Select Content to Show on Quick View Modal Box"
 msgstr ""
 
 #: addons/quick_view/backend.php:231
-#: build/addons/quick_view/backend.php:231
 msgid "Select the content you want to display in the quick view modal box. To rearrange these fields, you can also drag and drop. You can also customize the label name according to your preferences."
 msgstr ""
 
 #: addons/quick_view/backend.php:237
-#: build/addons/quick_view/backend.php:237
 msgid "Product Thumbnail"
 msgstr ""
 
 #: addons/quick_view/backend.php:238
-#: build/addons/quick_view/backend.php:238
 msgid "Select option for what you want to show on modal box"
 msgstr ""
 
 #: addons/quick_view/backend.php:249
 #: addons/quick_view/backend.php:260
-#: build/addons/quick_view/backend.php:249
-#: build/addons/quick_view/backend.php:260
 msgid "Thumbnail Style"
 msgstr ""
 
 #: addons/quick_view/backend.php:271
-#: build/addons/quick_view/backend.php:271
 msgid "Product Image Effect"
 msgstr ""
 
 #: addons/quick_view/backend.php:273
-#: build/addons/quick_view/backend.php:273
 msgid "Enable lightbox on click image"
 msgstr ""
 
 #: addons/quick_view/backend.php:277
-#: build/addons/quick_view/backend.php:277
 msgid "Effect Type"
 msgstr ""
 
 #: addons/quick_view/backend.php:288
-#: build/addons/quick_view/backend.php:288
 msgid "Hover Effect Icon"
 msgstr ""
 
 #: addons/quick_view/backend.php:299
-#: build/addons/quick_view/backend.php:299
 msgid "Enable Buy Now Button"
 msgstr ""
 
 #: addons/quick_view/backend.php:301
-#: build/addons/quick_view/backend.php:301
 msgid "Enable to display buy now button on modal box"
 msgstr ""
 
 #: addons/quick_view/backend.php:305
-#: build/addons/quick_view/backend.php:305
 msgid "Freeze Product Thumbnail"
 msgstr ""
 
 #: addons/quick_view/backend.php:307
-#: build/addons/quick_view/backend.php:307
 msgid "Enable freeze the product thumbnail when scrolling"
 msgstr ""
 
 #: addons/quick_view/backend.php:311
-#: build/addons/quick_view/backend.php:311
 msgid "Close Button on Quick View Modal"
 msgstr ""
 
 #: addons/quick_view/backend.php:313
-#: build/addons/quick_view/backend.php:313
 msgid "Enable close button at top right corner on quick view modal"
 msgstr ""
 
 #: addons/quick_view/backend.php:317
-#: build/addons/quick_view/backend.php:317
 msgid "Close Modal Box After Add To Cart"
 msgstr ""
 
 #: addons/quick_view/backend.php:319
-#: build/addons/quick_view/backend.php:319
 msgid "Auto close the modal box after adding a product to the cart"
 msgstr ""
 
 #: addons/quick_view/backend.php:330
-#: build/addons/quick_view/backend.php:330
 msgid "Choose Quick View Modal Layout"
 msgstr ""
 
 #: addons/quick_view/backend.php:463
-#: build/addons/quick_view/backend.php:463
 msgid "Modal Style"
 msgstr ""
 
 #: addons/quick_view/backend.php:467
 #: addons/sales_notification/backend.php:172
-#: build/addons/quick_view/backend.php:467
-#: build/addons/sales_notification/backend.php:172
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:547
 #: assets/js/editor.blocks.js:602
@@ -2953,7 +2300,6 @@ msgid "Title Typography"
 msgstr ""
 
 #: addons/quick_view/backend.php:479
-#: build/addons/quick_view/backend.php:479
 #: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1658
 #: assets/js/editor.blocks.js:2076
@@ -2962,7 +2308,6 @@ msgid "Button Typography"
 msgstr ""
 
 #: addons/quick_view/backend.php:491
-#: build/addons/quick_view/backend.php:491
 #: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1229
 #: assets/js/editor.blocks.js:1658
@@ -2970,7 +2315,6 @@ msgid "Button Border"
 msgstr ""
 
 #: addons/quick_view/backend.php:501
-#: build/addons/quick_view/backend.php:501
 #: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1229
 #: assets/js/editor.blocks.js:1658
@@ -2978,14 +2322,11 @@ msgid "Button Background"
 msgstr ""
 
 #: addons/quick_view/backend.php:510
-#: build/addons/quick_view/backend.php:510
 msgid "Modal Background"
 msgstr ""
 
 #: addons/quick_view/backend.php:512
 #: addons/sales_notification/backend.php:203
-#: build/addons/quick_view/backend.php:512
-#: build/addons/sales_notification/backend.php:203
 #: addons/builder/assets/js/conditions.js:129
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:459
@@ -3036,23 +2377,19 @@ msgstr ""
 #: assets/js/editor.blocks.js:2494
 #: assets/js/editor.blocks.js:2659
 #: assets/js/editor.blocks.js:2670
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Color"
 msgstr ""
 
 #: addons/quick_view/backend.php:517
-#: build/addons/quick_view/backend.php:517
 msgid "Inner Content Gap"
 msgstr ""
 
 #: addons/quick_view/backend.php:522
-#: build/addons/quick_view/backend.php:522
 msgid "Thumbnail Ratio"
 msgstr ""
 
 #: addons/quick_view/backend.php:524
-#: build/addons/quick_view/backend.php:524
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:1020
 #: assets/js/editor.blocks.js:1141
@@ -3061,7 +2398,6 @@ msgid "Default"
 msgstr ""
 
 #: addons/quick_view/backend.php:525
-#: build/addons/quick_view/backend.php:525
 #: assets/js/editor.blocks.js:261
 #: assets/js/editor.blocks.js:1141
 #: assets/js/editor.blocks.js:2494
@@ -3069,34 +2405,24 @@ msgid "Custom"
 msgstr ""
 
 #: addons/quick_view/backend.php:531
-#: build/addons/quick_view/backend.php:531
 msgid "Thumbnail Height"
 msgstr ""
 
 #: addons/quick_view/backend.php:537
-#: build/addons/quick_view/backend.php:537
 msgid "Thumbnail Width"
 msgstr ""
 
 #: addons/quick_view/Quickview.php:412
-#: build/addons/quick_view/Quickview.php:412
 msgid "View Full Product Details"
 msgstr ""
 
 #: addons/quick_view/Quickview.php:443
 #: addons/wishlist/Wishlist.php:283
 #: addons/wishlist/Wishlist.php:285
-#: blocks/Product_Grid_1.php:232
-#: blocks/Product_Grid_2.php:235
-#: blocks/Product_Grid_3.php:245
+#: blocks/Product_Grid_1.php:233
+#: blocks/Product_Grid_2.php:236
+#: blocks/Product_Grid_3.php:246
 #: blocks/woo/Product_Stock.php:31
-#: build/addons/quick_view/Quickview.php:443
-#: build/addons/wishlist/Wishlist.php:283
-#: build/addons/wishlist/Wishlist.php:285
-#: build/blocks/Product_Grid_1.php:232
-#: build/blocks/Product_Grid_2.php:235
-#: build/blocks/Product_Grid_3.php:245
-#: build/blocks/woo/Product_Stock.php:31
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:734
 #: assets/js/editor.blocks.js:767
@@ -3108,13 +2434,9 @@ msgid "In Stock"
 msgstr ""
 
 #: addons/quick_view/Quickview.php:445
-#: blocks/Product_Grid_1.php:228
-#: blocks/Product_Grid_2.php:231
-#: blocks/Product_Grid_3.php:241
-#: build/addons/quick_view/Quickview.php:445
-#: build/blocks/Product_Grid_1.php:228
-#: build/blocks/Product_Grid_2.php:231
-#: build/blocks/Product_Grid_3.php:241
+#: blocks/Product_Grid_1.php:229
+#: blocks/Product_Grid_2.php:232
+#: blocks/Product_Grid_3.php:242
 #: assets/js/editor.blocks.js:734
 #: assets/js/editor.blocks.js:789
 #: assets/js/editor.blocks.js:844
@@ -3122,21 +2444,15 @@ msgid "Out of stock"
 msgstr ""
 
 #: addons/quick_view/Quickview.php:468
-#: build/addons/quick_view/Quickview.php:468
 #: assets/js/editor.blocks.js:1779
 msgid "Buy Now"
 msgstr ""
 
 #: addons/quick_view/Quickview.php:569
-#: blocks/Product_Grid_1.php:185
-#: blocks/Product_Grid_2.php:189
-#: blocks/Product_Grid_3.php:189
+#: blocks/Product_Grid_1.php:186
+#: blocks/Product_Grid_2.php:190
+#: blocks/Product_Grid_3.php:190
 #: blocks/Product_Slider.php:256
-#: build/addons/quick_view/Quickview.php:569
-#: build/blocks/Product_Grid_1.php:185
-#: build/blocks/Product_Grid_2.php:189
-#: build/blocks/Product_Grid_3.php:189
-#: build/blocks/Product_Slider.php:256
 #: assets/js/editor.blocks.js:734
 #: assets/js/editor.blocks.js:789
 #: assets/js/editor.blocks.js:844
@@ -3145,69 +2461,55 @@ msgid "Sale!"
 msgstr ""
 
 #: addons/sales_notification/backend.php:11
-#: build/addons/sales_notification/backend.php:11
 msgid "Sales Push Notification"
 msgstr ""
 
 #: addons/sales_notification/backend.php:12
-#: build/addons/sales_notification/backend.php:12
 msgid "Build trust and give the customers confidence to purchase products from your online store."
 msgstr ""
 
 #: addons/sales_notification/backend.php:34
-#: build/addons/sales_notification/backend.php:34
 msgid "Sale Push Notification Settings"
 msgstr ""
 
 #: addons/sales_notification/backend.php:46
-#: build/addons/sales_notification/backend.php:46
 msgid "Enable Sales Notification"
 msgstr ""
 
 #: addons/sales_notification/backend.php:47
-#: build/addons/sales_notification/backend.php:47
 msgid "Enable sales notification on your website"
 msgstr ""
 
 #: addons/sales_notification/backend.php:54
-#: build/addons/sales_notification/backend.php:54
 msgid "Display Position"
 msgstr ""
 
 #: addons/sales_notification/backend.php:64
-#: build/addons/sales_notification/backend.php:64
 msgid "Number of Recent Order"
 msgstr ""
 
 #: addons/sales_notification/backend.php:69
 #: addons/wishlist/Wishlist.php:262
-#: build/addons/sales_notification/backend.php:69
-#: build/addons/wishlist/Wishlist.php:262
 msgid "Name"
 msgstr ""
 
 #: addons/sales_notification/backend.php:71
-#: build/addons/sales_notification/backend.php:71
 msgid "Display Name"
 msgstr ""
 
 #: addons/sales_notification/backend.php:72
-#: build/addons/sales_notification/backend.php:72
 msgid "Full Name"
 msgstr ""
 
 #: addons/sales_notification/backend.php:73
-#: build/addons/sales_notification/backend.php:73
 msgid "Username"
 msgstr ""
 
 #: addons/sales_notification/backend.php:74
-#: build/addons/sales_notification/backend.php:74
 msgid "Nickname"
 msgstr ""
 
 #: addons/sales_notification/backend.php:80
-#: build/addons/sales_notification/backend.php:80
 #: assets/js/editor.blocks.js:459
 #: assets/js/editor.blocks.js:503
 #: assets/js/editor.blocks.js:1955
@@ -3216,79 +2518,63 @@ msgid "Label Text"
 msgstr ""
 
 #: addons/sales_notification/backend.php:85
-#: build/addons/sales_notification/backend.php:85
 #: assets/js/blocks-placeholder.js:98
 #: assets/js/editor.blocks.js:921
 #: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1900
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:98
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Image"
 msgstr ""
 
 #: addons/sales_notification/backend.php:87
-#: build/addons/sales_notification/backend.php:87
 msgid "Show Product Image in Notification"
 msgstr ""
 
 #: addons/sales_notification/backend.php:91
-#: build/addons/sales_notification/backend.php:91
 msgid "Show Purchased Time"
 msgstr ""
 
 #: addons/sales_notification/backend.php:93
-#: build/addons/sales_notification/backend.php:93
 msgid "Show Product Time in Notification"
 msgstr ""
 
 #: addons/sales_notification/backend.php:97
-#: build/addons/sales_notification/backend.php:97
 msgid "Time Prefix"
 msgstr ""
 
 #: addons/sales_notification/backend.php:107
-#: build/addons/sales_notification/backend.php:107
 msgid "Time Postfix"
 msgstr ""
 
 #: addons/sales_notification/backend.php:117
-#: build/addons/sales_notification/backend.php:117
 msgid "Gap Time between two Notification (Seconds)"
 msgstr ""
 
 #: addons/sales_notification/backend.php:122
-#: build/addons/sales_notification/backend.php:122
 msgid "Stay Notification on Screen (Seconds)"
 msgstr ""
 
 #: addons/sales_notification/backend.php:148
-#: build/addons/sales_notification/backend.php:148
 msgid "Name Typography"
 msgstr ""
 
 #: addons/sales_notification/backend.php:160
-#: build/addons/sales_notification/backend.php:160
 msgid "Purchase Typography"
 msgstr ""
 
 #: addons/sales_notification/backend.php:184
-#: build/addons/sales_notification/backend.php:184
 msgid "Time Typography"
 msgstr ""
 
 #: addons/sales_notification/backend.php:198
-#: build/addons/sales_notification/backend.php:198
 msgid "Close Icon Background"
 msgstr ""
 
 #: addons/sales_notification/backend.php:209
-#: build/addons/sales_notification/backend.php:209
 msgid "Close Icon Color"
 msgstr ""
 
 #: addons/sales_notification/backend.php:214
-#: build/addons/sales_notification/backend.php:214
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
@@ -3311,122 +2597,97 @@ msgid "Label Color"
 msgstr ""
 
 #: addons/sales_notification/backend.php:219
-#: build/addons/sales_notification/backend.php:219
 msgid "Notification Radius"
 msgstr ""
 
 #: addons/sales_notification/backend.php:225
-#: build/addons/sales_notification/backend.php:225
 #: assets/js/editor.blocks.js:63
 #: assets/js/editor.blocks.js:921
 msgid "Image Radius"
 msgstr ""
 
 #: addons/templates/backend.php:12
-#: build/addons/templates/backend.php:12
 msgid "Create reusable templates with the Blocks and Starter Packs and use them anywhere via shortcode."
 msgstr ""
 
 #: addons/templates/Saved_Templates.php:61
-#: build/addons/templates/Saved_Templates.php:61
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Shortcode"
 msgstr ""
 
 #: addons/templates/Saved_Templates.php:84
-#: build/addons/templates/Saved_Templates.php:84
 msgctxt "Templates"
 msgid "Saved Templates"
 msgstr ""
 
 #: addons/templates/Saved_Templates.php:85
-#: build/addons/templates/Saved_Templates.php:85
 msgctxt "Templates"
 msgid "Saved Template"
 msgstr ""
 
 #: addons/templates/Saved_Templates.php:86
 #: addons/templates/Saved_Templates.php:88
-#: build/addons/templates/Saved_Templates.php:86
-#: build/addons/templates/Saved_Templates.php:88
 msgid "Saved Templates"
 msgstr ""
 
 #: addons/templates/Saved_Templates.php:87
-#: build/addons/templates/Saved_Templates.php:87
 msgid "Parent Template"
 msgstr ""
 
 #: addons/templates/Saved_Templates.php:89
-#: build/addons/templates/Saved_Templates.php:89
 msgid "View Template"
 msgstr ""
 
 #: addons/templates/Saved_Templates.php:93
-#: build/addons/templates/Saved_Templates.php:93
 msgid "Update Template"
 msgstr ""
 
 #: addons/templates/Saved_Templates.php:94
-#: build/addons/templates/Saved_Templates.php:94
 msgid "Search Template"
 msgstr ""
 
 #: addons/templates/Saved_Templates.php:95
-#: build/addons/templates/Saved_Templates.php:95
 msgid "No Template Found"
 msgstr ""
 
 #: addons/templates/Saved_Templates.php:96
-#: build/addons/templates/Saved_Templates.php:96
 msgid "Not Template found in Trash"
 msgstr ""
 
 #: addons/title_limit/backend.php:11
-#: build/addons/title_limit/backend.php:11
 msgid "Product Title Limit"
 msgstr ""
 
 #: addons/title_limit/backend.php:12
-#: build/addons/title_limit/backend.php:12
 msgid "Shorten the product title on the shop, archive, and product pages to keep your store organized."
 msgstr ""
 
 #: addons/title_limit/backend.php:34
-#: build/addons/title_limit/backend.php:34
 msgid "Product Title Limit Settings"
 msgstr ""
 
 #: addons/title_limit/backend.php:42
-#: build/addons/title_limit/backend.php:42
 msgid "Enable Title Limit"
 msgstr ""
 
 #: addons/title_limit/backend.php:43
-#: build/addons/title_limit/backend.php:43
 msgid "Enable product title limit on your website"
 msgstr ""
 
 #: addons/title_limit/backend.php:47
-#: build/addons/title_limit/backend.php:47
 msgid "Shop & Product Archive Page"
 msgstr ""
 
 #: addons/title_limit/backend.php:49
-#: build/addons/title_limit/backend.php:49
 msgid "Show Short Title in Default Shop & Product Archive Page"
 msgstr ""
 
 #: addons/title_limit/backend.php:55
-#: build/addons/title_limit/backend.php:55
 msgid "Show Short Title in Product Single Page"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:11
 #: addons/variation_swatches/backend.php:34
-#: build/addons/variation_swatches/backend.php:11
-#: build/addons/variation_swatches/backend.php:34
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
@@ -3434,57 +2695,46 @@ msgid "Variation Swatches"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:12
-#: build/addons/variation_swatches/backend.php:12
 msgid "Convert product attributes into beautiful swatches to ensure effortless shopping experiences."
 msgstr ""
 
 #: addons/variation_swatches/backend.php:38
-#: build/addons/variation_swatches/backend.php:38
 msgid "Variation Swatches Settings"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:49
-#: build/addons/variation_swatches/backend.php:49
 msgid "Enable Variation Swatches"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:50
-#: build/addons/variation_swatches/backend.php:50
 msgid "Enable variation swatches on your website"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:57
-#: build/addons/variation_swatches/backend.php:57
 msgid "Enable / Disable Tooltip"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:63
-#: build/addons/variation_swatches/backend.php:63
 msgid "Shape Style (Color, Image)"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:66
-#: build/addons/variation_swatches/backend.php:66
 msgid "Square"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:67
-#: build/addons/variation_swatches/backend.php:67
 msgid "Circle"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:73
-#: build/addons/variation_swatches/backend.php:73
 msgid "Shape(Label) Background"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:75
-#: build/addons/variation_swatches/backend.php:75
 msgid "Click if you want to show/hide background"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:79
-#: build/addons/variation_swatches/backend.php:79
 msgid "Dropdown to Button"
 msgstr ""
 
@@ -3494,27 +2744,18 @@ msgstr ""
 #: addons/wishlist/backend.php:79
 #: addons/wishlist/backend.php:101
 #: addons/wishlist/backend.php:133
-#: build/addons/variation_swatches/backend.php:85
-#: build/addons/wishlist/backend.php:65
-#: build/addons/wishlist/backend.php:72
-#: build/addons/wishlist/backend.php:79
-#: build/addons/wishlist/backend.php:101
-#: build/addons/wishlist/backend.php:133
 msgid "Enable / Disable"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:91
-#: build/addons/variation_swatches/backend.php:91
 msgid "Swatches Position(Default Shop/Archive)"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:105
-#: build/addons/variation_swatches/backend.php:105
 msgid "Product Image in Swatch"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:122
-#: build/addons/variation_swatches/backend.php:122
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
@@ -3537,313 +2778,246 @@ msgid "Label Typography"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:133
-#: build/addons/variation_swatches/backend.php:133
 msgid "Width (PX)"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:134
 #: addons/variation_swatches/backend.php:139
-#: build/addons/variation_swatches/backend.php:134
-#: build/addons/variation_swatches/backend.php:139
 msgid "16"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:138
-#: build/addons/variation_swatches/backend.php:138
 msgid "Height (PX)"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:143
-#: build/addons/variation_swatches/backend.php:143
 msgid "Image Width (PX)"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:144
 #: addons/variation_swatches/backend.php:149
-#: build/addons/variation_swatches/backend.php:144
-#: build/addons/variation_swatches/backend.php:149
 msgid "28"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:148
-#: build/addons/variation_swatches/backend.php:148
 msgid "Image Height (PX)"
 msgstr ""
 
 #: addons/variation_swatches/backend.php:153
-#: build/addons/variation_swatches/backend.php:153
 msgid "Alignment in Shop/Archive Page"
 msgstr ""
 
 #: addons/variation_swatches/VariationSwatches.php:337
-#: build/addons/variation_swatches/VariationSwatches.php:337
 #: assets/js/editor.blocks.js:129
 #: assets/js/editor.blocks.js:415
 msgid "Upload Image"
 msgstr ""
 
 #: addons/variation_swatches/VariationSwatches.php:340
-#: build/addons/variation_swatches/VariationSwatches.php:340
 msgid "Remove"
 msgstr ""
 
 #: addons/variation_swatches/VariationSwatches.php:379
-#: build/addons/variation_swatches/VariationSwatches.php:379
 msgid "Select terms"
 msgstr ""
 
 #: addons/variation_swatches/VariationSwatches.php:394
-#: build/addons/variation_swatches/VariationSwatches.php:394
 msgid "Select all"
 msgstr ""
 
 #: addons/variation_swatches/VariationSwatches.php:395
-#: build/addons/variation_swatches/VariationSwatches.php:395
 msgid "Select none"
 msgstr ""
 
 #: addons/variation_swatches/VariationSwatches.php:397
-#: build/addons/variation_swatches/VariationSwatches.php:397
 msgid "Add new"
 msgstr ""
 
 #: addons/variation_swatches/VariationSwatches.php:701
-#: build/addons/variation_swatches/VariationSwatches.php:701
 msgid "Clear"
 msgstr ""
 
 #: addons/wishlist/backend.php:11
 #: addons/wishlist/backend.php:35
-#: build/addons/wishlist/backend.php:11
-#: build/addons/wishlist/backend.php:35
 #: assets/js/editor.blocks.js:2494
 #: assets/js/editor.blocks.js:2989
 msgid "Wishlist"
 msgstr ""
 
 #: addons/wishlist/backend.php:12
-#: build/addons/wishlist/backend.php:12
 msgid "It allows your shoppers to add their desired product to a list that they are willing to purchase later from the wishlist page."
 msgstr ""
 
 #: addons/wishlist/backend.php:45
-#: build/addons/wishlist/backend.php:45
 msgid "Wishlist Settings"
 msgstr ""
 
 #: addons/wishlist/backend.php:50
-#: build/addons/wishlist/backend.php:50
 msgid "Enable Wishlist"
 msgstr ""
 
 #: addons/wishlist/backend.php:51
-#: build/addons/wishlist/backend.php:51
 msgid "Enable wishlist on your website"
 msgstr ""
 
 #: addons/wishlist/backend.php:59
-#: build/addons/wishlist/backend.php:59
 msgid "Wishlist Page"
 msgstr ""
 
 #: addons/wishlist/backend.php:61
-#: build/addons/wishlist/backend.php:61
 msgid "Use shortcode inside wishlist page."
 msgstr ""
 
 #: addons/wishlist/backend.php:68
-#: build/addons/wishlist/backend.php:68
 msgid "Require Login for Wishlist."
 msgstr ""
 
 #: addons/wishlist/backend.php:75
-#: build/addons/wishlist/backend.php:75
 msgid "Empty Wishlist After All Add To Cart."
 msgstr ""
 
 #: addons/wishlist/backend.php:81
-#: build/addons/wishlist/backend.php:81
 msgid "Redirect to Cart After All Add to Cart."
 msgstr ""
 
 #: addons/wishlist/backend.php:85
-#: build/addons/wishlist/backend.php:85
 msgid "Action after Added"
 msgstr ""
 
 #: addons/wishlist/backend.php:97
-#: build/addons/wishlist/backend.php:97
 msgid "Wishlist in Shop/Archive Page"
 msgstr ""
 
 #: addons/wishlist/backend.php:103
-#: build/addons/wishlist/backend.php:103
 msgid "Enable Wishlist in default Shop Page."
 msgstr ""
 
 #: addons/wishlist/backend.php:107
-#: build/addons/wishlist/backend.php:107
 msgid "Position on Shop Page"
 msgstr ""
 
 #: addons/wishlist/backend.php:110
 #: addons/wishlist/backend.php:142
-#: build/addons/wishlist/backend.php:110
-#: build/addons/wishlist/backend.php:142
 msgid "Before Cart"
 msgstr ""
 
 #: addons/wishlist/backend.php:111
 #: addons/wishlist/backend.php:143
-#: build/addons/wishlist/backend.php:111
-#: build/addons/wishlist/backend.php:143
 msgid "After Cart"
 msgstr ""
 
 #: addons/wishlist/backend.php:122
 #: addons/wishlist/backend.php:154
-#: build/addons/wishlist/backend.php:122
-#: build/addons/wishlist/backend.php:154
 msgid "Browse Wishlist Text"
 msgstr ""
 
 #: addons/wishlist/backend.php:129
-#: build/addons/wishlist/backend.php:129
 msgid "Wishlist in Single Page"
 msgstr ""
 
 #: addons/wishlist/backend.php:135
-#: build/addons/wishlist/backend.php:135
 msgid "Enable Wishlist in Single Page."
 msgstr ""
 
 #: addons/wishlist/backend.php:139
-#: build/addons/wishlist/backend.php:139
 msgid "Position on Single Page"
 msgstr ""
 
 #: addons/wishlist/backend.php:150
 #: addons/wishlist/Wishlist.php:342
-#: build/addons/wishlist/backend.php:150
-#: build/addons/wishlist/Wishlist.php:342
 msgid "Add to Wishlist"
 msgstr ""
 
 #: addons/wishlist/backend.php:155
 #: addons/wishlist/Wishlist.php:343
-#: build/addons/wishlist/backend.php:155
-#: build/addons/wishlist/Wishlist.php:343
 msgid "Browse Wishlist"
 msgstr ""
 
 #: addons/wishlist/backend.php:161
-#: build/addons/wishlist/backend.php:161
 msgid "Wishlist Menu in Navbar"
 msgstr ""
 
 #: addons/wishlist/backend.php:165
-#: build/addons/wishlist/backend.php:165
 msgid "Add Wishlist Menu In Navbar"
 msgstr ""
 
 #: addons/wishlist/backend.php:167
-#: build/addons/wishlist/backend.php:167
 msgid "Enable Wishlist menu in navbar."
 msgstr ""
 
 #: addons/wishlist/backend.php:177
-#: build/addons/wishlist/backend.php:177
 msgid "Wishlist Text"
 msgstr ""
 
 #: addons/wishlist/backend.php:179
-#: build/addons/wishlist/backend.php:179
 msgid "Write your preferable text to show  on wishlist button"
 msgstr ""
 
 #: addons/wishlist/backend.php:194
-#: build/addons/wishlist/backend.php:194
 msgid "Wishlist Menu Custom Position"
 msgstr ""
 
 #: addons/wishlist/backend.php:198
-#: build/addons/wishlist/backend.php:198
 msgid "Use this shortcode [wopb_wishlist_nav] for custom position of comparison menu on navbar."
 msgstr ""
 
 #: addons/wishlist/backend.php:414
-#: build/addons/wishlist/backend.php:414
 msgid "Heading Background"
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:283
 #: addons/wishlist/Wishlist.php:285
-#: build/addons/wishlist/Wishlist.php:283
-#: build/addons/wishlist/Wishlist.php:285
 #: assets/js/editor.blocks.js:2164
 msgid "Stock"
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:296
-#: build/addons/wishlist/Wishlist.php:296
 msgid "Open Wishlist Page"
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:299
-#: build/addons/wishlist/Wishlist.php:299
 msgid "Add All To Cart"
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:302
 #: addons/wishlist/Wishlist.php:311
-#: build/addons/wishlist/Wishlist.php:302
-#: build/addons/wishlist/Wishlist.php:311
 #: assets/js/editor.blocks.js:1218
 msgid "Continue Shopping"
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:310
-#: build/addons/wishlist/Wishlist.php:310
 msgid "Your Wishlist is empty."
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:508
-#: build/addons/wishlist/Wishlist.php:508
 msgid "You must be logged in."
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:512
-#: build/addons/wishlist/Wishlist.php:512
 msgid "Wishlist Added."
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:520
-#: build/addons/wishlist/Wishlist.php:520
 msgid "Wishlist Item Added To Cart."
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:533
-#: build/addons/wishlist/Wishlist.php:533
 msgid "Wishlist All Item Removed."
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:536
-#: build/addons/wishlist/Wishlist.php:536
 msgid "Wishlist Item Removed."
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:538
-#: build/addons/wishlist/Wishlist.php:538
 msgid "Wishlist Already Removed."
 msgstr ""
 
 #: addons/wishlist/Wishlist.php:544
-#: build/addons/wishlist/Wishlist.php:544
 msgid "Wishlist Not Added."
 msgstr ""
 
 #: blocks/Filter.php:134
-#: build/blocks/Filter.php:134
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
@@ -3853,31 +3027,25 @@ msgid "Filter"
 msgstr ""
 
 #: blocks/Filter.php:414
-#: build/blocks/Filter.php:414
 msgid "Search Products"
 msgstr ""
 
 #: blocks/Filter.php:483
-#: build/blocks/Filter.php:483
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:2494
 msgid "Taxonomy Relation"
 msgstr ""
 
 #: blocks/Filter.php:527
-#: build/blocks/Filter.php:527
 msgid "Show More"
 msgstr ""
 
 #: blocks/Filter.php:534
-#: build/blocks/Filter.php:534
 msgid "Show Less"
 msgstr ""
 
 #: blocks/Product_Category_1.php:122
 #: blocks/Product_Category_2.php:95
-#: build/blocks/Product_Category_1.php:122
-#: build/blocks/Product_Category_2.php:95
 #: assets/js/editor.blocks.js:569
 #: assets/js/editor.blocks.js:624
 msgid "products"
@@ -3886,9 +3054,6 @@ msgstr ""
 #: blocks/Product_Category_1.php:128
 #: blocks/Product_Category_2.php:101
 #: blocks/Product_Category_3.php:194
-#: build/blocks/Product_Category_1.php:128
-#: build/blocks/Product_Category_2.php:101
-#: build/blocks/Product_Category_3.php:194
 #: assets/js/editor.blocks.js:547
 #: assets/js/editor.blocks.js:602
 #: assets/js/editor.blocks.js:657
@@ -3897,23 +3062,16 @@ msgstr ""
 msgid "Read More"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:186
-#: blocks/Product_Grid_2.php:190
-#: blocks/Product_Grid_3.php:190
+#: blocks/Product_Grid_1.php:187
+#: blocks/Product_Grid_2.php:191
+#: blocks/Product_Grid_3.php:191
 #: blocks/Product_Slider.php:258
-#: build/blocks/Product_Grid_1.php:186
-#: build/blocks/Product_Grid_2.php:190
-#: build/blocks/Product_Grid_3.php:190
-#: build/blocks/Product_Slider.php:258
 msgid " Off"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:191
-#: blocks/Product_Grid_2.php:195
-#: blocks/Product_Grid_3.php:195
-#: build/blocks/Product_Grid_1.php:191
-#: build/blocks/Product_Grid_2.php:195
-#: build/blocks/Product_Grid_3.php:195
+#: blocks/Product_Grid_1.php:192
+#: blocks/Product_Grid_2.php:196
+#: blocks/Product_Grid_3.php:196
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:734
 #: assets/js/editor.blocks.js:767
@@ -3923,50 +3081,34 @@ msgstr ""
 msgid "Hot"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:338
-#: blocks/Product_Grid_2.php:366
-#: blocks/Product_Grid_3.php:355
-#: blocks/Product_List_1.php:272
-#: build/blocks/Product_Grid_1.php:338
-#: build/blocks/Product_Grid_2.php:366
-#: build/blocks/Product_Grid_3.php:355
-#: build/blocks/Product_List_1.php:272
+#: blocks/Product_Grid_1.php:346
+#: blocks/Product_Grid_2.php:374
+#: blocks/Product_Grid_3.php:363
+#: blocks/Product_List_1.php:280
 msgid "No products were found of your matching selection"
 msgstr ""
 
-#: blocks/Product_Search.php:103
-#: build/blocks/Product_Search.php:103
-#: assets/js/editor.blocks.js:943
-msgid "Search for products..."
-msgstr ""
-
-#: blocks/Product_Search.php:125
-#: blocks/Product_Search.php:141
-#: build/blocks/Product_Search.php:125
-#: build/blocks/Product_Search.php:141
+#: blocks/Product_Search.php:126
+#: blocks/Product_Search.php:142
 #: assets/js/editor.blocks.js:943
 msgid "All Categories"
 msgstr ""
 
-#: blocks/Product_Search.php:260
-#: build/blocks/Product_Search.php:260
+#: blocks/Product_Search.php:261
 #: assets/js/editor.blocks.js:943
 msgid "No Result Found"
 msgstr ""
 
-#: blocks/Product_Search.php:317
-#: build/blocks/Product_Search.php:317
+#: blocks/Product_Search.php:318
 msgid "More results.."
 msgstr ""
 
-#: blocks/Product_Search.php:320
-#: build/blocks/Product_Search.php:320
+#: blocks/Product_Search.php:321
 #: assets/js/editor.blocks.js:943
 msgid "Less results"
 msgstr ""
 
 #: blocks/template/review.php:7
-#: build/blocks/template/review.php:7
 #: assets/js/editor.blocks.js:701
 #: assets/js/editor.blocks.js:789
 #: assets/js/editor.blocks.js:844
@@ -3975,21 +3117,16 @@ msgid "out of 5"
 msgstr ""
 
 #: blocks/woo/cart_table/Template.php:18
-#: build/blocks/woo/cart_table/Template.php:18
 msgid "Remove this item"
 msgstr ""
 
 #: blocks/woo/cart_table/Template.php:129
-#: build/blocks/woo/cart_table/Template.php:129
 msgid "Available on backorder"
 msgstr ""
 
-#: blocks/woo/cart_total/Template.php:22
-#: blocks/woo/checkout/order_review/Template.php:19
-#: blocks/woo/checkout/order_review/Template.php:60
-#: build/blocks/woo/cart_total/Template.php:22
-#: build/blocks/woo/checkout/order_review/Template.php:19
-#: build/blocks/woo/checkout/order_review/Template.php:60
+#: blocks/woo/cart_total/Template.php:29
+#: blocks/woo/checkout/order_review/Template.php:20
+#: blocks/woo/checkout/order_review/Template.php:61
 #: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1229
 #: assets/js/editor.blocks.js:1482
@@ -3998,24 +3135,19 @@ msgstr ""
 msgid "Subtotal"
 msgstr ""
 
-#: blocks/woo/cart_total/Template.php:43
-#: build/blocks/woo/cart_total/Template.php:43
+#: blocks/woo/cart_total/Template.php:50
 #: assets/js/editor.blocks.js:1603
 msgid "Shipping"
 msgstr ""
 
 #. translators: %s: is no estimated
-#: blocks/woo/cart_total/Template.php:61
-#: build/blocks/woo/cart_total/Template.php:61
+#: blocks/woo/cart_total/Template.php:68
 msgid "(estimated for %s)"
 msgstr ""
 
-#: blocks/woo/cart_total/Template.php:85
-#: blocks/woo/cart_total/Template.php:86
-#: blocks/woo/checkout/order_review/Template.php:107
-#: build/blocks/woo/cart_total/Template.php:85
-#: build/blocks/woo/cart_total/Template.php:86
-#: build/blocks/woo/checkout/order_review/Template.php:107
+#: blocks/woo/cart_total/Template.php:92
+#: blocks/woo/cart_total/Template.php:93
+#: blocks/woo/checkout/order_review/Template.php:108
 #: assets/js/editor.blocks.js:1482
 #: assets/js/editor.blocks.js:2395
 #: assets/js/editor.blocks.js:2406
@@ -4024,48 +3156,39 @@ msgid "Total"
 msgstr ""
 
 #: blocks/woo/checkout/billing/Template.php:48
-#: build/blocks/woo/checkout/billing/Template.php:48
 msgid "Create an account?"
 msgstr ""
 
 #: blocks/woo/checkout/login/Template.php:29
-#: build/blocks/woo/checkout/login/Template.php:29
 msgid "Returning customer?"
 msgstr ""
 
 #: blocks/woo/checkout/login/Template.php:29
-#: build/blocks/woo/checkout/login/Template.php:29
 msgid "Click here to login"
 msgstr ""
 
 #: blocks/woo/checkout/login/Template.php:39
-#: build/blocks/woo/checkout/login/Template.php:39
 msgid "Username or Email"
 msgstr ""
 
 #: blocks/woo/checkout/login/Template.php:43
-#: build/blocks/woo/checkout/login/Template.php:43
 msgid "Password"
 msgstr ""
 
 #: blocks/woo/checkout/login/Template.php:52
-#: build/blocks/woo/checkout/login/Template.php:52
 msgid "Remember me"
 msgstr ""
 
 #: blocks/woo/checkout/login/Template.php:56
-#: build/blocks/woo/checkout/login/Template.php:56
 #: assets/js/editor.blocks.js:1471
 msgid "Login"
 msgstr ""
 
 #: blocks/woo/checkout/login/Template.php:59
-#: build/blocks/woo/checkout/login/Template.php:59
 msgid "Lost your password?"
 msgstr ""
 
-#: blocks/woo/checkout/order_review/Template.php:18
-#: build/blocks/woo/checkout/order_review/Template.php:18
+#: blocks/woo/checkout/order_review/Template.php:19
 #: assets/js/editor.blocks.js:1482
 #: assets/js/editor.blocks.js:2395
 #: assets/js/editor.blocks.js:2406
@@ -4073,445 +3196,347 @@ msgid "Product"
 msgstr ""
 
 #: blocks/woo/checkout/payment_method/Template.php:20
-#: build/blocks/woo/checkout/payment_method/Template.php:20
 msgid "Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements."
 msgstr ""
 
 #: blocks/woo/checkout/payment_method/Template.php:20
-#: build/blocks/woo/checkout/payment_method/Template.php:20
 msgid "Please fill in your details above to see available payment methods."
 msgstr ""
 
 #. translators: $1 and $2 opening and closing emphasis tags respectively
 #: blocks/woo/checkout/payment_method/Template.php:29
-#: build/blocks/woo/checkout/payment_method/Template.php:29
 msgid "Since your browser does not support JavaScript, or it is disabled, please ensure you click the %1$sUpdate Totals%2$s button before placing your order. You may be charged more than the amount stated above if you fail to do so."
 msgstr ""
 
 #: blocks/woo/checkout/payment_method/Template.php:31
-#: build/blocks/woo/checkout/payment_method/Template.php:31
 msgid "Update totals"
-msgstr ""
-
-#: blocks/woo/free_shipping_progress_bar/Template.php:41
-#: build/blocks/woo/free_shipping_progress_bar/Template.php:41
-msgid "You have free shipping!"
 msgstr ""
 
 #: blocks/woo/thank_you/address/Template.php:23
 #: blocks/woo/thank_you/address/Template.php:42
-#: build/blocks/woo/thank_you/address/Template.php:23
-#: build/blocks/woo/thank_you/address/Template.php:42
 msgid "N/A"
 msgstr ""
 
-#: blocks/woo/thank_you/order_conformation/Template.php:17
-#: build/blocks/woo/thank_you/order_conformation/Template.php:17
+#: blocks/woo/thank_you/order_conformation/Template.php:18
 msgid "Unfortunately your order cannot be processed as the originating bank/merchant has declined your transaction. Please attempt your purchase again."
 msgstr ""
 
-#: blocks/woo/thank_you/order_conformation/Template.php:20
-#: build/blocks/woo/thank_you/order_conformation/Template.php:20
+#: blocks/woo/thank_you/order_conformation/Template.php:21
 msgid "Pay"
 msgstr ""
 
-#: blocks/woo/thank_you/order_conformation/Template.php:22
-#: build/blocks/woo/thank_you/order_conformation/Template.php:22
+#: blocks/woo/thank_you/order_conformation/Template.php:23
 msgid "My account"
 msgstr ""
 
-#: blocks/woo/thank_you/order_conformation/Template.php:41
-#: build/blocks/woo/thank_you/order_conformation/Template.php:41
+#: blocks/woo/thank_you/order_conformation/Template.php:42
 msgid "Thank you. Your order has been received."
 msgstr ""
 
 #: blocks/woo/thank_you/order_details/Template.php:57
-#: build/blocks/woo/thank_you/order_details/Template.php:57
 msgid "&infin;"
 msgstr ""
 
 #: blocks/woo/thank_you/order_details/Template.php:63
-#: build/blocks/woo/thank_you/order_details/Template.php:63
 msgid "Never"
 msgstr ""
 
-#: build/classes/Blocks.php:383
 #: classes/Blocks.php:383
 msgid "Username or Email is required."
 msgstr ""
 
-#: build/classes/Blocks.php:387
 #: classes/Blocks.php:387
 msgid "Password is required."
 msgstr ""
 
-#: build/classes/Caches.php:76
 #: classes/Caches.php:76
 msgid "Data Fetched!!!"
 msgstr ""
 
-#: build/classes/Dashboard.php:130
 #: classes/Dashboard.php:130
 msgid "Item has been removed from wishlist."
 msgstr ""
 
-#: build/classes/Dashboard.php:130
 #: classes/Dashboard.php:130
 msgid "Item added to wishlist."
 msgstr ""
 
-#: build/classes/Dashboard.php:161
 #: classes/Dashboard.php:161
 msgid "You have successfully saved the settings data."
 msgstr ""
 
-#: build/classes/Dashboard.php:185
 #: classes/Dashboard.php:185
 msgid "The addon has been enabled."
 msgstr ""
 
-#: build/classes/Dashboard.php:185
 #: classes/Dashboard.php:185
 msgid "The addon has been disabled."
 msgstr ""
 
-#: build/classes/Dashboard.php:185
 #: classes/Dashboard.php:185
 msgid "The block has been enabled."
 msgstr ""
 
-#: build/classes/Dashboard.php:185
 #: classes/Dashboard.php:185
 msgid "The block has been disabled."
 msgstr ""
 
-#: build/classes/Dashboard.php:277
 #: classes/Dashboard.php:277
 msgid "Status changed for selected items."
 msgstr ""
 
-#: build/classes/Dashboard.php:294
 #: classes/Dashboard.php:294
 msgid "The selected item is deleted."
 msgstr ""
 
-#: build/classes/Dashboard.php:328
 #: classes/Dashboard.php:328
 msgid "New Support Ticket has been Created."
 msgstr ""
 
-#: build/classes/Dashboard.php:328
 #: classes/Dashboard.php:328
 msgid "New Support Ticket is not Created Due to Some Issues."
 msgstr ""
 
-#: build/classes/Dashboard.php:336
 #: classes/Dashboard.php:336
 msgid "Notice is removed."
 msgstr ""
 
-#: build/classes/Dashboard.php:464
-#: build/classes/Dashboard.php:494
 #: classes/Dashboard.php:464
 #: classes/Dashboard.php:494
 msgid "An error occurred, please try again."
 msgstr ""
 
 #. translators: %s: is date
-#: build/classes/Dashboard.php:473
 #: classes/Dashboard.php:473
 msgid "Your license key expired on %s."
 msgstr ""
 
-#: build/classes/Dashboard.php:478
 #: classes/Dashboard.php:478
 msgid "Your license key has been disabled."
 msgstr ""
 
-#: build/classes/Dashboard.php:481
-#: build/classes/Dashboard.php:510
-#: build/classes/Dashboard.php:513
 #: classes/Dashboard.php:481
 #: classes/Dashboard.php:510
 #: classes/Dashboard.php:513
 msgid "Invalid license."
 msgstr ""
 
-#: build/classes/Dashboard.php:485
 #: classes/Dashboard.php:485
 msgid "Your license is not active for this URL."
 msgstr ""
 
-#: build/classes/Dashboard.php:488
 #: classes/Dashboard.php:488
 msgid "This appears to be an invalid license key."
 msgstr ""
 
-#: build/classes/Dashboard.php:491
 #: classes/Dashboard.php:491
 msgid "Your license key has reached its activation limit."
 msgstr ""
 
-#: build/classes/Dashboard.php:498
 #: classes/Dashboard.php:498
 msgid "Your license key has been updated."
 msgstr ""
 
-#: build/classes/Dashboard.php:516
 #: classes/Dashboard.php:516
 msgid "Install & Acivate WowStore Pro plugin."
 msgstr ""
 
-#: build/classes/Deactive.php:62
 #: classes/Deactive.php:62
 msgid "Want to help make <strong style=\"padding:0 5px;\"> %1$s </strong> even more awesome? Allow %1$s to collect <a style=\"padding:0 5px;\" href=\"https://www.wpxpo.com/data-collection-policy/\" target=\"_blank\">non-sensitive</a> diagnostic data and usage information."
 msgstr ""
 
-#: build/classes/Deactive.php:63
 #: classes/Deactive.php:63
 msgid "Allow"
 msgstr ""
 
-#: build/classes/Deactive.php:64
 #: classes/Deactive.php:64
 msgid "No Thanks"
 msgstr ""
 
-#: build/classes/Deactive.php:118
 #: classes/Deactive.php:118
 msgid "I no longer need the plugin."
 msgstr ""
 
-#: build/classes/Deactive.php:123
 #: classes/Deactive.php:123
 msgid "I found a better plugin."
 msgstr ""
 
-#: build/classes/Deactive.php:124
 #: classes/Deactive.php:124
 msgid "Please share which plugin."
 msgstr ""
 
-#: build/classes/Deactive.php:129
 #: classes/Deactive.php:129
 msgid "The plugin suddenly stopped working."
 msgstr ""
 
-#: build/classes/Deactive.php:130
 #: classes/Deactive.php:130
 msgid "Please share more details."
 msgstr ""
 
-#: build/classes/Deactive.php:135
 #: classes/Deactive.php:135
 msgid "I could not get the plugin to work."
 msgstr ""
 
-#: build/classes/Deactive.php:140
 #: classes/Deactive.php:140
 msgid "It's a temporary deactivation."
 msgstr ""
 
-#: build/classes/Deactive.php:145
 #: classes/Deactive.php:145
 msgid "Other."
 msgstr ""
 
-#: build/classes/Deactive.php:146
 #: classes/Deactive.php:146
 msgid "Please share the reason."
 msgstr ""
 
-#: build/classes/Deactive.php:169
 #: classes/Deactive.php:169
 msgid "Quick Feedback"
 msgstr ""
 
-#: build/classes/Deactive.php:174
 #: classes/Deactive.php:174
 msgid "If you have a moment, please let us know why you are deactivating WowStore:"
 msgstr ""
 
-#: build/classes/Deactive.php:191
 #: classes/Deactive.php:191
 msgid "Submit & Deactivate"
 msgstr ""
 
-#: build/classes/Deactive.php:192
 #: classes/Deactive.php:192
 msgid "Skip & Deactivate"
 msgstr ""
 
-#: build/classes/Functions.php:94
 #: classes/Functions.php:94
 #: assets/js/editor.blocks.js:2494
 msgid "Days"
 msgstr ""
 
-#: build/classes/Functions.php:98
 #: classes/Functions.php:98
 #: assets/js/editor.blocks.js:2494
 msgid "Hours"
 msgstr ""
 
-#: build/classes/Functions.php:102
 #: classes/Functions.php:102
 #: assets/js/editor.blocks.js:2494
 msgid "Minutes"
 msgstr ""
 
-#: build/classes/Functions.php:106
 #: classes/Functions.php:106
 #: assets/js/editor.blocks.js:2494
 msgid "Seconds"
 msgstr ""
 
-#: build/classes/Functions.php:1233
-#: classes/Functions.php:1233
+#: classes/Functions.php:1222
 #: assets/js/editor.blocks.js:2494
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Previous"
 msgstr ""
 
-#: build/classes/Functions.php:1234
-#: classes/Functions.php:1234
+#: classes/Functions.php:1223
 #: assets/js/editor.blocks.js:2494
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Next"
 msgstr ""
 
-#: build/classes/Functions.php:1590
-#: classes/Functions.php:1590
+#: classes/Functions.php:1579
 msgid "Select Page"
 msgstr ""
 
-#: build/classes/Functions.php:1606
-#: classes/Functions.php:1606
+#: classes/Functions.php:1595
 msgid "Select Location"
 msgstr ""
 
-#: build/classes/Functions.php:2538
-#: classes/Functions.php:2538
+#: classes/Functions.php:2550
 msgid "- Select Template -"
 msgstr ""
 
-#: build/classes/Initialization.php:393
 #: classes/Initialization.php:393
 msgid "WooCommerce Blocks (WowStore)"
 msgstr ""
 
-#: build/classes/Initialization.php:397
 #: classes/Initialization.php:397
 msgid "Single Product (WowStore)"
 msgstr ""
 
-#: build/classes/Initialization.php:401
 #: classes/Initialization.php:401
 msgid "Cart (WowStore)"
 msgstr ""
 
-#: build/classes/Initialization.php:405
 #: classes/Initialization.php:405
 msgid "Checkout (WowStore)"
 msgstr ""
 
-#: build/classes/Initialization.php:409
 #: classes/Initialization.php:409
 msgid "Thank You (WowStore)"
 msgstr ""
 
-#: build/classes/Initialization.php:413
 #: classes/Initialization.php:413
 msgid "My Account (WowStore)"
 msgstr ""
 
-#: build/classes/Notice.php:86
-#: build/classes/Notice.php:575
-#: build/classes/Notice.php:601
 #: classes/Notice.php:86
 #: classes/Notice.php:575
 #: classes/Notice.php:601
 msgid "Dismiss"
 msgstr ""
 
-#: build/classes/Notice.php:576
-#: build/classes/Notice.php:602
 #: classes/Notice.php:576
 #: classes/Notice.php:602
 msgid "Welcome to WowStore."
 msgstr ""
 
-#: build/classes/Notice.php:577
 #: classes/Notice.php:577
 msgid "WowStore is a WooCommerce-based plugin. So you need to installed & activate WooCommerce to start using WowStore."
 msgstr ""
 
-#: build/classes/Notice.php:578
 #: classes/Notice.php:578
 msgid "Install & Activate WooCommerce"
 msgstr ""
 
-#: build/classes/Notice.php:603
 #: classes/Notice.php:603
 msgid "WowStore is a WooCommerce-based plugin. So you need to installed and activated WooCommerce to start using WowStore."
 msgstr ""
 
-#: build/classes/Notice.php:604
 #: classes/Notice.php:604
 msgid "Activate WooCommerce"
 msgstr ""
 
-#: build/classes/Notice.php:1117
 #: classes/Notice.php:1117
 msgid "Introducing <span class=\"wopb-bold\">WholesaleX</span> - The Most Complete <span class=\"wopb-bold\">B2B Solution"
 msgstr ""
 
-#: build/classes/Notice.php:1124
 #: classes/Notice.php:1124
 msgid "Start wholesaling in your WooCommerce store and enjoy up to <span class=\"wopb-bold\">300% revenue</span>"
 msgstr ""
 
-#: build/classes/Notice.php:1126
 #: classes/Notice.php:1126
 msgid "Get WholesaleX"
 msgstr ""
 
-#: build/classes/Notice.php:1133
 #: classes/Notice.php:1133
 msgid "Installing WholesaleX"
 msgstr ""
 
-#: build/classes/Notice.php:1146
 #: classes/Notice.php:1146
 msgid "Installed"
 msgstr ""
 
-#: build/classes/Notice.php:1214
 #: classes/Notice.php:1214
 msgid "Successfully Installed and Activated"
 msgstr ""
 
-#: build/classes/Options.php:56
 #: classes/Options.php:56
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Docs"
 msgstr ""
 
-#: build/classes/Options.php:57
 #: classes/Options.php:57
 msgid "Tutorials"
 msgstr ""
 
-#: build/classes/Options.php:58
 #: classes/Options.php:58
 msgid "Support"
 msgstr ""
 
-#: build/classes/Options.php:77
-#: build/classes/Options.php:174
 #: classes/Options.php:77
 #: classes/Options.php:174
 #: addons/builder/assets/js/conditions.js:74
@@ -4523,218 +3548,172 @@ msgstr ""
 #: assets/js/editor.blocks.js:2835
 #: assets/js/editor.blocks.js:2857
 #: assets/js/editor.blocks.js:2868
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: build/classes/Options.php:132
 #: classes/Options.php:132
 msgid "WowStore Dashboard"
 msgstr ""
 
-#: build/classes/Options.php:133
 #: classes/Options.php:133
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Addons"
 msgstr ""
 
-#: build/classes/Options.php:139
 #: classes/Options.php:139
 msgid "Template Kits"
 msgstr ""
 
-#: build/classes/Options.php:140
 #: classes/Options.php:140
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Blocks"
 msgstr ""
 
-#: build/classes/Options.php:146
-#: build/classes/ProPlugins.php:100
 #: classes/Options.php:146
 #: classes/ProPlugins.php:100
 msgid "Size Chart"
 msgstr ""
 
-#: build/classes/Options.php:152
 #: classes/Options.php:152
 msgid "License"
 msgstr ""
 
-#: build/classes/Options.php:153
 #: classes/Options.php:153
 msgid "Quick Support"
 msgstr ""
 
-#: build/classes/Options.php:223
 #: classes/Options.php:223
 msgid "Enable Product Single Builder"
 msgstr ""
 
-#: build/classes/ProPlugins.php:28
 #: classes/ProPlugins.php:28
 msgid "Backorder"
 msgstr ""
 
-#: build/classes/ProPlugins.php:29
 #: classes/ProPlugins.php:29
 msgid "Keep getting orders for the products that are currently out of stock and will be restocked soon."
 msgstr ""
 
-#: build/classes/ProPlugins.php:37
 #: classes/ProPlugins.php:37
 msgid "Call for Price"
 msgstr ""
 
-#: build/classes/ProPlugins.php:38
 #: classes/ProPlugins.php:38
 msgid "Display a calling button instead of the Add to Cart button for the products that don't have prices."
 msgstr ""
 
-#: build/classes/ProPlugins.php:46
 #: classes/ProPlugins.php:46
 #: assets/js/blocks-placeholder.js:26
 #: assets/js/editor.blocks.js:327
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:26
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Currency Switcher"
 msgstr ""
 
-#: build/classes/ProPlugins.php:47
 #: classes/ProPlugins.php:47
 msgid "It allows customers to switch product prices and make payments in their local currencies."
 msgstr ""
 
-#: build/classes/ProPlugins.php:55
 #: classes/ProPlugins.php:55
 msgid "Partial Payment"
 msgstr ""
 
-#: build/classes/ProPlugins.php:56
 #: classes/ProPlugins.php:56
 msgid "Split product prices into parts and let the customers place orders by paying only a deposit amount."
 msgstr ""
 
-#: build/classes/ProPlugins.php:64
 #: classes/ProPlugins.php:64
 msgid "Pre-Orders"
 msgstr ""
 
-#: build/classes/ProPlugins.php:65
 #: classes/ProPlugins.php:65
 msgid "Display upcoming products as regular products to get orders for those not released yet."
 msgstr ""
 
-#: build/classes/ProPlugins.php:73
 #: classes/ProPlugins.php:73
 msgid "Stock Progress Bar"
 msgstr ""
 
-#: build/classes/ProPlugins.php:74
 #: classes/ProPlugins.php:74
 msgid "Visually highlight the total and remaining stocks of products to encourage shoppers to create FOMO."
 msgstr ""
 
-#: build/classes/ProPlugins.php:82
 #: classes/ProPlugins.php:82
 msgid "Cart Reserved Timer"
 msgstr ""
 
-#: build/classes/ProPlugins.php:83
 #: classes/ProPlugins.php:83
 msgid "Display a countdown timer and show a FOMO message once someone adds products to the cart."
 msgstr ""
 
-#: build/classes/ProPlugins.php:91
 #: classes/ProPlugins.php:91
 msgid "Product Video"
 msgstr ""
 
-#: build/classes/ProPlugins.php:92
 #: classes/ProPlugins.php:92
 msgid "Display product-featured videos instead of featured images and grab users' attention to specific products."
 msgstr ""
 
-#: build/classes/ProPlugins.php:101
 #: classes/ProPlugins.php:101
 msgid "Create & display size charts to help the potential buyers make better buying decisions."
 msgstr ""
 
-#: build/classes/ProPlugins.php:109
 #: classes/ProPlugins.php:109
 msgid "Quick Social Share"
 msgstr ""
 
-#: build/classes/ProPlugins.php:110
 #: classes/ProPlugins.php:110
 msgid "Display social share icons and let your shoppers share products with their social profiles instantly."
 msgstr ""
 
-#: build/classes/ProPlugins.php:118
 #: classes/ProPlugins.php:118
 msgid "Sticky Add to Cart"
 msgstr ""
 
-#: build/classes/ProPlugins.php:119
 #: classes/ProPlugins.php:119
 msgid "Make the Add to Cart Button Sticky on the top or bottom while shoppers scroll the product pages."
 msgstr ""
 
-#: build/classes/SetupWizard.php:48
-#: build/classes/SetupWizard.php:49
 #: classes/SetupWizard.php:48
 #: classes/SetupWizard.php:49
 msgid "Setup Wizard"
 msgstr ""
 
-#: build/classes/Styles.php:278
 #: classes/Styles.php:278
 msgid "CSS Updated!"
 msgstr ""
 
-#: build/classes/Styles.php:360
 #: classes/Styles.php:360
 msgid "CSS can not be saved due to permission!!!"
 msgstr ""
 
-#: build/classes/Styles.php:362
 #: classes/Styles.php:362
 msgid "WowStore css file has been updated."
 msgstr ""
 
-#: build/classes/Styles.php:376
 #: classes/Styles.php:376
 msgid "Data Delete Done"
 msgstr ""
 
-#: build/classes/Styles.php:404
 #: classes/Styles.php:404
 msgid "Data retrive done"
 msgstr ""
 
-#: build/classes/Styles.php:406
 #: classes/Styles.php:406
 msgid "Data not found!!"
 msgstr ""
 
-#: build/classes/Templates.php:52
 #: classes/Templates.php:52
 msgid "WowStore Template (Without Title)"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:74
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "[Pro]"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:74
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Re-Generate Google Font"
 msgstr ""
 
@@ -4743,20 +3722,17 @@ msgstr ""
 #: assets/js/editor.blocks.js:954
 #: assets/js/editor.blocks.js:2604
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Pro"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:74
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Select Item"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:74
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Add"
 msgstr ""
 
@@ -4764,8 +3740,7 @@ msgstr ""
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2604
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Get License"
 msgstr ""
 
@@ -4773,27 +3748,23 @@ msgstr ""
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2604
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Import"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:118
 #: assets/js/editor.blocks.js:1262
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Header"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:118
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Footer"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:118
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Back"
 msgstr ""
 
@@ -4806,20 +3777,16 @@ msgstr ""
 #: assets/js/editor.blocks.js:811
 #: assets/js/editor.blocks.js:866
 #: assets/js/editor.blocks.js:965
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
 msgid "Loading..."
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:118
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Create Unlimited Templates With WowStore Pro"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:118
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "We are sorry. Unfortunately, the free version of WowStore lets you create only one template. Please upgrade to a pro version that unlocks the full capabilities of the WooCommerce builder."
 msgstr ""
 
@@ -4839,87 +3806,71 @@ msgstr ""
 #: assets/js/editor.blocks.js:1867
 #: assets/js/editor.blocks.js:1878
 #: assets/js/editor.blocks.js:2494
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Hover"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:184
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Bold"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:184
 #: assets/js/editor.blocks.js:2934
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Italic"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:184
 #: assets/js/editor.blocks.js:2934
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Underline"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "BackPack"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/setup.wizard.js:2
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/setup.wizard.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/setup.wizard.js:1
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Clothing"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/setup.wizard.js:2
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/setup.wizard.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/setup.wizard.js:1
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Fashion"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/setup.wizard.js:2
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/setup.wizard.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/setup.wizard.js:1
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Fast Food"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/setup.wizard.js:2
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/setup.wizard.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/setup.wizard.js:1
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Home Decor"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/setup.wizard.js:2
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/setup.wizard.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/setup.wizard.js:1
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Jewelry"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Sun Glass"
 msgstr ""
 
@@ -4936,48 +3887,41 @@ msgstr ""
 #: assets/js/editor.blocks.js:2395
 #: assets/js/editor.blocks.js:2406
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:23
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Button"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "List-WowStore"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product List 1"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Grid 1"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Grid 2"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Grid 3"
 msgstr ""
 
@@ -4985,9 +3929,7 @@ msgstr ""
 #: assets/js/blocks-placeholder.js:35
 #: assets/js/editor.blocks.js:1009
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:35
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Slider"
 msgstr ""
 
@@ -4995,60 +3937,51 @@ msgstr ""
 #: assets/js/blocks-placeholder.js:32
 #: assets/js/editor.blocks.js:954
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:32
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Search"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Category 1"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Category 2"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Category 3"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Filter:"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2494
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Popular"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Latest"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2604
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Free"
 msgstr ""
 
@@ -5056,62 +3989,50 @@ msgstr ""
 #: assets/js/editor.blocks.js:2604
 #: assets/js/editor.blocks.js:2615
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Synchronize"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2604
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Live Preview"
 msgstr ""
 
 #: addons/builder/assets/js/conditions.js:239
 #: assets/js/editor.blocks.js:2626
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
 msgid "No Data found..."
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:11
-#: build/assets/js/blocks-placeholder.js:11
 msgid "Advance List"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:14
 #: assets/js/blocks-placeholder.js:29
 #: assets/js/editor.blocks.js:118
-#: build/assets/js/blocks-placeholder.js:14
-#: build/assets/js/blocks-placeholder.js:29
 msgid "List"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:17
-#: build/assets/js/blocks-placeholder.js:17
 msgid "Banner"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:20
 #: assets/js/editor.blocks.js:294
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:20
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Button Group"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:38
 #: assets/js/editor.blocks.js:1119
 #: assets/js/editor.blocks.js:1163
-#: build/assets/js/blocks-placeholder.js:38
 msgid "row"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:41
 #: assets/js/editor.blocks.js:1108
-#: build/assets/js/blocks-placeholder.js:41
 msgid "Column"
 msgstr ""
 
@@ -5127,98 +4048,74 @@ msgstr ""
 #: assets/js/editor.blocks.js:1658
 #: assets/js/editor.blocks.js:2076
 #: assets/js/editor.blocks.js:2494
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:47
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Heading"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:53
 #: assets/js/editor.blocks.js:1163
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:53
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Wrapper"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:56
 #: assets/js/editor.blocks.js:745
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:56
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Grid #1"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:59
 #: assets/js/editor.blocks.js:800
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:59
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Grid #2"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:62
 #: assets/js/editor.blocks.js:855
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:62
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Grid #3"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:65
 #: assets/js/editor.blocks.js:910
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:65
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product List #1"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:68
 #: assets/js/editor.blocks.js:580
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:68
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Category #1"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:71
 #: assets/js/editor.blocks.js:635
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:71
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Category #2"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:74
 #: assets/js/editor.blocks.js:921
 #: assets/js/editor.blocks.js:2252
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:74
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Title"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:77
 #: assets/js/editor.blocks.js:2120
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:77
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Short Description"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:80
 #: assets/js/editor.blocks.js:1856
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:80
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Description"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:83
 #: assets/js/editor.blocks.js:2164
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:83
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Stock"
 msgstr ""
 
@@ -5226,147 +4123,111 @@ msgstr ""
 #: assets/js/editor.blocks.js:921
 #: assets/js/editor.blocks.js:1856
 #: assets/js/editor.blocks.js:1988
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:86
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Price"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:89
 #: assets/js/editor.blocks.js:921
 #: assets/js/editor.blocks.js:2032
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:89
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Rating"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:92
 #: assets/js/editor.blocks.js:1944
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:92
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Meta"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:95
 #: assets/js/editor.blocks.js:1768
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:95
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Breadcrumb"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:101
 #: assets/js/editor.blocks.js:1812
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:101
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Add To Cart"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:104
 #: assets/js/editor.blocks.js:1724
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:104
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Additional Info"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:107
 #: assets/js/editor.blocks.js:2208
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:107
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Tab"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:110
 #: assets/js/editor.blocks.js:2065
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:110
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Review"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:113
 #: assets/js/editor.blocks.js:1251
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:113
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Cart Table"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:116
 #: assets/js/editor.blocks.js:1295
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:116
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Cart Total"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:119
 #: assets/js/editor.blocks.js:1647
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:119
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Free Shipping Progress Bar"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:122
 #: assets/js/editor.blocks.js:1207
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:122
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Archive Title"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:125
 #: assets/js/editor.blocks.js:371
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:125
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Filtering"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:128
 #: assets/js/editor.blocks.js:1339
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:128
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Additional Information"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:131
 #: assets/js/editor.blocks.js:1383
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:131
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Billing Address"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:134
 #: assets/js/editor.blocks.js:1218
 #: assets/js/editor.blocks.js:1427
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:134
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Coupon"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:137
 #: assets/js/editor.blocks.js:1471
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:137
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Checkout Login"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:140
 #: assets/js/editor.blocks.js:1515
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:140
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Order Review"
 msgstr ""
 
@@ -5375,69 +4236,53 @@ msgstr ""
 #: assets/js/editor.blocks.js:2395
 #: assets/js/editor.blocks.js:2406
 #: assets/js/editor.blocks.js:2439
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:143
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Payment Method"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:146
 #: assets/js/editor.blocks.js:1603
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:146
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Shipping Address"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:149
 #: assets/js/editor.blocks.js:2384
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:149
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Order Confirmation"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:152
 #: assets/js/editor.blocks.js:2340
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:152
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Thank You Address"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:155
 #: assets/js/editor.blocks.js:2428
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:155
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Thank You Order Details"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:158
 #: assets/js/editor.blocks.js:2472
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:158
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Order Payment"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:161
 #: assets/js/editor.blocks.js:1680
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/blocks-placeholder.js:161
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "My Account"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:164
 #: assets/js/editor.blocks.js:481
-#: build/assets/js/blocks-placeholder.js:164
 msgid "Menu Compare"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:167
 #: assets/js/editor.blocks.js:525
-#: build/assets/js/blocks-placeholder.js:167
 msgid "Menu Wishlist"
 msgstr ""
 
@@ -5741,8 +4586,7 @@ msgid "Advanced"
 msgstr ""
 
 #: assets/js/editor.blocks.js:74
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "List - WowStore"
 msgstr ""
 
@@ -5754,8 +4598,7 @@ msgstr ""
 #: assets/js/editor.blocks.js:184
 #: assets/js/editor.blocks.js:294
 #: assets/js/editor.blocks.js:954
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Documentation"
 msgstr ""
 
@@ -6288,8 +5131,7 @@ msgid "Add Text..."
 msgstr ""
 
 #: assets/js/editor.blocks.js:184
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Banner Maker"
 msgstr ""
 
@@ -6625,8 +5467,7 @@ msgid "How to use filter"
 msgstr ""
 
 #: assets/js/editor.blocks.js:338
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "How to add Product Filter to WooCommerce Shop Page"
 msgstr ""
 
@@ -7445,8 +6286,7 @@ msgid "Count Spacing"
 msgstr ""
 
 #: assets/js/editor.blocks.js:690
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Category #3"
 msgstr ""
 
@@ -7513,10 +6353,10 @@ msgstr ""
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
+#: assets/js/editor.blocks.js:921
 #: assets/js/editor.blocks.js:1911
 #: assets/js/editor.blocks.js:2494
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Category"
 msgstr ""
 
@@ -7649,7 +6489,6 @@ msgstr ""
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
-#: assets/js/editor.blocks.js:921
 msgid "Category Style"
 msgstr ""
 
@@ -7920,7 +6759,11 @@ msgid "Column Gap"
 msgstr ""
 
 #: assets/js/editor.blocks.js:921
-msgid "Search Form Style"
+msgid "Search Form"
+msgstr ""
+
+#: assets/js/editor.blocks.js:921
+msgid "Placeholder Text"
 msgstr ""
 
 #: assets/js/editor.blocks.js:921
@@ -8116,8 +6959,7 @@ msgid "Taxonomy Type"
 msgstr ""
 
 #: assets/js/editor.blocks.js:998
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Category"
 msgstr ""
 
@@ -8428,8 +7270,7 @@ msgid "Query Builder"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1020
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Container Width"
 msgstr ""
 
@@ -8920,8 +7761,7 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1108
 #: assets/js/editor.blocks.js:1119
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Row"
 msgstr ""
 
@@ -9797,6 +8637,10 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1614
 msgid "After Price Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1614
+msgid "Free Shipping Text"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1614
@@ -10991,8 +9835,7 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:2439
 #: assets/js/editor.blocks.js:2494
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Date"
 msgstr ""
 
@@ -11682,14 +10525,12 @@ msgid "Need quick Human Support?"
 msgstr ""
 
 #: assets/js/editor.blocks.js:2494
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Get Support"
 msgstr ""
 
 #: assets/js/editor.blocks.js:2494
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "PRO"
 msgstr ""
 
@@ -11878,904 +10719,727 @@ msgstr ""
 msgid "Transform"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Welcome"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Site Info"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Exclusive Features"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Congratulations"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Welcome!"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
-msgid "Start Building with "
+#: assets/js/setup.wizard.js:1
+msgid "Start Building with"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "WowStore!"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "WowStore is the #1 Gutenberg WooCommerce Builder for building Feature-rich, Conversion-focused, Visually Agile Online Stores"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "It only takes 4-steps to get started."
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Lets's Start"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Skip this Step"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Return to Dashboard"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Explore All Features"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "WowStore Documentation"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Forum Support"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Pre-Sale & Pro Support"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Join the Community to Stay Up to Date"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "You are Ready!"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "You are ready to start your online journey - Deploy your stunning WooCommerce Store with WowStore Today."
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Ready to Go"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "WowStore Intro Video"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/setup.wizard.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/setup.wizard.js:1
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Play"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Get Updates"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "We will send essential tips & tricks for effective usage of WowStore."
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Share Essentials"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Let us collect non-sensitive diagnosis data and usage information."
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Learn More"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Flexible Shopping Experience"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Sales Boosters"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Comprehensive Blocks Library"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Rich Premade Templates"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Cart Abandonment Reduction"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Powerful Woo Builder"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "AOV Boosters"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Increased Conversions"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Enjoy Exclusive Features!"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Take advantage of the Exclusive Features and build functional WooCommerce Stores - Build Better, Sell Better!"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Most Advanced and Conversion Focused Features"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Tell Us About Your Dream Store…"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "What type of store do you want to build?"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Site Type"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Select Site Type"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Sunglass"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Furniture"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Backpack"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "Other"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "WooCommerce"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "WholesaleX (Enable B2B Mode)"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
+#: assets/js/setup.wizard.js:1
 msgid "WholesaleX"
 msgstr ""
 
-#: assets/js/setup.wizard.js:2
-#: build/assets/js/setup.wizard.js:2
-msgid "The following plugins will be installed and activated for you: "
+#: assets/js/setup.wizard.js:1
+msgid "The following plugins will be installed and activated for you:"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Save Settings"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Unlock with WowStore Pro…"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Unfortunately, you need the PRO version of WowStore to use this feature. Unlock all Addons, templates, and features with WowStore PRO."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Enjoy Pro-level Ready Templates!"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Go to Templates Library"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Plugin Details"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "What Do You Need?"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Do More with"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " PRO:"
+#: assets/js/wopb_dashboard_min.js:1
+msgid "PRO:"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Do you have something in mind you want to share? Both we and our users would like to hear about it. Share your ideas on our Facebook group and let us know what you need."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Share Ideas"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "With the Pro features, you unlock access to:"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "This addon required this plugin: "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "This addon required this plugin:"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Enable"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Demo"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Start WowStore"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Grid Blocks"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Product List Blocks"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Single Product Builder"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Cart Builder"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Checkout Builder"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Thank You Builder"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Other Builder Blocks"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Others Product Blocks"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Live"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Loading…"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Change Container Width of the WowStore Template."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Here you can increase or decrease the container width. It will be applicable when you create any dynamic template with the WowStore Builder or select WowStore while creating a page."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Editor Container"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Theme Default"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Full Width"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Select Editor Container Width."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Decide and select whether you want to use theme width or full width while editing a page."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Hide Import Button"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Hide Import Layout Button from the Gutenberg Editor."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Click on the check box to hide the block library (layout importer) option from Gutenberg editor."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Disable All Google Fonts"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Disable All Google Fonts From Frontend and Backend WowStore Blocks."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Click the check box to disable all Google Fonts from WowStore's typography options."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Feature Request"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Can’t find your desired feature? Let us know your requirements. We will definitely take them into our consideration."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "WowStore Community"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Join the Facebook community of WowStore to stay up-to-date and share your thoughts and feedback."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "News, Tips & Update"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Getting Started with WowStore"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "How to use the WooCommerce Builder"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "How to use the WowStore Addons"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "WowStore Blog"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Show your love"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Enjoying WowStore? Give us a 5 Star review to support our ongoing work."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Your License is"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Activated."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " Expiry Date: "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Expiry Date:"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "Want to reset this license? "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Want to reset this license?"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Click Here."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Add New License"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Activate License"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Enter your license key"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "Your License is "
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Invalid / Expired."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " To unlock pro features, please"
+#: assets/js/wopb_dashboard_min.js:1
+msgid "To unlock pro features, please"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Renew your license"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Want to add a new license?"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Click here"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "How to upgrade the existing plan?"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " You can use WowStore Pro on multiple sites and for lifetime without any renewal charges. Follow the below steps to update your plan."
+#: assets/js/wopb_dashboard_min.js:1
+msgid "You can use WowStore Pro on multiple sites and for lifetime without any renewal charges. Follow the below steps to update your plan."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Step 1:"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " Go to wpxpo.com "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Go to wpxpo.com"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "> my account > My Order > View Licenses > View Upgrades."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " And then click on the Update License Button."
+#: assets/js/wopb_dashboard_min.js:1
+msgid "And then click on the Update License Button."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Step 2:"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " Complete the Payment and enjoy your plan."
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Complete the Payment and enjoy your plan."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "How to use license key?"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Note:"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " Make sure you have installed both the"
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Make sure you have installed both the"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " free and pro version of WowStore."
+#: assets/js/wopb_dashboard_min.js:1
+msgid "free and pro version of WowStore."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "> My Account > Order > View License. "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "> My Account > Order > View License."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Then Click Key Icon and copy the license key."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " Paste the copied license on the above field. Then Click on the Activate License Button."
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Paste the copied license on the above field. Then Click on the Activate License Button."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "How to renew the existing license?"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " To renew your existing license you need to go to wpxpo.com "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "To renew your existing license you need to go to wpxpo.com"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "> My account > My Order > View Licenses. "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "> My account > My Order > View Licenses."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " Then click on the “renew now” button and complete the payment process."
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Then click on the “renew now” button and complete the payment process."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "Upgrade License "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Upgrade License"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Enjoy a special discount while upgrading your existing license."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Upgrade Now"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Just Getting Started with WowStore?"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Check out the documentation to learn how you can effectively use the features of WowStore."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Explore Documentation"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Want to get rid of the renewal hassle?"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "Purchase a lifetime plan of WowStore and keep using all pro features forever without any renewal charges. Use this coupon, "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Purchase a lifetime plan of WowStore and keep using all pro features forever without any renewal charges. Use this coupon,"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "{ special30 } to get a 30% "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "{ special30 } to get a 30%"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "discount for any lifetime plan."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Claim Your Discount"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Bulk Action"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Publish"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Draft"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Apply"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Set to"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "No Data Found !!!"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Page"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "of"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "items"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Create Unlimited Saved Templates with WowStore Pro"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "You can create only one saved template with the free version of WowStore. Please upgrade to a pro plan to create unlimited saved templates."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Include"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Exclude"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Create Unlimited Size Charts with WowStore Pro"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "You can create only one size chart template with the free version of WowStore. Please upgrade to a pro plan to create unlimited size chart templates."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Having Difficulties? We are here to help"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Let us know how we can help you."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Create a Ticket"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Select Support Type from above"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "You can Contact in Support via our "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "You can Contact in Support via our"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "Contact Form "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Contact Form"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Submit Ticket"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Useful Guides"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Explore in-depth documentations."
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Join Community"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
+msgid "No Data found…"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Template kits"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Welcome Guide"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Youtube Tutorials"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "Exciting Black Friday Deals "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Holiday Offer:"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "Enjoy "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Enjoy"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "up to 65% OFF"
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Up to 60% Discount"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Grab Now"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "ProductX "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "ProductX"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid "is now "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "is now"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "WowStore:"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
-msgid " with exciting new features - "
+#: assets/js/wopb_dashboard_min.js:1
+msgid "with exciting new features -"
 msgstr ""
 
-#: assets/js/wopb_dashboard_min.js:2
-#: build/assets/js/wopb_dashboard_min.js:2
+#: assets/js/wopb_dashboard_min.js:1
 msgid "See What’s New"
 msgstr ""

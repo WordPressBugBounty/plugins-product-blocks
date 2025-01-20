@@ -902,6 +902,7 @@ Product Video Addon [START]
     zoom: 1;
     margin: 0;
     padding: 0;
+    z-index: 9;
 }
 .wopb-single-product-gallery.woocommerce-product-gallery--columns-4 .flex-control-thumbs li {
     width: calc(25% - 0.75em);
@@ -932,8 +933,12 @@ Product Video Addon [START]
 .wopb-block-loop-video-wrap {
     position: relative;
 }
-.theme-storefront.single-product .wopb-video-nav .wopb-video-play-icon svg {
-    width: 30px;
+.wopb-video-nav .wopb-video-play-icon {
+    width: 50%;
+    text-align: center;
+}
+.wopb-video-nav .wopb-video-play-icon svg {
+    width: -webkit-fill-available;
 }
 
 /* ----------------------------------------
@@ -966,7 +971,7 @@ Size Chart Addon [START]
     color: #070707;
     font-size: 16px;
     padding-left: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     font-weight: 500;
     position: relative;
     min-height: 40px;
@@ -988,12 +993,16 @@ Size Chart Addon [START]
     max-width: 1050px;
     height: fit-content;
 }
-.wopb-size-chart-wrapper .wopb-chart-body {
+.wopb-size-chart-wrapper .wopb-chart-body .wopb-sc-table {
+    max-height: 530px;
     overflow: auto;
 }
-.wopb-chart-modal-content .wopb-chart-body {
-    max-height: 530px;
-    padding: 20px;
+.wopb-chart-modal-content .wopb-heading-row {
+    padding: 0 20px 20px 20px;
+}
+.wopb-chart-modal-content .wopb-heading-col {
+    padding: 0 20px 20px 0;
+    margin-left: 20px;
 }
 .wopb-chart-modal-close {
     font-size: 30px;
@@ -1034,6 +1043,14 @@ Size Chart Addon [START]
 }
 body div.product form.cart .wopb-size-chart-modal .wopb-sc-table td {
     padding: .7em 1em;
+}
+.wopb-size-chart-wrapper .wopb-heading-row .wopb-sc-head-col {
+    position: sticky;
+    top: 0;
+}
+.wopb-size-chart-wrapper .wopb-heading-col .wopb-sc-head-col {
+    position: sticky;
+    left: 0;
 }
 /* ----------------------------------------
 Size Chart Addon [STOP]
@@ -1113,3 +1130,10 @@ div del, div ins {
     gap: 5px;
 }
 /*partial payment style*/
+
+/*Single builder hook postion*/
+@media (min-width: 922px) {
+    .site-content .ast-container:has(.wopb-builder-container) {
+        flex-direction: column;
+    }
+}

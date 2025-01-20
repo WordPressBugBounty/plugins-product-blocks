@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.1.5
+Stable tag: 4.1.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -13,12 +13,6 @@ Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCom
 == Description ==
 
 <a href="https://www.wpxpo.com/wowstore/" target="_blank">WowStore</a> is an all-in-one WooCommerce solution with 100s of features that help you build professional-looking eCommerce websites, boost earnings, enjoy better conversion rates, reduce cart abandonment rates, and increase the average order value of your store.
-
-== WowStore Holiday Sale! ==
-
-🎁 Get up to 60% **Discount** on WowStore this **Holiday** - Build the WooCommerce Store of Your Dreams 😍
-
-👉 [Grab Now](https://www.wpxpo.com/wowstore/?utm_source=wowstore-org&utm_medium=offer&utm_campaign=holiday_org)
 
 == WowStore - #1 WooCommerce Builder & Blocks Plugin with Sales Boosting Features! ==
 [youtube https://www.youtube.com/watch?v=6t9JSvAR-to]
@@ -163,6 +157,17 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.1.6 – 20 January 2025 =
+* Update: Search block placeholder dynamic
+* Update: Free Shipping Progressbar text dynamic
+* Compatibility: Variation Swatches for WooCommerce plugin compatibility with WowStore plugin
+* Fix: Category image warning when image not found
+* Fix: Search by SKU in Product Filtering and Product Search block
+* Fix: Onsale query issue with Wholesalex
+* Fix: Short description broken for description limit
+* Fix: Single product image not showing in mobile view for specific user
+* Fix: Product Slider block broken for short description
+
 = 4.1.5 – 24 December 2024 =
 * Fix: Quickview CSS issue fix
 

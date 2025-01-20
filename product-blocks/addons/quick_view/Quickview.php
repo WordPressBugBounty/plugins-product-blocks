@@ -28,7 +28,7 @@ class Quickview
         $position_filters = $this->button_position_filters();
         $quick_view_position = wopb_function()->get_setting( 'quick_view_position' );
         $this->is_mobile = wp_is_mobile();
-        
+
         add_action( 'wc_ajax_wopb_quickview',       array( $this, 'wopb_quickview_callback' ) );
         add_action( 'wp_ajax_nopriv_wopb_quickview',array( $this, 'wopb_quickview_callback' ) );
         add_action( 'wp_enqueue_scripts',           array( $this, 'add_quickview_scripts' ) );
@@ -55,7 +55,7 @@ class Quickview
 
     /**
 	 * QuickView HTML
-     * 
+     *
      * @since v.4.0.0
 	 * @return STRING
 	 */
@@ -64,7 +64,7 @@ class Quickview
         $click_action_setting   = wopb_function()->get_setting( 'quick_view_click_action' );
         $modal_wrapper_class   .= ( $click_action_setting == 'right_sidebar' ||  $click_action_setting == 'left_sidebar' ) ? ' wopb-sidebar-wrap wopb-' . $click_action_setting : '';
         $quick_view_text        = wopb_function()->get_setting( 'quick_view_text' );
-        
+
 
         $output .= '<div
             class="wopb-quickview-btn wopb_meta_svg_con"
@@ -85,7 +85,7 @@ class Quickview
                 }
             $output .= '</span>';
         $output .= '</div>';
-        
+
         return $output;
     }
 
@@ -283,7 +283,7 @@ class Quickview
             $next       = isset( $p_id[$search + 1] ) ? $p_id[$search + 1] : '';
 
             foreach ( ['previous', 'next'] as $key => $type ) {
-                $thumbnail = get_post_thumbnail_id( ${$type} ); 
+                $thumbnail = get_post_thumbnail_id( ${$type} );
                 if ( ${$type} ) {
                     ?>
                     <div
@@ -331,7 +331,7 @@ class Quickview
         $rating_count = $product->get_rating_count();
         $review_count = $product->get_review_count();
         $average      = $product->get_average_rating();
-        
+
         if ( $quick_view_layout == 2 ) { ?>
             <div class="wopb-product-info">
                 <?php
@@ -425,7 +425,7 @@ class Quickview
                 ?>
             </div>
         </div>
-        <?php 
+        <?php
         wp_reset_postdata();
     }
 
@@ -592,6 +592,12 @@ class Quickview
         $gallery_classes = function($classes) {
             return $classes;
         };
+        add_filter( 'wc_get_template', function ( $template, $template_name, $args, $template_path, $default_path ) use( $slick_html ) {
+            if ( 'single-product/product-image.php' == $template_name ) {
+                return WC_ABSPATH . 'templates/single-product/product-image.php';
+            }
+            return $template;
+        }, 20, 5 );
         add_action('woocommerce_product_thumbnails', $slick_html);
         add_filter('woocommerce_single_product_image_gallery_classes', $gallery_classes);
         add_filter('woocommerce_single_product_image_thumbnail_html', function () {
@@ -631,11 +637,11 @@ class Quickview
 
     /**
      * Product social share icons
-     * 
+     *
      * @since v.3.1.5
      * @param $product
      * @return null
-     * 
+     *
      */
     public function social_share( $product ) {
         $link = $product->get_permalink();
@@ -679,14 +685,14 @@ class Quickview
 
     /**
 	 * QuickView HTML
-     * 
+     *
      * @since v.1.1.0
 	 * @return STRING
 	 */
     public function get_quick_view( $params = [] ) {
         if ( wopb_function()->get_setting( 'quickview_mobile_disable' ) == 'yes' && wp_is_mobile() ) {} else {
             $output = '';
-            
+
             $modal_wrapper_class        = 'wopb-quick-view-wrapper wopb-layout-' . wopb_function()->get_setting( 'quick_view_layout' );
             $click_action_setting       = wopb_function()->get_setting( 'quick_view_click_action' );
             $quick_view_icon            = wopb_function()->svg_icon( wopb_function()->get_setting( 'quick_view_button_icon' ) );

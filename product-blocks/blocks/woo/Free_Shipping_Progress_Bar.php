@@ -14,6 +14,7 @@ class Free_Shipping_Progress_Bar{
             'progressTop' => false,
             'beforePriceText' => 'Add',
             'afterPriceText' => 'to cart and get Free shipping!',
+            'freeShipText' => 'You have free shipping!',
             'currentPostId' =>  '',
         );
     }

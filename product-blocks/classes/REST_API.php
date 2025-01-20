@@ -564,14 +564,14 @@ class REST_API {
 					$args['search_key'] = $term_type;
 					add_filter( 'posts_search', array( $this, 'searchProducts' ), 100, 2 );
 					add_filter( 'posts_distinct', array( $this, 'searchProductsDistinct' ), 100, 2 );
-					add_filter( 'posts_join', array( $this, 'searchProductsJoin' ), 100, 2 );
+					add_filter( 'posts_join', array( wopb_function(), 'custom_post_join' ), 100, 2 );
 				}
 
 				$post_results = new \WP_Query( $args );
 
 				remove_filter( 'posts_search', array( $this, 'searchProducts' ), 100, 2 );
 				remove_filter( 'posts_distinct', array( $this, 'searchProductsDistinct' ), 100, 2 );
-				remove_filter( 'posts_join', array( $this, 'searchProductsJoin' ), 100, 2 );
+				remove_filter( 'posts_join', array( wopb_function(), 'custom_post_join' ), 100, 2 );
 
 				$data = array();
 				if ( ! empty( $post_results ) ) {
@@ -770,20 +770,6 @@ class REST_API {
 	}
 
 	/**
-	 * Product Join Query
-	 *
-	 * @param $join
-	 * @param $query
-	 * @return STRING
-	 * @since v.3.1.0
-	 */
-	public function searchProductsJoin( $join, $query ) {
-		global $wpdb;
-		$join .= " INNER JOIN {$wpdb->postmeta} AS post_meta ON ( {$wpdb->posts}.ID = post_meta.post_id )";
-		return $join;
-	}
-
-	/**
 	 * Get block list by product filtering
 	 *
 	 * @since v.2.6.5
@@ -937,7 +923,8 @@ class REST_API {
 
         if(isset($params['search']) && $params['search']) {
             $query_args['filter_search_key'] = $params['search'];
-            add_filter( 'posts_where', [wopb_function(), 'custom_query_product_filter'], 1000,2 );
+            add_filter( 'posts_join', array( wopb_function(), 'custom_post_join' ), 100, 2 );
+            add_filter( 'posts_where', [wopb_function(), 'custom_post_query'], 1000,2 );
             $tax_args['search'] = $params['search'];
         }
         if(isset($params['category']) && $params['category']) {

@@ -1286,25 +1286,25 @@ Size Chart Addon [START]
 #wopb-size-chart-table {
     overflow: auto;
 }
-#wopb-size-chart-table .wopb-heading-position {
+#wopb-size-chart-table .wopb-toogle-field-wrap {
     display: flex;
     align-items: center;
     gap: 25px;
 }
-#wopb-size-chart-table .wopb-heading-position .wopb-label {
+#wopb-size-chart-table .wopb-toogle-field-wrap .wopb-label {
     font-size: 14px;
     font-weight: 500;
     color: #070707;
 }
-#wopb-size-chart-table .wopb-heading-position .wopb-control {
+#wopb-size-chart-table .wopb-toggle-control {
     display: flex;
     gap: 7px;
     font-size: 14px;
 }
-#wopb-size-chart-table .wopb-heading-position input[type=checkbox] {
+#wopb-size-chart-table .wopb-toogle-field-wrap input[type=checkbox] {
     display: none;
 }
-#wopb-size-chart-table .wopb-heading-position .wopb-toggle {
+#wopb-size-chart-table .wopb-toogle-field-wrap .wopb-toggle {
     width: 32px;
     height: 17px;
     display: inline-flex;
@@ -1316,11 +1316,11 @@ Size Chart Addon [START]
     opacity: 0.25;
     position: relative;
 }
-#wopb-size-chart-table .wopb-heading-position input[type=checkbox]:checked + .wopb-toggle {
+#wopb-size-chart-table .wopb-toogle-field-wrap input[type=checkbox]:checked + .wopb-toggle {
     position: relative;
     opacity: 1;
 }
-#wopb-size-chart-table .wopb-heading-position .wopb-toggle::after {
+#wopb-size-chart-table .wopb-toogle-field-wrap .wopb-toggle::after {
     content: "";
     position: absolute;
     left: 3px;
@@ -1330,7 +1330,7 @@ Size Chart Addon [START]
     background: var(--wowstore-white-color);
     transition: 0.3s;
 }
-#wopb-size-chart-table .wopb-heading-position input[type=checkbox]:checked + .wopb-toggle::after {
+#wopb-size-chart-table input[type=checkbox]:checked + .wopb-toggle::after {
     left: calc(100% - 3px);
     transform: translateX(-100%);
 }

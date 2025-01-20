@@ -109,6 +109,7 @@ class Product_Grid_3{
         $recent_posts = new \WP_Query( wopb_function()->get_query( $attr ) );
         $pageNum = wopb_function()->get_page_number($attr, $recent_posts->found_posts);
         $parsedOverlayMetaList = json_decode($attr['overlayMetaList'], true);
+        $item_calss = wopb_function()->loop_item_classes();
 
         $slider_attr = wc_implode_html_attributes(
             array(
@@ -169,7 +170,7 @@ class Product_Grid_3{
                                 include WOPB_PATH . 'blocks/template/category.php';
 
                                 if ( $product ) {
-                                    $post_loop .= '<div class="wopb-block-item">';
+                                    $post_loop .= '<div class="wopb-block-item ' . ( ! empty( $item_calss['wrapper'] ) ? $item_calss['wrapper'] : '' ) . '">';
                                         $post_loop .= '<div class="wopb-block-content-wrap">';
 
                                         // Variation Switcher
@@ -256,7 +257,14 @@ class Product_Grid_3{
                                                     }
                                                     $image_data .= $empty_image ? '<div class="empty-image">' : '';
                                                         $image_data .= '<a href="'.esc_url($titlelink).'">';
-                                                            $image_data .= '<img alt="'.esc_attr($title).'" src="'. $image_url .'" />';
+                                                            $image_data .= '<img ';
+                                                                $image_data .= 'src="'. $image_url .'" ';
+                                                                $image_data .= 'alt="'.esc_attr($title).'" ';
+                                                                if( ! empty( $item_calss['image'] ) ) {
+                                                                    $image_data .= 'class=" ' . $item_calss['image'] . '" ';
+                                                                    $image_data .= 'srcset="' . wp_get_attachment_image_srcset( $post_thumb_id ) . '"';
+                                                                }
+                                                            $image_data .= '/>';
                                                             $image_data .= apply_filters('wopb_after_loop_image', '', $product, $post_thumb_id);
                                                             if( $attr['showVideo'] && ! $empty_image ) {
                                                                 $image_data .= apply_filters( 'wopb_product_video', '', $product, $post_thumb_id );

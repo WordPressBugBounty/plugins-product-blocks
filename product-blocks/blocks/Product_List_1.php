@@ -94,6 +94,7 @@ class Product_List_1{
         $recent_posts = new \WP_Query( wopb_function()->get_query( $attr ) );
         $pageNum = wopb_function()->get_page_number($attr, $recent_posts->found_posts);
         $parsedOverlayMetaList = json_decode($attr['overlayMetaList'], true);
+        $item_calss = wopb_function()->loop_item_classes();
 
         $slider_attr = wc_implode_html_attributes(
             array(
@@ -154,7 +155,7 @@ class Product_List_1{
 
                                 include WOPB_PATH . 'blocks/template/data.php';
                                 if($product) {
-                                    $post_loop .= '<div class="wopb-block-item wopb-block-media">';
+                                    $post_loop .= '<div class="wopb-block-item wopb-block-media ' . ( ! empty( $item_calss['wrapper'] ) ? $item_calss['wrapper'] : '' ) . '">';
                                         $post_loop .= '<div class="wopb-block-content-wrap">';
 
                                             if ($attr['showImage']) {
@@ -162,7 +163,14 @@ class Product_List_1{
 
                                                     if ( has_post_thumbnail() ) {
                                                         $post_loop .= '<a href="'.esc_url($titlelink).'">';
-                                                        $post_loop .= '<img alt="'.esc_attr($title).'" src="'.esc_url(wp_get_attachment_image_url( $post_thumb_id, ($attr['imgCrop'] ? $attr['imgCrop'] : 'full') )).'" />';
+                                                            $post_loop .= '<img ';
+                                                                $post_loop .= 'src="'. esc_url(wp_get_attachment_image_url( $post_thumb_id, ($attr['imgCrop'] ? $attr['imgCrop'] : 'full') )) .'" ';
+                                                                $post_loop .= 'alt="'.esc_attr($title).'" ';
+                                                                if( ! empty( $item_calss['image'] ) ) {
+                                                                    $post_loop .= 'class=" ' . $item_calss['image'] . '" ';
+                                                                    $post_loop .= 'srcset="' . wp_get_attachment_image_srcset( $post_thumb_id ) . '"';
+                                                                }
+                                                            $post_loop .= '/>';
                                                             if ( ! $attr['disableFlip'] ) {
                                                                 $post_loop .= apply_filters( 'wopb_flip_image', '', $product, $attr['imgCrop'] );
                                                             }

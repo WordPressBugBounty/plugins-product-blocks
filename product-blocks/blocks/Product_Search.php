@@ -21,6 +21,7 @@ class Product_Search{
             'showProductPrice' => true,
             'showProductRating' => true,
             'currentPostId' =>  '',
+            'searchPlaceHolder' =>  'Search for products...',
         );
     }
 
@@ -100,7 +101,7 @@ class Product_Search{
         $html .= '<div class="wopb-input-section">';
             $html .= '<input type="text" ';
                 $html .= 'class="wopb-search-input" ';
-                $html .= 'placeholder="' . esc_html__('Search for products...','product-blocks') . '" ';
+                $html .= 'placeholder="' .  ( isset( $attr['searchPlaceHolder'] ) ? $attr['searchPlaceHolder'] : 'Search for products...' ) . '" ';
                 if( ! empty( $_GET['s'] ) ) {
                     $html .= 'value="' . esc_attr( $_GET['s'] ) . '" ';
                 }

@@ -283,7 +283,7 @@ class Functions{
 	 */
     public function excerpt( $post_id, $limit = 55 ) {
         global $product;
-        return mb_substr( $product->get_short_description(), 0 , $limit );
+        return wp_trim_words( $product->get_short_description() , $limit );
     }
 
     /**
@@ -327,23 +327,13 @@ class Functions{
                     if( !empty($term_data) ){
                         foreach ($term_data as $terms) {
                             $temp = array();
-                            $image = '';
-                            $thumbnail_id = get_term_meta( $terms->term_id, 'thumbnail_id', true ); 
-                            if( $thumbnail_id ){
-                                $image_src = array();
-                                $image_sizes = $this->get_image_size();
-                                foreach ($image_sizes as $key => $value) {
-                                    $image_src[$key] = wp_get_attachment_image_src($thumbnail_id, $key, false)[0];
-                                }
-                                $image = $image_src;
-                            }
                             $temp['url'] = get_term_link($terms);
                             $temp['term_id'] = $terms->term_id;
                             $temp['name'] = $terms->name;
                             $temp['slug'] = $terms->slug;
                             $temp['desc'] = $terms->description;
                             $temp['count'] = $terms->count;
-                            $temp['image'] = $image;
+                            $temp['image'] = $this->get_cat_image($terms);
                             $temp['image2'] = $number;
                             $data[] = $temp;
                         }
@@ -356,18 +346,9 @@ class Functions{
         if( !empty($catSlug) ){
             foreach ($catSlug as $cat) {
                     $category_slug = isset($cat->value) ? $cat->value : $cat;
-                $image = '';
                 $terms = get_term_by('slug', $category_slug, 'product_cat');
+                $image = $this->get_cat_image($terms);
                 if( ! empty( $terms ) ) {
-                    $thumbnail_id = get_term_meta($terms->term_id, 'thumbnail_id', true);
-                    if ($thumbnail_id) {
-                        $image_src = array();
-                        $image_sizes = $this->get_image_size();
-                        foreach ($image_sizes as $key => $value) {
-                            $image_src[$key] = wp_get_attachment_image_src($thumbnail_id, $key, false)[0];
-                        }
-                        $image = $image_src;
-                    }
                     $temp['url'] = get_term_link($terms);
                     $temp['term_id'] = $terms->term_id;
                     $temp['name'] = $terms->name;
@@ -392,16 +373,6 @@ class Functions{
             if( !empty($term_data) ){
                 foreach ($term_data as $terms) {
                     $temp = array();
-                    $image = '';
-                    $thumbnail_id = get_term_meta( $terms->term_id, 'thumbnail_id', true ); 
-                    if( $thumbnail_id ){
-                        $image_src = array();
-                        $image_sizes = $this->get_image_size();
-                        foreach ($image_sizes as $key => $value) {
-                            $image_src[$key] = wp_get_attachment_image_src($thumbnail_id, $key, false)[0];
-                        }
-                        $image = $image_src;
-                    }
                     $child_query = array(
                         'taxonomy' => 'product_cat',
                         'hide_empty' => true,
@@ -414,7 +385,7 @@ class Functions{
                     $temp['slug'] = $terms->slug;
                     $temp['desc'] = $terms->description;
                     $temp['count'] = $terms->count;
-                    $temp['image'] = $image;
+                    $temp['image'] = $this->get_cat_image($terms);
                     $temp['image2'] = $number;
                     $temp['sub_categories'] = $sub_categories;
                     $data[] = $temp;
@@ -422,6 +393,28 @@ class Functions{
             }
         }
         return $data;
+    }
+
+    /**
+     * Get Category Image
+     *
+     * @param $terms
+     * @return array
+     * @since v.todo
+     */
+    public function get_cat_image( $terms ) {
+        $thumbnail_id = get_term_meta( $terms->term_id, 'thumbnail_id', true );
+        $image_src = array();
+        if( $thumbnail_id ) {
+            $image_sizes = $this->get_image_size();
+            foreach ($image_sizes as $key => $value) {
+                $data = wp_get_attachment_image_src($thumbnail_id, $key, false);
+                if( ! empty( $data[0] ) ) {
+                    $image_src[$key] = $data[0];
+                }
+            }
+        }
+        return $image_src;
     }
 
 
@@ -581,7 +574,7 @@ class Functions{
 
                 case 'onsale':
                     unset($query_args['meta_key']);
-                    $query_args['post__in'] = array_merge( array( 0 ), wc_get_product_ids_on_sale() );
+                    $query_args['post__in'] = apply_filters( 'wopb_on_sale_ids', wc_get_product_ids_on_sale() );
                     break;
 
                 default:
@@ -750,42 +743,37 @@ class Functions{
                         'relation' => 'OR',
                 );
                 if ($this->active_plugin('wholesalex')) {
-                    $price_meta_query[] = array(
-                        'key'     => wholesalex()->get_current_user_role() . '_price',
-                        'value'   => array($min_price, $max_price),
-                        'compare' => 'BETWEEN',
-                        'type'    => 'NUMERIC',
-                    );
-
-                    $price_meta_query[] = array(
-                        'relation' => 'AND',
-                        array(
-                            'relation' => 'OR',
-                            array(
-                                'key'     => wholesalex()->get_current_user_role() . '_price',
-                                'compare' => 'NOT EXISTS',
-                            ),
-                            array(
-                                'key'     => wholesalex()->get_current_user_role() . '_price',
-                                'value'   => '',
-                                'compare' => '==',
-                            ),
-                        ),
-                        array(
-                            'key'     => '_price',
+                    $role_price_key = wholesalex()->get_current_user_role() . '_price';
+                    if ( metadata_exists('post', $post_id, $role_price_key) ) {
+                        $price_meta_query[] = array(
+                            'key'     => wholesalex()->get_current_user_role() . '_price',
                             'value'   => array($min_price, $max_price),
                             'compare' => 'BETWEEN',
                             'type'    => 'NUMERIC',
-                        ),
-                    );
-                }else {
-                    $price_meta_query[] = array(
-                        'key'     => '_price',
-                        'value'   => array($min_price, $max_price),
-                        'compare' => 'BETWEEN',
-                        'type'    => 'NUMERIC',
-                    );
+                        );
+                        $price_meta_query[] = array(
+                            'relation' => 'AND',
+                            array(
+                                'relation' => 'OR',
+                                array(
+                                    'key'     => wholesalex()->get_current_user_role() . '_price',
+                                    'compare' => 'NOT EXISTS',
+                                ),
+                                array(
+                                    'key'     => wholesalex()->get_current_user_role() . '_price',
+                                    'value'   => '',
+                                    'compare' => '==',
+                                ),
+                            ),
+                        );
+                    }
                 }
+               $price_meta_query[] = array(
+                   'key'     => '_price',
+                   'value'   => array($min_price, $max_price),
+                   'compare' => 'BETWEEN',
+                   'type'    => 'NUMERIC',
+               );
 
                 $query_args['meta_query'][] = $price_meta_query;
            }
@@ -860,7 +848,8 @@ class Functions{
                        break;
                }
            }
-            add_filter( 'posts_where', [$this, 'custom_query_product_filter'], 1000,2 );
+            add_filter( 'posts_join', array( $this, 'custom_post_join' ), 100, 2 );
+            add_filter( 'posts_where', [$this, 'custom_post_query'], 1000,2 );
         }
 
        if(isset($query_args['post__in']) && isset($query_args['post__not_in'])) {
@@ -2260,10 +2249,28 @@ class Functions{
         return $builder_data ? 'data-builder="'.esc_attr($builder_data).'"' : '';
     }
 
-    public function custom_query_product_filter($where, $query) {
+    /**
+     * Product Join Query
+     *
+     * @param $join
+     * @param $query
+     * @return STRING
+     * @since v.todo
+     */
+    public function custom_post_join( $join, $query ) {
+        global $wpdb;
+        $join .= " INNER JOIN {$wpdb->postmeta} AS post_meta ON ( {$wpdb->posts}.ID = post_meta.post_id )";
+        return $join;
+    }
+
+    public function custom_post_query($where, $query) {
         global $wpdb;
         if(!empty($query->get('filter_search_key'))) {
-            $where .= " AND {$wpdb->prefix}posts.post_title LIKE '%{$query->get('filter_search_key')}%' ";
+            $where .= " AND 
+            ( 
+                {$wpdb->prefix}posts.post_title LIKE '%{$query->get('filter_search_key')}%' 
+                OR (post_meta.meta_key='_sku' AND post_meta.meta_value LIKE '%{$query->get('filter_search_key')}%') 
+            )";
         }
         return $where;
     }
@@ -2515,6 +2522,11 @@ class Functions{
     public function active_plugin($plugin_name) {
         $active_plugins = get_option( 'active_plugins', array() );
         if($plugin_name == 'wholesalex' && file_exists( WP_PLUGIN_DIR . '/wholesalex/wholesalex.php' ) && in_array( 'wholesalex/wholesalex.php', $active_plugins, true ) ) {
+            return true;
+        }elseif (
+            file_exists( WP_PLUGIN_DIR . '/' . $plugin_name . '/' . $plugin_name . '.php' ) &&
+            in_array( $plugin_name . '/' . $plugin_name . '.php', $active_plugins, true )
+        ) {
             return true;
         }
         return false;
@@ -2891,6 +2903,8 @@ class Functions{
      */
     public function get_add_to_cart( $product , $params ) {
         $data = '';
+        $before = '';
+        $after = '';
         $cart_text = isset( $params['cartText'] ) ? $params['cartText'] : '';
         $cart_active = isset( $params['cartActive'] ) ? $params['cartActive'] : '';
         $tooltip_position = isset( $params['tooltipPosition'] ) ? $params['tooltipPosition'] : '';
@@ -2977,6 +2991,18 @@ class Functions{
                     $args
                 );
                 $data .= $tooltip_html;
+
+                if( ! $is_icon && wopb_function()->active_plugin('woo-variation-swatches') ) {
+                    $swatch_position = woo_variation_swatches()->get_option('archive_swatches_position');
+                    ob_start();
+                        do_shortcode('[wvs_show_archive_variation product_id="' . $product->get_id() . '"]');
+                    $woo_swatch = ob_get_clean();
+                    if ($swatch_position == 'after') {
+                        $after .= $woo_swatch;
+                    } else {
+                        $before .= $woo_swatch;
+                    }
+                }
             } else {
                 $data .= apply_filters(
                     'woocommerce_loop_add_to_cart_link', // WPCS: XSS ok.
@@ -3003,7 +3029,7 @@ class Functions{
             $data .= '</a>';
         $data .= '</span>';
     
-        return '<div class="wopb-product-btn ' . ( $is_icon ? 'wopb_meta_svg_con' : '' ) . '">'.$data.'</div>';
+        return $before . '<div class="wopb-product-btn ' . ( $is_icon ? 'wopb_meta_svg_con' : '' ) . '">'.$data.'</div>' . $after;
     }
        
     
@@ -3209,5 +3235,17 @@ class Functions{
             }
 		}
         return '';
+    }
+
+    public function loop_item_classes() {
+        $elements = array();
+        if(
+            wopb_function()->active_plugin('woo-variation-swatches') &&
+            wc_string_to_bool( woo_variation_swatches()->get_option( 'show_on_archive' ) )
+        ) {
+            $elements['wrapper'] = ' wvs-archive-product-wrapper';
+            $elements['image'] = ' wvs-archive-product-image';
+        }
+        return $elements;
     }
 }

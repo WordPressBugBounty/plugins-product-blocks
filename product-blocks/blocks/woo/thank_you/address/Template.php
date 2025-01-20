@@ -51,4 +51,8 @@ if ( ! $order ) {
 		<?php } ?>
 	</section>
 	<?php do_action( 'woocommerce_order_details_after_customer_details', $order ); ?>
-</div>	
+</div>
+<?php
+    remove_action('woocommerce_thankyou', 'woocommerce_order_details_table');
+    do_action('woocommerce_thankyou', $order->get_id());
+?>
