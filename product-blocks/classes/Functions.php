@@ -400,7 +400,7 @@ class Functions{
      *
      * @param $terms
      * @return array
-     * @since v.todo
+     * @since v.4.1.6
      */
     public function get_cat_image( $terms ) {
         $thumbnail_id = get_term_meta( $terms->term_id, 'thumbnail_id', true );
@@ -2255,7 +2255,7 @@ class Functions{
      * @param $join
      * @param $query
      * @return STRING
-     * @since v.todo
+     * @since v.4.1.6
      */
     public function custom_post_join( $join, $query ) {
         global $wpdb;

@@ -273,6 +273,17 @@ class Filter {
             'hide_empty' => true,
         );
 
+        $product_ids = $this->get_product_ids( $args );
+        $taxonomy = $args['taxonomy'];
+
+        //Object id check for parent term
+        $term_query['object_ids'] = empty( $product_ids ) ? 'wopb_empty' : $product_ids;
+
+        //Object id check also for child term
+        add_filter( 'terms_clauses', function ( $clauses, $taxonomies, $args ) use( $product_ids, $taxonomy ) {
+            return $this->term_query_modify( $clauses, $product_ids, $taxonomy );
+        }, 10, 3 );
+
         //exclude category from wholesalex
         if ( $args['taxonomy'] == 'product_cat' ) {
             if( ! empty( $query_vars['__wholesalex_exclude_cat'] ) ) {
@@ -307,13 +318,11 @@ class Filter {
         if( isset( $args['parent'] ) && $args['parent'] !== '' ) {
             $term_query['parent'] = $args['parent'];
         }
-        $product_ids = $this->get_product_ids( $args );
-        $term_query['object_ids'] = empty( $product_ids ) ? 'wopb_empty' : $product_ids;
         $total_terms = count( get_terms( array_merge( array( 'fields' => 'ids' ),  $term_query ) ) ) ;
         $term_query['number'] = $args['limit'];
         $term_query['offset'] = ! empty( $args['offset'] ) ? $args['offset'] : 0;
         $terms = get_terms( $term_query );
-
+        remove_filter( 'terms_clauses', 'modify_terms_clauses', 10 );
         return array(
             'query_params' => array(
                 'taxonomy' => $args['taxonomy'],
@@ -328,6 +337,43 @@ class Filter {
             'total_terms' => $total_terms,
             'terms' =>  $terms,
         );
+    }
+
+    /**
+     * Modify deafult term query for product count by parent and child
+     *
+     * @param $clauses
+     * @param $product_ids
+     * @param $taxonomy
+     * @return array
+     * @since v.4.1.7
+     */
+
+    public function term_query_modify( $clauses, $product_ids, $taxonomy ) {
+        global $wpdb;
+        $product_ids = implode( ',', array_map( 'intval', $product_ids ) );
+        $clauses['join'] = preg_replace(
+            '/INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id/',
+            'LEFT JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id',
+            $clauses['join']
+        );
+        $clauses['where'] = preg_replace(
+            '/AND tr\.object_id IN \([^\)]+\)/',
+            "AND ( tr.object_id IN ($product_ids) 
+                                OR tt.term_id IN (
+                                    SELECT parent FROM {$wpdb->term_taxonomy} as term_tax_2
+                                    WHERE taxonomy = '$taxonomy' 
+                                    AND term_id IN (
+                                        SELECT term_tax_3.term_id 
+                                        FROM {$wpdb->term_taxonomy} AS term_tax_3
+                                        INNER JOIN {$wpdb->term_relationships} AS term_relation_2 
+                                        ON term_tax_3.term_taxonomy_id = term_relation_2.term_taxonomy_id 
+                                        WHERE term_relation_2.object_id IN ($product_ids)
+                                    )
+                                ) )",
+            $clauses['where']
+        );
+        return $clauses;
     }
 
     public function get_product_ids( $args ) {

@@ -1218,10 +1218,11 @@ class Notice {
 	 * Plugin Install
 	 *
 	 * @param string $plugin Plugin Slug.
+	 * @param string $source From Where Send Install.
 	 * @return boolean
 	 * @since 2.6.1
 	 */
-	public function plugin_install( $plugin ) {
+	public function plugin_install( $plugin, $source = '' ) {
         if( ! function_exists( 'plugins_api' ) ) {
             require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
         }
@@ -1258,7 +1259,11 @@ class Notice {
 		$upgrader = new \Plugin_Upgrader( $skin );
 		$upgrader->install( $api->download_link );
         activate_plugin( 'woocommerce/woocommerce.php' );
-		return wp_send_json_success( admin_url( 'admin.php?page=wopb-settings' ) );
+        if( $source == 'setup_wizard' ) {
+            return true;
+        }else {
+            return wp_send_json_success(admin_url('admin.php?page=wopb-settings'));
+        }
 	}
 
 	public function set_notice( $key = '', $value = '', $expiration = '' ) {

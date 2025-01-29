@@ -83,6 +83,14 @@ body .wopb-d-none {
     text-align: center;
     text-wrap: wrap;
 }
+html .woocommerce .wopb-product-btn .wopb-cart-action a.add_to_cart_button {
+    position: unset;
+    opacity: 1;
+    transform: none;
+    background: no-repeat;
+    height: auto;
+    line-height: normal;
+}
 
 /*
     ** Builder Sidebar
@@ -880,6 +888,9 @@ Product Video Addon [START]
 .wopb-product-video-wrapper .wopb-video-item {
     z-index: 9;
     background: #333;
+}
+.wopb-product-video-wrapper .wopb-video-item .fluid-width-video-wrapper {
+    height: 100%;
 }
 .wopb-product-video-wrapper .wopb-video-item,
 .wopb-product-video-wrapper .wopb-custom-video ,

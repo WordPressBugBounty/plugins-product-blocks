@@ -129,7 +129,6 @@ class Product_Grid_3{
                 'cartActive' => $attr['cartActive'],
                 'tooltipPosition' => $attr['tooltipPosition'],
                 'cartNoFollow' => $attr['cartNoFollow'],
-                'isIcon' => true,
             );
             
             $wraper_before .= '<div '.(isset($attr['advanceId'])?'id="'.sanitize_html_class($attr['advanceId']).'" ':'').' class="wp-block-product-blocks-'.esc_attr($block_name).' wopb-block-'.sanitize_html_class($attr["blockId"]).' '. $attr['className'] . $attr['align'] . '">';
@@ -214,6 +213,7 @@ class Product_Grid_3{
                                                                 $image_data .= apply_filters( 'wopb_grid_compare', '', $post_id, $attr['tooltipPosition'] );
                                                             }
                                                             if ( $meta_val == '_cart' ) {
+                                                                $cart_params['isIcon'] = true;
                                                                 $image_data .= wopb_function()->get_add_to_cart( $product, $cart_params );
                                                             }
                                                         }

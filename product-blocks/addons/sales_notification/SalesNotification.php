@@ -144,6 +144,10 @@ class SalesNotification {
                         $customer_name = $user_info->user_login;
                     }elseif( $name == 'nick_name' && $user_info->nickname ) {
                         $customer_name = $user_info->nickname;
+                    }elseif( $name == 'first_name' && $user_info->first_name ) {
+                        $customer_name = $user_info->first_name;
+                    }elseif( $name == 'last_name' && $user_info->last_name ) {
+                        $customer_name = $user_info->last_name;
                     }else {
                         $customer_name = $user_info->first_name . ' ' . $user_info->last_name;
                     }

@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.1.6
+Stable tag: 4.1.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -157,6 +157,12 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.1.7 – 29 January 2025 =
+* New: WowRevenue Integration
+* Update: First Name showing in Sales Push Notification addons
+* Fix: Child taxonomy not showing if parent taxonomy has no product
+* Fix: Add to Cart icon not showing on hover in grid
+
 = 4.1.6 – 20 January 2025 =
 * Update: Search block placeholder dynamic
 * Update: Free Shipping Progressbar text dynamic
@@ -319,4 +325,4 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 * Update: Dashboard UI Changed
 
 
-[See changelog for all versions](https://bitbucket.org/wpstabon/product-blocks/raw/pro_plugins/changelog.txt).
+[See changelog for all versions](https://bitbucket.org/wpstabon/product-blocks/raw/master/changelog.txt).

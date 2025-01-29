@@ -905,7 +905,7 @@ th:has(.wopb-custom-font-preview-th) {
 #productx-submenu-blocks {
     border-bottom: 1px solid #565656;
 }
-#productx-submenu-settings {
+#productx-submenu-revenue {
     border-top: 1px solid #565656;
 }
 #productx-submenu-support {
@@ -1364,4 +1364,28 @@ Flip Image Addon [START]
 }
 #flipimage-feature-image img.hidden {
     display: none;
+}
+
+/*revenue css*/
+
+#productx-submenu-revenue {
+    position: relative;
+}
+.toplevel_page_wopb-settings #productx-submenu-revenue .wopb-revenue-tag {
+    right: 55px;
+}
+#productx-submenu-revenue .wopb-revenue-tag {
+    top: 3px;
+    right: 50px;
+}
+.wopb-revenue-tag {
+    color: #FF176B;
+    font-size: 12px;
+    background-color: #FFEEF4;
+    padding: 0px 8px;
+    border: 1px solid #FF176B;
+    border-radius: 10px;
+    margin-left: 8px;
+    position: absolute;
+    transform: scale(0.8);
 }

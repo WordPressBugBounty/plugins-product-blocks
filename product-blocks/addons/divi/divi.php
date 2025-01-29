@@ -8,7 +8,7 @@ function wopb_productx_template_divi_modules() {
 	class ProductX_Template_Module extends ET_Builder_Module {
 
 		public $slug       = 'wopb_productx_template';
-		public $vb_support = 'on';
+		public $vb_support = 'partial';
 		
 		function init() {
 			$this->name			= esc_html__( 'WowStore Template', 'product-blocks' );

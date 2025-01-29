@@ -207,7 +207,9 @@ class Initialization{
             'settings' => wopb_function()->get_setting(),
             'post_type' => $post_type,
             'saved_template_url' => admin_url('admin.php?page=wopb-settings#saved-templates'),
-            'custom_fonts' => $custom_fonts
+            'custom_fonts' => $custom_fonts,
+            'revenue_active' => is_plugin_active( 'revenue/revenue.php' ),
+            'revenue_url' => admin_url('admin.php?page=revenue'),
         ));
 
         if ( $_page == 'wopb-settings' || $post_type == 'wopb_builder' ) { // Conditions JS

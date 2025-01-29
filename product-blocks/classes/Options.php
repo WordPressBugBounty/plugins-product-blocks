@@ -148,6 +148,7 @@ class Options{
         $menu_lists = array_merge(
             $menu_lists,
             array(
+                'revenue'           => __( 'Revenue', 'product-blocks' ) . '<span class="wopb-revenue-tag">New</span>',
                 'settings'          => __( 'Settings', 'product-blocks' ),
                 'license'           => __( 'License', 'product-blocks' ),
                 'support'           => __( 'Quick Support', 'product-blocks' )

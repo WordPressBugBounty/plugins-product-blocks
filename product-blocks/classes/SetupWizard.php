@@ -83,6 +83,21 @@ class SetupWizard {
 				)
 			)
         );
+
+        register_rest_route(
+            'wopb/v2',
+            '/install-extra-plugin/',
+            array(
+                array(
+                    'methods'  => 'POST',
+                    'callback' => array( $this, 'install_extra_plugin' ),
+                    'permission_callback' => function () {
+                        return current_user_can( 'manage_options' );
+                    },
+                    'args' => array()
+                )
+            )
+        );
 	}
 
 	/**
@@ -108,42 +123,11 @@ class SetupWizard {
 				$site_type = sanitize_text_field( $params['siteType'] );
 				update_option( '__wopb_site_type', $site_type );
 			}
-	
-			$woocommerce_installed = file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' );
-			$wholesalex_installed  = file_exists( WP_PLUGIN_DIR . '/wholesalex/wholesalex.php' );
 			if ( isset( $params['install_woocommerce'] ) && 'yes' === $params['install_woocommerce'] ) {
-				if ( $woocommerce_installed ) {
-					$is_wc_active = is_plugin_active( 'woocommerce/woocommerce.php' );
-					if ( ! $is_wc_active ) {
-						$activate_status = activate_plugin( 'woocommerce/woocommerce.php', '', false, true );
-						if ( is_wp_error( $activate_status ) ) {
-							wp_send_json_error( array( 'message' => __( 'WooCommerce Activation Failed!', 'wholesalex' ) ) );
-						}
-					}
-				}
+			    $this->install_and_active_plugin('woocommerce');
 			}
-			if ( isset( $params['install_wholesalex'] ) && 'yes' === $params['install_wholesalex'] ) {
-				if ( ! $wholesalex_installed ) {
-					include_once WOPB_PATH . 'classes/Notice.php';
-					$obj = new \WOPB\Notice();
-					$status = $obj->plugin_install( 'wholesalex' );
-					if ( $status && ! is_wp_error( $status ) ) {
-						$activate_status = activate_plugin( 'wholesalex/wholesalex.php', '', false, true );
-						if ( is_wp_error( $activate_status ) ) {
-							wp_send_json_error( array( 'message' => __( 'WholesaleX Activation Failed!', 'wholesalex' ) ) );
-						}
-					} else {
-						wp_send_json_error( array( 'message' => __( 'WholesaleX Installation Failed!', 'wholesalex' ) ) );
-					}
-				} else {
-					$is_wc_active = is_plugin_active( 'wholesalex/wholesalex.php' );
-					if ( ! $is_wc_active ) {
-						$activate_status = activate_plugin( 'wholesalex/wholesalex.php', '', false, true );
-						if ( is_wp_error( $activate_status ) ) {
-							wp_send_json_error( array( 'message' => __( 'WholesaleX Activation Failed!', 'wholesalex' ) ) );
-						}
-					}
-				}
+			if ( isset( $params['install_revenue'] ) && 'yes' === $params['install_revenue'] ) {
+				$this->install_and_active_plugin( 'revenue' );
 			}
 			return rest_ensure_response( ['success' => true ] );
 		} else if ( $action == 'send' ) {
@@ -158,4 +142,81 @@ class SetupWizard {
 			]);
 		}
 	}
+
+    /**
+     * Install Extra Plugin
+     *
+     * @param object $server get request.
+     * @return \WP_Error|\WP_HTTP_Response|\WP_REST_Response
+     * @since v.4.1.7
+     */
+    public function install_extra_plugin( $server ) {
+        $params = $server->get_params();
+        if ( ! ( isset( $params['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+            die();
+        }
+        if ( ! function_exists( 'is_plugin_active' ) ) {
+            include_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+
+        $plugin = $this->install_and_active_plugin( $params['name'] );
+
+        return rest_ensure_response( [
+            'redirect' => ! empty( $plugin['redirect'] ) ? $plugin['redirect'] : '',
+            'success' => true,
+        ] );
+    }
+
+    /**
+     * Install and Active Plugin
+     *
+     * @param string $name get plugin name.
+     * @return array
+     * @since v.4.1.7
+     */
+    public function install_and_active_plugin( $name ) {
+        $redirect = '';
+        switch ( $name ) {
+            case 'woocommerce':
+                $woocommerce_installed = file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' );
+                if ( $woocommerce_installed ) {
+                    $is_wc_active = is_plugin_active( 'woocommerce/woocommerce.php' );
+                    if ( ! $is_wc_active ) {
+                        $activate_status = activate_plugin( 'woocommerce/woocommerce.php', '', false, true );
+                        if ( is_wp_error( $activate_status ) ) {
+                            wp_send_json_error( array( 'message' => __( 'WooCommerce Activation Failed!', 'revenue' ) ) );
+                        }
+                    }
+                }
+                break;
+                case 'revenue':
+                    $revenue_installed  = file_exists( WP_PLUGIN_DIR . '/revenue/revenue.php' );
+                    if ( ! $revenue_installed ) {
+                        include_once WOPB_PATH . 'classes/Notice.php';
+                        $obj = new \WOPB\Notice();
+                        $status = $obj->plugin_install( 'revenue', 'setup_wizard' );
+                        if ( $status && ! is_wp_error( $status ) ) {
+                            $activate_status = activate_plugin( 'revenue/revenue.php', '', false, true );
+                            if ( is_wp_error( $activate_status ) ) {
+                                wp_send_json_error( array( 'message' => __( 'WowRevenue Activation Failed!', 'revenue' ) ) );
+                            }
+                        } else {
+                            wp_send_json_error( array( 'message' => __( 'WowRevenue Installation Failed!', 'revenue' ) ) );
+                        }
+                    } else {
+                        $is_wc_active = is_plugin_active( 'revenue/revenue.php' );
+                        if ( ! $is_wc_active ) {
+                            $activate_status = activate_plugin( 'revenue/revenue.php', '', false, true );
+                            if ( is_wp_error( $activate_status ) ) {
+                                wp_send_json_error( array( 'message' => __( 'WowRevenue Activation Failed!', 'revenue' ) ) );
+                            }
+                        }
+                    }
+                    $redirect = admin_url('admin.php?page=revenue');
+                    break;
+                default:
+                break;
+        }
+        return array( 'redirect' => $redirect, 'success' => true );
+    }
 }
