@@ -179,13 +179,16 @@ class SetupWizard {
         switch ( $name ) {
             case 'woocommerce':
                 $woocommerce_installed = file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' );
-                if ( $woocommerce_installed ) {
-                    $is_wc_active = is_plugin_active( 'woocommerce/woocommerce.php' );
-                    if ( ! $is_wc_active ) {
-                        $activate_status = activate_plugin( 'woocommerce/woocommerce.php', '', false, true );
-                        if ( is_wp_error( $activate_status ) ) {
-                            wp_send_json_error( array( 'message' => __( 'WooCommerce Activation Failed!', 'revenue' ) ) );
-                        }
+                if ( ! $woocommerce_installed ) {
+                    include_once WOPB_PATH . 'classes/Notice.php';
+                    $obj = new \WOPB\Notice();
+                    $obj->plugin_install( 'woocommerce', 'setup_wizard' );
+                }
+                $is_wc_active = is_plugin_active( 'woocommerce/woocommerce.php' );
+                if ( ! $is_wc_active ) {
+                    $activate_status = activate_plugin( 'woocommerce/woocommerce.php', '', false, false );
+                    if ( is_wp_error( $activate_status ) ) {
+                        wp_send_json_error( array( 'message' => __( 'WooCommerce Activation Failed!', 'revenue' ) ) );
                     }
                 }
                 break;
@@ -194,22 +197,13 @@ class SetupWizard {
                     if ( ! $revenue_installed ) {
                         include_once WOPB_PATH . 'classes/Notice.php';
                         $obj = new \WOPB\Notice();
-                        $status = $obj->plugin_install( 'revenue', 'setup_wizard' );
-                        if ( $status && ! is_wp_error( $status ) ) {
-                            $activate_status = activate_plugin( 'revenue/revenue.php', '', false, true );
-                            if ( is_wp_error( $activate_status ) ) {
-                                wp_send_json_error( array( 'message' => __( 'WowRevenue Activation Failed!', 'revenue' ) ) );
-                            }
-                        } else {
-                            wp_send_json_error( array( 'message' => __( 'WowRevenue Installation Failed!', 'revenue' ) ) );
-                        }
-                    } else {
-                        $is_wc_active = is_plugin_active( 'revenue/revenue.php' );
-                        if ( ! $is_wc_active ) {
-                            $activate_status = activate_plugin( 'revenue/revenue.php', '', false, true );
-                            if ( is_wp_error( $activate_status ) ) {
-                                wp_send_json_error( array( 'message' => __( 'WowRevenue Activation Failed!', 'revenue' ) ) );
-                            }
+                        $obj->plugin_install( 'revenue', 'setup_wizard' );
+                    }
+                    $is_wc_active = is_plugin_active( 'revenue/revenue.php' );
+                    if ( ! $is_wc_active ) {
+                        $activate_status = activate_plugin( 'revenue/revenue.php', '', false, false );
+                        if ( is_wp_error( $activate_status ) ) {
+                            wp_send_json_error( array( 'message' => __( 'WowRevenue Activation Failed!', 'revenue' ) ) );
                         }
                     }
                     $redirect = admin_url('admin.php?page=revenue');

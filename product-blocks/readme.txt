@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.1.9
+Stable tag: 4.2.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -157,6 +157,10 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.2.0 – 30 January 2025 =
+* Fix: Add to cart css issue for Product Grid 2 block
+* Fix: Setup Wizard CSS issue
+
 = 4.1.8 – 29 January 2025 =
 * Fix: Css issue for WowRevenue page
 
@@ -234,98 +238,6 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 * Fix: Padding for navigation items not working in the Product Tab block of the Single Product builder.
 * Fix: Undefined array key issue in Variation Swatches
 * Fix: Hide Desktop issue in Row block
-
-= 4.0.9 – 16 October 2024 =
-* Fix: Product Slider block css issue
-
-= 4.0.8 – 15 October 2024 =
-* Fix: Block render issue with Gutenberg plugin
-
-= 4.0.7 - 02 October 2024 =
-* Update: Product Filtering block sidebar popup for mobile device
-* Update: Label Typography setting added in Variation Swatches addon
-* Update: Button Settings added in Quickview modal
-* Fix: Header builder doesn't work on the shop page only
-* Fix: Image style square doesn't work in the Variation Swatches
-* Fix: Show More properly doesn't work for archive page in the Product Filtering block
-* Fix: Product image hover effect doesn't work on the Product Grid when the taxonomy is positioned above the image
-* Fix: Regular price color doesn't work when the product doesn't have a sale price
-* Fix: Product image gallery position is not centered in the Single Product builder
-* Fix: Hide Desktop setting error in Column block
-* Fix: Button block icon size doesn't work properly for responsive device
-* Fix: Quickview disable for mobile is not working
-* Fix: Short description settings do not hide when the short description is disabled in the Product Grid block
-
-= 4.0.6 - 15 September 2024 =
-* Update: Product Filter block popup for Mobile device
-* Update: Product image added in order review block of Checkout Builder
-* Update: WowStore community link change
-* Improvement: Germanized for WooCommerce plugin compatibility
-* Fix: Layout preview broken in Addon Setting panel
-* Fix: Quickview responsive issue
-* Fix: Compare responsive issue
-* Fix: Wishlist redirect to page not working on Mobile device
-* Fix: Sales Push Notification issue with Order Refund
-* Fix: PHP Warning issue in Product Tab block
-
-= 4.0.5 - 02 September 2024 =
-* Update: Hide main price option added from Name Your Price addon
-* Update: Box Shadow option added in content wrap from Product Grid block
-* Improvement: Divi addon compatibility
-* Improvement: Theme compatibility with Product Additional block
-* Improvement: Theme compatibility Product Review block
-* Fix: Product gallery broken for mobile view in gutenberg editor
-* Fix: Addon Settings panel broken in Safari browser
-* Fix: Update failed from gutenberg editor for Product Filtering block
-* Fix: Query Builder order by not working after exclude product
-
-= 4.0.4 - 19 August 2024 =
-* Update: FSE theme support
-* Fix: Product Slider broken for short description
-* Fix: Redirect to product page from wishlist if not add to cart
-* Fix: Continue Shopping button not working for empty wishlist
-* Fix: Variation swatches image not change in Oxygen builder for Single Product template
-* Fix: Name price not working for custom product type
-* Fix: Product rating not showing in Mozilla Firefox
-* Fix: Breakdance and Bricks builder compatibility
-
-= 4.0.3 - 13 August 2024 =
-* Fix: Mini cart not update after add to cart from quickview
-* Fix: Add to Cart text not change for guest user
-* Fix: Order number compatibility with Sequential Order Number for WooCommerce plugin in Thank You builder
-* Fix: Woocommerce default success/error message broken in single product
-* Fix: Add to cart button not responsive for long button text in grid
-* Fix: Header builder issue
-* Fix: Product Review blocks is not showing properly on different theme
-* Fix: Saved template compatibility with wpbakery
-
-= 4.0.2 - 01 August 2024 =
-* Update: Product Category block description limit setting added
-* Update: Mouse hover zoom enable/disable setting added in Single Product Image block
-* Fix: Currency Switcher block dropdown margin issue
-* Fix: Container custom with issue in gutenberg editor
-* Fix: Add to cart is not working properly for variation swatches for guest users
-* Fix: Product Category 3 block layout css broken
-* Fix: Attribute not showing in Product Filter block when specific taxonomy select in product grid
-* Fix: Add to Cart prevent if variation swatches out of stock in loop product
-
-= 4.0.1 - 25 July 2024 =
-* Fix: Block is not rendering in widget area
-* Fix: Templatekits and Builder Condition is not working properly
-
-= 4.0.0 - 15 July 2024 =
-* New: Add to Cart Text Addon
-* New: Animated Add to Cart Addon
-* New: Name Your Price Addon
-* New: Sales Push Notification Addon
-* New: Product Title Limit Addon
-* New: Compare Block
-* New: Wishlist Block
-* Fix: Plugin Speed Optimize
-* Fix: All Premade Template Design Issue Fixed
-* Update: Addon Re-structured and Optimize
-* Update: Blocks Re-structured and Optimize
-* Update: Dashboard UI Changed
 
 
 [See changelog for all versions](https://bitbucket.org/wpstabon/product-blocks/raw/master/changelog.txt).

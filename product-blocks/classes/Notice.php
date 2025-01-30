@@ -1258,7 +1258,6 @@ class Notice {
 		$skin     = new \WP_Ajax_Upgrader_Skin();
 		$upgrader = new \Plugin_Upgrader( $skin );
 		$upgrader->install( $api->download_link );
-        activate_plugin( 'woocommerce/woocommerce.php' );
         if( $source == 'setup_wizard' ) {
             return true;
         }else {

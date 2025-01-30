@@ -83,11 +83,11 @@ body .wopb-d-none {
     text-align: center;
     text-wrap: wrap;
 }
-html .woocommerce .wopb-product-btn .wopb-cart-action a.add_to_cart_button {
+html .woocommerce .wopb-product-btn .wopb-product-new-meta .wopb-cart-action a.add_to_cart_button {
     position: unset;
     opacity: 1;
     transform: none;
-    background: no-repeat;
+    background: none;
     height: auto;
     line-height: normal;
 }
