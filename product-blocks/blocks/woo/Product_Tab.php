@@ -62,6 +62,16 @@ class Product_Tab{
 
             $product_tabs = apply_filters( 'woocommerce_product_tabs', array() );
 
+            if(!($attr['showDescription']) && isset($product_tabs['description'])) {
+                unset($product_tabs['description']);
+            }
+            if(!($attr['showAddInfo'] && isset($product_tabs['additional_information']))) {
+                unset($product_tabs['additional_information']);
+            }
+            if(!($attr['showReview'] && isset($product_tabs['reviews']))) {
+                unset($product_tabs['reviews']);
+            }
+
             $productx_tab['add_text'] = esc_html($attr['headingText']);
 
             $attr['className'] = !empty($attr['className']) ? preg_replace('/[^A-Za-z0-9_ -]/', '', $attr['className']) : '';

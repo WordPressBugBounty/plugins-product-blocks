@@ -78,7 +78,7 @@ class Deactive {
 		if ( current_user_can( 'administrator' ) ) {
 			$data = $this->get_data();
 			$data['site_type'] = $site ? $site : get_option( '__wopb_site_type' );
-
+			
 			$data['type'] = $type ? $type : 'deactive';
 			$form_data = isset($_POST) ? $_POST : array(); //phpcs:ignore
 		
@@ -393,7 +393,7 @@ class Deactive {
 							action: 'wopb_deactive_plugin',
 							cause_id: $('input[type=radio]:checked').attr('id'),
 							cause_title: $('.wopb-modal-input input[type=radio]:checked').val(),
-							cause_details: $('.wopb-reason-input.wopb-active').val()
+							cause_details: $('.wopb-reason-input.wopb-active').val(),
 						},
 						success: function (data) {
 							$( '#wopb-deactive-modal' ).removeClass( 'modal-active' );
