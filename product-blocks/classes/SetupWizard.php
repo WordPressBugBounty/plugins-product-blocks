@@ -15,8 +15,16 @@ class SetupWizard {
 		add_action( 'wowstore_menu', array( $this, 'menu_page_callback' ) );
 		add_action( 'rest_api_init', array( $this, 'wopb_register_route' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'script_wizard_callback' ) ); // Option Panel
+
+        add_action('wp_ajax_wopb_revenue_install', [$this,'revenue_install']);
 	}
 	
+    public function revenue_install() {
+        
+        $data = $this->install_and_active_plugin( 'revenue' );
+
+        wp_send_json_success($data);
+    }
 	/**
      * Setup Wizard Function
      *

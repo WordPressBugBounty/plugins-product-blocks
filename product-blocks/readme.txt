@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.2.1
+Stable tag: 4.2.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,14 +12,13 @@ Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCom
 
 == Description ==
 
-🥇 First ever WooCommerce Builder for Gutenberg
-📈 Build professional eCommerce stores and boost earnings
-💕 A WPXPO plugin that supports over 60K businesses!
-📞 Benefit from dedicated support, with a 4.9/5 Trustpilot customer rating!
+🥇 First ever **WooCommerce Builder** for Gutenberg
+📈 Build professional eCommerce stores and **boost earnings**
+💕 A **WPXPO** plugin that supports over 60K businesses!
+📞 Benefit from dedicated support, with a **4.9/5** [Trustpilot](https://uk.trustpilot.com/review/wpxpo.com) customer rating!
 
 
-
-😲 [**Free Demo**](https://trywowstore.wpxpo.com/) | 🔥 [**WowRevenue Pro**](https://www.wpxpo.com/wowstore/) | 📃 [**Documentation**](https://wpxpo.com/docs/wowstore/)
+😲 [**Free Demo**](https://trywowstore.wpxpo.com/) | 🔥 [**WowStore Pro**](https://www.wpxpo.com/wowstore/) | 📃 [**Documentation**](https://wpxpo.com/docs/wowstore/)
 
 [youtube https://www.youtube.com/watch?v=6t9JSvAR-to]
 
@@ -162,13 +161,14 @@ Increasing the average value can help you to increase revenue with the same numb
 
 We are glad that you are considering WowStore. Please have a look at our other plugins that can also improve your WordPress and WooCommerce sites.
 
-[**WowRevenue:**](https://wordpress.org/plugins/revenue/) The all-in-one revenue-boosting plugin with various features like WooCommerce product bundles, mix-and-match product bundles, and more.
+💲 [**WowRevenue:**](https://wordpress.org/plugins/revenue/) The all-in-one revenue-boosting plugin with various features like WooCommerce product bundles, mix-and-match product bundles, and more.
 
-[**WholesaleX:**](https://wordpress.org/plugins/wholesalex/) The ultimate dynamic pricing and discount solution with additional features to manage both B2B and B2C customers in the same store.
+📦 [**WholesaleX:**](https://wordpress.org/plugins/wholesalex/) The ultimate dynamic pricing and discount solution with additional features to manage both B2B and B2C customers in the same store.
 
-[**WowOptin:**](https://wordpress.org/plugins/optin/) The most advanced and futuristic Optin plugin that helps to collect leads, increase sales, boost conversions, and reduce abandoned carts.
+🧲 [**WowOptin:**](https://wordpress.org/plugins/optin/) The most advanced and futuristic Optin plugin that helps to collect leads, increase sales, boost conversions, and reduce abandoned carts.
 
-[**PostX:**](https://wordpress.org/plugins/ultimate-post/) #1 WordPress plugin to create complete News, Magazine, and Blogging sites. It helps you make your site ready in just three simple steps. 
+📃 [**PostX:**](https://wordpress.org/plugins/ultimate-post/) #1 WordPress plugin to create complete News, Magazine, and Blogging sites. It helps you make your site ready in just three simple steps. 
+
 
 
 = Author =
@@ -218,6 +218,9 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.2.2 – 27 February 2025 =
+* Fix: WowRevenue compatibility issue
+
 = 4.2.1 – 23 February 2025 =
 * Fix: Product Tab block navigation typography issue
 * Fix: Product Tab block information and design visibility control issue
