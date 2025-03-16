@@ -1215,39 +1215,68 @@ class Functions{
                 $pages = 1;
             }
         }
-        $data = ($paged>=3?[($paged-1),$paged,$paged+1]:[1,2,3]);
-
+        
         $paginationText = explode('|', $paginationText);
-
-        $prev_text = isset($paginationText[0]) ? $paginationText[0] : esc_html__('Previous', 'product-blocks');
         $next_text = isset($paginationText[1]) ? $paginationText[1] : esc_html__('Next', 'product-blocks');
- 
-        if(1 != $pages) {
-            $html .= '<ul class="wopb-pagination">';            
-                $display_none = 'style="display:none"';
-                if($pages > 4) {
-                    $html .= '<li class="wopb-prev-page-numbers" '.($paged==1?$display_none:"").'><a href="'.esc_url($this->get_pagenum_link($paged-1, $attr)).'">'.$this->svg_icon('leftAngle2').' '.($paginationNav == 'textArrow' ? esc_html($prev_text) : "").'</a></li>';
+        $prev_text = isset($paginationText[0]) ? $paginationText[0] : esc_html__('Previous', 'product-blocks');
+        
+        $is_ajax = !empty($attr['paginationAjax']);
+        $data = ($paged >= 3) ? [($paged - 1), $paged, $paged + 1] : [1, 2, 3];
+
+        if ($pages > 1) {
+            $html .= '<ul class="wopb-pagination">';
+            $display_none = 'style="display:none"';
+            // Previous Button
+            if ($pages > 2) {
+                $html .= '<li class="wopb-prev-page-numbers" ' . ($paged == 1 ? $display_none : "") . '>
+                            <a href="' . esc_url($this->get_pagenum_link($paged - 1, $attr)) . '">' .
+                            $this->svg_icon('leftAngle2') .
+                            ($paginationNav == 'textArrow' ? esc_html($prev_text) : "") .
+                            '</a>
+                        </li>';
+            }
+            // First Page & Dots
+            if ($paged > 2 || ($is_ajax && $pages > 3)) {
+                $html .= '<li class="wopb-first-pages" ' . ($paged < 2 ? $display_none : "") . ' data-current="1">
+                            <a href="' . esc_url($this->get_pagenum_link(1, $attr)) . '">1</a>
+                        </li>';
+            }
+            
+            if ($paged > 3 || ($is_ajax && $pages > 4)) {
+                $html .= '<li class="wopb-first-dot" ' . ($paged == 1 ? $display_none : "") . '><a href="#">...</a></li>';
+            }
+            
+            // Page Numbers
+            foreach ($data as $i) {
+                if ($pages >= $i && !($pages > 3 && $pages == $i)) {
+                    $active_class = ($paged == $i) ? ' pagination-active' : '';
+                    $html .= '<li class="wopb-center-item' . $active_class . '" data-current="' . esc_attr($i) . '">
+                                <a href="' . esc_url($this->get_pagenum_link($i, $attr)) . '">' . esc_html($i) . '</a>
+                            </li>';
                 }
-                if($pages > 4){
-                    $html .= '<li class="wopb-first-pages" '.($paged<2?$display_none:"").' data-current="1"><a href="'.esc_url($this->get_pagenum_link(1, $attr)).'">1</a></li>';
-                }
-                if($pages > 4){
-                    $html .= '<li class="wopb-first-dot" '.($paged<2? $display_none : "").'><a href="#">...</a></li>';
-                }
-                foreach ($data as $i) {
-                    if($pages >= $i){
-                        $html .= ($paged == $i) ? '<li class="wopb-center-item pagination-active" data-current="'.esc_attr($i).'"><a href="'.esc_url($this->get_pagenum_link($i, $attr)).'">'.esc_html($i).'</a></li>':'<li class="wopb-center-item" data-current="'.esc_attr($i).'"><a href="'.esc_url($this->get_pagenum_link($i, $attr)).'">'.esc_html($i).'</a></li>';
-                    }
-                }
-                if($pages > 4){
-                    $html .= '<li class="wopb-last-dot" '.($pages<=$paged+1?$display_none:"").'><a href="#">...</a></li>';
-                }
-                if($pages > 4){
-                    $html .= '<li class="wopb-last-pages" '.($pages<=$paged+1?$display_none:"").' data-current="'.esc_attr($pages).'"><a href="'.esc_url($this->get_pagenum_link($pages, $attr)).'">'.esc_html($pages).'</a></li>';
-                }
-                if ($paged != $pages) {
-                    $html .= '<li class="wopb-next-page-numbers"><a href="'.esc_url($this->get_pagenum_link($paged + 1, $attr)).'">'.($paginationNav == 'textArrow' ? esc_html($next_text) : "").$this->svg_icon('rightAngle2').'</a></li>';
-                }
+            }
+            
+            // Last Dots & Last Page
+            if ($pages > 4 && $pages != ($paged + 2)) {
+                $html .= '<li class="wopb-last-dot" ' . ($pages <= $paged + 1 ? $display_none : "") . '><a href="#">...</a></li>';
+            }
+
+            if ($pages > 3) {
+                $last_class = ($paged == $pages) ? ' pagination-active' : '';
+                $html .= '<li class="wopb-last-pages' . $last_class . '" data-current="' . esc_attr($pages) . '">
+                            <a href="' . esc_url($this->get_pagenum_link($pages, $attr)) . '">' . esc_html($pages) . '</a>
+                        </li>';
+            }
+            
+            // Next Button
+            if ($paged != $pages) {
+                $html .= '<li class="wopb-next-page-numbers">
+                            <a href="' . esc_url($this->get_pagenum_link($paged + 1, $attr)) . '">
+                                ' . ($paginationNav == 'textArrow' ? esc_html($next_text) : "") . $this->svg_icon('rightAngle2') . '
+                            </a>
+                        </li>';
+            }
+            
             $html .= '</ul>';
         }
         return $html;

@@ -311,8 +311,8 @@ class Product_Slider {
     public function cartContent($product, $attr) {
         if($attr['showCart']) {
 ?>
-            <div class="wopb-product-cart-section wopb-cart-action">
-                <form action="#" class="cart">
+            <div class="wopb-product-cart-section wopb-cart-action wopb-cart-slide-section">
+                <form class="cart">
                     <?php if($attr['showQty'] && $product->is_type('simple')) { ?>
                         <div class="quantity wopb-qty-wrap">
                             <?php if($attr['showPlusMinus'] && $attr['plusMinusPosition'] == 'both') { ?>
@@ -340,10 +340,11 @@ class Product_Slider {
                             $cart_btn_class = 'single_add_to_cart_button ajax_add_to_cart';
                             $cart_text = ! empty( $attr['cartText'] ) ? $attr['cartText'] : $cart_text;
                         }
-                    ?>
+                        ?>
                         <a
                             href="<?php echo esc_url($product->add_to_cart_url()) ?>"
-                            class="wopb-product-cart <?php echo esc_html($cart_btn_class); ?>"
+                            data-product_id="<?php echo esc_attr($product->get_id()) ?>"
+                            class="wopb-product-cart add_to_cart_button <?php echo esc_html($cart_btn_class); ?>"
                             data-postid="<?php echo esc_attr($product->get_id()) ?>"
                         >
                             <?php echo esc_html( $cart_text ); ?>
