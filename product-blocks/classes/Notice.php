@@ -319,7 +319,7 @@ class Notice {
 				// code...
 				break;
 
-			case 'wow_revenue_activation':
+			case 'wow_revenue_active_notice':
 				$this->wc_notice_css();
 				$this->wc_notice_js();
 				$this->wow_rev_notice_css();
@@ -529,7 +529,7 @@ class Notice {
 		$notice_disable = wopb_function()->get_screen( 'wopb-notice-disable' );
 		if ( $notice_disable ) {
 			$notice = $this->get_notice_by_id( $notice_disable );
-			if ( 'data_collect' == $notice['type'] ) {
+			if ( isset($notice['type']) && 'data_collect' == $notice['type'] ) {
 				if ( isset( $notice['repeat_notice_after'] ) && $notice['repeat_notice_after'] ) {
 					$repeat_timestamp = ( DAY_IN_SECONDS * intval( $notice['repeat_notice_after'] ) );
 					$this->set_notice( $notice_disable, 'off', $repeat_timestamp );
@@ -613,12 +613,12 @@ class Notice {
 			// 'capability'                => 'manage_options', // Capability of users, who can see the notice
 			// ),
 
-			'wow_revenue_activation' => array(
-				'id'                        => 'wow_revenue_activation',
+			'wow_revenue_active_notice' => array(
+				'id'                        => 'wow_revenue_active_notice',
 				'type'                      => 'promotion',
 				'start'                     => '27-2-2025', // Start Date.
 				'end'                       => '27-3-2030', // End Date date('d-m-Y',strtotime($activate_date,strtotime('+7 day',$activate_date))).
-				'design_type'               => 'wow_revenue_activation',
+				'design_type'               => 'wow_revenue_active_notice',
 				'repeat_notice_after'       => false, // Repeat after how many days.
 				'priority'                  => 30, // Notice Priority.
 				'display_with_other_notice' => false, // Display With Other Notice.
@@ -1325,8 +1325,10 @@ class Notice {
 	 * @return NULL
 	 */
 	public function wc_install_callback() {
-		 $this->plugin_install( 'woocommerce' );
-		die();
+		if ( current_user_can( 'manage_options' ) ) {
+			$this->plugin_install( 'woocommerce' );
+			die();
+		}
 	}
 
 
@@ -1338,9 +1340,11 @@ class Notice {
 	 * @return NULL
 	 */
 	public function wc_activate_callback() {
-		activate_plugin( 'woocommerce/woocommerce.php' );
-		wp_redirect( admin_url( 'admin.php?page=wopb-settings' ) );
-		exit();
+		if ( current_user_can( 'manage_options' ) ) {
+			activate_plugin( 'woocommerce/woocommerce.php' );
+			wp_redirect( admin_url( 'admin.php?page=wopb-settings' ) );
+			exit();
+		}
 	}
 
 	/**

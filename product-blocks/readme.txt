@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.2.3
+Stable tag: 4.2.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -218,10 +218,13 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.2.4 – 25 March 2025 = 
+* Fix: WooCommerce plugin installation access control issue 
+
 = 4.2.3 – 16 March 2025 =
 * Fix: RTL support issue
-* Fix: ajax and non ajax Pagination issue
-* Fix: Product Slider block add to cart and mini cart Sync. issue
+* Fix: Ajax and non ajax Pagination issue
+* Fix: Product Slider block add to cart and mini cart sync. issue
 
 = 4.2.2 – 27 February 2025 =
 * Fix: WowRevenue compatibility issue
