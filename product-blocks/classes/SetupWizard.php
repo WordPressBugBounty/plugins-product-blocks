@@ -20,6 +20,9 @@ class SetupWizard {
 	}
 	
     public function revenue_install() {
+        if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+			return;
+		}
         
         $data = $this->install_and_active_plugin( 'revenue' );
 
@@ -126,18 +129,44 @@ class SetupWizard {
 
 		$action = sanitize_text_field( $params['action'] );
 		
+        $woocommerce_required = isset( $params['install_woocommerce'] ) && 'yes' === $params['install_woocommerce'];
+        $revenue__required = isset( $params['install_revenue'] ) && 'yes' === $params['install_revenue'];
+
 		if ( $action == 'install' ) {
 			if ( isset( $params['siteType'] ) ) {
 				$site_type = sanitize_text_field( $params['siteType'] );
 				update_option( '__wopb_site_type', $site_type );
 			}
-			if ( isset( $params['install_woocommerce'] ) && 'yes' === $params['install_woocommerce'] ) {
-			    $this->install_and_active_plugin('woocommerce');
-			}
-			if ( isset( $params['install_revenue'] ) && 'yes' === $params['install_revenue'] ) {
-				$this->install_and_active_plugin( 'revenue' );
-			}
-			return rest_ensure_response( ['success' => true ] );
+            if($woocommerce_required && $revenue__required ) {
+                if($this->install_and_active_plugin('woocommerce') && $this->install_and_active_plugin( 'revenue' )) {
+                    $is_wc_active = is_plugin_active( 'revenue/revenue.php' );
+                    if ( ! $is_wc_active ) {
+                        $activate_status = activate_plugin( 'revenue/revenue.php', '', false, false );
+                        if ( is_wp_error( $activate_status ) ) {
+                            wp_send_json_error( array( 'message' => __( 'WowRevenue Activation Failed!', 'revenue' ) ) );
+                        }
+                    }
+                    return rest_ensure_response( ['success' => true ] );
+                }
+            } 
+            if($woocommerce_required && !$revenue__required) {
+                if($this->install_and_active_plugin('woocommerce')) {
+                    return rest_ensure_response( ['success' => true ] );
+                }
+            }
+            if(!$woocommerce_required && $revenue__required) {
+                if($this->install_and_active_plugin( 'revenue' )) {
+                    $is_wc_active = is_plugin_active( 'revenue/revenue.php' );
+                    if ( ! $is_wc_active ) {
+                        $activate_status = activate_plugin( 'revenue/revenue.php', '', false, false );
+                        if ( is_wp_error( $activate_status ) ) {
+                            wp_send_json_error( array( 'message' => __( 'WowRevenue Activation Failed!', 'revenue' ) ) );
+                        }
+                    }
+                    return rest_ensure_response( ['success' => true ] );
+                }
+            }
+
 		} else if ( $action == 'send' ) {
 			update_option('wopb_setup_wizard_data', 'yes');
 			$site = isset( $post['site'] ) ? sanitize_text_field( $post['site'] ) : get_option('__wopb_site_type', '');
@@ -190,7 +219,7 @@ class SetupWizard {
                 if ( ! $woocommerce_installed ) {
                     include_once WOPB_PATH . 'classes/Notice.php';
                     $obj = new \WOPB\Notice();
-                    $obj->plugin_install( 'woocommerce', 'setup_wizard' );
+                    $obj->plugin_install( 'woocommerce', 'setup_wizard', true );
                 }
                 $is_wc_active = is_plugin_active( 'woocommerce/woocommerce.php' );
                 if ( ! $is_wc_active ) {
@@ -205,7 +234,7 @@ class SetupWizard {
                     if ( ! $revenue_installed ) {
                         include_once WOPB_PATH . 'classes/Notice.php';
                         $obj = new \WOPB\Notice();
-                        $obj->plugin_install( 'revenue', 'setup_wizard' );
+                        $obj->plugin_install( 'revenue', 'setup_wizard', true );
                     }
                     $is_wc_active = is_plugin_active( 'revenue/revenue.php' );
                     if ( ! $is_wc_active ) {

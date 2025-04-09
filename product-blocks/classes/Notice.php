@@ -321,7 +321,7 @@ class Notice {
 
 			case 'wow_revenue_active_notice':
 				$this->wc_notice_css();
-				$this->wc_notice_js();
+				$this->wc_notice_js('wow_revenue');
 				$this->wow_rev_notice_css();
 				$revenue_installed = file_exists( WP_PLUGIN_DIR . '/revenue/revenue.php' );
 				$campaign_url      = esc_url( admin_url( 'admin.php?page=revenue#/campaigns' ) );
@@ -640,7 +640,7 @@ class Notice {
 	public function wc_installation_notice_callback() {
 		if ( ! get_option( 'dismiss_notice' ) ) {
 			$this->wc_notice_css();
-			$this->wc_notice_js();
+			$this->wc_notice_js('woocommerce');
 			?>
 			<div class="wopb-pro-notice wopb-wc-install wc-install">
 				<img width="100" src="<?php echo esc_url( WOPB_URL . 'assets/img/woocommerce.png' ); ?>" alt="logo" />
@@ -648,7 +648,7 @@ class Notice {
 					<a class="wc-dismiss-notice" data-security="<?php echo esc_attr( wp_create_nonce( 'wopb-nonce' ) ); ?>" data-ajax="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" href="#"><span class="dashicons dashicons-no-alt"></span> <?php esc_html_e( 'Dismiss', 'product-blocks' ); ?></a>
 					<h3><?php esc_html_e( 'Welcome to WowStore.', 'product-blocks' ); ?></h3>
 					<p><?php esc_html_e( 'WowStore is a WooCommerce-based plugin. So you need to installed & activate WooCommerce to start using WowStore.', 'product-blocks' ); ?></p>
-					<a class="wc-install-btn button button-primary" href="<?php echo esc_url( add_query_arg( array( 'action' => 'wc_install' ), admin_url() ) ); ?>"><span class="dashicons dashicons-image-rotate"></span><?php esc_html_e( 'Install & Activate WooCommerce', 'product-blocks' ); ?></a>
+					<a  data-security="<?php echo esc_attr( wp_create_nonce( 'wopb-nonce' ) ); ?>" class="wc-install-btn button button-primary" href=""><span></span><?php esc_html_e( 'Install & Activate WooCommerce', 'product-blocks' ); ?></a>
 					<div id="installation-msg"></div>
 				</div>
 			</div>
@@ -666,7 +666,7 @@ class Notice {
 	public function wc_activation_notice_callback() {
 		if ( ! get_option( 'dismiss_notice' ) ) {
 			$this->wc_notice_css();
-			$this->wc_notice_js();
+			$this->wc_notice_js('woo_activation');
 			?>
 			<div class="wopb-wc-install wc-install">
 				<img width="100" src="<?php echo esc_url( WOPB_URL . 'assets/img/woocommerce.png' ); ?>" alt="logo" />
@@ -674,7 +674,7 @@ class Notice {
 					<a class="wc-dismiss-notice" data-security="<?php echo wp_create_nonce( 'wopb-nonce' ); ?>" data-ajax="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" href="#"><span class="dashicons dashicons-no-alt"></span><?php esc_html_e( 'Dismiss', 'product-blocks' ); ?></a>
 					<h3><?php esc_html_e( 'Welcome to WowStore.', 'product-blocks' ); ?></h3>
 					<p><?php esc_html_e( 'WowStore is a WooCommerce-based plugin. So you need to installed and activated WooCommerce to start using WowStore.', 'product-blocks' ); ?></p>
-					<a class="button button-primary wopb-wc-active-btn" href="<?php echo esc_url( add_query_arg( array( 'action' => 'wc_activate' ), admin_url() ) ); ?>"><?php esc_html_e( 'Activate WooCommerce', 'product-blocks' ); ?></a>
+					<a  data-security="<?php echo esc_attr( wp_create_nonce( 'wopb-nonce' ) ); ?>" class="button button-primary wopb-wc-active-btn" href="<?php echo esc_url( add_query_arg( array( 'action' => 'wc_activate', 'wpnonce' =>  wp_create_nonce( 'wopb-nonce' ) ), admin_url() ) ); ?>"> <?php esc_html_e( 'Activate WooCommerce', 'product-blocks' ); ?></a>
 				</div>
 			</div>
 			<?php
@@ -697,16 +697,17 @@ class Notice {
 				align-items: center;
 				background: #fff;
 				margin-top: 40px;
-				/*width: calc(100% - 65px);*/
+				width: calc(100% - 30px);
 				border: 1px solid #ccd0d4;
 				padding: 4px;
 				border-radius: 4px;
 				border-left: 3px solid #46b450;
 				line-height: 0;
+				gap: 16px;
 			}
 
 			.wopb-wc-install img {
-				width: 100px;
+				width: 120px !important;
 			}
 
 			.wopb-install-body {
@@ -739,6 +740,7 @@ class Notice {
 				display: inline-flex;
 				align-items: center;
 				padding: 3px 20px;
+				gap: 6px;
 			}
 
 			.wopb-pro-notice.loading .wc-install-btn {
@@ -1218,33 +1220,100 @@ class Notice {
 	 * @param NULL
 	 * @return NULL
 	 */
-	public function wc_notice_js() {
+	public function wc_notice_js($condition) {
 		?>
 		<script type="text/javascript">
-			jQuery(document).ready(function($) {
-				'use strict';
-				$(document).on('click', '.wc-install-btn', function(e) {
-					e.preventDefault();
-					const $that = $(this);
-					$.ajax({
-						type: 'POST',
-						url: ajaxurl,
-						data: {
-							install_plugin: 'woocommerce',
-							action: 'wc_install'
-						},
-						beforeSend: function() {
-							$that.parents('.wc-install').addClass('loading');
-						},
-						success: function(response) {
-							window.location.href = response.data;
-						},
-						complete: function() {
-							$that.parents('.wc-install').removeClass('loading');
-						}
+		<?php
+			switch ($condition) {
+				case "woocommerce":
+					?> 
+					jQuery(document).ready(function($) {
+						'use strict';
+						$(document).on('click', '.wc-install-btn', function(e) {
+							e.preventDefault();
+							const $that = $(this);
+							$.ajax({
+								type: 'POST',
+								url: ajaxurl,
+								data: {
+									install_plugin: 'woocommerce',
+									action: 'wc_install',
+									wpnonce: $that.data('security')
+								},
+								beforeSend: function() {
+									$that.parents('.wc-install').addClass('loading');
+								},
+								success: function(response) {
+									if(response && response?.success) {
+										window.location.href = response.data;
+									}
+								},
+								error: function(jqXHR, textStatus, errorThrown) {
+									console.error('AJAX Error Log:');
+									console.error('Status:', textStatus);
+									console.error('Error:', errorThrown);
+									console.error('Response Text:', jqXHR.responseText);
+								},
+								complete: function() {
+									$that.parents('.wc-install').removeClass('loading');
+								}
+							});
+						});
 					});
-				});
+					<?php
+					break;
+				case "wow_revenue":
+					?> 
+					jQuery(document).ready(function($) {
+						'use strict';
+						$(document).on('click', '.wopb-wowrev-btn', function(e) {
+							e.preventDefault();
+							const that = $(this);
+							that.addClass('loading');
+							if (that.hasClass('wopb-revx-install')) {
+								$.ajax({
+									url: wopb_option.ajax,
+									method: 'POST',
+									data: {
+										action: 'wopb_revenue_install',
+										wpnonce: wopb_option.security,
+										name: 'revenue'
+									},
+									success: function(res) {
+										if (res) {
+											window.location.href = wopb_option.revenue_campaigns;
+										}
+									}
+								});
+							} else if (that.hasClass('wopb-revx-activate')) {
+								$.ajax({
+									url: wopb_option.ajax,
+									method: 'POST',
+									data: {
+										wpnonce: wopb_option.security,
+										action: 'wopb_revenue_install',
 
+										name: 'revenue'
+									},
+									success: function(res) {
+										if (res) {
+											window.location.href = wopb_option.revenue_campaigns;
+										}
+									}
+								});
+							}
+
+						});
+					});
+					<?php
+					break;
+				default:
+					?> <?php
+					break;
+			}
+		?>
+				jQuery(document).ready(function($) {
+				'use strict';
 				// Dismiss notice
 				$(document).on('click', '.wc-dismiss-notice', function(e) {
 					e.preventDefault();
@@ -1267,50 +1336,6 @@ class Notice {
 						},
 					});
 				});
-				$(document).on('click', '.wopb-wowrev-btn', function(e) {
-					e.preventDefault();
-
-					const that = $(this);
-					that.addClass('loading');
-					if (that.hasClass('wopb-revx-install')) {
-						$.ajax({
-							url: wopb_option.ajax,
-							method: 'POST',
-							data: {
-								action: 'wopb_revenue_install',
-								// wpnonce: wopb_option.security,
-								name: 'revenue'
-							},
-							success: function(res) {
-								if (res) {
-									window.location.href = wopb_option.revenue_campaigns;
-								}
-							}
-						});
-					} else if (that.hasClass('wopb-revx-activate')) {
-
-						$.ajax({
-							url: wopb_option.ajax,
-							method: 'POST',
-							data: {
-								// wpnonce: wopb_option.security,
-								action: 'wopb_revenue_install',
-
-								name: 'revenue'
-							},
-							success: function(res) {
-								if (res) {
-									window.location.href = wopb_option.revenue_campaigns;
-								}
-							}
-						});
-					}
-
-				});
-
-
-
-
 			});
 		</script>
 		<?php
@@ -1325,8 +1350,11 @@ class Notice {
 	 * @return NULL
 	 */
 	public function wc_install_callback() {
+		if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+			return;
+		}
 		if ( current_user_can( 'manage_options' ) ) {
-			$this->plugin_install( 'woocommerce' );
+			$this->plugin_install( 'woocommerce', '', true );
 			die();
 		}
 	}
@@ -1340,6 +1368,9 @@ class Notice {
 	 * @return NULL
 	 */
 	public function wc_activate_callback() {
+		if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+			return;
+		}
 		if ( current_user_can( 'manage_options' ) ) {
 			activate_plugin( 'woocommerce/woocommerce.php' );
 			wp_redirect( admin_url( 'admin.php?page=wopb-settings' ) );
@@ -1596,7 +1627,10 @@ class Notice {
 	 * @return boolean
 	 * @since 2.6.1
 	 */
-	public function plugin_install( $plugin, $source = '' ) {
+	public function plugin_install( $plugin, $source = '', $install = false ) {
+		if ( ! current_user_can( 'install_plugins' ) ) {
+			wp_send_json_error( __( 'You do not have sufficient permissions to install plugins.', 'wholesalex' ) );
+		}
 		if ( ! function_exists( 'plugins_api' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 		}
@@ -1631,11 +1665,30 @@ class Notice {
 
 		$skin     = new \WP_Ajax_Upgrader_Skin();
 		$upgrader = new \Plugin_Upgrader( $skin );
-		$upgrader->install( $api->download_link );
-		if ( $source == 'setup_wizard' ) {
-			return true;
+		$result = $upgrader->install( $api->download_link );
+		if($result) {
+			if( $install) {
+				$plugin_path = $plugin . '/' . $plugin . '.php';
+				$activate_status = activate_plugin( $plugin_path, '', false, false );
+				if(!(is_wp_error( $activate_status ))){
+					if($plugin == 'woocommerce') {
+						return wp_send_json_success( admin_url( 'admin.php?page=wopb-settings' ) );
+					} else {
+						return wp_send_json_success(  __( 'Successfully Installed and Activated', 'product-blocks' ) );
+					}
+				} else {
+					return wp_send_json_error( 'Plugin activation failed' );
+				}
+			} else {
+				return wp_send_json_success('Successfully Installed and Activated');
+			}
 		} else {
-			return wp_send_json_success( admin_url( 'admin.php?page=wopb-settings' ) );
+			$errors = $upgrader->skin->get_errors();
+			if ( is_wp_error( $errors ) ) {
+				return wp_send_json_error( array( 'message' => __( 'Woocommerce Plugin Installation Failed!', 'product-blocks' ), 'error' => $result) );
+			} else {
+				return wp_send_json_error( 'Plugin installation failed. Possibly permission issues.' );
+			}
 		}
 	}
 

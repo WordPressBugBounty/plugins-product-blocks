@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore 4.2.4\n"
+"Project-Id-Version: WowStore 4.2.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-03-25T10:03:22+00:00\n"
+"POT-Creation-Date: 2025-04-09T11:35:14+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: product-blocks\n"
@@ -2859,28 +2859,33 @@ msgstr ""
 msgid "Activate WooCommerce"
 msgstr ""
 
-#: classes/Notice.php:1490
+#: classes/Notice.php:1521
 msgid "Introducing <span class=\"wopb-bold\">WholesaleX</span> - The Most Complete <span class=\"wopb-bold\">B2B Solution"
 msgstr ""
 
-#: classes/Notice.php:1498
+#: classes/Notice.php:1529
 msgid "Start wholesaling in your WooCommerce store and enjoy up to <span class=\"wopb-bold\">300% revenue</span>"
 msgstr ""
 
-#: classes/Notice.php:1501
+#: classes/Notice.php:1532
 msgid "Get WholesaleX"
 msgstr ""
 
-#: classes/Notice.php:1508
+#: classes/Notice.php:1539
 msgid "Installing WholesaleX"
 msgstr ""
 
-#: classes/Notice.php:1521
+#: classes/Notice.php:1552
 msgid "Installed"
 msgstr ""
 
-#: classes/Notice.php:1588
+#: classes/Notice.php:1619
+#: classes/Notice.php:1677
 msgid "Successfully Installed and Activated"
+msgstr ""
+
+#: classes/Notice.php:1688
+msgid "Woocommerce Plugin Installation Failed!"
 msgstr ""
 
 #: classes/Options.php:56
@@ -3028,8 +3033,8 @@ msgstr ""
 msgid "Make the Add to Cart Button Sticky on the top or bottom while shoppers scroll the product pages."
 msgstr ""
 
-#: classes/SetupWizard.php:56
-#: classes/SetupWizard.php:57
+#: classes/SetupWizard.php:59
+#: classes/SetupWizard.php:60
 msgid "Setup Wizard"
 msgstr ""
 

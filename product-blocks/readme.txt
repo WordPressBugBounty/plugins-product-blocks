@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.2.4
+Stable tag: 4.2.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -218,6 +218,9 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.2.5 – 9 April 2025 = 
+* Fix: Additional Plugin installation issue
+
 = 4.2.4 – 25 March 2025 = 
 * Fix: WooCommerce plugin installation access control issue 
 
