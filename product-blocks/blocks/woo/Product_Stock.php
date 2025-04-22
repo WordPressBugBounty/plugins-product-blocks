@@ -25,11 +25,25 @@ class Product_Stock{
         $block_name = 'product-stock';
         $wraper_before = $wraper_after = $content = '';
 
+        $allowed_html_tags = wopb_function()->allowed_html_tags();
+
         if ( ! empty( $product ) ) {
             $availability = $product->get_availability();
-            if( empty( $availability['availability'] ) && $product->get_stock_status() == 'instock' ) {
-                $availability['availability'] = __('In Stock', 'product-blocks');
+            $stock_status = $product->get_stock_status();
+        
+            // Use custom labels if available, fallback to default availability text
+            $labels = array(
+                'instock'     => isset($attr['stockInLabel']) &&  $attr['stockInLabel']   ?  wp_kses($attr['stockInLabel'], $allowed_html_tags)    : $availability['availability'],
+                'outofstock'  => isset($attr['stockOutLabel']) &&  $attr['stockOutLabel']  ?  wp_kses($attr['stockOutLabel'], $allowed_html_tags)   : $availability['availability'],
+                'onbackorder' => isset($attr['stockBackLabel']) &&  $attr['stockBackLabel'] ?  wp_kses($attr['stockBackLabel'], $allowed_html_tags)  : $availability['availability'],
+            );
+        
+            if ( isset( $labels[ $stock_status ] ) && $labels[ $stock_status ] ) {
+                $availability['availability'] = __( $labels[ $stock_status ], 'product-blocks' );
+            } else {
+                return ;
             }
+
             $stock_html = '';
             if( ! empty( $availability['availability'] ) ) {
                 $stock_html = '<p class="stock ' . esc_attr( $availability['class'] ) . '">' . wp_kses_post( $availability['availability'] ) . '</p>';

@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore 4.2.5\n"
+"Project-Id-Version: WowStore 4.2.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-04-09T11:35:14+00:00\n"
+"POT-Creation-Date: 2025-04-22T10:19:17+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: product-blocks\n"
@@ -1890,7 +1890,6 @@ msgstr ""
 #: blocks/Product_Grid_1.php:233
 #: blocks/Product_Grid_2.php:236
 #: blocks/Product_Grid_3.php:246
-#: blocks/woo/Product_Stock.php:31
 msgid "In Stock"
 msgstr ""
 
@@ -2808,27 +2807,27 @@ msgstr ""
 msgid "- Select Template -"
 msgstr ""
 
-#: classes/Initialization.php:424
+#: classes/Initialization.php:425
 msgid "WooCommerce Blocks (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:428
+#: classes/Initialization.php:429
 msgid "Single Product (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:432
+#: classes/Initialization.php:433
 msgid "Cart (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:436
+#: classes/Initialization.php:437
 msgid "Checkout (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:440
+#: classes/Initialization.php:441
 msgid "Thank You (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:444
+#: classes/Initialization.php:445
 msgid "My Account (WowStore)"
 msgstr ""
 

@@ -20,6 +20,7 @@ final class Elementor_WOPB_Extension {
         add_action( 'elementor/widgets/register', [ $this, 'register_widgets' ] );
         add_action( 'elementor/frontend/after_register_scripts', [ $this, 'widget_scripts' ] );
         add_action( 'elementor/frontend/after_enqueue_styles', [ $this, 'widget_styles' ] );
+        add_action( 'elementor/frontend/before_enqueue_scripts', [ $this, 'wopb_gutenberg_block_support' ] );
     }
 
     public function widget_styles() {
@@ -66,5 +67,18 @@ final class Elementor_WOPB_Extension {
     public function register_widgets() {
         $this->includes();
         \Elementor\Plugin::instance()->widgets_manager->register( new \ProductX_Widget() );
+    }
+
+    /**
+     * WowStore Builder and elementor  gutenberg  block compatibility  
+     *
+     * @since v.4.2.4
+     */
+    public function wopb_gutenberg_block_support() {
+        $is_build_with_elementor = (\Elementor\Plugin::$instance->db->is_built_with_elementor(get_the_id()));
+        $is_header_footer_builder = wopb_function()->conditions('header') || wopb_function()->conditions('footer');
+        if($is_build_with_elementor && $is_header_footer_builder) {
+            wp_enqueue_style('wp-block-library');
+        }
     }
 }

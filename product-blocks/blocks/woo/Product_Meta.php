@@ -62,12 +62,12 @@ class Product_Meta{
                         do_action( 'woocommerce_product_meta_start' );
                     $content .= ob_get_clean();
                     if ( $attr['metaSku'] ) {
-                        $content .= '<div class="wopb-meta-sku">';
+                        $content .= '<div class="wopb-meta-sku"><div class="product_meta" style="display: contents !important;">';
                             if ($attr['metaLabelShow']) {
                                 $content .= '<span class="wopb-meta-label-sku meta-block__label">'.esc_attr($attr['labelSku']).'</span>';
                             }
-                            $content .= '<span class="wopb-meta-list-sku meta-block__value">'.esc_html($product->get_sku()).'</span>';
-                        $content .= '</div>';
+                            $content .= '<span class="wopb-meta-list-sku meta-block__value sku">'.esc_html($product->get_sku()).'</span>';
+                        $content .= '</div></div>';
                     }
                     if ( $attr['metaCategory'] ) {
                         $terms = $product->get_category_ids();

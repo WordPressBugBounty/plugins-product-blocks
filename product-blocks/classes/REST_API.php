@@ -925,6 +925,10 @@ class REST_API {
             $query_args['filter_search_key'] = $params['search'];
             add_filter( 'posts_join', array( wopb_function(), 'custom_post_join' ), 100, 2 );
             add_filter( 'posts_where', [wopb_function(), 'custom_post_query'], 1000,2 );
+			add_filter('posts_distinct', function() {
+				return 'DISTINCT'; // duplicate data remove
+			});
+
             $tax_args['search'] = $params['search'];
         }
         if(isset($params['category']) && $params['category']) {

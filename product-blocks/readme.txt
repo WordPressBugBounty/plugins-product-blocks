@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 4.2.5
+Stable tag: 4.2.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -218,6 +218,14 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.2.6 – 22 April 2025 = 
+* Fix: Search Block result duplicate issue
+* Fix: Variation Swatches color field issue 
+* Fix: Dynamic label issue for Product Stock block 
+* Fix: Product SKU meta issue with Variable product 
+* Fix: Product Short Description block rendering issue on backend
+* Fix: Compatibility issue with Elementor and WowStore Header builder
+
 = 4.2.5 – 9 April 2025 = 
 * Fix: Additional Plugin installation issue
 

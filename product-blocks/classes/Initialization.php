@@ -190,7 +190,8 @@ class Initialization {
 		wp_enqueue_media();
 
 		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( $taxonomy == 'pa_color' ) {
+		$variation_swatches_attribute_poststype = wopb_function()->get_setting( 'wopb_variation_swatches' ) == "true" && strpos($taxonomy, 'pa_') == 0;
+		if ( $taxonomy == 'pa_color' || $variation_swatches_attribute_poststype ) {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_script( 'wp-color-picker' );
 		}
