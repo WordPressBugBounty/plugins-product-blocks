@@ -167,7 +167,7 @@ defined( 'ABSPATH' ) || exit;
 
                             <td class="wopb-product-subtotal" data-title="<?php echo esc_html( $attr['subTotalHead'] ); ?>">
                                 <?php
-                                    echo apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal( $product, $args['cart_item']['quantity'] ), $args['cart_item'], $args['cart_item_key'] ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                                        echo WC()->cart->get_product_subtotal( $product, $args['cart_item']['quantity'] ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
                                 ?>
                                 <div class="wopb-cart-table-medium">
                                     <?php
