@@ -380,6 +380,54 @@ class Notice {
 				return ob_get_clean();
 
 				break;
+			case 'wow_store_summer_sale_countdown_notice':
+				//
+				// Will Get Free User
+				$url = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=db-wstore-global&utm_medium=summer-sale-countdown&utm_campaign=wstore-dashboard';
+				$this->wc_notice_css();
+				ob_start();
+				?>
+
+				<div class="wopb-pro-notice wopb-wc-install wopb-notice-wrapper notice">
+					<div class="wopb-install-body wopb-image-banner">
+						<a href="<?php echo esc_url( $close_url ); ?>" class="wopb-promotional-dismiss-notice">
+							<?php esc_html_e( 'Dismiss', 'product-blocks' ); ?>
+						</a>
+						<a href="<?php echo esc_url( $url ); ?>" target="_blank">
+							<img src="<?php echo WOPB_URL . 'assets/img/summer_sale_countdown.jpg'; ?>" alt="summer sale countdown">
+						</a>
+					</div>
+				</div>
+
+				<?php
+
+				return ob_get_clean();
+
+				break;
+			case 'wow_store_summer_sale_notice':
+				//
+				// Will Get Free User
+				$url = 'https://www.wpxpo.com/wowstore/pricing/?utm_source=db-wstore-global&utm_medium=summer-sale&utm_campaign=wstore-dashboard';
+				$this->wc_notice_css();
+				ob_start();
+				?>
+
+				<div class="wopb-pro-notice wopb-wc-install wopb-notice-wrapper notice">
+					<div class="wopb-install-body wopb-image-banner">
+						<a href="<?php echo esc_url( $close_url ); ?>" class="wopb-promotional-dismiss-notice">
+							<?php esc_html_e( 'Dismiss', 'product-blocks' ); ?>
+						</a>
+						<a href="<?php echo esc_url( $url ); ?>" target="_blank">
+							<img src="<?php echo WOPB_URL . 'assets/img/summer_sale_regular.jpg'; ?>" alt="summer sale ">
+						</a>
+					</div>
+				</div>
+
+				<?php
+
+				return ob_get_clean();
+
+				break;
 
 			default:
 				// code...
@@ -621,8 +669,32 @@ class Notice {
 				'design_type'               => 'wow_revenue_active_notice',
 				'repeat_notice_after'       => false, // Repeat after how many days.
 				'priority'                  => 30, // Notice Priority.
-				'display_with_other_notice' => false, // Display With Other Notice.
+				'display_with_other_notice' => true, // Display With Other Notice.
 				'show_if'                   => ( 'plugins.php' === $pagenow || 'index.php' === $pagenow ), // Notice Showing Conditions.
+				'capability'                => 'manage_options', // Capability of users, who can see the notice.
+			),
+			'wow_store_summer_sale_notice' => array(
+				'id'                        => 'wow_store_summer_sale_notice',
+				'type'                      => 'promotion',
+				'start'                     => '23-06-2025', // Start Date.
+				'end'                       => '05-07-2025', // End Date date('d-m-Y',strtotime($activate_date,strtotime('+7 day',$activate_date))).
+				'design_type'               => 'wow_store_summer_sale_notice',
+				'repeat_notice_after'       => false, // Repeat after how many days.
+				'priority'                  => 31, // Notice Priority.
+				'display_with_other_notice' => true, // Display With Other Notice.
+				'show_if'                   => !wopb_function()->get_setting( 'is_lc_active' ), // Notice Showing Conditions.
+				'capability'                => 'manage_options', // Capability of users, who can see the notice.
+			),
+			'wow_store_summer_sale_countdown_notice' => array(
+				'id'                        => 'wow_store_summer_sale_countdown_notice',
+				'type'                      => 'promotion',
+				'start'                     => '06-07-2025', // Start Date.
+				'end'                       => '09-07-2025', // End Date date('d-m-Y',strtotime($activate_date,strtotime('+7 day',$activate_date))).
+				'design_type'               => 'wow_store_summer_sale_countdown_notice',
+				'repeat_notice_after'       => false, // Repeat after how many days.
+				'priority'                  => 31, // Notice Priority.
+				'display_with_other_notice' => true, // Display With Other Notice.
+				'show_if'                   => !wopb_function()->get_setting( 'is_lc_active' ), // Notice Showing Conditions.
 				'capability'                => 'manage_options', // Capability of users, who can see the notice.
 			),
 		);
@@ -707,7 +779,7 @@ class Notice {
 			}
 
 			.wopb-wc-install img {
-				width: 120px !important;
+				/* width: 120px !important; */
 			}
 
 			.wopb-install-body {

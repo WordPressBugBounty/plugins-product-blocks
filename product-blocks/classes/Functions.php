@@ -859,6 +859,18 @@ class Functions{
            // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
            $query_args['post__not_in'] = isset($query_args['post__not_in']) ? array_merge($attr['post__not_in'], $query_args['post__not_in']) : $attr['post__not_in'];
        }
+
+        // Search Page Product Grid, List Result issue
+        $search_query_val = get_search_query();
+        if(is_search() && $attr['queryProductSort'] == 'product_search' && $search_query_val) {
+            $query_args['filter_search_key'] = $search_query_val;
+            add_filter( 'posts_join', array( wopb_function(), 'custom_post_join' ), 100, 2 );
+            add_filter( 'posts_where', [wopb_function(), 'custom_post_query'], 1000,2 );
+            add_filter('posts_distinct', function() {
+                return 'DISTINCT'; // duplicate data remove
+            });
+        }
+       
         $query_args['wpnonce'] = wp_create_nonce( 'wopb-nonce' );
 
         return apply_filters('wopb_query_args', $query_args);

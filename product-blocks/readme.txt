@@ -2,9 +2,9 @@
 Contributors: wpxpo, anik4e, jakirhasan
 Tags: woocommerce builder, woocommerce blocks, product filter, variation swatches, woocommerce compare
 Requires at least: 5.0
-Tested up to: 6.7
+Tested up to: 6.8.1
 Requires PHP: 7.0
-Stable tag: 4.2.7
+Stable tag: 4.2.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -218,6 +218,9 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.2.8 – 18 June 2025 = 
+* Fix: Product Block Query issue in Search Page
+
 = 4.2.7 – 28 May 2025 = 
 * Fix: Product Grid block image width issue  
 * Fix: Partial Payment subtotal price issue

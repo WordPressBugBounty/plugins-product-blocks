@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore 4.2.7\n"
+"Project-Id-Version: WowStore 4.2.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-05-27T08:39:18+00:00\n"
+"POT-Creation-Date: 2025-06-18T12:28:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: product-blocks\n"
@@ -1112,8 +1112,8 @@ msgstr ""
 
 #: addons/compare/Compare.php:897
 #: blocks/Product_Slider.php:356
-#: classes/Functions.php:3054
-#: classes/Functions.php:3056
+#: classes/Functions.php:3066
+#: classes/Functions.php:3068
 msgid "View Cart"
 msgstr ""
 
@@ -2606,11 +2606,11 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
-#: classes/Blocks.php:383
+#: classes/Blocks.php:385
 msgid "Username or Email is required."
 msgstr ""
 
-#: classes/Blocks.php:387
+#: classes/Blocks.php:389
 msgid "Password is required."
 msgstr ""
 
@@ -2786,24 +2786,24 @@ msgstr ""
 msgid "Seconds"
 msgstr ""
 
-#: classes/Functions.php:1220
+#: classes/Functions.php:1232
 #: assets/js/setup.wizard.js:1
 msgid "Next"
 msgstr ""
 
-#: classes/Functions.php:1221
+#: classes/Functions.php:1233
 msgid "Previous"
 msgstr ""
 
-#: classes/Functions.php:1608
+#: classes/Functions.php:1620
 msgid "Select Page"
 msgstr ""
 
-#: classes/Functions.php:1624
+#: classes/Functions.php:1636
 msgid "Select Location"
 msgstr ""
 
-#: classes/Functions.php:2579
+#: classes/Functions.php:2591
 msgid "- Select Template -"
 msgstr ""
 
@@ -2832,58 +2832,60 @@ msgid "My Account (WowStore)"
 msgstr ""
 
 #: classes/Notice.php:88
-#: classes/Notice.php:648
-#: classes/Notice.php:674
+#: classes/Notice.php:394
+#: classes/Notice.php:418
+#: classes/Notice.php:720
+#: classes/Notice.php:746
 msgid "Dismiss"
 msgstr ""
 
-#: classes/Notice.php:649
-#: classes/Notice.php:675
+#: classes/Notice.php:721
+#: classes/Notice.php:747
 msgid "Welcome to WowStore."
 msgstr ""
 
-#: classes/Notice.php:650
+#: classes/Notice.php:722
 msgid "WowStore is a WooCommerce-based plugin. So you need to installed & activate WooCommerce to start using WowStore."
 msgstr ""
 
-#: classes/Notice.php:651
+#: classes/Notice.php:723
 msgid "Install & Activate WooCommerce"
 msgstr ""
 
-#: classes/Notice.php:676
+#: classes/Notice.php:748
 msgid "WowStore is a WooCommerce-based plugin. So you need to installed and activated WooCommerce to start using WowStore."
 msgstr ""
 
-#: classes/Notice.php:677
+#: classes/Notice.php:749
 msgid "Activate WooCommerce"
 msgstr ""
 
-#: classes/Notice.php:1521
+#: classes/Notice.php:1593
 msgid "Introducing <span class=\"wopb-bold\">WholesaleX</span> - The Most Complete <span class=\"wopb-bold\">B2B Solution"
 msgstr ""
 
-#: classes/Notice.php:1529
+#: classes/Notice.php:1601
 msgid "Start wholesaling in your WooCommerce store and enjoy up to <span class=\"wopb-bold\">300% revenue</span>"
 msgstr ""
 
-#: classes/Notice.php:1532
+#: classes/Notice.php:1604
 msgid "Get WholesaleX"
 msgstr ""
 
-#: classes/Notice.php:1539
+#: classes/Notice.php:1611
 msgid "Installing WholesaleX"
 msgstr ""
 
-#: classes/Notice.php:1552
+#: classes/Notice.php:1624
 msgid "Installed"
 msgstr ""
 
-#: classes/Notice.php:1619
-#: classes/Notice.php:1677
+#: classes/Notice.php:1691
+#: classes/Notice.php:1749
 msgid "Successfully Installed and Activated"
 msgstr ""
 
-#: classes/Notice.php:1688
+#: classes/Notice.php:1760
 msgid "Woocommerce Plugin Installation Failed!"
 msgstr ""
 
@@ -4292,6 +4294,22 @@ msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Documentation"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Summer Sale Alert:"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Get "
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Up to 60% OFF "
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Grab Now"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1

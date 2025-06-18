@@ -87,8 +87,10 @@ class Blocks {
 	 * @return NULL
 	 */
     public function blocks() {
-        $request = isset( $_POST['action'] ) ? sanitize_text_field( $_POST['action'] ) : '';
-        $request_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $request = isset( $_POST['action'] ) ? sanitize_text_field( $_POST['action'] ) : ''; 
+        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+        $host_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        $request_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' ) . '://' . $host. $host_url;
         if (
             (
                 is_admin() &&
