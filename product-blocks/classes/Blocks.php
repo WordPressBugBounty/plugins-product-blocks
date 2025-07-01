@@ -217,10 +217,10 @@ class Blocks {
      * @return STRING
      * @since v.2.1.4
      */
-    public function block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params = [] ) {
+    public function block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params = [], $search = '' ){
         foreach ( $blocks as $key => $value ) {
             if ( $blockName == $value['blockName'] ) {
-                if ( $value['attrs']['blockId'] == $blockId ) {
+                if ($value['attrs']['blockId'] == $blockId ) {
                     $objName = str_replace( ' ','_', ucwords( join( ' ', explode( '-', explode( '/', $blockName )[1] ) ) ) );
                     $obj = '\WOPB\blocks\\' . $objName;
                     $newObj = new $obj();
@@ -228,6 +228,9 @@ class Blocks {
                     $value['attrs']['paged'] = $paged;
                     if ( $builder ) {
                         $value['attrs']['builder'] = $builder;
+                    }
+                    if($search && strlen($search)) {
+                        $value['attrs']['is_search'] = $search;
                     }
                     if ( $params['filterAttributes'] ) {
                         $attr = array_merge( $attr, $params['filterAttributes'] );
@@ -241,7 +244,7 @@ class Blocks {
                 }
             }
             if ( ! empty( $value['innerBlocks'] ) ) {
-                $this->block_return( $value['innerBlocks'], $paged, $blockId, $blockRaw, $blockName, $builder, $params );
+                $this->block_return( $value['innerBlocks'], $paged, $blockId, $blockRaw, $blockName, $builder, $params, $search );
             }
         }
     }
@@ -325,6 +328,8 @@ class Blocks {
         if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
             return ;
         }
+        
+        $isSearch   = isset( $_POST['isSearch']) ? sanitize_text_field( $_POST['isSearch'] ) : '';
 
         $paged      = isset( $_POST['paged'] ) ? sanitize_text_field( $_POST['paged'] ) : '';
         $blockId    = isset( $_POST['blockId'] ) ? sanitize_text_field( $_POST['blockId'] ) : '';
@@ -340,14 +345,16 @@ class Blocks {
         if ( isset( $_POST['filterAttributes'] ) ) {
             $params['filterAttributes'] = $_POST['filterAttributes'];
         }
+
+
         if ( $paged ) {
             $post = get_post( $postId );
             if ( $widgetBlockId ) {
                 $blocks = parse_blocks( get_option( 'widget_block' )[$widgetBlockId]['content'] );
-                $this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params );
+                $this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params, $isSearch );
             } elseif ( has_blocks( $post->post_content ) ) {
                 $blocks = parse_blocks( $post->post_content );
-                $this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params );
+                $this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params, $isSearch );
             }
         }
     }

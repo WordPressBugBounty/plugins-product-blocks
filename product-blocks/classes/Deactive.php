@@ -391,8 +391,8 @@ class Deactive {
 						type: 'POST',
 						data: { 
 							action: 'wopb_deactive_plugin',
-							cause_id: $('input[type=radio]:checked').attr('id'),
-							cause_title: $('.wopb-modal-input input[type=radio]:checked').val(),
+							cause_id: $('#wopb-deactive-modal input[type=radio]:checked').attr('id'),
+							cause_title: $('#wopb-deactive-modal .wopb-modal-input input[type=radio]:checked').val(),
 							cause_details: $('.wopb-reason-input.wopb-active').val(),
 						},
 						success: function (data) {

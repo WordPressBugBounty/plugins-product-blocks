@@ -358,7 +358,7 @@ class Product_Grid_3{
             wp_reset_query();
         }
 
-        if ( $noAjax && $attr['ajax_source'] == 'filter' ) {
+        if ( $noAjax && $attr['ajax_source'] == 'filter' || !($recent_posts->have_posts()) ) {
             if ( $post_loop === '' ) {
                 $wrapper_main_content .= '<span class="wopb-no-product-found">' . __('No products were found of your matching selection', 'product-blocks') . '</span>';
             }

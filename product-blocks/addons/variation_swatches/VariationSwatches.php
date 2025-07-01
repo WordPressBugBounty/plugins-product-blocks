@@ -412,6 +412,8 @@ class VariationSwatches
 		$options = $args['options'];
         $product = $args['product'];
         $attribute = $args['attribute'];
+        $get_variation_product = $product->get_available_variations();
+
         $terms = wc_get_product_terms($product->get_id(), $attribute, ['fields' => 'all']);
 
         $custom_style = "";
@@ -440,7 +442,7 @@ class VariationSwatches
                             $tooltip .= '<span class="wopb-variation-swatch-tooltip">' . ($term->description ? $term->description : $name) . '</span>';
                         }
 
-                        $variation_enable = self::variation_enable_check( $product, $term, $attribute, $taxonomy_attribute );
+                        $variation_enable = self::variation_enable_check( $get_variation_product, $term, $attribute, $taxonomy_attribute );
                         if(
                             ! empty( $variation_enable ) &&
                             $variation_enable['variation_check'] &&
@@ -450,6 +452,7 @@ class VariationSwatches
                         }
                         $data_variation_id = ! empty($variation_enable['variation_id']) ? $variation_enable['variation_id'] : '';
                         $variation_image = ! empty($variation_enable['variation_image']) ? $variation_enable['variation_image'] : '';
+                        
                         switch ($taxonomy_attribute->attribute_type) {
                             case self::COLOR:
                                 $bg_color = get_term_meta($term->term_id, $taxonomy_attribute->attribute_type, true);
@@ -528,7 +531,8 @@ class VariationSwatches
             foreach ( $options as $option ) {
                 $i++;
                 $term = get_term_by('slug', $option, $attribute);
-                $variation_enable = self::variation_enable_check( $product, $term ? $term : $option, $attribute );
+                $variation_enable = self::variation_enable_check( $get_variation_product, $term ? $term : $option, $attribute, [] );
+
                 if(
                     ! empty( $variation_enable ) &&
                     $variation_enable['variation_check'] &&
@@ -785,12 +789,12 @@ class VariationSwatches
      * @return array
      * @since v.3.1.13
      */
-    public function variation_enable_check( $product, $term, $attribute, $taxonomy_attribute = [] )
+    public function variation_enable_check( $get_variation_product = [], $term, $attribute, $taxonomy_attribute = [] )
     {
         $variation_check = true;
         $variation_id = '';
         $variation_image = '';
-        foreach ($product->get_available_variations() as $available_variation) {
+        foreach ($get_variation_product as $available_variation) {
             $variation = new \WC_Product_Variation( $available_variation['variation_id'] );
             if( isset( $available_variation['attributes']['attribute_' . strtolower($attribute)] ) ) {
                 $attr_name = $available_variation['attributes']['attribute_' . strtolower($attribute)];

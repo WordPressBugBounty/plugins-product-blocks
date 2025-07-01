@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore 4.2.8\n"
+"Project-Id-Version: WowStore 4.2.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-06-18T12:28:47+00:00\n"
+"POT-Creation-Date: 2025-07-01T06:47:54+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: product-blocks\n"
@@ -1112,8 +1112,8 @@ msgstr ""
 
 #: addons/compare/Compare.php:897
 #: blocks/Product_Slider.php:356
-#: classes/Functions.php:3066
-#: classes/Functions.php:3068
+#: classes/Functions.php:3074
+#: classes/Functions.php:3076
 msgid "View Cart"
 msgstr ""
 
@@ -2243,7 +2243,7 @@ msgstr ""
 msgid "Add new"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:701
+#: addons/variation_swatches/VariationSwatches.php:705
 msgid "Clear"
 msgstr ""
 
@@ -2606,11 +2606,11 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
-#: classes/Blocks.php:385
+#: classes/Blocks.php:392
 msgid "Username or Email is required."
 msgstr ""
 
-#: classes/Blocks.php:389
+#: classes/Blocks.php:396
 msgid "Password is required."
 msgstr ""
 
@@ -2786,24 +2786,24 @@ msgstr ""
 msgid "Seconds"
 msgstr ""
 
-#: classes/Functions.php:1232
+#: classes/Functions.php:1240
 #: assets/js/setup.wizard.js:1
 msgid "Next"
 msgstr ""
 
-#: classes/Functions.php:1233
+#: classes/Functions.php:1241
 msgid "Previous"
 msgstr ""
 
-#: classes/Functions.php:1620
+#: classes/Functions.php:1628
 msgid "Select Page"
 msgstr ""
 
-#: classes/Functions.php:1636
+#: classes/Functions.php:1644
 msgid "Select Location"
 msgstr ""
 
-#: classes/Functions.php:2591
+#: classes/Functions.php:2599
 msgid "- Select Template -"
 msgstr ""
 

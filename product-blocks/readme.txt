@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.8.1
 Requires PHP: 7.0
-Stable tag: 4.2.8
+Stable tag: 4.2.9
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -218,6 +218,10 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.2.9 – 1 july 2025 = 
+* Fix: Variation Swatches Addon optimized
+* Fix: WowStore Block pagination issue on the Search page.
+
 = 4.2.8 – 18 June 2025 = 
 * Fix: Product Block Query issue in Search Page
 

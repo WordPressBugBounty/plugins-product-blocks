@@ -449,11 +449,13 @@ class Functions{
                 'operator' => 'NOT IN',
             ]
         ];
+        
+        $wopb_search_builder = (isset($attr['is_search']) && $attr['is_search']);
 
         if (
             !$this->is_specific_archive_product($attr) &&
             $this->is_builder($builder) &&
-            ( is_archive() || is_search() || is_product_taxonomy() || is_product_tag() ) && !is_shop()
+            ( is_archive() || is_search() || is_product_taxonomy() || is_product_tag() || $wopb_search_builder ) && !is_shop()
         ) {
             if ($builder) {
                 $str = explode('###', $builder);
@@ -862,14 +864,20 @@ class Functions{
 
         // Search Page Product Grid, List Result issue
         $search_query_val = get_search_query();
-        if(is_search() && $attr['queryProductSort'] == 'product_search' && $search_query_val) {
+        if((is_search() || $wopb_search_builder) && $attr['queryProductSort'] == 'product_search' && $search_query_val) {
             $query_args['filter_search_key'] = $search_query_val;
+
             add_filter( 'posts_join', array( wopb_function(), 'custom_post_join' ), 100, 2 );
             add_filter( 'posts_where', [wopb_function(), 'custom_post_query'], 1000,2 );
             add_filter('posts_distinct', function() {
                 return 'DISTINCT'; // duplicate data remove
             });
         }
+
+        if((is_search() || $wopb_search_builder) && $attr['queryProductSort'] == 'product_search') {
+            $query_args['search_columns'] = [ 'post_title' ];
+        }
+
        
         $query_args['wpnonce'] = wp_create_nonce( 'wopb-nonce' );
 

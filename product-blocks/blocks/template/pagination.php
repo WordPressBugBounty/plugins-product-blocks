@@ -29,6 +29,6 @@ if(isset($query_vars['post__not_in'])) {
     $filter_attributes['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
 }
 $data_filter_attributes = " data-filter-attributes=" . wp_json_encode($filter_attributes);
-$wrapper_main_content .= '<div class="wopb-pagination-wrap'.($attr["paginationAjax"] ? " wopb-pagination-ajax-action" : "").'" data-paged="1" data-blockid="'.esc_attr($attr['blockId']).'" data-postid="'.esc_attr($page_post_id).'" data-pages="'.esc_attr($pageNum).'" data-blockname="product-blocks_'.esc_attr($block_name).'" '.wopb_function()->get_builder_attr() . $data_filter_attributes . '>';
+$wrapper_main_content .= '<div data-search-block="'.is_search().'" class="wopb-pagination-wrap'.($attr["paginationAjax"] ? " wopb-pagination-ajax-action" : "").'" data-paged="1" data-blockid="'.esc_attr($attr['blockId']).'" data-postid="'.esc_attr($page_post_id).'" data-pages="'.esc_attr($pageNum).'" data-blockname="product-blocks_'.esc_attr($block_name).'" '.wopb_function()->get_builder_attr() . $data_filter_attributes . '>';
     $wrapper_main_content .= wopb_function()->pagination($pageNum, $attr['paginationNav'], $attr['paginationText'], $attr);
 $wrapper_main_content .= '</div>';
