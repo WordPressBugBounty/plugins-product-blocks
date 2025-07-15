@@ -7,6 +7,8 @@
  */
 
 namespace WOPB;
+
+use WOPB\Includes\Durbin\Xpo;
 use WOPB_PRO\Currency_Switcher_Action;
 
 defined('ABSPATH') || exit;
@@ -30,7 +32,15 @@ class Functions{
 	 */
     public function __construct(){
         $GLOBALS['wopb_settings']['is_wc_ready'] = $this->is_wc_ready();
-        $GLOBALS['wopb_settings']['is_lc_active'] = $this->is_lc_active();
+        $GLOBALS['wopb_settings']['is_lc_active'] = $this->global_is_lc_active();
+    }
+
+    public function global_is_lc_active() {
+        if ( defined( 'WOPB_PRO_VER' ) ) {
+			$license_data = get_option( 'edd_wopb_license_data', array() );
+			return isset( $license_data['license'] ) && 'valid' === $license_data['license'];
+		}
+		return false;
     }
 
     /**
@@ -119,44 +129,12 @@ class Functions{
 	 * @return STRING | Premium Link With Parameters
 	 */
     public function get_premium_link( $url = '', $tag = 'go_premium' ) {
-        $url_list = array(
-            
-            //productx dashboard menu
-            
-            'menu_saved_template_go_pro' => array(
-                'utm_source' => 'wowstore-ghost',
-                'utm_medium' => 'ST-upgrade_to_pro',
-                'utm_campaign' => 'wowstore-dashboard'
-            ),
-            'menu_WB_go_pro' => array(
-                'utm_source' => 'wowstore-ghost',
-                'utm_medium' => 'WB-upgrade_to_pro',
-                'utm_campaign' => 'wowstore-dashboard'
-            ),
-            
-            //productx main menu
-            'main_menu_go_pro' => array(
-                'utm_source' => 'db-wstore-plugin',
-                'utm_medium' => 'left-menu-upgrade',
-                'utm_campaign' => 'wstore-dashboard'
-            ),
-
-            //Wordpress plugin list
-            'plugin_list_productx_go_pro' => array(
-                'utm_source' => 'db-wstore-plugin',
-                'utm_medium' => 'upgrade',
-                'utm_campaign' => 'wstore-dashboard'
-            ),
+        return Xpo::generate_utm_link(
+            array(
+                'utmKey' => $tag,
+                'url' => $url,
+            )
         );
-
-        $url = $url ? $url : 'https://www.wpxpo.com/wowstore/pricing/';
-        $arg = array();
-        if($tag && isset($url_list[$tag])){
-            $arg = $url_list[$tag];
-        } else {
-            $arg = array( 'utm_source' => $tag );
-        }
-        return add_query_arg( $arg, $url );
     }
 
     /**
@@ -1610,10 +1588,7 @@ class Functions{
 	 * @return BOOLEAN | Is pro license active or not
 	 */
     public function is_lc_active() {
-        if ($this->isPro()) {
-            return get_option('edd_wopb_license_status') == 'valid' ? true : false;
-        }
-        return false;
+        return Xpo::is_lc_active();
     }
 
 

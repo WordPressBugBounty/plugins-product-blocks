@@ -279,10 +279,6 @@ class Dashboard {
                     }
                 break;
 
-                case 'license_action':
-                   return $this->license_save_action($post);
-                break;
-
                 case 'action_delete':
                     if (isset($post['ids']) && is_array($post['ids'])) {
                         foreach ($post['ids'] as $id) {
@@ -498,8 +494,6 @@ class Dashboard {
                         $message = __('Your license key has been updated.', 'product-blocks');
                         $is_success = true;
                     }
-                    update_option( 'edd_wopb_license_status', $license_data->license );
-                    update_option( 'edd_wopb_license_expire', $license_data->expires );
                     update_option( 'edd_wopb_license_limit', $license_data->license_limit );
                     update_option( 'edd_wopb_license_activations_left', $license_data->activations_left );
                     update_option( 'edd_wopb_license_price_id', $license_data->price_id );

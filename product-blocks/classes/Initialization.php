@@ -7,6 +7,8 @@
  */
 namespace WOPB;
 
+use WOPB\Includes\Durbin\Xpo;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -236,33 +238,29 @@ class Initialization {
 
 		/* === Dashboard === */
 		if ( $_page == 'wopb-settings' ) {
-			$query_args = array(
-				'posts_per_page' => 3,
-				'post_type'      => 'product',
-				'post_status'    => 'publish',
-			);
+			$user_info = get_userdata( get_current_user_id() );
 			wp_enqueue_script( 'wopb-dashboard-script', WOPB_URL . 'assets/js/wopb_dashboard_min.js', array( 'wp-i18n', 'wp-api-fetch', 'wp-api-request', 'wp-components', 'wp-blocks' ), WOPB_VER, true );
 			wp_localize_script(
 				'wopb-dashboard-script',
 				'wopb_dashboard_pannel',
-				array(
+				array_merge(array(
 					'url'               => WOPB_URL,
+					'ajax'              => admin_url( 'admin-ajax.php' ),
+					'security'          => wp_create_nonce( 'wopb-nonce' ),
 					'active'            => $is_active,
-					'license'           => $license_key,
+					'license'           => Xpo::get_lc_key(),
 					'settings'          => wopb_function()->get_setting(),
 					'addons'            => apply_filters( 'wopb_addons_config', array() ),
 					'addons_settings'   => apply_filters( 'wopb_settings', array() ),
 					'version'           => WOPB_VER,
 					'setup_wizard_link' => admin_url( 'admin.php?page=wopb-initial-setup-wizard' ),
-					'helloBar'          => get_transient( 'wopb_helloBar' ),
-					'status'            => get_option( 'edd_wopb_license_status' ),
-					'expire'            => get_option( 'edd_wopb_license_expire' ),
-					'products'          => wopb_function()->get_setting( 'is_wc_ready' ) ? wopb_function()->product_format(
-						array(
-							'products' => new \WP_Query( $query_args ),
-							'size'     => 'medium',
-						)
-					) : array(),
+					'helloBar'          => Xpo::handle_hellobar_action('get'),
+					'userInfo'          => array(
+						'name'  => $user_info->first_name ? $user_info->first_name . ( $user_info->last_name ? ' ' . $user_info->last_name : '' ) : $user_info->user_login,
+						'email' => $user_info->user_email,
+					),
+				),
+					Xpo::get_wow_products_details()
 				)
 			);
 			wp_set_script_translations( 'wopb-dashboard-script', 'product-blocks', WOPB_PATH . 'languages/' );
@@ -387,27 +385,32 @@ class Initialization {
 	public function requires() {
 		require_once WOPB_PATH . 'classes/Dashboard.php';
 		require_once WOPB_PATH . 'classes/Options.php';
-		require_once WOPB_PATH . 'classes/Notice.php';
 		require_once WOPB_PATH . 'classes/ProPlugins.php';
 		require_once WOPB_PATH . 'classes/SetupWizard.php';
 		new \WOPB\Dashboard();
 		new \WOPB\Options();
-		new \WOPB\Notice();
 		new \WOPB\ProPlugins();
 		new \WOPB\SetupWizard();
+		
+		require_once WOPB_PATH . 'includes/durbin/class-deactive.php';
+		require_once WOPB_PATH . 'includes/durbin/class-durbin-client.php';
+		require_once WOPB_PATH . 'includes/durbin/class-xpo.php';
+		require_once WOPB_PATH . 'includes/notice/class-notice.php';
+		require_once WOPB_PATH . 'includes/durbin/class-our-plugins.php';
+		new \WOPB\Includes\Durbin\Deactive();
+		new \WOPB\Includes\Notice\Notice();
+		new \WOPB\Includes\Durbin\OurPlugins();
 
 		if ( wopb_function()->get_setting( 'is_wc_ready' ) ) {
 			require_once WOPB_PATH . 'classes/REST_API.php';
 			require_once WOPB_PATH . 'classes/Blocks.php';
 			require_once WOPB_PATH . 'classes/Styles.php';
 			require_once WOPB_PATH . 'classes/Caches.php';
-			require_once WOPB_PATH . 'classes/Deactive.php';
 			require_once WOPB_PATH . 'classes/WooHooks.php';
 			new \WOPB\REST_API();
 			new \WOPB\Styles();
 			new \WOPB\Blocks();
 			new \WOPB\Caches();
-			new \WOPB\Deactive();
 			new \WOPB\WooHooks();
 		}
 	}

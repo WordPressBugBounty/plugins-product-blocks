@@ -7,6 +7,8 @@
  */
 namespace WOPB;
 
+use WOPB\Includes\Durbin\Xpo;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -70,43 +72,20 @@ class Options{
      * @return NULL
      */
     public function plugin_action_links_callback( $links ) {
-        $upgrade_link = array();
-        $setting_link = array();
-        if ( ! wopb_function()->isPro() ) {
-            $upgrade_link = array(
-                'wopb_pro' => '<a href="'.esc_url( wopb_function()->get_premium_link( '', 'plugin_list_productx_go_pro' ) ) . '" target="_blank"><span style="color: #c51173; font-weight: bold;">' . esc_html__( 'Upgrade to Pro', 'product-blocks' ) . '</span></a>'
-            );
-
-            $notice = [];
-            /*
-            // If you want to apply discount for lifetime users and other users
-            $discount = 50;
-            $license_expire = get_option( 'edd_wopb_license_expire' );
-            if (
-                wopb_function()->get_setting( 'is_lc_active' ) 
-                && (
-                    ( $license_expire == 'lifetime' && get_option( 'edd_wopb_license_activations_left' ) != 'unlimitedss' )
-                    || $license_expire != 'lifetime' 
-                )
-            ) {
-                $discount = 55;
-            }
-            $notice =  array(
-                'start' => '12-2-2023', // Date format "d-m-Y" [08-02-2019]
-                'end' => '22-07-2024',
-                'content' => 'Upgrade ' . $discount . '% off Sale!'
-            );
-            */
-            if ( count( $notice ) > 0 ) {
-                $current_time = gmdate( 'U' );
-                if ( $current_time > strtotime( $notice['start'] ) && $current_time < strtotime( $notice['end'] ) ) {
-                    $upgrade_link['wopb_pro'] = '<a href="'.esc_url( wopb_function()->get_premium_link( '', 'plugin_dir_pro' ) ).'" target="_blank"><span style="color: #e83838; font-weight: bold;">'.$notice['content'].'</span></a>';
-                }
-            }
-        }
-
+        $setting_link                 = array();
         $setting_link['wopb_settings'] = '<a href="' . esc_url( admin_url( 'admin.php?page=wopb-settings#settings' ) ) .'">'. esc_html__( 'Settings', 'product-blocks' ) .'</a>';
-        return array_merge( $setting_link, $links, $upgrade_link );
+		$upgrade_link                 = array();
+		if ( ! defined( 'WOPB_PRO_VER' ) || Xpo::is_lc_expired() ) {
+			$url = ! defined( 'WOPB_PRO_VER' ) ? Xpo::generate_utm_link(
+				array(
+					'utmKey' => 'plugin_dir_pro',
+				)
+			) : 'https://account.wpxpo.com/checkout/?edd_license_key=' . Xpo::get_lc_key();
+
+			$text                     = ! defined( 'WOPB_PRO_VER' ) ? esc_html__( 'Upgrade to Pro', 'product-blocks' ) : esc_html__( 'Renew License', 'product-blocks' );
+			$upgrade_link['wopb_pro'] = '<a style="color: #e83838; font-weight: bold;" target="_blank" href="' . esc_url( $url ) . '">' . $text . '</a>';
+		}
+		return array_merge( $setting_link, $links, $upgrade_link );
     }
 
 
@@ -150,10 +129,13 @@ class Options{
             array(
                 'revenue'           => __( 'Revenue', 'product-blocks' ) . '<span class="wopb-revenue-tag">New</span>',
                 'settings'          => __( 'Settings', 'product-blocks' ),
-                'license'           => __( 'License', 'product-blocks' ),
                 'support'           => __( 'Quick Support', 'product-blocks' )
             )
         );
+
+        if ( defined('WOPB_PRO_VER')) {
+            $menu_lists['license']           = __( 'License', 'product-blocks' );
+        }
 
         foreach ( $menu_lists as $key => $val ) {
             add_submenu_page(
@@ -167,17 +149,44 @@ class Options{
         }
 
         do_action( 'wowstore_menu' );
-        
-        if ( ! wopb_function()->isPro() ) {
-            add_submenu_page(
-                'wopb-settings',
-                '',
-                '<span class="dashicons dashicons-star-filled" style="font-size: 17px"></span> ' . esc_html__( 'Upgrade to Pro', 'product-blocks' ),
-                'manage_options',
-                'go_productx_pro',
-                array( self::class, 'handle_external_redirects' )
-            );
-        }
+
+        $pro_link      = '';
+		$pro_link_text = '';
+		if ( ! Xpo::is_lc_active() ) {
+			$pro_link      = Xpo::generate_utm_link(
+				array(
+					'utmKey' => 'sub_menu',
+				)
+			);
+			$pro_link_text = __( 'Upgrade to Pro', 'product-blocks' );
+		} elseif ( Xpo::is_lc_expired() ) {
+			$license_key   = Xpo::get_lc_key();
+			$pro_link      = 'https://account.wpxpo.com/checkout/?edd_license_key=' . $license_key;
+			$pro_link_text = __( 'Renew License', 'product-blocks' );
+		}
+
+		if ( ! empty( $pro_link ) ) {
+			ob_start();
+			?>
+				<a href="<?php echo esc_url( $pro_link ); ?>" target="_blank" class="wopb-go-pro">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M2.86 6.553a.5.5 0 01.823-.482l3.02 2.745c.196.178.506.13.64-.098L9.64 4.779a.417.417 0 01.72 0l2.297 3.939a.417.417 0 00.64.098l3.02-2.745a.5.5 0 01.823.482l-1.99 8.63a.833.833 0 01-.813.646H5.663a.833.833 0 01-.812-.646L2.86 6.553z" stroke="currentColor" stroke-width="1.5"></path>
+					</svg>
+					<span><?php echo esc_html( $pro_link_text ); ?></span>
+				</a>
+			<?php
+			$submenu_content = ob_get_clean();
+
+			add_submenu_page(
+				'wopb-settings',
+				'',
+				$submenu_content,
+				'manage_options',
+				'wopb-pro',
+				array( self::class, 'handle_external_redirects' )
+			);
+
+		}
     }
 
 
@@ -185,7 +194,7 @@ class Options{
         if ( empty( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
             return;
         }
-        if ( wopb_function()->get_screen() === 'go_productx_pro' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if ( wopb_function()->get_screen() === 'wopb-pro' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
             wp_redirect( wopb_function()->get_premium_link( '', 'main_menu_go_pro' ) ); //phpcs:ignore
             die();
         }

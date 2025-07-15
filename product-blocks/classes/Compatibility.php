@@ -20,7 +20,7 @@ class Compatibility {
 	 * @since v.1.1.0
 	 */
     public function __construct() {
-        add_action( 'upgrader_process_complete', array( $this, 'plugin_upgrade_completed' ), 10, 2 );
+        // add_action( 'upgrader_process_complete', array( $this, 'plugin_upgrade_completed' ), 10, 2 );
     }
 
     /**

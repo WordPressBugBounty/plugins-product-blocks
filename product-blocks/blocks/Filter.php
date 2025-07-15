@@ -1,6 +1,8 @@
 <?php
 namespace WOPB\blocks;
 
+use WOPB\Includes\Durbin\Xpo;
+
 defined('ABSPATH') || exit;
 
 class Filter {
@@ -61,14 +63,14 @@ class Filter {
     public function content($attr) {
         $attr = wp_parse_args( $attr, $this->get_attributes() );
 
-        $is_active = wopb_function()->get_setting( 'is_lc_active' );
-        if ( ! $is_active ) { // Expire Date Check
-            $start_date = get_option( 'edd_wopb_license_expire' );
-            $is_active = ( $start_date && ( $start_date == 'lifetime' || strtotime( $start_date ) ) ) ? true : false;
+        $is_visible = true; 
+        if(isset($attr['blockPubDate']) && $attr['blockPubDate'] != 'empty') {
+            $is_visible = Xpo::is_pro_feature_visible($attr['blockPubDate']);
         }
+        $is_active = Xpo::is_lc_active(); 
 
         $page_post_id =  ! empty($attr['currentPostId']) ? $attr['currentPostId'] : wopb_function()->get_ID();
-        if ( $is_active && $post = get_post($page_post_id) ) {
+        if ( ( $is_active || $is_visible ) && $post = get_post($page_post_id) ) {
             $is_mobile = wp_is_mobile();
             $html = $wraper_before = '';
             $block_name = 'filter';

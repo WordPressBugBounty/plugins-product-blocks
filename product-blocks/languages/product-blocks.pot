@@ -2,22 +2,22 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore 4.2.9\n"
+"Project-Id-Version: WowStore 4.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-01T06:47:54+00:00\n"
+"POT-Creation-Date: 2025-07-15T02:50:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: product-blocks\n"
 
 #. Plugin Name of the plugin
 #: product-blocks.php
-#: classes/Options.php:122
-#: classes/Options.php:123
+#: classes/Options.php:101
+#: classes/Options.php:102
 #: assets/js/setup.wizard.js:1
 msgid "WowStore"
 msgstr ""
@@ -247,7 +247,7 @@ msgid "You must be logged in to checkout."
 msgstr ""
 
 #: addons/builder/backend.php:7
-#: classes/Options.php:138
+#: classes/Options.php:117
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Woo Builder"
 msgstr ""
@@ -452,8 +452,8 @@ msgstr ""
 #: addons/sales_notification/backend.php:41
 #: addons/variation_swatches/backend.php:44
 #: addons/wishlist/backend.php:41
-#: classes/Options.php:108
-#: classes/Options.php:152
+#: classes/Options.php:76
+#: classes/Options.php:131
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Settings"
 msgstr ""
@@ -1076,7 +1076,7 @@ msgid "Compare Products"
 msgstr ""
 
 #: addons/compare/Compare.php:622
-#: blocks/Filter.php:450
+#: blocks/Filter.php:452
 msgid "Clear All"
 msgstr ""
 
@@ -1112,8 +1112,8 @@ msgstr ""
 
 #: addons/compare/Compare.php:897
 #: blocks/Product_Slider.php:356
-#: classes/Functions.php:3074
-#: classes/Functions.php:3076
+#: classes/Functions.php:3049
+#: classes/Functions.php:3051
 msgid "View Cart"
 msgstr ""
 
@@ -1142,7 +1142,7 @@ msgid "- Select -"
 msgstr ""
 
 #: addons/custom_font/backend.php:11
-#: classes/Options.php:142
+#: classes/Options.php:121
 msgid "Custom Font"
 msgstr ""
 
@@ -1374,7 +1374,7 @@ msgstr ""
 
 #: addons/elementor/Elementor_Widget.php:33
 #: addons/templates/backend.php:11
-#: classes/Options.php:141
+#: classes/Options.php:120
 msgid "Saved Template"
 msgstr ""
 
@@ -2423,23 +2423,23 @@ msgstr ""
 msgid "Wishlist Not Added."
 msgstr ""
 
-#: blocks/Filter.php:134
+#: blocks/Filter.php:136
 msgid "Filter"
 msgstr ""
 
-#: blocks/Filter.php:460
+#: blocks/Filter.php:462
 msgid "Search Products"
 msgstr ""
 
-#: blocks/Filter.php:529
+#: blocks/Filter.php:531
 msgid "Taxonomy Relation"
 msgstr ""
 
-#: blocks/Filter.php:573
+#: blocks/Filter.php:575
 msgid "Show More"
 msgstr ""
 
-#: blocks/Filter.php:580
+#: blocks/Filter.php:582
 msgid "Show Less"
 msgstr ""
 
@@ -2450,7 +2450,7 @@ msgstr ""
 
 #: blocks/Product_Category_1.php:128
 #: blocks/Product_Category_2.php:101
-#: blocks/Product_Category_3.php:194
+#: blocks/Product_Category_3.php:196
 msgid "Read More"
 msgstr ""
 
@@ -2474,20 +2474,20 @@ msgstr ""
 msgid "No products were found of your matching selection"
 msgstr ""
 
-#: blocks/Product_Search.php:126
-#: blocks/Product_Search.php:142
+#: blocks/Product_Search.php:128
+#: blocks/Product_Search.php:144
 msgid "All Categories"
 msgstr ""
 
-#: blocks/Product_Search.php:261
+#: blocks/Product_Search.php:263
 msgid "No Result Found"
 msgstr ""
 
-#: blocks/Product_Search.php:318
+#: blocks/Product_Search.php:320
 msgid "More results.."
 msgstr ""
 
-#: blocks/Product_Search.php:321
+#: blocks/Product_Search.php:323
 msgid "Less results"
 msgstr ""
 
@@ -2650,301 +2650,186 @@ msgstr ""
 msgid "Status changed for selected items."
 msgstr ""
 
-#: classes/Dashboard.php:294
+#: classes/Dashboard.php:290
 msgid "The selected item is deleted."
 msgstr ""
 
-#: classes/Dashboard.php:328
+#: classes/Dashboard.php:324
 msgid "New Support Ticket has been Created."
 msgstr ""
 
-#: classes/Dashboard.php:328
+#: classes/Dashboard.php:324
 msgid "New Support Ticket is not Created Due to Some Issues."
 msgstr ""
 
-#: classes/Dashboard.php:336
+#: classes/Dashboard.php:332
 msgid "Notice is removed."
 msgstr ""
 
-#: classes/Dashboard.php:464
-#: classes/Dashboard.php:494
+#: classes/Dashboard.php:460
+#: classes/Dashboard.php:490
 msgid "An error occurred, please try again."
 msgstr ""
 
 #. translators: %s: is date
-#: classes/Dashboard.php:473
+#: classes/Dashboard.php:469
 msgid "Your license key expired on %s."
 msgstr ""
 
-#: classes/Dashboard.php:478
+#: classes/Dashboard.php:474
 msgid "Your license key has been disabled."
 msgstr ""
 
-#: classes/Dashboard.php:481
-#: classes/Dashboard.php:510
-#: classes/Dashboard.php:513
+#: classes/Dashboard.php:477
+#: classes/Dashboard.php:504
+#: classes/Dashboard.php:507
 msgid "Invalid license."
 msgstr ""
 
-#: classes/Dashboard.php:485
+#: classes/Dashboard.php:481
 msgid "Your license is not active for this URL."
 msgstr ""
 
-#: classes/Dashboard.php:488
+#: classes/Dashboard.php:484
 msgid "This appears to be an invalid license key."
 msgstr ""
 
-#: classes/Dashboard.php:491
+#: classes/Dashboard.php:487
 msgid "Your license key has reached its activation limit."
 msgstr ""
 
-#: classes/Dashboard.php:498
+#: classes/Dashboard.php:494
 msgid "Your license key has been updated."
 msgstr ""
 
-#: classes/Dashboard.php:516
+#: classes/Dashboard.php:510
 msgid "Install & Acivate WowStore Pro plugin."
 msgstr ""
 
-#: classes/Deactive.php:62
-msgid "Want to help make <strong style=\"padding:0 5px;\"> %1$s </strong> even more awesome? Allow %1$s to collect <a style=\"padding:0 5px;\" href=\"https://www.wpxpo.com/data-collection-policy/\" target=\"_blank\">non-sensitive</a> diagnostic data and usage information."
-msgstr ""
-
-#: classes/Deactive.php:63
-msgid "Allow"
-msgstr ""
-
-#: classes/Deactive.php:64
-msgid "No Thanks"
-msgstr ""
-
-#: classes/Deactive.php:118
-msgid "I no longer need the plugin."
-msgstr ""
-
-#: classes/Deactive.php:123
-msgid "I found a better plugin."
-msgstr ""
-
-#: classes/Deactive.php:124
-msgid "Please share which plugin."
-msgstr ""
-
-#: classes/Deactive.php:129
-msgid "The plugin suddenly stopped working."
-msgstr ""
-
-#: classes/Deactive.php:130
-msgid "Please share more details."
-msgstr ""
-
-#: classes/Deactive.php:135
-msgid "I could not get the plugin to work."
-msgstr ""
-
-#: classes/Deactive.php:140
-msgid "It's a temporary deactivation."
-msgstr ""
-
-#: classes/Deactive.php:145
-msgid "Other."
-msgstr ""
-
-#: classes/Deactive.php:146
-msgid "Please share the reason."
-msgstr ""
-
-#: classes/Deactive.php:169
-msgid "Quick Feedback"
-msgstr ""
-
-#: classes/Deactive.php:174
-msgid "If you have a moment, please let us know why you are deactivating WowStore:"
-msgstr ""
-
-#: classes/Deactive.php:191
-msgid "Submit & Deactivate"
-msgstr ""
-
-#: classes/Deactive.php:192
-msgid "Skip & Deactivate"
-msgstr ""
-
-#: classes/Functions.php:94
+#: classes/Functions.php:104
 msgid "Days"
 msgstr ""
 
-#: classes/Functions.php:98
+#: classes/Functions.php:108
 msgid "Hours"
 msgstr ""
 
-#: classes/Functions.php:102
+#: classes/Functions.php:112
 msgid "Minutes"
 msgstr ""
 
-#: classes/Functions.php:106
+#: classes/Functions.php:116
 msgid "Seconds"
 msgstr ""
 
-#: classes/Functions.php:1240
+#: classes/Functions.php:1218
 #: assets/js/setup.wizard.js:1
 msgid "Next"
 msgstr ""
 
-#: classes/Functions.php:1241
+#: classes/Functions.php:1219
 msgid "Previous"
 msgstr ""
 
-#: classes/Functions.php:1628
+#: classes/Functions.php:1603
 msgid "Select Page"
 msgstr ""
 
-#: classes/Functions.php:1644
+#: classes/Functions.php:1619
 msgid "Select Location"
 msgstr ""
 
-#: classes/Functions.php:2599
+#: classes/Functions.php:2574
 msgid "- Select Template -"
 msgstr ""
 
-#: classes/Initialization.php:425
+#: classes/Initialization.php:428
 msgid "WooCommerce Blocks (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:429
+#: classes/Initialization.php:432
 msgid "Single Product (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:433
+#: classes/Initialization.php:436
 msgid "Cart (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:437
+#: classes/Initialization.php:440
 msgid "Checkout (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:441
+#: classes/Initialization.php:444
 msgid "Thank You (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:445
+#: classes/Initialization.php:448
 msgid "My Account (WowStore)"
 msgstr ""
 
-#: classes/Notice.php:88
-#: classes/Notice.php:394
-#: classes/Notice.php:418
-#: classes/Notice.php:720
-#: classes/Notice.php:746
-msgid "Dismiss"
-msgstr ""
-
-#: classes/Notice.php:721
-#: classes/Notice.php:747
-msgid "Welcome to WowStore."
-msgstr ""
-
-#: classes/Notice.php:722
-msgid "WowStore is a WooCommerce-based plugin. So you need to installed & activate WooCommerce to start using WowStore."
-msgstr ""
-
-#: classes/Notice.php:723
-msgid "Install & Activate WooCommerce"
-msgstr ""
-
-#: classes/Notice.php:748
-msgid "WowStore is a WooCommerce-based plugin. So you need to installed and activated WooCommerce to start using WowStore."
-msgstr ""
-
-#: classes/Notice.php:749
-msgid "Activate WooCommerce"
-msgstr ""
-
-#: classes/Notice.php:1593
-msgid "Introducing <span class=\"wopb-bold\">WholesaleX</span> - The Most Complete <span class=\"wopb-bold\">B2B Solution"
-msgstr ""
-
-#: classes/Notice.php:1601
-msgid "Start wholesaling in your WooCommerce store and enjoy up to <span class=\"wopb-bold\">300% revenue</span>"
-msgstr ""
-
-#: classes/Notice.php:1604
-msgid "Get WholesaleX"
-msgstr ""
-
-#: classes/Notice.php:1611
-msgid "Installing WholesaleX"
-msgstr ""
-
-#: classes/Notice.php:1624
-msgid "Installed"
-msgstr ""
-
-#: classes/Notice.php:1691
-#: classes/Notice.php:1749
-msgid "Successfully Installed and Activated"
-msgstr ""
-
-#: classes/Notice.php:1760
-msgid "Woocommerce Plugin Installation Failed!"
-msgstr ""
-
-#: classes/Options.php:56
+#: classes/Options.php:58
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Docs"
 msgstr ""
 
-#: classes/Options.php:57
+#: classes/Options.php:59
 msgid "Tutorials"
 msgstr ""
 
-#: classes/Options.php:58
+#: classes/Options.php:60
 msgid "Support"
 msgstr ""
 
-#: classes/Options.php:77
-#: classes/Options.php:175
+#: classes/Options.php:85
+#: classes/Options.php:161
+#: includes/notice/class-notice.php:318
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: classes/Options.php:132
+#: classes/Options.php:85
+#: classes/Options.php:165
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Renew License"
+msgstr ""
+
+#: classes/Options.php:111
 msgid "WowStore Dashboard"
 msgstr ""
 
-#: classes/Options.php:133
+#: classes/Options.php:112
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Addons"
 msgstr ""
 
-#: classes/Options.php:139
+#: classes/Options.php:118
 msgid "Template Kits"
 msgstr ""
 
-#: classes/Options.php:140
+#: classes/Options.php:119
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Blocks"
 msgstr ""
 
-#: classes/Options.php:146
+#: classes/Options.php:125
 #: classes/ProPlugins.php:100
 msgid "Size Chart"
 msgstr ""
 
-#: classes/Options.php:151
+#: classes/Options.php:130
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Revenue"
 msgstr ""
 
-#: classes/Options.php:153
-msgid "License"
-msgstr ""
-
-#: classes/Options.php:154
+#: classes/Options.php:132
 msgid "Quick Support"
 msgstr ""
 
-#: classes/Options.php:224
+#: classes/Options.php:137
+msgid "License"
+msgstr ""
+
+#: classes/Options.php:233
 msgid "Enable Product Single Builder"
 msgstr ""
 
@@ -3034,8 +2919,8 @@ msgstr ""
 msgid "Make the Add to Cart Button Sticky on the top or bottom while shoppers scroll the product pages."
 msgstr ""
 
-#: classes/SetupWizard.php:59
-#: classes/SetupWizard.php:60
+#: classes/SetupWizard.php:55
+#: classes/SetupWizard.php:56
 msgid "Setup Wizard"
 msgstr ""
 
@@ -3065,6 +2950,115 @@ msgstr ""
 
 #: classes/Templates.php:52
 msgid "WowStore Template (Without Title)"
+msgstr ""
+
+#: includes/durbin/class-deactive.php:62
+msgid "The plugin isn’t working properly."
+msgstr ""
+
+#: includes/durbin/class-deactive.php:67
+msgid "Limited features on the free version."
+msgstr ""
+
+#: includes/durbin/class-deactive.php:72
+msgid "I found a better plugin."
+msgstr ""
+
+#: includes/durbin/class-deactive.php:73
+msgid "Please share which plugin."
+msgstr ""
+
+#: includes/durbin/class-deactive.php:78
+msgid "It's a temporary deactivation."
+msgstr ""
+
+#: includes/durbin/class-deactive.php:83
+msgid "Other."
+msgstr ""
+
+#: includes/durbin/class-deactive.php:84
+msgid "Please share the reason."
+msgstr ""
+
+#: includes/durbin/class-deactive.php:100
+msgid "Quick Feedback"
+msgstr ""
+
+#: includes/durbin/class-deactive.php:105
+msgid "If you have a moment, please let us know why you are deactivating WowStore:"
+msgstr ""
+
+#: includes/durbin/class-deactive.php:122
+msgid "Submit & Deactivate"
+msgstr ""
+
+#: includes/durbin/class-deactive.php:123
+msgid "Skip & Deactivate"
+msgstr ""
+
+#: includes/notice/class-notice.php:95
+msgid "Hello Bar Action performed"
+msgstr ""
+
+#: includes/notice/class-notice.php:227
+msgid "Dismiss"
+msgstr ""
+
+#: includes/notice/class-notice.php:307
+msgid "Black Friday Deal Alert:"
+msgstr ""
+
+#. translators: %s: Discount percentage
+#: includes/notice/class-notice.php:311
+msgid "WowStore on Sale - Enjoy %s on the powerful site builder."
+msgstr ""
+
+#: includes/notice/class-notice.php:312
+msgid "up to 55% OFF"
+msgstr ""
+
+#: includes/notice/class-notice.php:329
+msgid "I don’t want to save money"
+msgstr ""
+
+#: includes/notice/class-notice.php:833
+msgid "Want to help make WowStore even more awesome?"
+msgstr ""
+
+#: includes/notice/class-notice.php:835
+msgid "Allow us to collect diagnostic data and usage information. see "
+msgstr ""
+
+#: includes/notice/class-notice.php:836
+msgid "what we collect."
+msgstr ""
+
+#: includes/notice/class-notice.php:853
+msgid "Accept & Close"
+msgstr ""
+
+#: includes/notice/class-notice.php:901
+msgid "Welcome to WowStore."
+msgstr ""
+
+#: includes/notice/class-notice.php:902
+msgid "WowStore is a WooCommerce-based plugin. So you need to installed & activate WooCommerce to start using WowStore."
+msgstr ""
+
+#: includes/notice/class-notice.php:904
+msgid " Activate WooCommerce"
+msgstr ""
+
+#: includes/notice/class-notice.php:904
+msgid " Install WooCommerce"
+msgstr ""
+
+#: includes/notice/class-notice.php:907
+msgid "Discard"
+msgstr ""
+
+#: includes/notice/class-notice.php:925
+msgid "Invalid request."
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:11
@@ -3817,27 +3811,51 @@ msgid "Enjoying WowStore? Give us a 5 Star review to support our ongoing work."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Your License is"
+msgid "WowRevenue:"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Activated."
+msgid "Skyrocket Your Sales & Revenue Instantly -"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Expiry Date:"
+msgid "Get Started"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Want to reset this license?"
+msgid "Summer Sale Alert:"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Click Here."
+msgid "Get"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Add New License"
+msgid "Up to 50% OFF"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "on WowStore Pro -"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Grab Now"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Close notification"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Enter Your License Key Here…"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "If you’re unable to activate your product license, please contact the"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "support team"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
@@ -3845,111 +3863,47 @@ msgid "Activate License"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Enter your license key"
+msgid "Congratulations on unlocking WowStore Pro!"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Invalid / Expired."
+msgid "Ignite your imagination and design your ideal experience. Let WowStore take care of you and your users."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "To unlock pro features, please"
+msgid "License Type"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Renew your license"
+msgid "Expire On"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Want to add a new license?"
+msgid "Deactivate License"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Click here"
+msgid "5 Sites - Yearly"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "How to upgrade the existing plan?"
+msgid "Unlimited Sites - Yearly"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "You can use WowStore Pro on multiple sites and for lifetime without any renewal charges. Follow the below steps to update your plan."
+msgid "1 Site - Lifetime"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Step 1:"
+msgid "5 Sites - Lifetime"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Go to wpxpo.com"
+msgid "Unlimited Sites - Lifetime"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "> my account > My Order > View Licenses > View Upgrades."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "And then click on the Update License Button."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Step 2:"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Complete the Payment and enjoy your plan."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "How to use license key?"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Note:"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Make sure you have installed both the"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "free and pro version of WowStore."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "> My Account > Order > View License."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Then Click Key Icon and copy the license key."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Paste the copied license on the above field. Then Click on the Activate License Button."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "How to renew the existing license?"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "To renew your existing license you need to go to wpxpo.com"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "> My account > My Order > View Licenses."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Then click on the “renew now” button and complete the payment process."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Upgrade License"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Enjoy a special discount while upgrading your existing license."
+msgid "Choose a upgrade plan"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
@@ -3957,35 +3911,59 @@ msgid "Upgrade Now"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Just Getting Started with WowStore?"
+msgid "Do I need the free version of the plugin on my site?"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Check out the documentation to learn how you can effectively use the features of WowStore."
+msgid "Yes. You can use the free version of the plugin, which includes the free features of WowStore. However, please note that to use the pro features, you need the free version of the plugin installed on your WordPress site."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Explore Documentation"
+msgid "Where do I get my product license?"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Want to get rid of the renewal hassle?"
+msgid "You can copy the product license from the client dashboard. Once you copy it, paste the license key into the WowStore License validation page."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Purchase a lifetime plan of WowStore and keep using all pro features forever without any renewal charges. Use this coupon,"
+msgid "How do I get help to use WowStore Pro?"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "{ special30 } to get a 30%"
+msgid "Please go to the support link: <a href='https://www.wpxpo.com/contact/.' target='_blank'>www.wpxpo.com/contact</a>"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "discount for any lifetime plan."
+msgid "WowStore is a product of WPXPO. The contact support team is ready to help you with any queries, including how to use the pro version of WowStore."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Claim Your Discount"
+msgid "is a B2B wholesale plugin featuring advanced wholesale pricing and customization features."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "boost sales and maximize revenue with the advanced discount campaigns of WowRevenue."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "generates actionable leads and boost sales with popups, banners, and floating bars using WowOptin."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "extends the functionality of your WooCommerce store with additional features and options."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Activated"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Activate"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Install"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
@@ -4169,46 +4147,6 @@ msgid "You can create only one size chart template with the free version of WowS
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Having Difficulties? We are here to help"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Let us know how we can help you."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Create a Ticket"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Select Support Type from above"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "You can Contact in Support via our"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Contact Form"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Submit Ticket"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Useful Guides"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Explore in-depth documentations."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Join Community"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
 msgid "BackPack"
 msgstr ""
 
@@ -4281,6 +4219,10 @@ msgid "Template kits"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
+msgid "WPXPO Plugins"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Get Support"
 msgstr ""
 
@@ -4289,37 +4231,13 @@ msgid "Welcome Guide"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
+msgid "Join Community"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
 msgid "Youtube Tutorials"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Documentation"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Summer Sale Alert:"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Get "
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Up to 60% OFF "
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Grab Now"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "WowRevenue:"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Skyrocket Your Sales & Revenue Instantly -"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Get Started"
 msgstr ""

@@ -1,6 +1,8 @@
 <?php
 namespace WOPB\blocks;
 
+use WOPB\Includes\Durbin\Xpo;
+
 defined('ABSPATH') || exit;
 
 class Product_Category_3{
@@ -66,13 +68,13 @@ class Product_Category_3{
         
         $attr = wp_parse_args( $attr, $this->get_attributes() );
 
-        $is_active = wopb_function()->get_setting( 'is_lc_active' );
-        if ( ! $is_active ) { // Expire Date Check
-            $start_date = get_option( 'edd_wopb_license_expire' );
-            $is_active = ( $start_date && ( $start_date == 'lifetime' || strtotime( $start_date ) ) ) ? true : false;
+        $is_visible = true; 
+        if(isset($attr['blockPubDate']) && $attr['blockPubDate'] != 'empty') {
+            $is_visible = Xpo::is_pro_feature_visible($attr['blockPubDate']);
         }
+        $is_active = Xpo::is_lc_active(); 
 
-        if ( $is_active ) {
+        if ( $is_active || $is_visible ) {
             if ( ! $noAjax ) {
                 $paged = is_front_page() ? get_query_var('page') : get_query_var('paged');
                 $attr['paged'] = $paged ? $paged : 1;

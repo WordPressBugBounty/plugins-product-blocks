@@ -66,6 +66,28 @@
     width: 100%;
 }
 
+#toplevel_page_wopb-settings .wp-submenu a[href*="wopb-pro"] {
+	display:none;
+}
+#toplevel_page_wopb-settings .wp-submenu a.wopb-go-pro {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	color: white;
+	background-color: var(--wowstore-primary-color);
+	margin-inline: 10px;
+	border-radius: 6px;
+	margin-top: 6px;
+	padding-block: 6px;
+	box-shadow: none;
+	white-space: nowrap;
+	transition: background-color 200ms ease;
+}
+#toplevel_page_wopb-settings .wp-submenu a.wopb-go-pro:hover {
+	background-color: #dd1b63;
+	color: white;
+}
+
 
 /* ---------------------------
 ------ 3.x Button Style  -----
