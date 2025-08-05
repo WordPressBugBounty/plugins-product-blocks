@@ -240,6 +240,26 @@ class Xpo {
 				'medium'   => 'sub-menu',
 				'campaign' => 'wstore-dashboard',
 			),
+			'final_hour_sale' => array(
+				'source'   => 'db-wowstore-notice-logo',
+				'medium'   => 'final-hour-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'massive_sale' => array(
+				'source'   => 'db-wowstore-notice-text',
+				'medium'   => 'massive-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'flash_sale' => array(
+				'source'   => 'db-wowstore-notice-logo',
+				'medium'   => 'flash-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'exclusive_deals' => array(
+				'source'   => 'db-wowstore-notice-text',
+				'medium'   => 'exclusive-deals',
+				'campaign' => 'wowstore-dashboard',
+			),
 		);
 
 		// Step 1: Get parameters

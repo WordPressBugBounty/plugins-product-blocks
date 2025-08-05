@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore 4.3.0\n"
+"Project-Id-Version: WowStore 4.3.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-07-15T02:50:34+00:00\n"
+"POT-Creation-Date: 2025-08-05T11:48:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: product-blocks\n"
@@ -1112,8 +1112,8 @@ msgstr ""
 
 #: addons/compare/Compare.php:897
 #: blocks/Product_Slider.php:356
-#: classes/Functions.php:3049
-#: classes/Functions.php:3051
+#: classes/Functions.php:3052
+#: classes/Functions.php:3054
 msgid "View Cart"
 msgstr ""
 
@@ -2706,40 +2706,40 @@ msgstr ""
 msgid "Install & Acivate WowStore Pro plugin."
 msgstr ""
 
-#: classes/Functions.php:104
+#: classes/Functions.php:107
 msgid "Days"
 msgstr ""
 
-#: classes/Functions.php:108
+#: classes/Functions.php:111
 msgid "Hours"
 msgstr ""
 
-#: classes/Functions.php:112
+#: classes/Functions.php:115
 msgid "Minutes"
 msgstr ""
 
-#: classes/Functions.php:116
+#: classes/Functions.php:119
 msgid "Seconds"
 msgstr ""
 
-#: classes/Functions.php:1218
+#: classes/Functions.php:1221
 #: assets/js/setup.wizard.js:1
 msgid "Next"
 msgstr ""
 
-#: classes/Functions.php:1219
+#: classes/Functions.php:1222
 msgid "Previous"
 msgstr ""
 
-#: classes/Functions.php:1603
+#: classes/Functions.php:1606
 msgid "Select Page"
 msgstr ""
 
-#: classes/Functions.php:1619
+#: classes/Functions.php:1622
 msgid "Select Location"
 msgstr ""
 
-#: classes/Functions.php:2574
+#: classes/Functions.php:2577
 msgid "- Select Template -"
 msgstr ""
 
@@ -2782,7 +2782,6 @@ msgstr ""
 
 #: classes/Options.php:85
 #: classes/Options.php:161
-#: includes/notice/class-notice.php:318
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Upgrade to Pro"
 msgstr ""
@@ -3004,60 +3003,85 @@ msgstr ""
 msgid "Dismiss"
 msgstr ""
 
+#: includes/notice/class-notice.php:273
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Final Hour Sales Alert:"
+msgstr ""
+
+#: includes/notice/class-notice.php:274
+msgid "<strong>WowStore</strong> on Sale - Get %s on this All-in-One Store Builder! "
+msgstr ""
+
+#: includes/notice/class-notice.php:289
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Massive Sales Alert:"
+msgstr ""
+
+#: includes/notice/class-notice.php:290
+msgid "WowStore on Sale - Get %s on this All-in-One Store Builder!"
+msgstr ""
+
+#: includes/notice/class-notice.php:306
+msgid "Grab the Flash Sale Offer:"
+msgstr ""
+
 #: includes/notice/class-notice.php:307
-msgid "Black Friday Deal Alert:"
+msgid "Sale on <strong>WowStore</strong> - Enjoy %s on the complete store building solution! "
 msgstr ""
 
-#. translators: %s: Discount percentage
-#: includes/notice/class-notice.php:311
-msgid "WowStore on Sale - Enjoy %s on the powerful site builder."
+#: includes/notice/class-notice.php:322
+msgid "Exclusive Sale is Live:"
 msgstr ""
 
-#: includes/notice/class-notice.php:312
-msgid "up to 55% OFF"
+#: includes/notice/class-notice.php:323
+msgid "Sale on WowStore - Enjoy %s on the complete store building solution! "
 msgstr ""
 
-#: includes/notice/class-notice.php:329
-msgid "I don’t want to save money"
+#: includes/notice/class-notice.php:386
+msgid "CLAIM YOUR DISCOUNT!"
 msgstr ""
 
-#: includes/notice/class-notice.php:833
+#: includes/notice/class-notice.php:386
+msgid "UPGRADE TO PRO"
+msgstr ""
+
+#: includes/notice/class-notice.php:894
 msgid "Want to help make WowStore even more awesome?"
 msgstr ""
 
-#: includes/notice/class-notice.php:835
+#: includes/notice/class-notice.php:896
 msgid "Allow us to collect diagnostic data and usage information. see "
 msgstr ""
 
-#: includes/notice/class-notice.php:836
+#: includes/notice/class-notice.php:897
 msgid "what we collect."
 msgstr ""
 
-#: includes/notice/class-notice.php:853
+#: includes/notice/class-notice.php:914
 msgid "Accept & Close"
 msgstr ""
 
-#: includes/notice/class-notice.php:901
+#: includes/notice/class-notice.php:962
 msgid "Welcome to WowStore."
 msgstr ""
 
-#: includes/notice/class-notice.php:902
+#: includes/notice/class-notice.php:963
 msgid "WowStore is a WooCommerce-based plugin. So you need to installed & activate WooCommerce to start using WowStore."
 msgstr ""
 
-#: includes/notice/class-notice.php:904
+#: includes/notice/class-notice.php:965
 msgid " Activate WooCommerce"
 msgstr ""
 
-#: includes/notice/class-notice.php:904
+#: includes/notice/class-notice.php:965
 msgid " Install WooCommerce"
 msgstr ""
 
-#: includes/notice/class-notice.php:907
+#: includes/notice/class-notice.php:968
 msgid "Discard"
 msgstr ""
 
-#: includes/notice/class-notice.php:925
+#: includes/notice/class-notice.php:986
 msgid "Invalid request."
 msgstr ""
 
@@ -3811,27 +3835,11 @@ msgid "Enjoying WowStore? Give us a 5 Star review to support our ongoing work."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "WowRevenue:"
+msgid "Enjoy"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Skyrocket Your Sales & Revenue Instantly -"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Get Started"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Summer Sale Alert:"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Get"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Up to 50% OFF"
+msgid "up to 50% OFF"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
@@ -3839,7 +3847,27 @@ msgid "on WowStore Pro -"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Grab Now"
+msgid "Buy Now!"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "up to 55% OFF"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Flash Sale is live:"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Get"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Grab it Now!"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Exclusive Deals Live:"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1

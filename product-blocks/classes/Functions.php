@@ -31,6 +31,9 @@ class Functions{
 	 * @since v.1.0.0
 	 */
     public function __construct(){
+        if ( ! isset($GLOBALS['wopb_settings'] ) || ! is_array( $GLOBALS['wopb_settings'] ) ) { // Deprecated: Automatic conversion of false to array is deprecated
+            $GLOBALS['wopb_settings'] = [];
+        }
         $GLOBALS['wopb_settings']['is_wc_ready'] = $this->is_wc_ready();
         $GLOBALS['wopb_settings']['is_lc_active'] = $this->global_is_lc_active();
     }

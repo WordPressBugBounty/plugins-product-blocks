@@ -243,21 +243,90 @@ class Notice {
 	 */
 	public function wopb_dashboard_content_notice() {
 
+		// $content_notices = array(
+		// 	array(
+		// 		'key'        => 'wopb_dashboard_content_notice2',
+		// 		'start'      => '2024-06-23 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka
+		// 		'end'        => '2024-07-05 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka
+		// 		'url'        => Xpo::generate_utm_link(
+		// 			array(
+		// 				'utmKey' => 'summer_db',
+		// 			)
+		// 		),
+		// 		'visibility' => ! Xpo::is_lc_active(),
+		// 	),
+		// );
+
+
 		$content_notices = array(
 			array(
-				'key'        => 'wopb_dashboard_content_notice2',
-				'start'      => '2024-06-23 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka
-				'end'        => '2024-07-05 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka
+				'key'        => 'wopb_content_notice_summer_sale_1',
+				'start'      => '2025-08-04 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka
+				'end'        => '2025-08-14 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka
 				'url'        => Xpo::generate_utm_link(
 					array(
-						'utmKey' => 'summer_db',
+						'utmKey' => 'final_hour_sale',
 					)
 				),
+				'icon'		=> WOPB_URL . 'assets/img/notice_logo/orange_50_offer.svg',
 				'visibility' => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Final Hour Sales Alert:', 'product-blocks' ),
+				'content_subheading' => __( '<strong>WowStore</strong> on Sale - Get %s on this All-in-One Store Builder! ', 'product-blocks' ),
+				'discount_content'   => 'up to 50% OFF',
+				'is_discount_logo'   => true,
+			),
+			array(
+				'key'        => 'wopb_content_notice_summer_sale_2',
+				'start'      => '2025-08-18 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka
+				'end'        => '2025-08-29 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka
+				'url'        => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'massive_sale',
+					)
+				),
+				'icon'		=>  WOPB_URL . 'assets/img/logo-sm.svg',
+				'visibility' => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Massive Sales Alert:', 'product-blocks' ),
+				'content_subheading' => __( 'WowStore on Sale - Get %s on this All-in-One Store Builder!', 'product-blocks' ),
+				'discount_content'   => 'up to 55% OFF',
+				'border_color'       => '#ff4b7c',
+				'is_discount_logo'   => false,
+			),
+			array(
+				'key'        => 'wopb_content_notice_summer_sale_3',
+				'start'      => '2025-09-01 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka
+				'end'        => '2025-09-17 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka
+				'url'        => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'flash_sale',
+					)
+				),
+				'icon'		=> WOPB_URL . 'assets/img/notice_logo/green_50_offer.svg',
+				'visibility' => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Grab the Flash Sale Offer:', 'product-blocks' ),
+				'content_subheading' => __( 'Sale on <strong>WowStore</strong> - Enjoy %s on the complete store building solution! ', 'product-blocks' ),
+				'discount_content'   => 'up to 50% OFF',
+				'is_discount_logo'   => true,
+			),
+			array(
+				'key'        => 'wopb_content_notice_summer_sale_4',
+				'start'      => '2025-09-21 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka
+				'end'        => '2025-09-30 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka
+				'url'        => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'exclusive_deals',
+					)
+				),
+				'icon'		=>  WOPB_URL . 'assets/img/logo-sm.svg',
+				'visibility' => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Exclusive Sale is Live:', 'product-blocks' ),
+				'content_subheading' => __( 'Sale on WowStore - Enjoy %s on the complete store building solution! ', 'product-blocks' ),
+				'discount_content'   => 'up to 55% OFF',
+				'border_color'       => '#ff4b7c',
+				'is_discount_logo'   => false,
 			),
 		);
 
-		$icon          = WOPB_URL . 'assets/img/logo-sm.svg';
 		$wopb_db_nonce = wp_create_nonce( 'wopb-dashboard-nonce' );
 
 		foreach ( $content_notices as $key => $notice ) {
@@ -266,6 +335,7 @@ class Notice {
 				return;
 			}
 
+			$border_color = $notice['border_color'];
 			$current_time = gmdate( 'U' );
 			$notice_start = gmdate('U', strtotime($notice['start']));
 			$notice_end = gmdate('U', strtotime($notice['end']));
@@ -293,40 +363,27 @@ class Notice {
 					);
 
 					?>
-					<div class="wopb-notice-wrapper notice data_collection_notice"> 
+					<div class="wopb-notice-wrapper notice data_collection_notice" style="<?php echo ! empty( $border_color ) ? 'border-left: 3px solid ' . esc_attr( $border_color ) . ';' : ''; ?>">
 						<?php
-						if ( isset( $icon ) ) {
+						if (isset( $notice['icon'] ) && strlen($notice['icon']) > 0) {
 							?>
-								<div class="wopb-notice-icon"> <img src="<?php echo esc_url( $icon ); ?>"/>  </div>
+								<div class="wopb-notice-icon"> <img src="<?php echo esc_url( $notice['icon'] ); ?>"/>  </div>
 							<?php
 						}
 						?>
-						
 						<div class="wopb-notice-content-wrapper">
 							<div class="">
-								<strong><?php esc_html_e( 'Black Friday Deal Alert:', 'product-blocks' ); ?> </strong>
+								<strong><?php echo esc_html( $notice['content_heading'] ); ?> </strong>
 								<?php
-								printf(
-									/* translators: %s: Discount percentage */
-									esc_html__( 'WowStore on Sale - Enjoy %s on the powerful site builder.', 'product-blocks' ),
-									'<strong>' . esc_html__( 'up to 55% OFF', 'product-blocks' ) . '</strong>'
-								);
-								?>
+									printf(
+										wp_kses_post( $notice['content_subheading'] ),
+										'<strong>' . esc_html( $notice['discount_content'] ) . '</strong>'
+									);
+                                ?>
 							</div>
-							<div class="wopb-notice-buttons"> 
-								<a class="wopb-notice-btn button button-primary" href="<?php echo esc_url( $url ); ?>" target="_blank">
-									<?php esc_html_e( 'Upgrade to Pro', 'product-blocks' ); ?>
-								</a>
-								<a href=
-								<?php
-								echo esc_url(
-									add_query_arg(
-										$query_args
-									)
-								);
-								?>
-								class="wopb-notice-dont-save-money">
-									<?php esc_html_e( 'I don’t want to save money', 'product-blocks' ); ?>
+							<div class="wopb-notice-buttons">
+								<a class="wopb-notice-btn button button-primary <?php echo ( isset( $notice['is_discount_logo'] ) && $notice['is_discount_logo'] ) ? "btn-outline" : ""; ?>" style="<?php echo ( isset( $notice['is_discount_logo'] ) && $notice['is_discount_logo']) ? 'color: #2271b1; border-color: #2271b1;' : ''; ?>" href="<?php echo esc_url( $url ); ?>" target="_blank">
+									<strong><?php isset( $notice['is_discount_logo'] ) && $notice['is_discount_logo'] ? esc_html_e( 'CLAIM YOUR DISCOUNT!', 'product-blocks' ) : esc_html_e( 'UPGRADE TO PRO', 'product-blocks' ); ?></strong>
 								</a>
 							</div>
 						</div>
@@ -461,6 +518,7 @@ class Notice {
 				padding: 10px 0px;
 				position: relative;
 				box-sizing: border-box;
+				border-radius: 4px;
 			}
 			.wopb-notice-wrapper.notice, .wopb-free-notice.wc-install.notice {
 				margin: 10px 0px;
@@ -488,6 +546,9 @@ class Notice {
 				display: flex;
 				align-items: center;
 				gap: 15px;
+			}
+			.wopb-notice-btn.btn-outline {
+				background: transparent !important;
 			}
 			.wopb-notice-dont-save-money {
 				font-size: 12px;
