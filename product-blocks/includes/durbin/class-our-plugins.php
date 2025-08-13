@@ -1,9 +1,11 @@
 <?php
 
 namespace WOPB\Includes\Durbin;
+use WOPB\Includes\Durbin\Xpo;
 
 defined( 'ABSPATH' ) || exit;
-use WOPB\Includes\Durbin\Xpo;
+
+
 class OurPlugins {
 
 
@@ -22,14 +24,14 @@ class OurPlugins {
 	 */
 	public function wopb_install_plugin_callback() {
 
-		$nonce  = isset( $_POST['wpnonce'] ) ? sanitize_key( wp_unslash( $_POST['wpnonce'] ) ) : '';
-		$plugin = isset( $_POST['plugin'] ) ? $_POST['plugin'] : '';
+		$nonce  = isset( $_POST['wpnonce'] ) ? sanitize_key( wp_unslash( $_POST['wpnonce'] ) ) : ''; // phpcs:ignore
 
 		if ( ! wp_verify_nonce( $nonce, 'wopb-nonce' ) || ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'message' => 'No plugin specified' ) );
-
 		}
 
+		$plugin = isset( $_POST['plugin'] ) ? sanitize_text_field( wp_unslash( $_POST['plugin'] ) ) : ''; // phpcs:ignore
+		
 		$res = array( 'message' => 'false' );
 
 		if ( $plugin ) {

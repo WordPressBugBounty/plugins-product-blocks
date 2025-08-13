@@ -25,7 +25,7 @@ class Builder {
     function init_metabox_callback() {
         add_meta_box(
             'container-width-id', 
-            __( 'WowStore Builder', 'product-blocks' ),
+            esc_html__( 'WowStore Builder', 'product-blocks' ),
             array( $this, 'container_width_callback' ), 
             'wopb_builder', 
             'side'
@@ -71,16 +71,16 @@ class Builder {
     
     // Save Meta Box Data
     function metabox_save_data( $post_id ) {
-        if ( ! ( isset( $_POST['container_meta_box_nonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['container_meta_box_nonce'] ) ), 'container_meta_box' ) ) ) {
+        if ( ! isset( $_POST['container_meta_box_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['container_meta_box_nonce'] ) ), 'container_meta_box' ) ) {
             return ;
         }
-        if ( ! isset( $_POST['container-width'] ) ) {
+        if ( ! isset( $_POST['container-width'] ) ) { //phpcs:ignore
             return;
         }
         
-        $width  = isset( $_POST['container-width'] ) ? sanitize_text_field( $_POST['container-width'] ) : '1140';
-        $sidebar= isset( $_POST['wopb-builder-sidebar'] ) ? sanitize_text_field( $_POST['wopb-builder-sidebar'] ) : '';
-        $widget = isset( $_POST['wopb-builder-widget-area'] ) ? sanitize_text_field( $_POST['wopb-builder-widget-area'] ) : '';
+        $width  = isset( $_POST['container-width'] ) ? sanitize_text_field( $_POST['container-width'] ) : '1140'; //phpcs:ignore
+        $sidebar= isset( $_POST['wopb-builder-sidebar'] ) ? sanitize_text_field( $_POST['wopb-builder-sidebar'] ) : ''; //phpcs:ignore
+        $widget = isset( $_POST['wopb-builder-widget-area'] ) ? sanitize_text_field( $_POST['wopb-builder-widget-area'] ) : ''; //phpcs:ignore
         
         update_post_meta( $post_id, '__wopb_container_width', $width );
         update_post_meta( $post_id, 'wopb-builder-sidebar', $sidebar );

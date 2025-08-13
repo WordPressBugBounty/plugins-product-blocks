@@ -43,14 +43,17 @@ class Blocks {
     }
 
     public function wopb_addcart_callback() {
-        if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+        if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
             return ;
         }
-        $product_id     = isset( $_POST['postid'] ) ? sanitize_text_field( $_POST['postid'] ) : '';
-        $quantity       = isset( $_POST['quantity'] ) ? sanitize_text_field( $_POST['quantity'] ) : '';
-        $variationId    = isset( $_POST['variationId'] ) ? sanitize_text_field( $_POST['variationId'] ) : '';
-        $variation      = isset( $_POST['variation'] ) ? array_map( 'esc_attr', $_POST['variation'] ) : array(); //phpcs:ignore
-        $cart_type      = isset( $_POST['cartType'] ) ? sanitize_text_field( $_POST['cartType'] ) : '';
+        $product_id     = isset( $_POST['postid'] ) ? sanitize_text_field( wp_unslash( $_POST['postid'] ) ) : '';
+        $quantity       = isset( $_POST['quantity'] ) ? sanitize_text_field( wp_unslash( $_POST['quantity'] ) ) : '';
+        $variationId    = isset( $_POST['variationId'] ) ? sanitize_text_field( wp_unslash( $_POST['variationId'] ) ) : '';
+        
+        $variation = isset( $_POST['variation'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['variation'] ) ) : array();
+        
+        $cart_type = isset( $_POST['cartType'] ) ? sanitize_text_field( wp_unslash( $_POST['cartType'] ) ) : '';
+
 
         if ( $product_id ) {
             global $woocommerce;
@@ -87,10 +90,10 @@ class Blocks {
 	 * @return NULL
 	 */
     public function blocks() {
-        $request = isset( $_POST['action'] ) ? sanitize_text_field( $_POST['action'] ) : ''; 
-        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
-        $host_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-        $request_url = ( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http' ) . '://' . $host. $host_url;
+        $request = isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : ''; // phpcs:ignore
+        $host = isset($_SERVER['HTTP_HOST']) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '';
+        $host_url = isset($_SERVER['REQUEST_URI']) ? sanitize_url( $_SERVER['REQUEST_URI'] ) : ''; // phpcs:ignore
+        $request_url = ( isset($_SERVER['HTTPS']) && sanitize_text_field( wp_unslash( $_SERVER['HTTPS'] ) ) === 'on' ? 'https' : 'http' ) . '://' . $host. $host_url;
         if (
             (
                 is_admin() &&
@@ -181,23 +184,21 @@ class Blocks {
 	 * @return NULL
 	 */
     public function wopb_load_more_callback() {
-        if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+        if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
             return ;
         }
-
-        $paged      = isset( $_POST['paged'] ) ? sanitize_text_field($_POST['paged'] ) : '';
-        $blockId    = isset( $_POST['blockId'] ) ? sanitize_text_field($_POST['blockId'] ) : '';
-        $postId     = isset( $_POST['postId'] ) ?sanitize_text_field($_POST['postId'] ) : '';
-        $blockRaw   = isset( $_POST['blockName'] ) ? sanitize_text_field($_POST['blockName'] ) : '';
-        $builder    = isset( $_POST['builder']) ? sanitize_text_field( $_POST['builder'] ) : '';
+        $paged    = isset( $_POST['paged'] ) ? sanitize_text_field( wp_unslash( $_POST['paged'] ) ) : '';
+        $blockId  = isset( $_POST['blockId'] ) ? sanitize_text_field( wp_unslash( $_POST['blockId'] ) ) :'';
+        $postId   = isset( $_POST['postId'] ) ? sanitize_text_field( wp_unslash( $_POST['postId'] ) ) : '';
+        $blockRaw = isset( $_POST['blockName'] ) ? sanitize_text_field( wp_unslash( $_POST['blockName'] ) ): '';
+        $builder  = isset( $_POST['builder'] ) ? sanitize_text_field( wp_unslash( $_POST['builder'] ) ) : '';
         $blockName  = str_replace( '_', '/', $blockRaw );
-        $widgetBlockId  = isset( $_POST['widgetBlockId'] ) ? sanitize_text_field( $_POST['widgetBlockId'] ) : '';
-        
-
+        $widgetBlockId = isset( $_POST['widgetBlockId'] ) ? sanitize_text_field( wp_unslash( $_POST['widgetBlockId'] ) ) : '';
         if( $paged && $blockId && $postId && $blockName ) {
-            $post = get_post($postId); 
+            $post = get_post($postId);
+            $filterAttributes = wopb_function()->rest_sanitize_params(wp_unslash(! empty( $_POST['filterAttributes'] ) && is_array( $_POST['filterAttributes'] ) ? $_POST['filterAttributes'] : [] ));
             $params = array(
-                'filterAttributes' => $_POST['filterAttributes'], // phpcs:ignore
+                'filterAttributes' =>  $filterAttributes,
                 'ajax_source' => 'pagination'
             );
             if ( $widgetBlockId ) {
@@ -232,14 +233,15 @@ class Blocks {
                     if($search && strlen($search)) {
                         $value['attrs']['is_search'] = $search;
                     }
-                    if ( $params['filterAttributes'] ) {
+                    if ( isset($params['filterAttributes']) && $params['filterAttributes'] ) {
                         $attr = array_merge( $attr, $params['filterAttributes'] );
                     }
                     $attr = array_merge( $attr, $value['attrs'] );
                     if ( $params['ajax_source'] ) {
                         $attr['ajax_source'] = $params['ajax_source'];
                     }
-                    echo $newObj->content( $attr, true ); //phpcs:ignore
+                    $new_content_safe = wopb_function()->wp_kses_safe($newObj->content( $attr, true ));
+                    echo $new_content_safe; // phpcs:ignore
                     die();
                 }
             }
@@ -260,7 +262,8 @@ class Blocks {
                     $attr = $newObj->get_attributes( true );
                     $attr = array_merge( $attr, $params );
                     $attr = array_merge( $attr, $value['attrs'] );
-                    echo $newObj->content( $attr, true ); //phpcs:ignore
+                    $content_safe = wopb_function()->wp_kses_safe($newObj->content( $attr, true ));
+                    echo $content_safe; // phpcs:ignore
                     die();
                 }
             }
@@ -277,20 +280,22 @@ class Blocks {
 	 * @return NULL
 	 */
     public function wopb_filter_callback() {
-        if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+        if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) )  {
             return ;
         }
-     
-        $taxtype    = isset( $_POST['taxtype'] ) ? sanitize_text_field( $_POST['taxtype'] ) : '';
-        $blockId    = isset( $_POST['blockId'] ) ? sanitize_text_field( $_POST['blockId'] ) : '';
-        $postId     = isset( $_POST['postId'] ) ? sanitize_text_field( $_POST['postId'] ) : '';
-        $taxonomy   = isset( $_POST['taxonomy'] ) ? sanitize_text_field( $_POST['taxonomy'] ) : '';
-        $blockRaw   = isset( $_POST['blockName'] ) ? sanitize_text_field( $_POST['blockName'] ) : '';
+        $taxtype    = isset( $_POST['taxtype'] ) ? sanitize_text_field( wp_unslash( $_POST['taxtype'] ) ) : '';
+
+        $blockId  = isset( $_POST['blockId'] ) ? sanitize_text_field( wp_unslash( $_POST['blockId'] ) ) : '';
+        $postId   = isset( $_POST['postId'] ) ? sanitize_text_field( wp_unslash( $_POST['postId'] ) ) : '';
+        $taxonomy = isset( $_POST['taxonomy'] ) ? sanitize_text_field( wp_unslash( $_POST['taxonomy'] ) ) : '';
+        $blockRaw = isset( $_POST['blockName'] ) ? sanitize_text_field( wp_unslash( $_POST['blockName'] ) ) : '';
+
         $blockName  = str_replace( '_','/', $blockRaw );
-        $widgetBlockId  = isset( $_POST['widgetBlockId'] ) ? sanitize_text_field( $_POST['widgetBlockId'] ) : '';
+        $widgetBlockId = isset( $_POST['widgetBlockId'] ) ? sanitize_text_field( wp_unslash( $_POST['widgetBlockId'] ) ) : '';
+
         $params = array(
             'page_post_id'  => $postId,
-            'current_url'   => sanitize_url( $_POST['currentUrl'] ),
+            'current_url'   => isset( $_POST['currentUrl'] ) ? esc_url_raw( wp_unslash( $_POST['currentUrl'] ) ) : '',
             'queryTax'      => $taxtype,
             'ajax_source'   => 'filter',
         );
@@ -325,27 +330,29 @@ class Blocks {
 	 * @return NULL
 	 */
     public function wopb_pagination_callback() {
-        if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+        if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
             return ;
         }
-        
-        $isSearch   = isset( $_POST['isSearch']) ? sanitize_text_field( $_POST['isSearch'] ) : '';
 
-        $paged      = isset( $_POST['paged'] ) ? sanitize_text_field( $_POST['paged'] ) : '';
-        $blockId    = isset( $_POST['blockId'] ) ? sanitize_text_field( $_POST['blockId'] ) : '';
-        $postId     = isset( $_POST['postId'] ) ? sanitize_text_field( $_POST['postId'] ) : '';
-        $blockRaw   = isset( $_POST['blockName'] ) ? sanitize_text_field( $_POST['blockName'] ) : '';
-        $builder    = isset( $_POST['builder'] ) ? sanitize_text_field( $_POST['builder']) : '';
+        $isSearch = isset( $_POST['isSearch'] ) ? sanitize_text_field( wp_unslash( $_POST['isSearch'] ) ) :'';
+
+        $paged    = isset( $_POST['paged'] ) ? sanitize_text_field( wp_unslash( $_POST['paged'] ) ) : '';
+        $blockId  = isset( $_POST['blockId'] ) ? sanitize_text_field( wp_unslash( $_POST['blockId'] ) ) : '';
+        $postId   = isset( $_POST['postId'] ) ? sanitize_text_field( wp_unslash( $_POST['postId'] ) ) : '';
+        $blockRaw = isset( $_POST['blockName'] ) ? sanitize_text_field( wp_unslash( $_POST['blockName'] ) ) : '';
+        $builder  = isset( $_POST['builder'] ) ? sanitize_text_field( wp_unslash( $_POST['builder'] ) ) : '';
+
+
         $blockName  = str_replace( '_', '/', $blockRaw );
-        $widgetBlockId  = isset( $_POST['widgetBlockId'] ) ? sanitize_text_field( $_POST['widgetBlockId'] ) : '';
+        
+        $widgetBlockId = isset( $_POST['widgetBlockId'] ) ? sanitize_text_field( wp_unslash( $_POST['widgetBlockId'] ) ) : '';
         $params = array(
           'ajax_source' => 'pagination',
         );
 
         if ( isset( $_POST['filterAttributes'] ) ) {
-            $params['filterAttributes'] = $_POST['filterAttributes'];
+            $params['filterAttributes'] = isset( $_POST['filterAttributes'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['filterAttributes'] ) ) : array();
         }
-
 
         if ( $paged ) {
             $post = get_post( $postId );
@@ -366,13 +373,14 @@ class Blocks {
 	 * @return NULL
 	 */
     public function wopb_checkout_login_callback() {
-        if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+        if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
             return ;
         }
 
-        $username = isset($_POST['username'])? sanitize_text_field($_POST['username']):'';
-        $password = isset($_POST['password'])? sanitize_text_field($_POST['password']):'';
-        $remember = isset($_POST['rememberme'])? sanitize_text_field($_POST['rememberme']):'';
+        $username = isset( $_POST['username'] ) ? sanitize_text_field( wp_unslash( $_POST['username'] ) ) : '';
+        $password = isset( $_POST['password'] ) ? sanitize_text_field( wp_unslash( $_POST['password'] ) ) : '';
+        $remember = isset( $_POST['rememberme'] ) ? sanitize_text_field( wp_unslash( $_POST['rememberme'] ) ) : '';
+
         $errors = array();
 
         if ( $username && $password ) {
@@ -430,15 +438,14 @@ class Blocks {
 	 * @return STRING
 	 */
     public function wopb_share_count_callback() {
-        if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+        if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
             return ;
         }
 
-        $post_id = isset( $_POST['postId'] ) ? sanitize_text_field( $_POST['postId'] ) : '';
-        $count = isset( $_POST['shareCount'] ) ? sanitize_text_field( $_POST['shareCount'] ) : '';
-        $count = (int)$count + 1; 
+        $post_id = isset( $_POST['postId'] ) ? sanitize_text_field( wp_unslash( $_POST['postId'] ) ) : '';
+        $count = isset( $_POST['shareCount'] ) ? sanitize_text_field( wp_unslash( $_POST['shareCount'] ) ) : '';
+        $count = (int)$count + 1;
         update_post_meta( $post_id, 'wopb_share_count', $count );
-
         return wp_send_json_success( array( 'success' => true, 'count' => $count ) );
     }
 

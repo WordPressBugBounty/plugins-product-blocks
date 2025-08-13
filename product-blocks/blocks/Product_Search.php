@@ -104,14 +104,16 @@ class Product_Search{
             $html .= '<input type="text" ';
                 $html .= 'class="wopb-search-input" ';
                 $html .= 'placeholder="' .  ( isset( $attr['searchPlaceHolder'] ) ? $attr['searchPlaceHolder'] : 'Search for products...' ) . '" ';
-                if( ! empty( $_GET['s'] ) ) {
-                    $html .= 'value="' . esc_attr( $_GET['s'] ) . '" ';
+                if ( ! empty( $_GET['s'] ) ) { // phpcs:ignore
+                    $safe_value = sanitize_text_field( wp_unslash( $_GET['s'] ) ); // phpcs:ignore
+                    $html .= 'value="' . esc_attr( $safe_value ) . '" ';
                 }
             $html .= '/>';
             $html .= '<span class="dashicons dashicons-no-alt wopb-clear wopb-d-none"></span>';
             $html .= '<span class="wopb-loader-container"></span>';
         $html .= '</div>';
-        echo $html; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+        $html_safe = wopb_function()->wp_kses_safe( $html );
+        echo $html_safe; // phpcs:ignore
     }
 
     /**
@@ -126,8 +128,8 @@ class Product_Search{
         if ( isset( $attr['showSearchCategory'] ) && $attr['showSearchCategory'] ) {
             $selected_value = '';
             $selected_text = esc_html__('All Categories','product-blocks');
-            if( ! empty( $_GET['product_cat'] ) && $term = get_term_by( 'slug', $_GET['product_cat'], 'product_cat' ) ) {
-                $selected_value = esc_attr( $_GET['product_cat'] );
+            if( ! empty( $_GET['product_cat'] ) && $term = get_term_by( 'slug', sanitize_text_field(wp_unslash($_GET['product_cat'])), 'product_cat' ) ) { // phpcs:ignore
+                $selected_value = isset( $_GET['product_cat'] ) ? sanitize_text_field( wp_unslash( $_GET['product_cat'] ) ) : ''; // phpcs:ignore
                 $selected_text = $term->name;
             }
 ?>
@@ -135,8 +137,8 @@ class Product_Search{
                     <span class="wopb-separator wopb-left-separator"></span>
                     <div class="wopb-dropdown-select">
                     <span class="wopb-selected-item">
-                        <span value="<?php echo $selected_value ?>" class="wopb-selected-text">
-                            <?php echo $selected_text ?>
+                        <span value="<?php echo esc_attr( $selected_value ); ?>" class="wopb-selected-text">
+                            <?php echo esc_html( $selected_text ); ?>
                         </span>
                         <i class="dashicons dashicons-arrow-down-alt2"></i>
                     </span>
@@ -145,7 +147,7 @@ class Product_Search{
                             <?php
                                 foreach($categories as $category) {
                             ?>
-                                <li value="<?php echo $category->slug; ?>"><?php echo esc_html($category->name); ?></li>
+                                <li value="<?php echo esc_attr( $category->slug ); ?>"><?php echo esc_html($category->name); ?></li>
                             <?php } ?>
                         </ul>
                     </div>
@@ -165,7 +167,7 @@ class Product_Search{
         if ( isset( $attr['showSearchIcon'] ) && $attr['showSearchIcon'] ) {
 ?>
         <a class="wopb-search-icon">
-            <?php echo wopb_function()->svg_icon('search'); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+            <?php echo wp_kses( wopb_function()->svg_icon('search'), wopb_function()->allowed_html_tags() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
         </a>
 <?php
         }
@@ -235,18 +237,26 @@ class Product_Search{
                                 </a>
                             <?php
                                 }
-
-                                echo $this->rating_content($attr, $product); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                                ob_start();
+                                $this->rating_content($attr, $product);
+                                $rating_content_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                                echo $rating_content_safe; // phpcs:ignore
 
                                 if($attr['productListLayout'] == 2 || $attr['productListLayout'] == 3) {
-                                  echo $this->price_content($attr, $product); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                                    ob_start();
+                                    $this->price_content($attr, $product);
+                                    $price_content_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                                    echo $price_content_safe; // phpcs:ignore
                                 }
                             ?>
                         </div>
                     </div>
         <?php
                     if ( $attr['productListLayout'] == 1 ) {
-                        echo $this->price_content($attr, $product); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                        ob_start();
+                        $this->price_content($attr, $product);
+                        $price_content_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                        echo $price_content_safe; // phpcs:ignore
                     }
         ?>
                 </div>
@@ -255,7 +265,10 @@ class Product_Search{
 
         echo '</div>';
         if ( $params['total_product'] > $params['view_limit'] ) {
-            echo $this->more_result_content( $attr, $params ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+            ob_start();
+            $this->more_result_content( $attr, $params );
+            $more_result_content_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+            echo $more_result_content_safe; // phpcs:ignore
         }
     }
 
@@ -276,7 +289,7 @@ class Product_Search{
         if ( $attr['showProductPrice'] ) {
 ?>
             <div class="wopb-item-price">
-                <?php echo $product->get_price_html(); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <?php echo wp_kses_post( $product->get_price_html() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             </div>
 <?php
         }

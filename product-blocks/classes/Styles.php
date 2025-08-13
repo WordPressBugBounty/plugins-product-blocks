@@ -24,7 +24,6 @@ class Styles {
 	private $changed_wp_block = '';
     public function __construct() {
 		add_action( 'rest_api_init', array( $this, 'save_block_css_callback' ) );
-		add_action( 'wp_ajax_disable_google_font', array( $this, 'disable_google_font_callback' ) );
 
 		add_action( 'after_delete_post', array( $this, 'wopb_delete_post_callback' ), 10, 2 ); // Delete Plugin Data CSS file delete Action
 		add_action( 'enqueue_block_editor_assets', array( $this, 'productx_global_css' ) );
@@ -67,7 +66,7 @@ class Styles {
 	public function enqueue_the_wowstore_block_css() {
 		$this->productx_global_css('front');
         wopb_function()->front_common_script();
-		if ( apply_filters('productx_common_script', false) || isset( $_GET['et_fb'] ) ) {
+		if ( apply_filters('productx_common_script', false) || isset( $_GET['et_fb'] ) ) { //phpcs:ignore
             wopb_function()->register_scripts_common();
         }
 		if ( is_admin() ) {
@@ -75,7 +74,7 @@ class Styles {
 		}
 		$css = '';
 		$post_id = wopb_function()->get_ID();
-		if ( isset($_GET['preview_id']) && isset($_GET['preview_nonce']) ) {	// @codingStandardsIgnoreLine
+		if ( isset($_GET['preview_id']) && isset($_GET['preview_nonce']) ) {	// phpcs:ignore @codingStandardsIgnoreLine
 			$css = get_transient('_wopb_preview_'.$post_id, true);
 			if ( !$css ) {
 				$css = get_post_meta($post_id, '_wopb_css', true);
@@ -98,7 +97,7 @@ class Styles {
      */
 	public function wopb_enqueue_wowstore_block_css_callback($data) {
 		$post_id =  isset($data['post_id']) ? $data['post_id'] : '';
-		$css = isset($data['css']) ? $data['css'] : '';
+		$css = isset($data['css']) ? safecss_filter_attr( $data['css'] ) : '';
 		if ( wp_style_is("wopb-post-{$post_id}", "enqueued") ) {
 			return ;
 		}
@@ -124,9 +123,9 @@ class Styles {
 				}
 			}
 			if ( $css ) {
-				wp_register_style( "wopb-post-{$post_id}", false );
+				wp_register_style( "wopb-post-{$post_id}", false, array(), WOPB_VER );
 				wp_enqueue_style( "wopb-post-{$post_id}" );
-				wp_add_inline_style( "wopb-post-{$post_id}", $css );
+				wp_add_inline_style( "wopb-post-{$post_id}", wp_strip_all_tags( $css ) );
 				wopb_function()->register_scripts_common();
 			}
 		}
@@ -266,7 +265,7 @@ class Styles {
 		}
 
 		global $wpdb;
-		$results = $wpdb->get_results( "SELECT * FROM $wpdb->postmeta WHERE `meta_key`='_wopb_css'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE `meta_key`='_wopb_css'" ) ); //phpcs:ignore
 		if (!empty($results)) {
 			foreach ($results as $key => $value) {
 				$filter_css = preg_replace('/(@import)[\w\s:\/?=,;.\'()+]*;/m', '', $value->meta_value); // Remove Import Font
@@ -327,7 +326,8 @@ class Styles {
 			return ;
 		}
 		try {
-
+			$upload_dir_url = wp_upload_dir();
+			$dir = trailingslashit($upload_dir_url['basedir']) . 'product-blocks/';
 			if ( $has_block ) {
 				$wopb_block_css = $this->set_top_css($params['block_css']);
 				// Preview Check
@@ -348,8 +348,6 @@ class Styles {
 					update_post_meta($post_id, '_wopb_css', $wopb_block_css);
 				}
 				wopb_function()->set_setting('save_version', wp_rand(1, 1000));
-				$upload_dir_url = wp_upload_dir();
-				$dir = trailingslashit($upload_dir_url['basedir']) . 'product-blocks/';
 				$filename = "wopb-css-{$post_id}.css";
 
 				WP_Filesystem( false, $upload_dir_url['basedir'], true );
@@ -496,15 +494,15 @@ class Styles {
 		// Preset CSS
 		$global = get_option( 'productx_global', [] );
 		$custom_css = ':root {
-			--productx-color1: ' . ( isset( $global['presetColor1'] ) ? $global['presetColor1'] : '#037fff') . ';
-			--productx-color2: ' . ( isset( $global['presetColor2'] ) ? $global['presetColor2'] : '#026fe0') . ';
-			--productx-color3: ' . ( isset( $global['presetColor3'] ) ? $global['presetColor3'] : '#071323') . ';
-			--productx-color4: ' . ( isset( $global['presetColor4'] ) ? $global['presetColor4'] : '#132133') . ';
-			--productx-color5: ' . ( isset( $global['presetColor5'] ) ? $global['presetColor5'] : '#34495e') . ';
-			--productx-color6: ' . ( isset( $global['presetColor6'] ) ? $global['presetColor6'] : '#787676') . ';
-			--productx-color7: ' . ( isset( $global['presetColor7'] ) ? $global['presetColor7'] : '#f0f2f3') . ';
-			--productx-color8: ' . ( isset( $global['presetColor8'] ) ? $global['presetColor8'] : '#f8f9fa') . ';
-			--productx-color9: ' . ( isset( $global['presetColor9'] ) ? $global['presetColor9'] : '#ffffff') . ';
+			--productx-color1: ' . ( isset( $global['presetColor1'] ) ? esc_attr( $global['presetColor1'] ) : '#037fff') . ';
+			--productx-color2: ' . ( isset( $global['presetColor2'] ) ? esc_attr( $global['presetColor2'] ) : '#026fe0') . ';
+			--productx-color3: ' . ( isset( $global['presetColor3'] ) ? esc_attr( $global['presetColor3'] ) : '#071323') . ';
+			--productx-color4: ' . ( isset( $global['presetColor4'] ) ? esc_attr( $global['presetColor4'] ) : '#132133') . ';
+			--productx-color5: ' . ( isset( $global['presetColor5'] ) ? esc_attr( $global['presetColor5'] ) : '#34495e') . ';
+			--productx-color6: ' . ( isset( $global['presetColor6'] ) ? esc_attr( $global['presetColor6'] ) : '#787676') . ';
+			--productx-color7: ' . ( isset( $global['presetColor7'] ) ? esc_attr( $global['presetColor7'] ) : '#f0f2f3') . ';
+			--productx-color8: ' . ( isset( $global['presetColor8'] ) ? esc_attr( $global['presetColor8'] ) : '#f8f9fa') . ';
+			--productx-color9: ' . ( isset( $global['presetColor9'] ) ? esc_attr( $global['presetColor9'] ) : '#ffffff') . ';
 			}';
 
 		// Addon Genetarate CSS Added
@@ -517,6 +515,6 @@ class Styles {
 
         wp_register_style( 'productx-global-style', false, array(), WOPB_VER );
     	wp_enqueue_style( 'productx-global-style' );
-		wp_add_inline_style( 'productx-global-style', $custom_css );
+		wp_add_inline_style( 'productx-global-style', wp_strip_all_tags( wp_unslash( $custom_css ) ) );
 	}
 }

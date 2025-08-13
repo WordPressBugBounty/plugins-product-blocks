@@ -1,5 +1,6 @@
 <?php
 defined( 'ABSPATH' ) || exit;
+
 if (isset($_POST['calc_shipping_country'])) { //phpcs:disable WordPress.Security.NonceVerification.Missing
 	if (class_exists('WC_Shortcode_Cart')) {
 		WC_Shortcode_Cart::calculate_shipping();
@@ -10,7 +11,7 @@ WC()->cart->calculate_shipping();
 ?>
 
 <div class="wopb-checkout-review-order">
-	<h2 class="wopb-order-section-title"><?php echo $attr['showTitle'] ? esc_attr($attr['sectionTitle']) : ''; ?></h2>
+	<h2 class="wopb-order-section-title"><?php echo ( $attr['showTitle'] ? esc_attr($attr['sectionTitle']) : '' ); ?></h2>
     <?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
 	<div id="order_review" class="woocommerce-checkout-review-order">
 		<table class="shop_table wopb-checkout-review-table">
@@ -34,7 +35,7 @@ WC()->cart->calculate_shipping();
                                 <div class="wopb-product-info">
                                     <?php
                                         if ( $attr['enableImage'] ) {
-                                            echo apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key );
+                                            echo apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key ); //phpcs:ignore
                                         }
                                     ?>
                                     <span class="wopb-product-name">

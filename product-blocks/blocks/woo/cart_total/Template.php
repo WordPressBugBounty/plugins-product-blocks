@@ -1,5 +1,6 @@
 <?php
 	defined( 'ABSPATH' ) || exit;
+	
 	if (isset($_POST['calc_shipping_country'])) { //phpcs:disable WordPress.Security.NonceVerification.Missing
 		if (class_exists('WC_Shortcode_Cart')) {
 			WC_Shortcode_Cart::calculate_shipping();
@@ -26,7 +27,7 @@
 			<tbody>
 				<tr class="cart-subtotal">
 					<th><?php echo esc_html( $attr['subTotalTxt'] ); ?></th>
-					<td class="wopb-total-price" data-title="<?php echo $attr['subTotalTxt'] ? esc_html($attr['subTotalTxt']) :esc_attr__( 'Subtotal', 'product-blocks' ); ?>"><?php wc_cart_totals_subtotal_html(); ?></td>
+					<td class="wopb-total-price" data-title="<?php echo ( $attr['subTotalTxt'] ? esc_html($attr['subTotalTxt']) :esc_attr__( 'Subtotal', 'product-blocks' ) ); ?>"><?php wc_cart_totals_subtotal_html(); ?></td>
 				</tr>
 
 				<!-- // Coupon LVL -->
@@ -89,8 +90,8 @@
 				<?php do_action( 'woocommerce_cart_totals_before_order_total' ); ?>
 				
 				<tr class="order-total">
-					<th><?php echo $attr['totalTxt'] ? esc_html($attr['totalTxt']) : esc_html__( 'Total', 'product-blocks' ); ?></th>
-					<td class="wopb-total-price" data-title="<?php echo $attr['totalTxt'] ? esc_html($attr['totalTxt']) : esc_html__( 'Total', 'product-blocks' ); ?>"><?php wc_cart_totals_order_total_html(); ?></td>
+					<th><?php echo ( $attr['totalTxt'] ? esc_html($attr['totalTxt']) : esc_html__( 'Total', 'product-blocks' ) ); ?></th>
+					<td class="wopb-total-price" data-title="<?php echo ( $attr['totalTxt'] ? esc_html($attr['totalTxt']) : esc_html__( 'Total', 'product-blocks' ) ); ?>"><?php wc_cart_totals_order_total_html(); ?></td>
 				</tr>
 			</tbody>
 			<?php do_action( 'woocommerce_cart_totals_after_order_total' ); ?>

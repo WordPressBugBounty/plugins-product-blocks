@@ -43,7 +43,7 @@ class Cart_Table {
 
     function woocommerce_clear_cart_url() {
         global $woocommerce;
-        if ( isset( $_GET['empty-cart'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if ( isset( $_GET['empty-cart'] ) ) { // phpcs:ignore
             $woocommerce->cart->empty_cart();
             header("Location: ".wc_get_cart_url());
             exit();

@@ -7,6 +7,7 @@ defined( 'ABSPATH' ) || exit;
     do_action( 'woocommerce_before_cart' );
     WC()->cart->calculate_totals();
     WC()->cart->calculate_shipping();
+    $allowed_html_tags = wopb_function()->allowed_html_tags();
 
     function product_remove($args) {
         echo '<div class="product-remove">';
@@ -108,7 +109,11 @@ defined( 'ABSPATH' ) || exit;
                                     echo product_thumbnail($args); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
                                 ?>
                             </td>
-                            <td data-title="<?php echo esc_attr(  $attr['productHead'], 'product-blocks' ); ?>">
+                            <td data-title="<?php
+                                // phpcs:ignore WordPress.CodeAnalysis.EscapedNotTranslated.Found echo esc_attr( $attr['productHead'] );
+                                echo esc_attr( $attr['productHead'] );
+                            ?>">
+
                                 <div class="wopb-cart-table-product-details">
                                     <div class="wopb-cart-table-medium">
                                         <?php
@@ -121,7 +126,8 @@ defined( 'ABSPATH' ) || exit;
 
                                     <div class="wopb-cart-table-product-section">
                                         <?php
-                                            echo $cart_item_name; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                                            $cart_item_name_safe = wopb_function()->wp_kses_safe( $cart_item_name);
+                                            echo $cart_item_name_safe; // phpcs:ignore
                                             do_action( 'woocommerce_after_cart_item_name', $args['cart_item'], $args['cart_item_key'] );
                                             echo wc_get_formatted_cart_item_data( $args['cart_item'] ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 
@@ -133,7 +139,10 @@ defined( 'ABSPATH' ) || exit;
                                 </div>
                             </td>
 
-                            <td class="wopb-cart-table-price" data-title="<?php echo esc_attr(  $attr['priceHead'], 'product-blocks' ); ?>">
+                            <td class="wopb-cart-table-price" data-title="<?php 
+                                // phpcs:ignore WordPress.CodeAnalysis.EscapedNotTranslated.Found
+                                    echo esc_attr( $attr['priceHead'] );
+                                ?>">
                                 <?php echo apply_filters( 'woocommerce_cart_item_price', WC()->cart->get_product_price( $product ), $args['cart_item'], $args['cart_item_key'] ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                             </td>
 
@@ -143,24 +152,24 @@ defined( 'ABSPATH' ) || exit;
                                         1 <input
                                             type="hidden"
                                             class="qty wopb-quantity"
-                                            name="cart[<?php echo $args['cart_item_key']; ?>][qty]"
+                                            name="cart[<?php echo esc_attr($args['cart_item_key']); ?>][qty]"
                                             value="1"
                                         />
                                     <?php
                                         }else {
                                             if( ! empty( $attr['plusMinusShow'] ) ) {
                                     ?>
-                                        <span class="wopb-add-to-cart-minus wopb wopb-qty-ctrl"><?php echo wopb_function()->svg_icon('minus_2'); ?></span>
+                                        <span class="wopb-add-to-cart-minus wopb wopb-qty-ctrl"><?php echo wp_kses( wopb_function()->svg_icon('minus_2'), $allowed_html_tags ); ?></span>
                                     <?php } ?>
                                         <input
                                             type="number"
                                             class="qty wopb-qty"
-                                            name="cart[<?php echo $args['cart_item_key']; ?>][qty]"
+                                            name="cart[<?php echo esc_attr($args['cart_item_key']); ?>][qty]"
                                             value="<?php echo  $args['cart_item']['quantity']; ?>"
                                             min="0"
                                         />
                                     <?php if( ! empty( $attr['plusMinusShow'] ) ) { ?>
-                                        <span class="wopb-add-to-cart-plus wopb-qty-ctrl"><?php echo wopb_function()->svg_icon('plus_2'); ?></span>
+                                        <span class="wopb-add-to-cart-plus wopb-qty-ctrl"><?php echo wp_kses( wopb_function()->svg_icon('plus_2'), $allowed_html_tags ); ?></span>
                                     <?php } } ?>
                                 </div>
                             </td>
@@ -236,6 +245,9 @@ defined( 'ABSPATH' ) || exit;
     }
 ?>
 
-<?php echo $cross_sell_product; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+<?php 
+    $cross_sell_product_safe = wopb_function()->wp_kses_safe($cross_sell_product);
+    echo $cross_sell_product_safe; // phpcs:ignore
+?>
 
 <?php do_action( 'woocommerce_after_cart' ); ?>

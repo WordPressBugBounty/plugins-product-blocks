@@ -83,7 +83,7 @@ class Options{
 			) : 'https://account.wpxpo.com/checkout/?edd_license_key=' . Xpo::get_lc_key();
 
 			$text                     = ! defined( 'WOPB_PRO_VER' ) ? esc_html__( 'Upgrade to Pro', 'product-blocks' ) : esc_html__( 'Renew License', 'product-blocks' );
-			$upgrade_link['wopb_pro'] = '<a style="color: #e83838; font-weight: bold;" target="_blank" href="' . esc_url( $url ) . '">' . $text . '</a>';
+			$upgrade_link['wopb_pro'] = '<a style="color: #e83838; font-weight: bold;" target="_blank" href="' . esc_url( $url ) . '">' . wopb_function()->core_esc_wp( $text ) . '</a>';
 		}
 		return array_merge( $setting_link, $links, $upgrade_link );
     }
@@ -219,7 +219,7 @@ class Options{
         if ( wopb_function()->get_setting('wopb_builder') == 'true' && current_user_can( 'manage_options' ) ) {
             add_meta_box(
                 'wopb-single-product-meta-box',
-                '<div class="wopb-single-product-meta-box"><img src="' . WOPB_URL . 'assets/img/logo-sm.svg" /><span>WowStore Settings</span></div>',
+                '<div class="wopb-single-product-meta-box"><img src="' . esc_url( WOPB_URL . 'assets/img/logo-sm.svg' ) . '" /><span>'. esc_html__('WowStore Settings', 'product-blocks') .'</span></div>',
                 array( $this, 'builder_product_metabox_html' ),
                 'product',
                 'side',

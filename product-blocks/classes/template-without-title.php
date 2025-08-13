@@ -20,8 +20,8 @@ if ( $is_block_theme ) {
 	if ( ! $WOPB_HEADER_ID ) {
 		ob_start();
         block_template_part('header');
-		$header = ob_get_clean();
-		echo '<header class="wp-block-template-part">'.$header.'</header>';
+		$header_safe = wopb_function()->core_esc_wp(ob_get_clean());
+		echo '<header class="wp-block-template-part">'.$header_safe.'</header>'; // phpcs:ignore
     }
 } else {
 	get_header();
@@ -54,8 +54,8 @@ if ( $is_block_theme ) {
 	if ( ! $WOPB_FOOTER_ID ) {
 		ob_start();
         block_template_part('footer');
-		$footer = ob_get_clean();
-		echo '<footer class="wp-block-template-part">'.$footer.'</footer>';
+		$footer_safe = wopb_function()->core_esc_wp(ob_get_clean());
+		echo '<footer class="wp-block-template-part">'.$footer_safe.'</footer>';
     }
 	wp_head();
 	wp_footer(); ?>

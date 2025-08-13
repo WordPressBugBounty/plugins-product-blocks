@@ -142,7 +142,7 @@ class REST_API {
 	 */
     public function popular_posts_tracker_callback( $server ) {
 		$params = $server->get_params();
-        if ( ! ( isset( $params['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+        if ( ! isset( $params['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			die();
 		}
 		$post_id = sanitize_text_field( $params['postID'] );
@@ -152,7 +152,7 @@ class REST_API {
 			update_post_meta( $post_id, '__product_views_count', $count ? (int)$count + 1 : 1 );
 
 			// Recently View Products
-			$viewed_products = empty( $_COOKIE['__wopb_recently_viewed'] ) ? [] : (array) explode( '|', sanitize_text_field( $_COOKIE['__wopb_recently_viewed'] ) );
+			$viewed_products = empty( $_COOKIE['__wopb_recently_viewed'] ) ? [] : (array) explode( '|', sanitize_text_field( wp_unslash( $_COOKIE['__wopb_recently_viewed'] ) ) );
 			if ( ! in_array( $post_id, $viewed_products ) ) {
 				$viewed_products[] = $post_id;
 			}
@@ -174,7 +174,7 @@ class REST_API {
 	 * @return ARRAY | \WP_REST_Response Taxonomy List as Array
 	 */
 	public function wopb_route_common_data( $prams ) {
-		if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return rest_ensure_response( array() );
 		}
 
@@ -253,7 +253,7 @@ class REST_API {
 	 * @return ARRAY | Response as Array
 	 */
 	public function wopb_route_preview_data( $prams ) {
-		if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return rest_ensure_response( array() );
 		}
 
@@ -364,7 +364,7 @@ class REST_API {
 	 * @return ARRAY | Response as Array
 	 */
 	public function wopb_route_category_data( $prams ) {
-		if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return rest_ensure_response( array() );
 		}
 
@@ -384,7 +384,7 @@ class REST_API {
 	 * @return ARRAY | Response Image Size as Array
 	 */
 	public function wopb_route_post_data( $prams ) {
-		if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
 

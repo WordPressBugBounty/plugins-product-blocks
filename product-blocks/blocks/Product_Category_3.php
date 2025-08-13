@@ -214,7 +214,7 @@ class Product_Category_3{
                 $wraper_after .= '</div>';
                 $wraper_after .= '</div>';
 
-                wp_reset_query();
+                wp_reset_postdata();
             }
 
             return $noAjax ? $post_loop : $wraper_before . $wrapper_main_content . $wraper_after;

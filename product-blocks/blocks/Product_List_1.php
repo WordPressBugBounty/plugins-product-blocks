@@ -272,12 +272,12 @@ class Product_List_1{
                 $wraper_after .= '</div>';
             $wraper_after .= '</div>';
 
-            wp_reset_query();
+            wp_reset_postdata();
         }
 
         if ( $noAjax && $attr['ajax_source'] == 'filter' || !($recent_posts->have_posts()) ) {
             if ( $post_loop === '' ) {
-                $wrapper_main_content .= '<span class="wopb-no-product-found">' . __('No products were found of your matching selection', 'product-blocks') . '</span>';
+                $wrapper_main_content .= '<span class="wopb-no-product-found">' . esc_html__('No products were found of your matching selection', 'product-blocks') . '</span>';
             }
             return $wrapper_main_content;
         }

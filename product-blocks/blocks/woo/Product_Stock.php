@@ -39,7 +39,7 @@ class Product_Stock{
             );
         
             if ( isset( $labels[ $stock_status ] ) && $labels[ $stock_status ] ) {
-                $availability['availability'] = __( $labels[ $stock_status ], 'product-blocks' );
+                $availability['availability'] = $labels[ $stock_status ];
             } else {
                 return ;
             }

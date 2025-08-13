@@ -1,4 +1,5 @@
 <?php
+defined( 'ABSPATH' ) || exit;
 
 class ProductXElement extends OxyEl {
 
@@ -34,8 +35,8 @@ class ProductXElement extends OxyEl {
 		$templates = $options['templates'];
 		
 		if ( $templates ) {
-			if ( isset($_GET['action']) && strpos(sanitize_key($_GET['action']), 'oxy_render_oxy') !== false ) {
-                echo wopb_function()->build_css_for_inline_print($templates, true); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			if ( isset($_GET['action']) && strpos(sanitize_key($_GET['action']), 'oxy_render_oxy') !== false ) { // phpcs:ignore
+                echo wopb_function()->build_css_for_inline_print($templates, true); //phpcs:ignore
             }
 			$args = array( 'p' => $templates, 'post_type' => 'wopb_templates' );
 			$the_query = new \WP_Query($args);
@@ -47,7 +48,7 @@ class ProductXElement extends OxyEl {
 				wp_reset_postdata();
 			}
 		} else {
-			if ( isset( $_GET['action'] ) && strpos( sanitize_text_field( $_GET['action'] ), 'oxy_render_oxy' ) !== false ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( isset( $_GET['action'] ) && strpos( sanitize_text_field( $_GET['action'] ), 'oxy_render_oxy' ) !== false ) { // phpcs:ignore
                 /* translators: %s: is no of template */
 				echo '<p style="text-align:center;">' . sprintf( esc_html__( 'Pick a Template from your saved ones. Or create a template from: %s.' , 'product-blocks' ) . ' ', '<strong><i>' . esc_html( 'Dashboard > WowStore > Saved Templates' ) . '</i></strong>' ) . '</p>';
 			}

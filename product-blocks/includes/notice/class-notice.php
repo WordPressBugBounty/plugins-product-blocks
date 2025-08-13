@@ -84,14 +84,18 @@ class Notice {
 	public function hello_bar_callback( \WP_REST_Request $request ) {
 		$request_params = $request->get_params();
 		$type           = isset( $request_params['type'] ) ? $request_params['type'] : '';
+		$duration       = isset( $request_params['duration'] ) ? $request_params['duration'] : null;
+		$status = 'failed';
 
-		if ( 'hello_bar' === $type ) {
-			Xpo::handle_hellobar_action( 'set' );
+		if ( 'hello_bar' === $type && $duration ) {
+			$status = 'success';
+			Xpo::set_transient_without_cache( 'wopb_hellobar', 'hide', $duration );
 		}
 
 		return new \WP_REST_Response(
 			array(
 				'success' => true,
+				'status' => $status,
 				'message' => __( 'Hello Bar Action performed', 'product-blocks' ),
 			),
 			200
@@ -106,25 +110,25 @@ class Notice {
 	public function set_dismiss_notice_callback() {
 
 		// Durbin notice dismiss.
-		if ( isset( $_GET['wopb_durbin_key'] ) && $_GET['wopb_durbin_key'] ) {
-			$durbin_key = sanitize_text_field( $_GET['wopb_durbin_key'] );
+		if ( isset( $_GET['wopb_durbin_key'] ) && sanitize_text_field( wp_unslash( $_GET['wopb_durbin_key'] ) ) ) { // phpcs:ignore
+			$durbin_key = sanitize_text_field( wp_unslash( $_GET['wopb_durbin_key'] ) ); // phpcs:ignore 
 			Xpo::set_transient_without_cache( 'wopb_durbin_notice_' . $durbin_key, 'off' );
 
-			if ( isset( $_GET['wopb_get_durbin'] ) && 'get' === $_GET['wopb_get_durbin'] ) {
+			if ( isset( $_GET['wopb_get_durbin'] ) && 'get' === sanitize_text_field( $_GET['wopb_get_durbin'] ) ) { // phpcs:ignore
 				DurbinClient::send( DurbinClient::ACTIVATE_ACTION );
 			}
 		}
 
 		// Install notice dismiss
-		if ( isset( $_GET['wopb_install_key'] ) && $_GET['wopb_install_key'] ) {
-			$install_key = sanitize_text_field( $_GET['wopb_install_key'] );
+		if ( isset( $_GET['wopb_install_key'] ) && sanitize_text_field( wp_unslash( $_GET['wopb_install_key'] ) ) ) { // phpcs:ignore
+			$install_key = sanitize_text_field( wp_unslash( $_GET['wopb_install_key'] ) ); // phpcs:ignore
 			Xpo::set_transient_without_cache( 'wopb_install_notice_' . $install_key, 'off' );
 		}
 
-		if ( isset( $_GET['disable_wopb_notice'] ) ) {
-			$notice_key = sanitize_text_field( $_GET['disable_wopb_notice'] );
-			if ( isset( $_GET['wopb_interval'] ) && '' != $_GET['wopb_interval'] ) {
-				$interval = (int) $_GET['wopb_interval'];
+		if ( isset( $_GET['disable_wopb_notice'] ) ) { // phpcs:ignore
+			$notice_key = sanitize_text_field( wp_unslash( $_GET['disable_wopb_notice'] ) ); // phpcs:ignore
+			if ( isset( $_GET['wopb_interval'] ) && sanitize_text_field( wp_unslash($_GET['wopb_interval'])) ) { // phpcs:ignore
+				$interval = (int) sanitize_text_field( wp_unslash($_GET['wopb_interval']) ); // phpcs:ignore
 				Xpo::set_transient_without_cache( 'wopb_get_pro_notice_' . $notice_key, 'off', $interval );
 			} else {
 				Xpo::set_transient_without_cache( 'wopb_get_pro_notice_' . $notice_key, 'off' );
@@ -138,7 +142,6 @@ class Notice {
 	 * @return void
 	 */
 	public function admin_notices_callback() {
-		$this->other_plugin_install_notice_callback( 'required' );
 		$this->wopb_dashboard_notice_callback();
 		$this->wopb_dashboard_durbin_notice_callback();
 		$this->our_plugin_install_notice_callback();
@@ -190,7 +193,7 @@ class Notice {
 
 		foreach ( $banner_notices as $key => $notice ) {
 			$notice_key = isset( $notice['key'] ) ? $notice['key'] : $this->notice_version;
-			if ( isset( $_GET['disable_wopb_notice'] ) && $notice_key === $_GET['disable_wopb_notice'] ) {
+			if ( isset( $_GET['disable_wopb_notice'] ) && $notice_key === sanitize_key( $_GET['disable_wopb_notice'] ) ) { // phpcs:ignore
 				return;
 			}
 
@@ -271,9 +274,10 @@ class Notice {
 				'icon'		=> WOPB_URL . 'assets/img/notice_logo/orange_50_offer.svg',
 				'visibility' => ! Xpo::is_lc_active(),
 				'content_heading'    => __( 'Final Hour Sales Alert:', 'product-blocks' ),
-				'content_subheading' => __( '<strong>WowStore</strong> on Sale - Get %s on this All-in-One Store Builder! ', 'product-blocks' ),
+				'content_subheading' => '<strong>WowStore</strong> on Sale - Get %s on this All-in-One Store Builder! ',
 				'discount_content'   => 'up to 50% OFF',
 				'is_discount_logo'   => true,
+				'border_color' => '#ff4b7c',
 			),
 			array(
 				'key'        => 'wopb_content_notice_summer_sale_2',
@@ -287,10 +291,11 @@ class Notice {
 				'icon'		=>  WOPB_URL . 'assets/img/logo-sm.svg',
 				'visibility' => ! Xpo::is_lc_active(),
 				'content_heading'    => __( 'Massive Sales Alert:', 'product-blocks' ),
-				'content_subheading' => __( 'WowStore on Sale - Get %s on this All-in-One Store Builder!', 'product-blocks' ),
+				'content_subheading' => 'WowStore on Sale - Get %s on this All-in-One Store Builder!',
 				'discount_content'   => 'up to 55% OFF',
-				'border_color'       => '#ff4b7c',
+				'border_color'       => '#ff176b',
 				'is_discount_logo'   => false,
+				'bg_color'	=>  '#ff176b'
 			),
 			array(
 				'key'        => 'wopb_content_notice_summer_sale_3',
@@ -304,9 +309,10 @@ class Notice {
 				'icon'		=> WOPB_URL . 'assets/img/notice_logo/green_50_offer.svg',
 				'visibility' => ! Xpo::is_lc_active(),
 				'content_heading'    => __( 'Grab the Flash Sale Offer:', 'product-blocks' ),
-				'content_subheading' => __( 'Sale on <strong>WowStore</strong> - Enjoy %s on the complete store building solution! ', 'product-blocks' ),
+				'content_subheading' => 'Sale on <strong>WowStore</strong> - Enjoy %s on the complete store building solution! ',
 				'discount_content'   => 'up to 50% OFF',
 				'is_discount_logo'   => true,
+				'border_color' => '#ff4b7c',
 			),
 			array(
 				'key'        => 'wopb_content_notice_summer_sale_4',
@@ -320,10 +326,11 @@ class Notice {
 				'icon'		=>  WOPB_URL . 'assets/img/logo-sm.svg',
 				'visibility' => ! Xpo::is_lc_active(),
 				'content_heading'    => __( 'Exclusive Sale is Live:', 'product-blocks' ),
-				'content_subheading' => __( 'Sale on WowStore - Enjoy %s on the complete store building solution! ', 'product-blocks' ),
+				'content_subheading' => 'Sale on WowStore - Enjoy %s on the complete store building solution! ',
 				'discount_content'   => 'up to 55% OFF',
-				'border_color'       => '#ff4b7c',
+				'border_color'       => '#aa03ff',
 				'is_discount_logo'   => false,
+				'bg_color'	=>  '#aa03ff'
 			),
 		);
 
@@ -331,11 +338,13 @@ class Notice {
 
 		foreach ( $content_notices as $key => $notice ) {
 			$notice_key = isset( $notice['key'] ) ? $notice['key'] : $this->notice_version;
-			if ( isset( $_GET['disable_wopb_notice'] ) && $notice_key === $_GET['disable_wopb_notice'] ) {
+			if ( isset( $_GET['disable_wopb_notice'] ) && $notice_key === sanitize_key( $_GET['disable_wopb_notice'] ) ) { // phpcs:ignore
 				return;
 			}
 
-			$border_color = $notice['border_color'];
+			$border_color = isset($notice['border_color']) && $notice['border_color'] ? $notice['border_color'] : '';
+			$bg_color = isset($notice['bg_color']) && $notice['bg_color'] ? $notice['bg_color'] : '';
+			
 			$current_time = gmdate( 'U' );
 			$notice_start = gmdate('U', strtotime($notice['start']));
 			$notice_end = gmdate('U', strtotime($notice['end']));
@@ -367,7 +376,7 @@ class Notice {
 						<?php
 						if (isset( $notice['icon'] ) && strlen($notice['icon']) > 0) {
 							?>
-								<div class="wopb-notice-icon"> <img src="<?php echo esc_url( $notice['icon'] ); ?>"/>  </div>
+								<div class="wopb-notice-icon <?php echo isset($notice['is_discount_logo']) && $notice['is_discount_logo'] ? 'wopb-discount-logo': '' ?>"> <img src="<?php echo esc_url( $notice['icon'] ); ?>"/>  </div>
 							<?php
 						}
 						?>
@@ -382,8 +391,8 @@ class Notice {
                                 ?>
 							</div>
 							<div class="wopb-notice-buttons">
-								<a class="wopb-notice-btn button button-primary <?php echo ( isset( $notice['is_discount_logo'] ) && $notice['is_discount_logo'] ) ? "btn-outline" : ""; ?>" style="<?php echo ( isset( $notice['is_discount_logo'] ) && $notice['is_discount_logo']) ? 'color: #2271b1; border-color: #2271b1;' : ''; ?>" href="<?php echo esc_url( $url ); ?>" target="_blank">
-									<strong><?php isset( $notice['is_discount_logo'] ) && $notice['is_discount_logo'] ? esc_html_e( 'CLAIM YOUR DISCOUNT!', 'product-blocks' ) : esc_html_e( 'UPGRADE TO PRO', 'product-blocks' ); ?></strong>
+								<a class="wopb-notice-btn button button-primary <?php echo ( isset( $notice['is_discount_logo'] ) && $notice['is_discount_logo'] ) ? "btn-outline" : "btn-normal"; ?>" style="<?php echo ! empty( $bg_color ) ? 'background-color:' . esc_attr( $bg_color ) . ' !important; border-color:' . esc_attr( $bg_color )  .';' : ''; ?>" href="<?php echo esc_url( $url ); ?>" target="_blank">
+									<strong><?php isset( $notice['is_discount_logo'] ) && $notice['is_discount_logo'] ? esc_html_e( 'CLAIM YOUR DISCOUNT!', 'product-blocks' ) : esc_html_e( 'UPGRADE TO PRO &nbsp;🡪', 'product-blocks' ); ?></strong>
 								</a>
 							</div>
 						</div>
@@ -422,7 +431,8 @@ class Notice {
 		);
 
 		foreach ( $notice_content as $key => $notice ) {
-				if ( ( isset( $_GET['wopb_install_key'] ) && $_GET['wopb_install_key'] === $notice['type'] ) ||
+				// phpcs:ignore
+				if ( ( isset( $_GET['wopb_install_key'] ) && sanitize_key( $_GET['wopb_install_key'] ) === $notice['type'] ) ||
 					'off' === Xpo::get_transient_without_cache( 'wopb_install_notice_' . $notice['type'], )
 				) {
 					return;
@@ -434,7 +444,7 @@ class Notice {
 				switch ( $notice['type'] ) { 
 					case 'wow_revenue':
 						$revenue_installed = file_exists( WP_PLUGIN_DIR . '/revenue/revenue.php' );
-						$campaign_url      = esc_url( admin_url( 'admin.php?page=revenue#/campaigns' ) );
+						$campaign_url      = admin_url( 'admin.php?page=revenue#/campaigns' );
 						$is_revenue_active = is_plugin_active( 'revenue/revenue.php' );
 						$cmp_count         = 0;
 						if ( $is_revenue_active ) {
@@ -469,25 +479,25 @@ class Notice {
 									<?php
 									if ( is_plugin_active( 'revenue/revenue.php' ) ) {
 										?>
-										<a  href="<?php echo $campaign_url; ?>" class="wopb-wowrev-notice__button">Create Discount WowRevenue<span></span></a>
+										<a  href="<?php echo esc_url($campaign_url); ?>" class="wopb-wowrev-notice__button">Create Discount WowRevenue<span></span></a>
 										<?php
 									} elseif ( $revenue_installed && !is_plugin_active( 'revenue/revenue.php' ) ) {
 										?>
-										<a href="#" data-plugin-slug="<?php echo esc_attr( "wow_revenue" ); ?>" class="wopb-wowrev-btn wopb-wowrev-notice__button wopb-revx-active wopb-revx-activate wc-install-btn wopb-install-btn" data-link="<?php echo $campaign_url; ?>" data-api-url="<?php echo esc_url( rest_url( '/wopb/v2/install-extra-plugin' ) ); ?>"><span class="dashicons dashicons-image-rotate"></span>Active WowRevenue <span></span></a>
+										<a href="#" data-plugin-slug="<?php echo esc_attr( "wow_revenue" ); ?>" class="wopb-wowrev-btn wopb-wowrev-notice__button wopb-revx-active wopb-revx-activate wc-install-btn wopb-install-btn" data-link="<?php echo esc_url($campaign_url); ?>" data-api-url="<?php echo esc_url( rest_url( '/wopb/v2/install-extra-plugin' ) ); ?>"><span class="dashicons dashicons-image-rotate"></span>Active WowRevenue <span></span></a>
 										<?php
 									} elseif ( ! $revenue_installed ) {
 										?>
-										<a href="#" data-plugin-slug="<?php echo esc_attr( "wow_revenue" ); ?>" class="wopb-wowrev-btn wopb-wowrev-notice__button wopb-revx-install wc-install-btn wopb-install-btn" data-link="<?php echo $campaign_url; ?>" data-api-url="<?php echo esc_url( rest_url( '/wopb/v2/install-extra-plugin' ) ); ?>"><span class="dashicons dashicons-image-rotate"></span>Free Install WowRevenue<span></span></a>
+										<a href="#" data-plugin-slug="<?php echo esc_attr( "wow_revenue" ); ?>" class="wopb-wowrev-btn wopb-wowrev-notice__button wopb-revx-install wc-install-btn wopb-install-btn" data-link="<?php echo esc_url($campaign_url); ?>" data-api-url="<?php echo esc_url( rest_url( '/wopb/v2/install-extra-plugin' ) ); ?>"><span class="dashicons dashicons-image-rotate"></span>Free Install WowRevenue<span></span></a>
 										<?php
 									}
 									?>
 									<div class="wopb-notice-close wopb-wowrev-notice__notice-close">
-										<a href="<?php echo esc_url( add_query_arg( array( 'wopb_install_key' => $notice['type'] ) ) ); ?>" ><span class="dashicons dashicons-no-alt"></span></a>
+										<a href="<?php echo esc_url( add_query_arg( array( 'wopb_install_key' => $notice['type'], 'rv_banner_nonce' => wp_create_nonce( 'ultp-revenue-install-nonce' )  ) ) ); ?>" ><span class="dashicons dashicons-no-alt"></span></a>
 									</div>
 								</div>
 							</div>
 							<?php
-							echo ob_get_clean();
+							echo ob_get_clean(); // phpcs:ignore
 						break;
 					default:
 					// code...
@@ -528,11 +538,16 @@ class Notice {
 				width: 100%;
 			}
 			.wopb-notice-icon {
-				margin-left: 15px;
+				margin-left: 10px;
 			}
 			.wopb-notice-icon img {
 				max-width: 42px;
 				width: 100%;
+			}
+			.wopb-discount-logo img {
+				max-width: unset !important;
+				height: 70px !important;
+				width: 70px !important;
 			}
 			.wopb-notice-content-wrapper {
 				display: flex;
@@ -540,15 +555,33 @@ class Notice {
 				gap: 8px;
 				font-size: 14px;
 				line-height: 20px;
-				margin-left: 15px;
+				margin-left: 10px;
 			}
 			.wopb-notice-buttons {
 				display: flex;
 				align-items: center;
 				gap: 15px;
 			}
+			.wopb-notice-buttons .wopb-notice-btn {
+				color: #fff;
+				background-color: #ff4b7c !important;
+				border: 1px solid #ff4b7c;
+				border-radius: 5px;
+				font-size: 14px;
+				font-weight: 600;
+				text-transform: uppercase;
+			}
 			.wopb-notice-btn.btn-outline {
+				color: #ff4b7c;
 				background: transparent !important;
+			}
+			.wopb-notice-btn.btn-normal {
+				padding: 0px 13px !important;
+			}
+			.wopb-notice-btn.btn-outline:focus,
+			.wopb-notice-btn.btn-outline:hover {
+				color: #ff4b7c;
+				border-color: #ff4b7c;
 			}
 			.wopb-notice-dont-save-money {
 				font-size: 12px;
@@ -831,8 +864,9 @@ class Notice {
 	 */
 	public function wopb_dashboard_durbin_notice_callback() {
 		$durbin_key = 'wopb_durbin_dc1';
+		// phpcs:ignore
 		if (
-			isset( $_GET['wopb_durbin_key'] ) ||
+			isset( $_GET['wopb_durbin_key'] ) || // phpcs:ignore
 			'off' === Xpo::get_transient_without_cache( 'wopb_durbin_notice_' . $durbin_key ) ||
 			defined( 'WOPB_PRO_VER' )
 		) {
@@ -931,50 +965,6 @@ class Notice {
 	}
 
 
-
-	/**
-	 * Woocommerce Notice HTML
-	 *
-	 * @since v.1.0.0
-	 * @return STRING | HTML
-	 */
-	public function other_plugin_install_notice_callback( $type = '' ) {
-		$install_key_tran = 'woocommerce';
-		$plugin_slug      = 'woocommerce';
-		if ( 'required' !== $type ) {
-			if ( ( isset( $_GET['wopb_install_key'] ) && $_GET['wopb_install_key'] === $install_key_tran ) ||
-				'off' === Xpo::get_transient_without_cache( 'wopb_install_notice_' . $install_key_tran, )
-			) {
-				return;
-			}
-		}
-
-		if ( function_exists( 'get_woocommerce_currency_symbol' ) ) {
-			return;
-		}
-
-		$this->install_notice_css();
-		$this->install_notice_js();
-		?>
-			<div class="wopb-pro-notice wopb-wc-install wc-install">
-				<img width="100" src="<?php echo esc_url( WOPB_URL . 'assets/img/woocommerce.png' ); ?>" alt="logo" />
-				<div class="wopb-install-body">
-					<h3><?php esc_html_e( 'Welcome to WowStore.', 'product-blocks' ); ?></h3>
-					<p><?php esc_html_e( 'WowStore is a WooCommerce-based plugin. So you need to installed & activate WooCommerce to start using WowStore.', 'product-blocks' ); ?></p>
-					<div class="wopb-install-btn-wrap">
-						<a class="wc-install-btn wopb-install-btn button button-primary" data-plugin-slug="<?php echo esc_attr( $plugin_slug ); ?>" href="#"><span class="dashicons dashicons-image-rotate"></span><?php file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' ) ? esc_html_e( ' Activate WooCommerce', 'product-blocks' ) : esc_html_e( ' Install WooCommerce', 'product-blocks' ); ?></a>
-						<?php if ( 'required' !== $type ) : ?>
-							<a href="<?php echo esc_url( add_query_arg( array( 'wopb_install_key' => $install_key_tran ) ) ); ?>" class="wopb-install-cancel wc-dismiss-notice">
-								<?php esc_html_e( 'Discard', 'product-blocks' ); ?>
-							</a>
-						<?php endif; ?>
-					</div>
-					<div id="installation-msg"></div>
-				</div>
-			</div>
-		<?php
-	}
-
 	/**
 	 * Plugin Install and Active Action
 	 *
@@ -982,10 +972,15 @@ class Notice {
 	 * @return STRING | Redirect URL
 	 */
 	public function install_activate_plugin() {
-		if ( ! isset( $_POST['install_plugin'] ) ) {
+		if ( 
+			! isset( $_POST['install_plugin'] ) ||
+			! current_user_can( 'manage_options' ) ||
+			! isset( $_POST['wopb_nonce'] ) || 
+            ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wopb_nonce'] ) ), 'wopb-nonce' )
+		) {
 			return wp_send_json_error( esc_html__( 'Invalid request.', 'product-blocks' ) );
 		}
-		$plugin_slug = sanitize_text_field( wp_unslash( $_POST['install_plugin'] ) );
+		$plugin_slug = sanitize_text_field( wp_unslash( $_POST['install_plugin'] ) ); // phpcs:ignore
 
 		Xpo::install_and_active_plugin( $plugin_slug );
 
@@ -1433,13 +1428,15 @@ class Notice {
 				$(document).on('click', '.wc-install-btn.wopb-install-btn', function(e) {
 					e.preventDefault();
 					const $that = $(this);
+					console.log("testing xyz");
 					console.log($that.attr('data-plugin-slug'), "data-plugin-slug");
 					$.ajax({
 						type: 'POST',
 						url: ajaxurl,
 						data: {
 							install_plugin: $that.attr('data-plugin-slug'),
-							action: 'wopb_install'
+							action: 'wopb_install',
+							wopb_nonce: wopb_option.security,
 						},
 						beforeSend: function() {
 							$that.parents('.wc-install').addClass('loading');
@@ -1466,8 +1463,11 @@ class Notice {
 	public function get_revenue_campaign_count() {
 
 		global $wpdb;
+		// phpcs:ignore
 		$res = $wpdb->get_row(
-			"SELECT COUNT(*) AS total_campaigns FROM {$wpdb->prefix}revenue_campaigns;"
+			$wpdb->prepare(
+				"SELECT COUNT(*) AS total_campaigns FROM {$wpdb->prefix}revenue_campaigns;"
+			) //phpcs:ignore
 		);
 
 		return $res;

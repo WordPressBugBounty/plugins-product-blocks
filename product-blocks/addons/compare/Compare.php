@@ -66,7 +66,8 @@ class Compare {
             add_filter('woocommerce_account_menu_items', array($this, 'compare_my_account_menu_items'), 10, );
             add_filter( 'woocommerce_get_query_vars', array( $this, 'woocommerce_query_vars' ) );
             add_action( 'woocommerce_account_' . $this->my_account_compare_end_point . '_endpoint', function () {
-                echo $this->compare_wrapper(); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                $compare_wrapper_safe = wopb_function()->wp_kses_safe($this->compare_wrapper());
+                echo $compare_wrapper_safe;
             });
         }
 
@@ -97,7 +98,6 @@ class Compare {
         $action_added = wopb_function()->get_setting( 'compare_action_added' );
         $action = 'add';
         $redirect = $compare_page && $action_added == 'redirect' ? ( ' data-redirect="' . esc_url( get_permalink( $compare_page ) ) . '"' ) : '';
-        $post_id = ! empty( $data['post_id'] ) ? ( 'data-postid="' . esc_attr( $data['post_id'] ) . '"' ) : '';
         $modal_wrapper_class = $action_added == 'sidebar' ? 'wopb-sidebar-wrap wopb-right_sidebar' : '';
         if( ! empty($data['action']) && $data['action'] == 'menu_block' ) {
             $action = 'menu_block';
@@ -105,16 +105,17 @@ class Compare {
         }else {
             $modal_wrapper_class .= $action_added == 'message' ? ' wopb-modal-toast-wrapper' : '';
         }
-        $modal_wrapper_attr = $modal_wrapper_class ? ( 'data-modal_wrapper_class="' . esc_attr( $modal_wrapper_class ) .'"' ) : '';
+        
         return [
             'button_attr' =>'
                 data-action="' . $action . '"
                 data-added-action="' . esc_attr( $action_added ) . '"' .
-                $redirect . $post_id . '
+                $redirect . '
+                data-postid="' . esc_attr( ! empty( $data['post_id'] ) ? $data['post_id'] : '' ) . '"
                 data-open-animation="wopb-' . esc_attr( wopb_function()->get_setting( 'compare_modal_open_animation' ) ) . '"
                 data-close-animation="wopb-' . esc_attr( wopb_function()->get_setting( 'compare_modal_close_animation' ) ) .'"
-                data-modal-loader="' . esc_attr( wopb_function()->get_setting( 'compare_modal_loading' ) ) .'"' .
-                $modal_wrapper_attr . '
+                data-modal-loader="' . esc_attr( wopb_function()->get_setting( 'compare_modal_loading' ) ) .'"
+                data-modal_wrapper_class="' . esc_attr( $modal_wrapper_class ) . '"
             ',
             'c_items' => $this->compare_id
         ];
@@ -231,16 +232,14 @@ class Compare {
         $data = array();
         $clear_cookie = false;
         if( isset( $_COOKIE['wopb_compare'] ) ) {
-            $data = $_COOKIE['wopb_compare'];
-            $data = json_decode( wp_unslash( $data ) );
-            if ( is_object( $data ) ) {
-                $data = (array) $data;
+            $cookie_data = wopb_function()->rest_sanitize_params( json_decode( wp_unslash( $_COOKIE['wopb_compare'] ?? '' ) ) );
+            if ( is_object( $cookie_data ) ) {
+                $cookie_data = (array) $cookie_data;
             }
-            $cookie_data = $data;
         }
         if( $user_id = get_current_user_id() ) {
             $data = get_user_meta( $user_id, 'wopb_compare_ids', true );
-            $data = is_array( $data ) ? $data : array();
+            $data = is_array( $data ) ? array_map( 'sanitize_text_field', $data ) : array();
             if( ! empty( $cookie_data ) ) {
                 $data = array_merge( $data, $cookie_data );
                 update_user_meta( $user_id, 'wopb_compare_ids', $data );
@@ -263,11 +262,13 @@ class Compare {
             setcookie('wopb_compare', '', time() - 3600, '/');
         ob_get_clean();
 
-        // Unset the cookie from the $_COOKIE array
-        unset($_COOKIE['wopb_compare']);
-        // Optionally, destroy the cookie variable
-        unset($GLOBALS['wopb_compare']);
-        unset($_COOKIE['wopb_compare']);
+        if ( isset( $_COOKIE['wopb_compare'] ) ) {
+            // Unset the cookie from the $_COOKIE array
+            unset( $_COOKIE['wopb_compare'] );
+            // Optionally, destroy the cookie variable
+            unset( $GLOBALS['wopb_compare'] );
+            unset( $_COOKIE['wopb_compare'] );
+        }
     }
     
 
@@ -503,16 +504,17 @@ class Compare {
      * @return void|null
      */
     public function wopb_compare_callback() {
-        if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['wpnonce'] ), 'wopb-nonce' ) ) {
+        if ( empty($_REQUEST['wpnonce']) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
             return ;
         }
 
-        $postId         = sanitize_text_field($_POST['postid']);
-        $action_type    = sanitize_text_field($_POST['type']);
+        $postId      = isset( $_POST['postid'] ) ? sanitize_text_field( wp_unslash( $_POST['postid'] ) ) : '';
+        $action_type = isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : '';
+
         $params = array(
             'source'        => 'ajax',
             'postid'        => $postId,
-            'added_action'  => sanitize_text_field( $_POST['added_action'] ),
+            'added_action'  => isset($_POST['added_action']) ? sanitize_text_field($_POST['added_action']) : '', // phpcs:ignore
             'action_type'   => $action_type,
         );
 
@@ -522,16 +524,16 @@ class Compare {
             if ( $postId && $action_type == 'add' ) {
                 if( ! in_array( $postId, $data_id ) ){
                     $data_id[] = $postId;
-                    $message = esc_html__('Compare Added.', 'product-blocks');
+                    $message = __('Compare Added.', 'product-blocks');
                 }
             }elseif ( $action_type == 'clear' ) {
                 $this->clear_compare_cookie();
                 $data_id = [];
-                $message = esc_html__( 'Compare Item Clear.', 'product-blocks' );
+                $message = __( 'Compare Item Clear.', 'product-blocks' );
             }elseif ($postId && $action_type != 'nav_popup' ) {
                 if ( false !== $key = array_search( $postId, $data_id ) ) {
                     unset( $data_id[$key] );
-                    $message = esc_html__( 'Compare Removed.', 'product-blocks' );
+                    $message = __( 'Compare Removed.', 'product-blocks' );
                 }
             }
             if( $user_id = get_current_user_id() ) {
@@ -578,7 +580,7 @@ class Compare {
         }
   
         $output .= '<div class="wopb-compare-wrapper ' . esc_attr( $wrapper_class ) . '">';
-            $output .= $content;
+            $output .= wopb_function()->core_esc_wp( $content );
         $output .= '</div>';
 
         return $output;
@@ -593,7 +595,7 @@ class Compare {
     public function modal_header() {
         $html = '<div class="wopb-modal-header">';
             $html .= '<span class="wopb-header-title">';
-                $html .= __('Compare Products', 'product-blocks');
+                $html .= esc_html__('Compare Products', 'product-blocks');
             $html .= '</span>';
             if ( wopb_function()->get_setting('compare_close_button') == 'yes' ) {
                 $html .= '<a class="wopb-modal-close">';
@@ -618,20 +620,20 @@ class Compare {
         $added_action = $added_action == 'message' ? 'clear_all' : $added_action;
         $html = '<div class="wopb-modal-footer">';
         if ( wopb_function()->get_setting('compare_clear') == 'yes' && count($compare_data) > 0 ) {
-            $html .= '<a class="wopb-compare-clear-btn" data-action="clear" data-added-action="' . esc_attr($added_action) . '" data-postid="' . $post_id . '">';
-                $html .= __('Clear All', 'product-blocks');
+            $html .= '<a class="wopb-compare-clear-btn" data-action="clear" data-added-action="' . esc_attr($added_action) . '" data-postid="' . esc_attr($post_id) . '">';
+                $html .= esc_html__('Clear All', 'product-blocks');
             $html .= '</a>';
         }
         if( wp_doing_ajax() && $added_action == 'sidebar' ) {
             $html .= '<a class="wopb-lets-compare-btn"';
-                $html .= 'data-postid="' . $post_id .'"';
+                $html .= 'data-postid="' . esc_attr( $post_id ) .'"';
                 $html .= 'data-action="nav_popup" ';
                 $html .= 'data-added-action="nav_popup"';
                 $html .= 'data-open-animation="wopb-' . esc_attr( wopb_function()->get_setting('compare_modal_open_animation') ) .'"';
                 $html .= 'data-close-animation="wopb-' . esc_attr( wopb_function()->get_setting('compare_modal_close_animation') ) . '"';
                 $html .= 'data-modal-loader="' . esc_attr( wopb_function()->get_setting('compare_modal_loading') ) . '"';
             $html .= '>';
-                $html .= __("Let's Compare", 'product-blocks');
+                $html .= esc_html__("Let's Compare", 'product-blocks');
             $html .= '</a>';
         }
         $html .= '</div>';
@@ -645,10 +647,10 @@ class Compare {
      * @return array
      */
     public function wopb_product_list_callback() {
-        if ( ! wp_verify_nonce( sanitize_key( $_REQUEST['wpnonce'] ), 'wopb-nonce' ) ) {
+        if ( empty($_REQUEST['wpnonce']) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
             return ;
         }
-        $params = ['s' => isset($_POST['search']) ? sanitize_text_field($_POST['search']) : ''];
+        $params = ['s' => isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '']; // phpcs:ignore
         return wp_send_json_success( array( 'html' => $this->product_list( $params ) ) );
         die();
     }
@@ -681,13 +683,13 @@ class Compare {
                                 $output .= $product->get_image( 'shop_thumbnail' );
                             $output .= '</a>';
                             $output .= '<div class="wopb-compare-product-content">';
-                                $output .= '<div class="wopb-compare-product-name">' . $product->get_title() . '</div>';
+                                $output .= '<div class="wopb-compare-product-name">' . esc_html( $product->get_title() ) . '</div>';
                                 $output .= '<div class="wopb-compare-product-review">';
                                     $output .= '<div class="wopb-star-rating" aria-label="product review">';
                                         $output .= '<span style="width: ' . esc_attr( $product->get_average_rating() ? ( $product->get_average_rating() / 5 ) * 100 : 0 ) . '%"></span>';
                                     $output .= '</div>';
                                     $output .= '<span class="wopb-review-count">';
-                                       $output .= esc_html( $product->get_rating_count() ) . ' ' . __( 'customer review', 'product-blocks' );
+                                       $output .= esc_html( $product->get_rating_count() ) . ' ' . esc_html__( 'customer review', 'product-blocks' );
                                     $output .= '</span>';
                                 $output .= '</div>';
                                 $output .= '<div class="wopb-compare-product-price">';
@@ -714,7 +716,7 @@ class Compare {
     public function nav_menu_item( $items, $args ) {
         $nav_location = wopb_function()->get_setting( 'compare_nav_menu_location' );
         if ( $nav_location )  {
-            $nav_menu = '<li class="menu-item">' . $this->compare_nav_menu() . '</li>';
+            $nav_menu = '<li class="menu-item">' . wopb_function()->core_esc_wp( $this->compare_nav_menu() ) . '</li>';
             if ( $args->theme_location ) {
                 if ( $args->theme_location == $nav_location ) {
                     $items .= $nav_menu;
@@ -740,7 +742,7 @@ class Compare {
         $nav_click_action   = wopb_function()->get_setting( 'compare_nav_click_action' );
 
         $output .= '<a
-            class="wopb-compare-nav-item ' . $nav_class .' "
+            class="wopb-compare-nav-item ' . esc_attr( $nav_class ) .' "
             data-action="' . ( $nav_click_action == 'popup' ? 'nav_popup' : 'redirect' ) .'"
             data-added-action="' . ( $nav_click_action == 'popup' ? 'nav_popup' : '' ) . '"
             data-postid="' . esc_attr( get_the_ID() ) . '"
@@ -750,14 +752,14 @@ class Compare {
             ' . ( $nav_click_action == 'redirect' ? 'data-redirect="' . esc_url( get_permalink( wopb_function()->get_setting( 'compare_page' ) ) ) . '"' : '' ) .'>';
             
             if ( $icon_position == 'after_text' ) { 
-                $output .= $compare_text;
+                $output .= wopb_function()->core_esc_wp( $compare_text );
             }
             $output .= '<span class="wopb-compare-icon">';
                 $output .= wopb_function()->svg_icon( wopb_function()->get_setting( 'compare_nav_icon' ) );
                 $output .= '<span class="wopb-compare-count">' . esc_html( count( $this->compare_id ) ) . '</span>';
             $output .= '</span>';
             if ( $icon_position == 'before_text' || $icon_position == 'top_text' ) { 
-                $output .= $compare_text;
+                $output .= wopb_function()->core_esc_wp( $compare_text );
             }
         $output .= '</a>';
 
@@ -774,6 +776,7 @@ class Compare {
      */
     public function compare_modal_content($params = []) {
         $compare_data = isset($params['source']) && $params['source'] == 'ajax' ? $params['data_id'] : $this->compare_id;
+        $allowed_html_tag = wopb_function()->allowed_html_tags();
         ob_start();
 ?>
         <div
@@ -782,7 +785,8 @@ class Compare {
         >
             <?php
                 if ( count($compare_data) == 0 && wopb_function()->get_setting('compare_hide_empty_table') == 'yes' ) {
-                    echo $this->empty_product_message($params);
+                    $product_message_safe = wopb_function()->wp_kses_safe( $this->empty_product_message($params));
+                    echo $product_message_safe;
                 }
                 if ( !(wopb_function()->get_setting('compare_hide_empty_table') == 'yes' && count($compare_data) == 0) ) {
                     $demo_column = count($compare_data) < $this->demo_column ? $this->demo_column - count($compare_data) : 0;
@@ -792,8 +796,8 @@ class Compare {
             ?>
                     <table class="wopb-compare-table">
                         <thead>
-                            <tr class="<?php echo $row_class ?>">
-                                <th class="<?php echo $column_class ?>"><?php echo __('Action' ,'product-blocks'); ?></th>
+                            <tr class="<?php echo esc_attr( $row_class ); ?>">
+                                <th class="<?php echo esc_attr( $column_class ); ?>"><?php echo esc_html__('Action' ,'product-blocks'); ?></th>
                                 <?php
                                     foreach ($compare_data as $key => $val) {
                                         $product = wc_get_product($val);
@@ -801,8 +805,8 @@ class Compare {
                                 ?>
                                         <td class="wopb-compare-item wopb-compare-item-<?php echo esc_attr($product->get_id()) ?>">
                                             <a class="wopb-compare-remove" data-action="remove" data-added-action="popup" data-postid="<?php echo esc_attr($product->get_id()) ?>">
-                                                <?php echo wopb_function()->svg_icon('delete') ?>
-                                                <span><?php echo __('Delete' ,'product-blocks'); ?></span>
+                                                <?php echo wp_kses( wopb_function()->svg_icon('delete'), $allowed_html_tag ); ?>
+                                                <span><?php echo esc_html__('Delete', 'product-blocks'); ?></span>
                                             </a>
                                         </td>
                                 <?php
@@ -814,8 +818,8 @@ class Compare {
                                 ?>
                                     <td class="wopb-action-add-btn">
                                         <a class="wopb-compare-add-btn">
-                                            <?php echo wopb_function()->svg_icon('plus_3')  ?>
-                                            <span class="wopb-tooltip"><?php echo __('Add Product', 'product-blocks'); ?></span>
+                                            <?php echo wp_kses( wopb_function()->svg_icon('plus_3'), $allowed_html_tag ); ?>
+                                            <span class="wopb-tooltip"><?php echo esc_html__('Add Product', 'product-blocks'); ?></span>
                                         </a>
                                     </td>
                                 <?php } ?>
@@ -827,9 +831,10 @@ class Compare {
                         foreach ($table_columns as $table_column) {
                             $row_class = 'wopb-' . $table_column['key'] . '-row';
                             $column_class = wopb_function()->get_setting('compare_first_column_sticky') && ! wp_is_mobile() ? 'wopb-sticky-column' : '';
+                            $short_desc = $product->get_short_description() ? $product->get_short_description() : 'N/A';
                     ?>
-                            <tr class="<?php echo $row_class ?>">
-                                <th class="<?php echo $column_class ?>"><?php echo esc_html( $table_column['label'] ); ?></th>
+                            <tr class="<?php echo esc_attr( $row_class ); ?>">
+                                <th class="<?php echo esc_attr( $column_class ); ?>"><?php echo esc_html( $table_column['label'] ); ?></th>
                                 <?php
                                     foreach ($compare_data as $key => $val) {
                                         $product = wc_get_product($val);
@@ -843,32 +848,39 @@ class Compare {
                                             ?>
                                                         <a href="<?php echo esc_url($product->get_permalink()) ?>">
                                                             <?php
-                                                                echo $table_column['key'] == 'image' ? $product->get_image('woocommerce_thumbnail') : $product->get_title()
+                                                                if ( $table_column['key'] == 'image' ) {
+                                                                    echo wp_kses_post( $product->get_image('woocommerce_thumbnail') );
+                                                                } else {
+                                                                    echo esc_html( $product->get_title() );
+                                                                }
                                                             ?>
-
                                                         </a>
                                             <?php
                                                         break;
                                                     case 'quantity':
                                             ?>
                                                         <div class="wopb-qty-wrap">
-                                                            <a class="wopb-add-to-cart-minus"><?php echo wopb_function()->svg_icon('minus_2') ?></a>
+                                                            <a class="wopb-add-to-cart-minus"><?php echo wp_kses( wopb_function()->svg_icon('minus_2'), $allowed_html_tag ); ?></a>
                                                             <input type="number" class="wopb-qty" value="1">
-                                                            <a class="wopb-add-to-cart-plus"><?php echo wopb_function()->svg_icon('plus_2') ?></a>
+                                                            <a class="wopb-add-to-cart-plus"><?php echo wp_kses( wopb_function()->svg_icon('plus_2'), $allowed_html_tag ); ?></a>
                                                         </div>
                                             <?php
                                                     break;
                                                     case 'price':
-                                                        echo $product->get_price_html() ? wp_kses_post($product->get_price_html()) : 'N/A';
+                                                        if ( $product->get_price_html() ) {
+                                                            wp_kses_post( $product->get_price_html() );
+                                                        } else {
+                                                            echo esc_html( 'N/A' );
+                                                        }
                                                         break;
                                                     case 'description':
                                             ?>
-                                                        <span class="wopb-description"><?php echo $product->get_short_description() ? wp_kses_post($product->get_short_description()) : 'N/A'; ?></span>
+                                                        <span class="wopb-description"><?php echo wp_kses_post( $short_desc ); ?></span>
                                             <?php
                                                         break;
                                                     case 'stock_status':
                                                         if ( $product->is_purchasable() && $product->is_in_stock() ) {
-                                                            echo $product->get_stock_quantity().' '.esc_html__('in stock', 'product-blocks');
+                                                            echo esc_html( $product->get_stock_quantity() ).' '.esc_html__('in stock', 'product-blocks');
                                                         }
                                                     break;
                                                     case 'add_to_cart':
@@ -915,20 +927,20 @@ class Compare {
                                                         $additional = ob_get_clean();
                                             ?>
                                                     <span class="wopb-additional">
-                                                        <?php echo $additional ? $additional : 'N/A' ?>
+                                                        <?php echo esc_html( $additional ? $additional : 'N/A' ); ?>
                                                     </span>
                                             <?php
                                                         break;
                                                     case 'weight':
                                                         $weight = $product->get_weight();
                                                         $weight = $weight ? ( wc_format_localized_decimal( $weight ) . ' ' . esc_attr( get_option( 'woocommerce_weight_unit' ) ) ) : 'N/A';
-                                                        echo $weight;
+                                                        echo esc_html( $weight );
                                                         break;
                                                     case 'sku':
-                                                        echo esc_html($product->get_sku() ? $product->get_sku() : 'N/A');
+                                                        echo esc_html( $product->get_sku() ? $product->get_sku() : 'N/A' );
                                                         break;
                                                     case 'dimensions':
-                                                        echo $product->get_dimensions(false) ? esc_html(wc_format_dimensions($product->get_dimensions(false))) : 'N/A';
+                                                        echo esc_html( $product->get_dimensions(false) ? wc_format_dimensions($product->get_dimensions(false)) : 'N/A' );
                                                         break;
                                             ?>
 
@@ -947,7 +959,7 @@ class Compare {
                                             $demo_column_class = ' image';
                                             $demo_content = wopb_function()->svg_icon( 'placeholder' );
                                         }
-                                        echo '<td class="wopb-demo-column' . $demo_column_class . '"><span>' . $demo_content . '</span></td>';
+                                        echo '<td class="wopb-demo-column' . esc_attr( $demo_column_class ) . '"><span>' . wopb_function()->wp_kses_safe( $demo_content ) . '</span></td>';
                                     }
                                     if ( $compare_add_product_button == 'yes' ) {
                                 ?>
@@ -978,7 +990,7 @@ class Compare {
                 $output .= '</a>';
                 $output .= '<div class="wopb-product-list-body">';
                     $output .= '<div class="wopb-product-search">';
-                        $output .= '<input type="text" class="wopb-search-input" placeholder="' . __( 'Search for products by name...', 'product-blocks' ) . '">';
+                        $output .= '<input type="text" class="wopb-search-input" placeholder="' . esc_attr__( 'Search for products by name...', 'product-blocks' ) . '">';
                         $output .= '<a class="wopb-search-icon">';
                             $output .= wopb_function()->svg_icon( 'search2' );
                         $output .= '</a>';
@@ -1042,7 +1054,7 @@ class Compare {
      */
     public function empty_product_message( $params = [] ) {
         $output = '';
-        $class = isset( $params['added_action'] ) ? 'wopb-' . $params['added_action'] : '';
+        $class = isset( $params['added_action'] ) ? 'wopb-' . sanitize_html_class( $params['added_action'] ) : '';
         
         $output .= '<div class="wopb-no-product ' . esc_attr( $class ) .'">';
             $output .= '<div class="wopb-no-product-text">' . esc_html__( 'No products were added to compare list', 'product-blocks' ) . '</div>';
@@ -1070,12 +1082,12 @@ class Compare {
                     $output .= '<span class="wopb-compare-image">';
                         $output .= $product->get_image( 'shop_thumbnail' );
                     $output .= '</span>';
-                    $output .= '<div class="wopb-compare-product-name"><span>' . $product->get_title() . '</span> ' . __( 'has been added on compare list.', 'product-blocks' ) . '</div>';
+                    $output .= '<div class="wopb-compare-product-name"><span>' . $product->get_title() . '</span> ' . esc_html__( 'has been added on compare list.', 'product-blocks' ) . '</div>';
                 $output .= '</div>';
             }
         }
         $output .= '<a href="' . esc_url( get_permalink( wopb_function()->get_setting( 'compare_page' ) ) ) . '" class="wopb-compare-view-btn">';
-            $output .= __( 'View Compare List', 'product-blocks' );
+            $output .= esc_html__( 'View Compare List', 'product-blocks' );
         $output .= '</a>';
 
         return $output;

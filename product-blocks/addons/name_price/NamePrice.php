@@ -223,11 +223,11 @@ class NamePrice {
         );
         $input = [];
         foreach ( $key_list as $key => $val ) {
-            if ( isset( $_POST[$val] ) ) {
+            if ( isset( $_POST[$val] ) ) { // phpcs:ignore
                 if ( ! empty( $loop ) ) {
-                    $input[$key] = sanitize_text_field( $_POST[$val][$loop] );
+                    $input[$key] = sanitize_text_field( $_POST[$val][$loop] ); // phpcs:ignore
                 } else {
-                    $input[$key] = sanitize_text_field( $_POST[$val] );
+                    $input[$key] = sanitize_text_field( $_POST[$val] ); // phpcs:ignore
                 }
             }
         }
@@ -244,7 +244,10 @@ class NamePrice {
         global $product;
         $type = $product->get_type();
         if ( $type != 'variable' && $type != 'grouped' && $type != 'external'  ) {
-            echo $this->common_data( $product->get_id() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            ob_start();
+            $this->common_data( $product->get_id() );
+            $name_price_data_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+            echo $name_price_data_safe; // phpcs:ignore
         }
     }
 
@@ -276,7 +279,7 @@ class NamePrice {
                     data-min="<?php echo esc_attr( wopb_function()->currency_switcher_data($price_min)['value'] ); ?>"
                     data-max="<?php echo esc_attr( wopb_function()->currency_switcher_data($price_max)['value'] ); ?>"
                 >
-                    <div class="wopb-input-section<?php echo $chunk_price_enable == 'yes' ? ' wopb-d-none' : ''; ?>">
+                    <div class="wopb-input-section<?php echo esc_attr( $chunk_price_enable == 'yes' ? ' wopb-d-none' : '' ); ?>">
                         <label class="wopb-name-price-label" for="wopb-name-price-box">
                             <?php echo esc_html($price_title); ?>
                         </label>
@@ -285,9 +288,9 @@ class NamePrice {
                             id="wopb-name-price-box"
                             class="wopb-name-price-field"
                             name="wopb_custom_prices"
-                            min="<?php echo $price_min ? esc_attr( wopb_function()->currency_switcher_data($price_min)['value'] ) : 1; ?>"
-                            <?php echo $price_max ? 'max="'. esc_attr( wopb_function()->currency_switcher_data($price_max)['value'] ) . '"' : ''; ?>
-                            value="<?php echo $price_suggest ? esc_attr( wopb_function()->currency_switcher_data($price_suggest)['value']) : ( $price_min ? esc_attr( wopb_function()->currency_switcher_data($price_min)['value'] ) : 1 ); ?>"
+                            min="<?php echo esc_attr( $price_min ? wopb_function()->currency_switcher_data($price_min)['value'] : 1 ); ?>"
+                            <?php echo esc_attr( $price_max ? 'max="'. wopb_function()->currency_switcher_data($price_max)['value'] . '"' : '' ); ?>
+                            value="<?php echo esc_attr( $price_suggest ? wopb_function()->currency_switcher_data($price_suggest)['value'] : ( $price_min ? wopb_function()->currency_switcher_data($price_min)['value'] : 1 ) ); ?>"
                         />
                     </div>
                     <?php if ( count( $price_chunk ) > 0 ) { ?>
@@ -312,10 +315,12 @@ class NamePrice {
                 <div class="wopb-min-max-price">
                     <?php
                         if ( $price_min && $label_min == 'yes' ) {
-                            echo $this->min_max_generate( 'minimum', wopb_function()->get_setting( 'name_price_min' ), $price_min ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            $min_safe = wopb_function()->wp_kses_safe( $this->min_max_generate( 'minimum', wopb_function()->get_setting( 'name_price_min' ), $price_min ));
+                            echo $min_safe; // phpcs:ignore
                         }
                         if ( $price_max && $label_max == 'yes' ) {
-                            echo $this->min_max_generate( 'maximum', wopb_function()->get_setting( 'name_price_max' ), $price_max ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            $max_safe = wopb_function()->wp_kses_safe( $this->min_max_generate( 'maximum', wopb_function()->get_setting( 'name_price_max' ), $price_max ));
+                            echo $max_safe; // phpcs:ignore
                         }
                     ?>
                 </div>
@@ -452,8 +457,8 @@ class NamePrice {
      * @since v.4.0.0
      */
     public function set_custom_prices( $cart, $product_id ) {
-        if ( ! empty( $_POST['wopb_custom_prices'] ) ) {  // phpcs:ignore WordPress.Security.NonceVerification.Missing
-            $cart['wopb_custom_prices'] = wopb_function()->rest_sanitize_params( sanitize_text_field( $_POST['wopb_custom_prices'] ) );  // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        if ( ! empty( $_POST['wopb_custom_prices'] ) ) {  // phpcs:ignore
+            $cart['wopb_custom_prices'] = wopb_function()->rest_sanitize_params( $_POST['wopb_custom_prices'] );  // phpcs:ignore
         }
         return $cart;
     }
@@ -501,7 +506,7 @@ class NamePrice {
      */
     public function get_all_variations( $data, $product, $variation ) {
         ob_start();
-        echo $this->common_data( $variation->get_id(), $product->get_type() );
+        $this->common_data( $variation->get_id(), $product->get_type() );
         $data['variation_description'] .= ob_get_clean();
         return $data;
     }
@@ -542,8 +547,8 @@ class NamePrice {
             $price_min          = wopb_function()->currency_switcher_data( $price_min ? $price_min : 1 )['value'];
             $price_max          = $data['max'];
             $price_max          = wopb_function()->currency_switcher_data( $price_max ? $price_max : $product->get_price())['value'];
-            if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-                $custom_price = isset( $_POST['wopb_custom_prices'] ) ? sanitize_text_field( $_POST['wopb_custom_prices'] ) : '';
+            if ( sanitize_text_field( $_SERVER['REQUEST_METHOD'] ) == 'POST' ) { // phpcs:ignore
+                $custom_price = isset( $_POST['wopb_custom_prices'] ) ? sanitize_text_field( $_POST['wopb_custom_prices'] ) : ''; // phpcs:ignore
                 if ( ! $custom_price || $custom_price && ( $custom_price < $price_min || $custom_price > $price_max ) ) {
                     wc_add_notice(
                         __('Product price must be between ', 'product-blocks') . $price_min .

@@ -119,7 +119,7 @@ class SetupWizard {
 	 */
 	public function wizard_site_action_callback( $server ) {
 		$params = $server->get_params();
-		if ( ! ( isset( $params['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+		if ( ! isset( $params['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			die();
 		}
 
@@ -164,7 +164,7 @@ class SetupWizard {
 	 */
 	public function install_extra_plugin( $server ) {
 		$params = $server->get_params();
-		if ( ! ( isset( $params['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+		if ( ! isset( $params['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			die();
 		}
 

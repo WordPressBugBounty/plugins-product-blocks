@@ -57,7 +57,7 @@ class Product_Cart{
                         $content .= 'value="' . $product->get_id() . '" ';
                         $content .= 'data-product_id="' . $product->get_id() . '" ';
                     $content .= '>';
-                        $content .= __( ! empty( $attr['btnBuyText'] ) ? $attr['btnBuyText'] : 'Buy Now', 'product-blocks');
+                        $content .=  ! empty( $attr['btnBuyText'] ) ? $attr['btnBuyText'] : esc_html__( 'Buy Now', 'product-blocks' );
                     $content .= '</button>';
                     return $content;
                 });
@@ -98,7 +98,7 @@ class Product_Cart{
             }
 
             ob_start();
-            echo '<div class="wopb-product-wrapper wopb-builder-cart' . $cart_class . '" data-type="'. ( $attr['showQuantity'] && $attr['showQuantityBtn'] ? esc_attr($attr['quantityBtnPosition']) : '' ).'">';
+            echo '<div class="wopb-product-wrapper wopb-builder-cart' . esc_attr($cart_class) . '" data-type="'. ( $attr['showQuantity'] && $attr['showQuantityBtn'] ? esc_attr($attr['quantityBtnPosition']) : '' ).'">'; // phpcs:ignores
             $this->remove_qty_element();
             woocommerce_template_single_add_to_cart();
             do_action('wopb_after_builder_add_cart_button');
@@ -141,29 +141,30 @@ class Product_Cart{
      * @since v.4.1.4
      */
     public function buy_now_submit() {
-        if ( ! empty( $_REQUEST[ 'wopb-buy-now' ] ) ) {
-            $product_id = $_REQUEST['wopb-buy-now'];
-            $qty = floatval(! empty( $_REQUEST['quantity'] ) ? $_REQUEST['quantity'] : 1);
+        $sanitized_request =  wopb_function()->rest_sanitize_params( $_REQUEST );
+        if ( ! empty( $sanitized_request[ 'wopb-buy-now' ] ) ) {
+            $product_id = $sanitized_request['wopb-buy-now'];
+            $qty = floatval(! empty( $sanitized_request['quantity'] ) ? $sanitized_request['quantity'] : 1);
             $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $qty);
             if ( $passed_validation ) {
                 $redirect = false;
-                if ( ! empty( $_REQUEST['wopb-remove-product'] ) ) {
+                if ( ! empty( $sanitized_request['wopb-remove-product'] ) ) {
                     WC()->cart->empty_cart();
-                    if ( ! empty( $_REQUEST['variation_id'] ) ) {
+                    if ( ! empty( $sanitized_request['variation_id'] ) ) {
                         $variation = [];
-                        foreach ( $_REQUEST as $name => $value ) {
+                        foreach ( $sanitized_request as $name => $value ) {
                             if ( str_starts_with($name, 'attribute_') ) {
-                                $variation[$name] = $value;
+                                $variation[ $name ] = $value;
                             }
                         }
-                        WC()->cart->add_to_cart($product_id, $qty, $_REQUEST['variation_id'], $variation);
+                        WC()->cart->add_to_cart($product_id, $qty, $sanitized_request['variation_id'], $variation);
                     }
                 }
 
-                if ( ! isset( $_REQUEST['variation_id'] ) ) {
+                if ( ! isset( $sanitized_request['variation_id'] ) ) {
                     WC()->cart->add_to_cart($product_id, $qty);
                     $redirect = true;
-                }elseif( ! empty( $_REQUEST['variation_id'] ) ) {
+                } elseif( ! empty( $sanitized_request['variation_id'] ) ) {
                     $redirect = true;
                 }
                 if( $redirect ) {

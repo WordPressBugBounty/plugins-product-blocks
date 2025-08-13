@@ -3,8 +3,8 @@
  * @package WooCommerce\Templates
  * @version 3.8.0
  */
-
 defined( 'ABSPATH' ) || exit;
+
 $order_id = absint( get_query_var('order-received') );
 $order = wc_get_order( $order_id );
 
@@ -24,7 +24,12 @@ if ( ! $order ) {
 <!-- order downloads -->
 <?php if ( $show_downloads ) { ?>
 	<section class="woocommerce-order-downloads">
-		<h2 class="woocommerce-order-downloads__title"><?php echo esc_html( $attr['downloadText'], 'product-blocks' ); ?></h2>
+		<h2 class="woocommerce-order-downloads__title">
+			<?php
+				// phpcs:ignore WordPress.CodeAnalysis.EscapedNotTranslated.Found
+				echo esc_html( $attr['downloadText'] );
+			?>
+		</h2>
 		<table class="woocommerce-table woocommerce-table--order-downloads shop_table shop_table_responsive order_details">
 			<thead>
 				<tr>
@@ -139,7 +144,7 @@ if ( ! $order ) {
 			?>
 			<?php if ( $order->get_customer_note() ) : ?>
 				<tr>
-					<th><?php esc_html_e( 'Note:', 'woocommerce' ); ?></th>
+					<th><?php esc_html_e( 'Note:', 'product-blocks' ); ?></th>
 					<td><?php echo wp_kses_post( nl2br( wptexturize( $order->get_customer_note() ) ) ); ?></td>
 				</tr>
 			<?php endif; ?>

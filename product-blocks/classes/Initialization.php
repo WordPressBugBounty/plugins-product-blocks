@@ -46,7 +46,7 @@ class Initialization {
 			return;
 		}
 		if ( $plugin == 'product-blocks/product-blocks.php' ) {
-			if ( wp_doing_ajax() || is_network_admin() || isset( $_GET['activate-multi'] ) ) {
+			if ( wp_doing_ajax() || is_network_admin() || isset( $_GET['activate-multi'] ) ) { //phpcs:ignore
 				return;
 			}
 			if ( get_option( 'wopb_setup_wizard_data', '' ) != 'yes' ) {
@@ -98,7 +98,8 @@ class Initialization {
 			$html .= ob_get_clean();
 
 		$html .= '</div>';
-		echo $html;
+		$content_safe = wopb_function()->wp_kses_safe($html);
+        echo $content_safe; // phpcs:ignore
 	}
 
 	/**
@@ -191,7 +192,7 @@ class Initialization {
 
 		wp_enqueue_media();
 
-		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( $_GET['taxonomy'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( wp_unslash( $_GET['taxonomy'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$variation_swatches_attribute_poststype = wopb_function()->get_setting( 'wopb_variation_swatches' ) == "true" && strpos($taxonomy, 'pa_') == 0;
 		if ( $taxonomy == 'pa_color' || $variation_swatches_attribute_poststype ) {
 			wp_enqueue_style( 'wp-color-picker' );
@@ -254,7 +255,7 @@ class Initialization {
 					'addons_settings'   => apply_filters( 'wopb_settings', array() ),
 					'version'           => WOPB_VER,
 					'setup_wizard_link' => admin_url( 'admin.php?page=wopb-initial-setup-wizard' ),
-					'helloBar'          => Xpo::handle_hellobar_action('get'),
+					'helloBar'          => Xpo::get_transient_without_cache('wopb_hellobar'),
 					'userInfo'          => array(
 						'name'  => $user_info->first_name ? $user_info->first_name . ( $user_info->last_name ? ' ' . $user_info->last_name : '' ) : $user_info->user_login,
 						'email' => $user_info->user_email,

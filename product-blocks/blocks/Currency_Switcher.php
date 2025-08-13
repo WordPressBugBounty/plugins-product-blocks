@@ -59,11 +59,11 @@ class Currency_Switcher {
                     $wraper_before .= '<div class="wopb-currency-switcher-container">';
                         $wraper_before .= '<div class="wopb-selected-currency-container">';
                             if ( $attr['countryNameShow'] ) {
-                                $wraper_before .= '<div class="wopb-selected-currency" value="">'.( $attr['showFlag'] ? '<img src="https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags/'.strtolower($wopb_current_currency).'.png" alt="flag"> ':'').$added_currency[$wopb_current_currency].'</div>';
+                                $wraper_before .= '<div class="wopb-selected-currency" value="">'.( $attr['showFlag'] ? '<img src="' . esc_url( 'https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags/' . strtolower($wopb_current_currency) . '.png' ) . '" alt="flag"> ':'').$added_currency[$wopb_current_currency].'</div>';
                             } else {
                                 $Code = '/\b[A-Z]{3}\b/';
                                 if ( preg_match( $Code, $added_currency[$wopb_current_currency], $currencyMatches ) ) {  
-                                    $wraper_before .= '<div class="wopb-selected-currency" value="">'.( $attr['showFlag'] ? '<img src="https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags/'.strtolower($wopb_current_currency).'.png" alt="flag"> ':'').$currencyMatches[0].'</div>';
+                                    $wraper_before .= '<div class="wopb-selected-currency" value="">'.( $attr['showFlag'] ? '<img src="' . esc_url( 'https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags/' . strtolower($wopb_current_currency) . '.png' ) . '" alt="flag"> ':'').$currencyMatches[0].'</div>';
                                 }
                             }
                             $wraper_before .= isset($added_currency) && count($added_currency) > 1 ? '<div class="wopb-currency-arrow"></div>' : '';
@@ -75,11 +75,11 @@ class Currency_Switcher {
                                 $wraper_before .= '<ul class="wopb-select-container" >';
                                     foreach ( $added_currency as $key => $label ) {
                                         if ( $attr['countryNameShow'] ) {
-                                            $wraper_before .= '<li class="'.( $wopb_current_currency == $key ? "hide-currency" : '' ).'" value="'.esc_attr($key).'">'.( $attr['showFlag'] ? '<img src="https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags/'.strtolower($key).'.png" alt="flag"> ':'').wp_strip_all_tags( esc_html($label) ).'</li>';
+                                            $wraper_before .= '<li class="'.( $wopb_current_currency == $key ? "hide-currency" : '' ).'" value="'.esc_attr($key).'">'.( $attr['showFlag'] ? '<img src="' . esc_url( 'https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags/' . strtolower($key) . '.png' ) . '" alt="flag"> ':'').wp_strip_all_tags( esc_html($label) ).'</li>';
                                         } else {
                                             $currency = '/\( ([^)]+) \)/';
                                             if ( preg_match( $currency, $label, $currencyMatches ) ) {
-                                              $wraper_before .= '<li class="'.( $wopb_current_currency == $key ? "hide-currency" : '' ).'" value="'.esc_attr($key).'">'.( $attr['showFlag'] ? '<img src="https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags/'.strtolower($key).'.png" alt="flag"> ':'').wp_strip_all_tags( $currencyMatches[0]." ".$key ).'</li>';
+                                              $wraper_before .= '<li class="'.( $wopb_current_currency == $key ? "hide-currency" : '' ).'" value="'.esc_attr($key).'">'.( $attr['showFlag'] ? '<img  src="' . esc_url( 'https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags/' . strtolower( $key ) . '.png' ) . '" alt="flag"> ':'').wp_strip_all_tags( $currencyMatches[0]." ".$key ).'</li>';
                                             }
                                         }
                                     }

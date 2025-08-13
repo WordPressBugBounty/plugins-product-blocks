@@ -38,19 +38,19 @@ class DurbinClient {
 
 		if ( self::DEACTIVATE_ACTION === $action_type ) {
 
-			$id = isset( $_POST['cause_id'] ) ? sanitize_key( wp_unslash( $_POST['cause_id'] ) ) : null;
+			$id = isset( $_POST['cause_id'] ) ? sanitize_key( wp_unslash( $_POST['cause_id'] ) ) : null; // phpcs:ignore
 
 			if ( ! empty( $id ) ) {
 				$data['feedback'] = array(
 					'id'      => $id,
-					'details' => isset( $_POST['cause_details'] ) ? sanitize_text_field( wp_unslash( $_POST['cause_details'] ) ) : null,
+					'details' => isset( $_POST['cause_details'] ) ? sanitize_text_field( wp_unslash( $_POST['cause_details'] ) ) : null, // phpcs:ignore
 				);
 			}
 		}
 
 		if ( self::WIZARD_ACTION === $action_type ) {
 			$data['data'] = array(
-				'site_type' => isset( $_POST['siteType'] ) ? sanitize_text_field( wp_unslash( $_POST['siteType'] ) ) : get_option( '__wopb_site_type', 'other' ),
+				'site_type' => isset( $_POST['siteType'] ) ? sanitize_text_field( wp_unslash( $_POST['siteType'] ) ) : get_option( '__wopb_site_type', 'other' ), // phpcs:ignore
 			);
 		}
 

@@ -1,4 +1,8 @@
-<?php $id = $settings->template; ?>
+<?php 
+defined( 'ABSPATH' ) || exit;
+
+$id = $settings->template; 
+?>
 <div class="wopb-shortcode" data-postid="<?php echo esc_attr($id); ?>">
     <?php
         if ($id) {
@@ -12,14 +16,14 @@
                 wp_reset_postdata();
             }
         } else {
-            if (isset($_GET['fl_builder'])) {  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            if (isset($_GET['fl_builder'])) {  // phpcs:ignore
                 echo '<p style="text-align:center;">'.sprintf(
                         /* translators: %s: is no of template */
                         esc_html__(
                         'Pick a Template from your saved ones. Or create a template from: %s.' ,
                         'product-blocks'
                         ) . ' ',
-                        '<strong><i>' . esc_html( 'Dashboard > WowStore > Saved Templates' ) . '</i></strong>' ).'</p>';
+                        '<strong><i>' . esc_html__( 'Dashboard > WowStore > Saved Templates', 'product-blocks' ) . '</i></strong>' ).'</p>';
             }
         }
     ?>

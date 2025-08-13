@@ -1,7 +1,6 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-// -------------------------
 WC()->cart->calculate_totals();
 WC()->cart->calculate_shipping();
 
@@ -38,7 +37,7 @@ function progressBar($free_shipping_progress, $attr) {
      } ?>
     <div class="wopb-progress-msg">
         <?php if ($free_shipping_progress == 100) { ?>
-            <span><?php echo esc_html_e($attr['freeShipText']) ?></span>
+            <span><?php echo esc_html($attr['freeShipText']); ?></span>
         <?php } else { ?>
             <span><?php echo wp_kses( $attr['beforePriceText'], wopb_function()->allowed_html_tags()); ?></span>
             <strong>

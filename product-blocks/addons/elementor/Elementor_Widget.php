@@ -39,14 +39,14 @@ class ProductX_Widget extends \Elementor\Widget_Base {
 			'edit_template',
 			[
 				'type' => \Elementor\Controls_Manager::RAW_HTML,
-				'raw' => '<a href="'.admin_url('edit.php?post_type=wopb_templates').'" style="color:#fff; background-color:#0c0d0e; padding:10px 20px; border-radius:4px; display:inline-block;" target="_blank"><span style="color:#fff; font-size:12px; width:12px; height:12px;" class="dashicons dashicons-edit"></span> '.__('Edit This Template', 'product-blocks').'</a>',
+				'raw' => '<a href="'.admin_url('edit.php?post_type=wopb_templates').'" style="color:#fff; background-color:#0c0d0e; padding:10px 20px; border-radius:4px; display:inline-block;" target="_blank"><span style="color:#fff; font-size:12px; width:12px; height:12px;" class="dashicons dashicons-edit"></span> '.esc_html__('Edit This Template', 'product-blocks').'</a>',
 			]
 		);
         $this->add_control(
 			'add_new_template',
 			[
 				'type' => \Elementor\Controls_Manager::RAW_HTML,
-				'raw' => '<a href="'.admin_url('post-new.php?post_type=wopb_templates').'" style="color:#fff; background-color:#0c0d0e; padding:10px 20px; border-radius:4px; display:inline-block;" target="_blank"><span style="color:#fff; font-size:12px; width:12px; height:12px;" class="dashicons dashicons-plus-alt2"></span> '.__('Add New Template', 'product-blocks').'</a>',
+				'raw' => '<a href="'.admin_url('post-new.php?post_type=wopb_templates').'" style="color:#fff; background-color:#0c0d0e; padding:10px 20px; border-radius:4px; display:inline-block;" target="_blank"><span style="color:#fff; font-size:12px; width:12px; height:12px;" class="dashicons dashicons-plus-alt2"></span> '.esc_html__('Add New Template', 'product-blocks').'</a>',
 			]
 		);
         $this->end_controls_section();
@@ -59,7 +59,7 @@ class ProductX_Widget extends \Elementor\Widget_Base {
         $id = $settings['saved_template'];
 
         if ($id) {
-            if ( isset($_GET['action']) || isset($_POST['action']) ) { //phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.NonceVerification.Recommended
+            if ( isset($_GET['action']) || isset($_POST['action']) ) { //phpcs:ignore
                 echo wopb_function()->build_css_for_inline_print($id, true); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             }
             echo '<div class="wopb-shortcode" data-postid="'.esc_attr($id).'">';
@@ -74,7 +74,7 @@ class ProductX_Widget extends \Elementor\Widget_Base {
                 }
             echo '</div>';
         } else {
-            if (isset($_GET['action']) && $_GET['action'] == 'elementor') { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+            if (isset($_GET['action']) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) == 'elementor') { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
                 /* translators: %s: is no of template */
                 echo '<p style="text-align:center;">'.sprintf( esc_html__( 'Pick a Template from your saved ones. Or create a template from: %s.' , 'product-blocks' ) . ' ', '<strong><i>' . esc_html( 'Dashboard > WowStore > Saved Templates' ) . '</i></strong>' ).'</p>';
             }

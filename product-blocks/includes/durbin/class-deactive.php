@@ -35,6 +35,12 @@ class Deactive {
 	 * @return void
 	 */
 	public function send_plugin_data() {
+		if (
+            ! isset( $_POST['wopb_nonce'] ) || 
+            ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wopb_nonce'] ) ), 'wopb-nonce' ) 
+        ) {
+			return;
+        }
 		DurbinClient::send( DurbinClient::DEACTIVATE_ACTION );
 	}
 
@@ -110,7 +116,7 @@ class Deactive {
 									<input type="radio" <?php echo 0 == $key ? 'checked="checked"' : ''; ?> id="<?php echo esc_attr( $setting['id'] ); ?>" name="<?php echo esc_attr( $this->plugin_slug ); ?>" value="<?php echo esc_attr( $setting['text'] ); ?>">
 									<div class="wopb-reason-text"><?php echo esc_html( $setting['text'] ); ?></div>
 									<?php if ( isset( $setting['input'] ) && $setting['input'] ) { ?>
-										<textarea placeholder="<?php echo esc_attr( $setting['placeholder'] ); ?>" class="wopb-reason-input <?php echo $key == 0 ? 'wopb-active' : ''; ?> <?php echo esc_html( $setting['id'] ); ?>"></textarea>
+										<textarea placeholder="<?php echo esc_attr( $setting['placeholder'] ); ?>" class="wopb-reason-input <?php echo esc_attr( $key == 0 ? 'wopb-active' : '' ); ?> <?php echo esc_html( $setting['id'] ); ?>"></textarea>
 									<?php } ?>
 								</label>
 							</li>
@@ -342,6 +348,23 @@ class Deactive {
 					$( '.wopb-modal-submit' ).attr( 'href', $(this).attr('href') );
 				});
 
+				$( document ).on( 'click', '#deactivate-product-blocks, a[href*="product-blocks.php"], a[href*="plugins.php?action=deactivate"]', function(e) {
+					var href = $(this).attr('href') || '';
+					if (
+						href.includes('product-blocks.php') &&
+						href.includes('plugins.php?action=deactivate') &&
+						! $(this).hasClass('wopb-modal-deactive') &&
+						! $(this).hasClass('wopb-modal-submit')
+					) {
+						e.preventDefault();
+						e.stopPropagation();
+						$( '#wopb-deactive-modal' ).addClass( 'modal-active' );
+						$( '.wopb-modal-deactive' ).attr( 'href', $(this).attr('href') );
+						$( '.wopb-modal-submit' ).attr( 'href', $(this).attr('href') );
+					}
+				});
+
+
 				// Submit to Remote Server
 				$( document ).on( 'click', '.wopb-modal-submit', function(e) {
 					e.preventDefault();
@@ -354,6 +377,7 @@ class Deactive {
 						type: 'POST',
 						data: { 
 							action: 'wopb_deactive_plugin',
+							wopb_nonce: wopb_option.security,
 							cause_id: $('#wopb-deactive-modal input[type=radio]:checked').attr('id'),
 							cause_title: $('#wopb-deactive-modal .wopb-modal-input input[type=radio]:checked').val(),
 							cause_details: $('#wopb-deactive-modal .wopb-reason-input.wopb-active').val()

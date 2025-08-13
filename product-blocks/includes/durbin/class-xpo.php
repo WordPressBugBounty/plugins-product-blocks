@@ -241,22 +241,22 @@ class Xpo {
 				'campaign' => 'wstore-dashboard',
 			),
 			'final_hour_sale' => array(
-				'source'   => 'db-wowstore-notice-logo',
+				'source'   => 'db-wowstore-notice-text',
 				'medium'   => 'final-hour-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'massive_sale' => array(
-				'source'   => 'db-wowstore-notice-text',
+				'source'   => 'db-wowstore-notice-logo',
 				'medium'   => 'massive-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'flash_sale' => array(
-				'source'   => 'db-wowstore-notice-logo',
+				'source'   => 'db-wowstore-notice-text',
 				'medium'   => 'flash-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'exclusive_deals' => array(
-				'source'   => 'db-wowstore-notice-text',
+				'source'   => 'db-wowstore-notice-logo',
 				'medium'   => 'exclusive-deals',
 				'campaign' => 'wowstore-dashboard',
 			),
@@ -269,7 +269,7 @@ class Xpo {
 		$hash          = $params['hash'] ?? '';
 		$custom_config = $params['config'] ?? null;
 
-		$parsed_url = parse_url( $base_url );
+		$parsed_url = wp_parse_url( $base_url );
 		$scheme     = $parsed_url['scheme'] ?? 'https';
 		$host       = $parsed_url['host'] ?? '';
 		$path       = $parsed_url['path'] ?? '';

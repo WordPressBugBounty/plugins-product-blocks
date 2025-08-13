@@ -65,7 +65,7 @@ class Functions{
     }
 
     public static function get_screen( $type = 'page' ) {
-        return isset( $_GET[$type] ) ? sanitize_text_field( $_GET[$type] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommende
+        return isset( $_GET[$type] ) ? sanitize_text_field( wp_unslash( $_GET[ $type ] ) ) : ''; // phpcs:ignore
     }
 
     
@@ -246,12 +246,7 @@ class Functions{
 	 * @return BOOLEAN | Excerpt with Limit
 	 */
     public function is_wc_ready() {
-        $active = is_multisite() ? array_keys(get_site_option('active_sitewide_plugins', array())) : (array)get_option('active_plugins', array());
-        if ( file_exists( WP_PLUGIN_DIR . '/woocommerce/woocommerce.php' ) && in_array( 'woocommerce/woocommerce.php', $active ) ) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 
 
@@ -845,7 +840,7 @@ class Functions{
 
         // Search Page Product Grid, List Result issue
         $search_query_val = get_search_query();
-        if((is_search() || $wopb_search_builder) && $attr['queryProductSort'] == 'product_search' && $search_query_val) {
+        if((is_search() || $wopb_search_builder) && isset($attr['queryProductSort']) && $attr['queryProductSort'] == 'product_search' && $search_query_val) {
             $query_args['filter_search_key'] = $search_query_val;
 
             add_filter( 'posts_join', array( wopb_function(), 'custom_post_join' ), 100, 2 );
@@ -855,7 +850,7 @@ class Functions{
             });
         }
 
-        if((is_search() || $wopb_search_builder) && $attr['queryProductSort'] == 'product_search') {
+        if((is_search() || $wopb_search_builder) && isset($attr['queryProductSort']) && $attr['queryProductSort'] == 'product_search') {
             $query_args['search_columns'] = [ 'post_title' ];
         }
 
@@ -1058,7 +1053,7 @@ class Functions{
             case 'upsells':
                 global $post;
                 global $product;
-                $backend = isset($_GET['action']) ? sanitize_text_field($_GET['action']) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                $backend = isset($_GET['action']) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
                 if ($backend != 'edit' && isset($post->ID)) {
                     if (!$product) {
                         $product = wc_get_product($post->ID);
@@ -1078,7 +1073,7 @@ class Functions{
             case 'crosssell':
                 global $post;
                 global $product;
-                $backend = isset($_GET['action']) ? sanitize_text_field($_GET['action']) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+                $backend = isset($_GET['action']) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
                 if ($backend != 'edit' && isset($post->ID)) {
                     if (!$product) {
                         $product = wc_get_product($post->ID);
@@ -1104,7 +1099,7 @@ class Functions{
                 break;
             case 'recent_view':
                 global $post;
-                $viewed_products = ! empty( $_COOKIE['__wopb_recently_viewed'] ) ? (array) explode( '|', sanitize_text_field($_COOKIE['__wopb_recently_viewed']) ) : array();
+                $viewed_products = ! empty( $_COOKIE['__wopb_recently_viewed'] ) ? (array) explode( '|', sanitize_text_field( wp_unslash( $_COOKIE['__wopb_recently_viewed'] ) ) ) : array();
                 $args['ignore_sticky_posts'] = 1;
                 if (!empty($viewed_products)) {
                     $args['post__in'] = $viewed_products;
@@ -1139,7 +1134,8 @@ class Functions{
         global $wpdb;
         //phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $result = (array) $wpdb->get_results("
+        $result = (array) $wpdb->get_results(
+            $wpdb->prepare("
             SELECT post.ID as id, COUNT(order_itemmeta2.meta_value) as count
             FROM {$wpdb->prefix}posts post
             INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta order_itemmeta
@@ -1158,7 +1154,7 @@ class Functions{
             AND order_itemmeta2.meta_key = '_qty'
             GROUP BY post.ID
             ORDER BY COUNT(order_itemmeta2.meta_value) + 0 DESC
-        ");
+        "));
         return wp_list_pluck($result, 'id');
     }
 
@@ -2263,6 +2259,172 @@ class Functions{
         return '<style type="text/css">'.wp_strip_all_tags($css).'</style>';
     }
 
+    /**
+	 * Escaping String Core File
+     * 
+     * @since v.4.3.2
+     * @param STRING | Content
+	 * @return STRING | Content
+	 */
+    public function core_esc_wp($content) {
+	    return $content;
+    }
+
+    /**
+     * Allowed HTML Tags
+     * 
+     * @since v.4.3.2
+     */
+    public function allowed_html_tags( $extras = array() ) {
+        $allowed = array(
+            'del'      => array(),
+            'ins'      => array(),
+            'select'   => array(
+                'multiple' => true,
+                'name' => true,
+                'data-*'   => true,
+            ),
+            'option'   => array(
+                'value'  => true,
+                'selected'  => true,
+                'data-*' => true,
+            ),
+            'strong'   => array(),
+            'b'        => array(),
+            'input'    => array(
+                'data-*'       => true,
+                'area-*'       => true,
+                'type'         => true,
+                'value'        => true,
+                'placeholder'  => true,
+                'name'         => true,
+                'id'           => true,
+                'min'          => true,
+                'max'          => true,
+                'format'       => true,
+                'class'        => true,
+                'step'         => true,
+                'disabled'     => true,
+                'readonly'     => true,
+                'required'     => true,
+                'maxlength'    => true,
+                'minlength'    => true,
+                'pattern'      => true,
+                'autocomplete' => true,
+                'accept'       => true,
+            ),
+            'textarea' => array(
+                'data-*'       => true,
+                'type'         => true,
+                'value'        => true,
+                'placeholder'  => true,
+                'name'         => true,
+                'id'           => true,
+                'min'          => true,
+                'max'          => true,
+                'rows'         => true,
+                'format'       => true,
+                'class'        => true,
+                'disabled'     => true,
+                'readonly'     => true,
+                'required'     => true,
+                'maxlength'    => true,
+                'minlength'    => true,
+                'pattern'      => true,
+                'autocomplete' => true,
+                'accept'       => true,
+            ),
+            'svg'      => array(
+                'xmlns'        => true,
+                'width'        => true,
+                'height'       => true,
+                'viewbox'      => true,
+                'fill'         => true,
+                'stroke'       => true,
+                'stroke-width' => true,
+            ),
+            'g'        => array(
+                'fill'            => true,
+                'stroke'          => true,
+                'opacity'         => true,
+                'stroke-linecap'  => true,
+                'stroke-linejoin' => true,
+                'stroke-width'    => true,
+                'clip-path'       => true,
+            ),
+            'path'     => array(
+                'd'               => true,
+                'fill'            => true,
+                'stroke'          => true,
+                'stroke-linecap'  => true,
+                'stroke-linejoin' => true,
+                'stroke-width'    => true,
+                'clip-rule'       => true,
+            ),
+            'rect'     => array(
+                'rx'           => true,
+                'width'        => true,
+                'height'       => true,
+                'fill'         => true,
+                'stroke'       => true,
+                'stroke-width' => true,
+            ),
+            'defs'     => array(),
+            'clipPath' => array(
+                'id' => true,
+            ),
+            'style'    => array(
+                'id'     => true,
+                'type'   => true,
+                'media'  => true,
+                'title'  => true,
+                'scoped' => true,
+                'data-*' => true,
+            ),
+            'form'    => array(
+                'id'     => true,
+                'class'   => true,
+                'action'   => true,
+                'method'   => true,
+                'enctyoe'   => true,
+                'data-*'   => true,
+                'current-image'   => true,
+            ),
+            'div' => array(
+                'style' => true,
+                'name' => true,
+                'id' => true,
+                'data-*' => true,
+            ),
+            'span' => array(
+                'style' => true,
+                'id' => true,
+                'class' => true,
+                'data-*' => true,
+            ),
+            'iframe' => array(
+                'title' => true,
+                'width' => true,
+                'height' => true,
+                'src' => true,
+                'frameborder' => true,
+                'allow' => true,
+                'referrerpolicy' => true,
+                'allowfullscreen' => true,
+            ),
+        );
+
+        $default_allowed = wp_kses_allowed_html('post'); 
+        $allow_merged = array_replace_recursive(
+            $default_allowed,
+            $allowed,
+            (array) $extras
+        );
+
+        return $allow_merged;
+    }
+ 
+
     public function get_builder_attr() {
         $builder_data = '';
         if (is_archive()) {
@@ -2496,7 +2658,7 @@ class Functions{
             'url' => WOPB_URL,
             'ajax' => admin_url('admin-ajax.php'),
             'security' => wp_create_nonce('wopb-nonce'),
-            'currency_symbol' => class_exists( 'WooCommerce' ) && is_plugin_active( 'woocommerce/woocommerce.php' ) ? get_woocommerce_currency_symbol() : '' ,
+            'currency_symbol' => get_woocommerce_currency_symbol(),
             'currency_position' => get_option( 'woocommerce_currency_pos' ),
             'errorElementGroup' => [
                 'errorElement' => '<div class="wopb-error-element"></div>'
@@ -2860,37 +3022,6 @@ class Functions{
             $is_passed = (int)get_current_user_id()===$post_author;
         }
         return $is_passed || current_user_can($cap);
-    }
-
-    /**
-     * Custom Text kses
-     * @param $extras
-     * @return array
-     * @since v.4.0.0
-     */
-    public function allowed_html_tags( $extras=[] ) {
-        $allowed =  array(
-            'a'          => array(
-                'href'  => true,
-                'title' => true,
-            ),
-            'abbr'       => array(
-                'title' => true,
-            ),
-            'b'          => array(),
-            'br'          => array(),
-            'blockquote' => array(
-                'cite' => true,
-            ),
-            'em'         => array(),
-            'i'          => array(),
-            'q'          => array(
-                'cite' => true,
-            ),
-            'strong'     => array(),
-        );
-
-        return array_merge($allowed, $extras);
     }
 
     /**
@@ -3274,5 +3405,16 @@ class Functions{
             $elements['image'] = ' wvs-archive-product-image';
         }
         return $elements;
+    }
+
+    public function wp_kses_safe($content='', $extra_params=array()) {
+        if (empty($content)) {
+            return '';
+        }
+        $allowed = $this->allowed_html_tags(isset($extra_params['allowed']) && is_array($extra_params['allowed'])
+                ? $extra_params['allowed']
+                : array());
+
+        return wp_kses($content, $allowed);
     }
 }

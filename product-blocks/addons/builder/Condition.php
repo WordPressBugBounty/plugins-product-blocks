@@ -89,7 +89,10 @@ class Condition {
             }
             ?> 
                 <header id="wpob-header-template">
-                    <?php echo wopb_function()->content( $this->header_id ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                    <?php
+                        $header_safe = wopb_function()->wp_kses_safe(wopb_function()->content( $this->header_id ));
+                        echo $header_safe; 
+                    ?>
                 </header> 
             <?php
         }
@@ -114,8 +117,11 @@ class Condition {
                 }
             }
             ?> 
-                <footer id="wpob-footer-template" class="<?php esc_html_e('wopb-builderid-'.$this->footer_id); ?>" role="contentinfo">
-                    <?php echo wopb_function()->content( $this->footer_id ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                <footer id="wpob-footer-template" class="<?php echo esc_attr('wopb-builderid-'.$this->footer_id); ?>" role="contentinfo">
+                    <?php 
+                        $footer_safe = wopb_function()->wp_kses_safe(wopb_function()->content( $this->footer_id ));
+                        echo $footer_safe;
+                     ?>
                 </footer> 
             <?php
         }
@@ -141,6 +147,6 @@ class Condition {
 
     public function is_builder() {
         global $post;
-        return isset( $_GET['post_type'] ) ? ( sanitize_text_field( $_GET['post_type'] ) == 'wopb_builder' ) : ( isset( $post->post_type ) ? ( $post->post_type == 'wopb_builder' ) : false ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        return isset( $_GET['post_type'] ) ? ( sanitize_text_field( $_GET['post_type'] ) == 'wopb_builder' ) : ( isset( $post->post_type ) ? ( $post->post_type == 'wopb_builder' ) : false ); // phpcs:ignore
     }
 }

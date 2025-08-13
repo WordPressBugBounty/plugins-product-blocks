@@ -110,7 +110,7 @@ class Product_Category_2{
                 $wraper_after .= '</div>';
             $wraper_after .= '</div>';
 
-            wp_reset_query();
+            wp_reset_postdata();
         }
 
         return $noAjax ? $post_loop : $wraper_before.$post_loop.$wraper_after;

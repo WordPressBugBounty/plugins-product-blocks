@@ -113,7 +113,7 @@ class Product_Image{
                 $video_position = ! empty( $video_meta['single_position'] ) ? $video_meta['single_position'] : 'first';
                 if( ! empty( $all_id ) ) {
                     ob_start();
-                    echo apply_filters('wopb_product_video', '', $product, $all_id[0]);
+                    echo apply_filters('wopb_product_video', '', $product, $all_id[0]); // phpcs:ignore
                     $video_thumb = ob_get_clean();
                     if ($video_thumb) {
                         $fallback_url = !empty($video_meta['img']) ? $video_meta['img'] : '';
@@ -127,11 +127,11 @@ class Product_Image{
                         $fallback_url = !$fallback_url ? (!empty($full_src) ? $full_src[0] : WOPB_URL . 'assets/img/fallback.svg') : $fallback_url;
 
                         $video_image_full .= '<div class="wopb-main-image wopb-product-video-section">';
-                            $video_image_full .= '<img src="' . $fallback_url . '" data-width="100" data-height="100"/>';
+                            $video_image_full .= '<img src="' . esc_url( $fallback_url ) . '" data-width="100" data-height="100"/>';
                             $video_image_full .= $video_thumb;
                         $video_image_full .= '</div>';
                         $video_image_thumb .= '<div class="wopb-nav-slide wopb-video-nav">';
-                            $video_image_thumb .= '<img src="' . $fallback_thumb_url . '"/>';
+                            $video_image_thumb .= '<img src="' . esc_url( $fallback_thumb_url ) . '"/>';
                         $video_image_thumb .= '</div>';
                     }
                     $total_attachment = count($all_id);
@@ -158,11 +158,11 @@ class Product_Image{
                     }
                 }else {
                     $image_full .= '<div class="wopb-main-image">';
-                        $image_full .= '<img src="' . esc_url( wc_placeholder_img_src( 'woocommerce_single' ) ) . '" alt="' . esc_html__( 'Awaiting product image', 'woocommerce' ) . '"/>';
+                        $image_full .= '<img src="' . esc_url( wc_placeholder_img_src( 'woocommerce_single' ) ) . '" alt="' . esc_html__( 'Awaiting product image', 'product-blocks' ) . '"/>';
                     $image_full .= '</div>';
                 }
 
-                echo '<div class="wopb-product-gallery-wrapper' . ($productx_settings['showlight'] ? ' wopb-product-zoom-wrapper' : '' ). '" data-hover-zoom="' . $productx_settings['hoverZoom'] . '">';
+                echo '<div class="wopb-product-gallery-wrapper' . esc_attr($productx_settings['showlight'] ? ' wopb-product-zoom-wrapper' : '' ). '" data-hover-zoom="' . esc_attr($productx_settings['hoverZoom']) . '">';
                     if ($productx_settings['showlight']) {
                         echo '<a href="#" class="wopb-product-zoom"><svg enable-background="new 0 0 612 612" version="1.1" viewBox="0 0 612 612" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path d="m243.96 340.18-206.3 206.32 0.593-125.75c0-10.557-8.568-19.125-19.125-19.125s-19.125 8.568-19.125 19.125v172.12c0 5.661 2.333 10.232 6.043 13.368 3.462 3.538 8.282 5.757 13.637 5.757h171.57c10.557 0 19.125-8.567 19.125-19.125 0-10.557-8.568-19.125-19.125-19.125h-126.78l206.53-206.51-27.043-27.061zm362-334.42c-3.461-3.538-8.28-5.757-13.616-5.757h-171.59c-10.557 0-19.125 8.568-19.125 19.125s8.568 19.125 19.125 19.125h126.76l-206.51 206.53 27.042 27.042 206.32-206.32-0.612 125.75c0 10.557 8.568 19.125 19.125 19.125s19.125-8.568 19.125-19.125v-172.12c0-5.661-2.333-10.231-6.044-13.368z"/></svg></a>';
                     }
@@ -171,7 +171,8 @@ class Product_Image{
                     }
                     echo '<div class="wopb-builder-slider-for" data-arrow="'.esc_attr($productx_settings['showArrow']).'">';
                     if($image_full) {
-                        echo $image_full;
+                        $image_full_safe = wopb_function()->wp_kses_safe($image_full);
+                        echo $image_full_safe; // phpcs:ignore
                     }
                     echo '</div>';
                 echo '</div>';

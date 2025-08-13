@@ -91,15 +91,16 @@ class Wishlist {
         $action_added = wopb_function()->get_setting( 'wishlist_action_added' );
         $action = 'add';
         $redirect = $wishlist_page && $action_added == 'redirect' ? ( ' data-redirect="' . esc_url( get_permalink( $wishlist_page ) ) . '"' ) : '';
-        $post_id = ! empty( $data['post_id'] ) ? ( 'data-postid="' . esc_attr( $data['post_id'] ) . '"' ) : '';
         if( ! empty($data['action']) && $data['action'] == 'menu_block' ) {
             $action = 'menu_block';
         }
+        
         return [
             'button_attr' =>'
-                data-action="' . $action . '"
+                data-action="' . esc_attr( $action ) . '"
                 data-added-action="' . esc_attr( $action_added ) . '"' .
-                $redirect . $post_id . '
+                $redirect . '
+                data-postid="' . esc_attr( ! empty( $data['post_id'] ) ? $data['post_id'] :'' ) . '"
                 data-modal-loader="loader_1"
                 data-modal_content_class="wopb-wishlist-wrapper"
             ',
@@ -116,8 +117,10 @@ class Wishlist {
     public function get_grid_wishlist_html( $output, $post_id, $tooltipPosition = '' ) {
         $login_redirect = '';
         $user_id = get_current_user_id();
+        $current_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+
         if ( $this->require_login == 'yes' && ! $user_id ) {
-            $login_redirect = 'data-login-redirect="' .  esc_url( wp_login_url( home_url( $_SERVER['REQUEST_URI'] ) ) ) .'"';
+            $login_redirect = 'data-login-redirect="' .  wp_login_url( home_url( $current_uri ) ) .'"';
         }
 
         $wishlist_ids = $this->get_wishlist_id( $user_id );
@@ -125,13 +128,13 @@ class Wishlist {
         $wishlist_data = apply_filters('wopb_menu_wishlist_data', ['post_id' => get_the_ID()]);
 
         $output = '<div ';
-            $output .= 'class="' . $button_class . '"';
+            $output .= 'class="' . esc_attr( $button_class ) . '"';
             $output .= ( ! empty( $wishlist_data['button_attr'] ) ? $wishlist_data['button_attr'] : '' ) . $login_redirect;
         $output .= '>';
             $output .= '<span class="wopb-tooltip-text">';
                 $output .= wopb_function()->svg_icon( 'wishlist' );
                 $output .= wopb_function()->svg_icon( 'wishlistFill' );
-                $output .= '<span class="wopb-tooltip-text-' . $tooltipPosition . '"><span>' . esc_html( $this->button ? $this->button : "Add To Wishlist"  ) . '</span><span>' . esc_html( $this->browse ? $this->browse : 'Browse Wishlist' ) . '</span></span>';
+                $output .= '<span class="wopb-tooltip-text-' . esc_attr( $tooltipPosition ) . '"><span>' . esc_html( $this->button ? $this->button : "Add To Wishlist"  ) . '</span><span>' . esc_html( $this->browse ? $this->browse : 'Browse Wishlist' ) . '</span></span>';
             $output .= '</span>';
         $output .= '</div>';
         
@@ -148,12 +151,13 @@ class Wishlist {
         $wishlist_data = array();
         $user_id = $user_id ? $user_id : get_current_user_id();
         if ( isset( $_COOKIE['wopb_wishlist'] ) ) {
-            $data = json_decode( wp_unslash( $_COOKIE['wopb_wishlist'] ), true );
+            $cookie_value = isset( $_COOKIE['wopb_wishlist'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['wopb_wishlist'] ) ) : '';
+            $data = json_decode( $cookie_value, true );
             if ( is_array( $data ) ) {
                 return $data;
             } else {
                 setcookie( 'wopb_wishlist', '', time() - 3600, '/' );
-                unset( $_COOKIE['wopb_wishlist'] );
+                unset( $cookie_value );
             }
         } elseif ( $this->require_login == 'yes' && $user_id ) {
             $user_data = get_user_meta( $user_id, 'wopb_wishlist', true );
@@ -212,7 +216,8 @@ class Wishlist {
 
         $login_redirect = '';
         if ( $this->require_login == 'yes' && ! get_current_user_id() ) {
-            $login_redirect = 'data-login-redirect="' .  esc_url( wp_login_url( home_url( $_SERVER['REQUEST_URI'] ) ) ) .'"';
+            $current_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+            $login_redirect = 'data-login-redirect="' .  esc_url( wp_login_url( home_url( $current_uri ) ) ) .'"';
         }
         $wishlist_data = apply_filters('wopb_menu_wishlist_data', ['post_id' => get_the_ID()]);
 
@@ -248,7 +253,7 @@ class Wishlist {
             $redirect_cart          = wopb_function()->get_setting( 'wishlist_redirect_cart' );
             
             $html .= '<div class="wopb-modal-body">';
-                $html .= '<div class="' . 'wopb-wishlist-modal-content' . ( empty( $post_id ) ? ' wopb-wishlist-shortcode' : '' ) . '" data-modal_content_class="wopb-wishlist-wrapper" data-modal-loader="loader_1">';
+                $html .= '<div class="wopb-wishlist-modal-content' . ( empty( $post_id ) ? ' wopb-wishlist-shortcode' : '' ) . '" data-modal_content_class="wopb-wishlist-wrapper" data-modal-loader="loader_1">';
                     $html .= '<div class="wopb-wishlist-modal">';
                         if ($message) {
                             $html .= esc_html($message);
@@ -277,7 +282,7 @@ class Wishlist {
                                                 $html .= sprintf( '<a href="%s">%s</a>', esc_url( $link ), $product->get_image( 'thumbnail' ) );
                                             }
                                             $html .= '</td>';
-                                            $html .= '<td class="wopb-wishlist-product-name"><a href="'.esc_url( $link ).'">' . $product->get_title() . '</a></td>';
+                                            $html .= '<td class="wopb-wishlist-product-name"><a href="'.esc_url( $link ).'">' . esc_html( $product->get_title() ) . '</a></td>';
                                             $html .= '<td class="wopb-wishlist-product-price">' . wp_kses_post( $product->get_price_html() ) . '</td>';
                                             if ( $product->is_in_stock() ) {
                                                 $html .= '<td class="wopb-wishlist-product-action"><div class="wopb-wishlist-product-stock">' . ( $product->is_in_stock() ? esc_html__( 'In Stock', 'product-blocks' ) : esc_html__( 'Stock', 'product-blocks' ) ) . '</div><span class="wopb-wishlist-cart-added" data-action="cart_remove" ' . ( $redirect_cart ? 'data-redirect="' . esc_url( wc_get_cart_url() ) . '"' : '' ).' data-postid="' . esc_attr( $product->get_id() ) . '">'.do_shortcode( '[add_to_cart id="' . esc_attr( $val ). '" show_price="false"]' ) . '</span></td>';
@@ -307,7 +312,7 @@ class Wishlist {
             $html .= '</div>';//wopb-modal-body
         } else {
             $html .= '<div class="wopb-empty-wishlist-wrap">';
-                $html .= '<h3>' . __( 'Your Wishlist is empty.', 'product-blocks' ) . '</h3>';
+                $html .= '<h3>' . esc_html__( 'Your Wishlist is empty.', 'product-blocks' ) . '</h3>';
                 $html .= '<span><a class="wopb-modal-continue" data-redirect="' . get_permalink( wc_get_page_id( 'shop' ) ) . '">' . esc_html__( 'Continue Shopping', 'product-blocks' ) . '</span>';
             $html .= '</div>';
         }
@@ -334,8 +339,8 @@ class Wishlist {
 
             'wishlist_shop_enable' => 'no',
             'wishlist_position'     => 'after_cart',
-            'wishlist_button'       => __('', 'product-blocks'),
-            'wishlist_browse'       => __('', 'product-blocks'),
+            'wishlist_button'       => '',
+            'wishlist_browse'       => '',
 
             'wishlist_single_enable'=> 'yes',
             'wishlist_position_single'     => 'after_cart',
@@ -485,14 +490,14 @@ class Wishlist {
 	 * @return ARRAY | With Custom Message
 	 */
     public function wopb_wishlist_callback() {
-        if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+        if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) )  {
             return ;
         }
         
         $user_id = get_current_user_id();
-        $simple_Product = isset( $_POST['simpleProduct'] ) ? sanitize_text_field( $_POST['simpleProduct'] ) : '';
-        $type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : '';
-        $post_id = isset( $_POST['post_id'] ) ? sanitize_text_field( $_POST['post_id'] ) : '';
+        $simple_Product = isset( $_POST['simpleProduct'] ) ? sanitize_text_field( wp_unslash($_POST['simpleProduct']) ) : '';
+        $type = isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash($_POST['type']) ) : '';
+        $post_id = isset( $_POST['post_id'] ) ? sanitize_text_field( wp_unslash($_POST['post_id']) ) : '';
         $product = wc_get_product($post_id);
 
         $user_data = $this->get_wishlist_id();
@@ -638,7 +643,7 @@ class Wishlist {
             $html .= $nav_click_action == 'redirect' ? 'data-redirect="' . esc_url(get_permalink(wopb_function()->get_setting('wishlist_page'))) : '';
         $html .= '>';
             if ( $icon_position == 'after_text' ) {
-                $html .= $wishlist_text;
+                $html .= wopb_function()->core_esc_wp( $wishlist_text );
             }
             $html .= '<span class="wopb-wishlist-icon">';
                 $html .= wopb_function()->svg_icon('wishlist');
@@ -647,7 +652,7 @@ class Wishlist {
                 $html .= '</span>';
             $html .= '</span>';
             if ( $icon_position == 'before_text' || $icon_position == 'top_text' ) {
-                $html .= $wishlist_text;
+                $html .= wopb_function()->core_esc_wp( $wishlist_text );
             }
         $html .= '</a>';
 

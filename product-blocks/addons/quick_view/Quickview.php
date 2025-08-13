@@ -24,10 +24,13 @@ class Quickview
 
      private $is_mobile;
 
+     private $allowed_html_tag;
+
     public function __construct() {
         $position_filters = $this->button_position_filters();
         $quick_view_position = wopb_function()->get_setting( 'quick_view_position' );
         $this->is_mobile = wp_is_mobile();
+        $this->allowed_html_tag = wopb_function()->allowed_html_tags();
 
         add_action( 'wc_ajax_wopb_quickview',       array( $this, 'wopb_quickview_callback' ) );
         add_action( 'wp_ajax_nopriv_wopb_quickview',array( $this, 'wopb_quickview_callback' ) );
@@ -79,8 +82,8 @@ class Quickview
                 $output .= wopb_function()->svg_icon( wopb_function()->get_setting( 'quick_view_button_icon' ) );
                 if ( $quick_view_text ) {
                     $tooltipPosition = $position ? sanitize_html_class( $position ) : 'left';
-                    $output .= '<span class="wopb-tooltip-text-' . $tooltipPosition . '">';
-                        $output .= $quick_view_text;
+                    $output .= '<span class="wopb-tooltip-text-' . esc_attr( $tooltipPosition ) . '">';
+                        $output .= esc_html( $quick_view_text );
                     $output .= '</span>';
                 }
             $output .= '</span>';
@@ -229,12 +232,12 @@ class Quickview
      * @since v.1.1.0
      */
     public function wopb_quickview_callback() {
-        if ( ! ( isset( $_REQUEST['wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) ) {
+        if ( empty($_REQUEST['wpnonce']) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' )  ) {
             return;
         }
         $params = array(
-            'post_id'   => isset( $_POST['postid'] ) ? sanitize_text_field( $_POST['postid'] ) : '',
-            'post_list' => isset( $_POST['postList'] ) ? sanitize_text_field( $_POST['postList'] ) : ''
+            'post_id'   => isset( $_POST['postid'] ) ? sanitize_text_field( $_POST['postid'] ) : '', // phpcs:ignore
+            'post_list' => isset( $_POST['postList'] ) ? sanitize_text_field( $_POST['postList'] ) : '' // phpcs:ignore
         );
         $image_effect = wopb_function()->get_setting('quick_view_image_effect');
         $image_effect_type = wopb_function()->get_setting('quick_view_image_effect_type');
@@ -242,7 +245,7 @@ class Quickview
         <div class="wopb-modal-header">
             <?php if ( wopb_function()->get_setting( 'quick_view_close_button' ) == 'yes' ) { ?>
                 <a class="wopb-modal-close">
-                    <?php echo wopb_function()->svg_icon( 'close' ); ?>
+                    <?php echo wp_kses( wopb_function()->svg_icon( 'close' ), $this->allowed_html_tag ); // phpcs:ignore ?> 
                 </a>
             <?php } ?>
         </div>
@@ -292,13 +295,13 @@ class Quickview
                         data-postid="<?php echo esc_attr( ${$type} ); ?>"
                         data-modal-loader="<?php echo esc_attr( wopb_function()->get_setting( 'quick_view_loader' ) ); ?>">
                         <span class="wopb-nav-icon">
-                            <?php echo wopb_function()->svg_icon( $type == 'previous' ? 'leftAngle2' : 'rightAngle2' ); ?>
+                            <?php echo wp_kses( wopb_function()->svg_icon( $type == 'previous' ? 'leftAngle2' : 'rightAngle2' ), $this->allowed_html_tag ); ?>
                         </span>
                         <div class="wopb-quick-view-btn-image">
                             <?php if ( $thumbnail ) {
                                 $t_img = wp_get_attachment_image_src( $thumbnail, 'thumbnail' );
                                 if ( isset( $t_img[0] ) ) { ?>
-                                    <img src="<?php echo esc_attr( $t_img[0] ); ?>" />
+                                    <img src="<?php echo esc_url( $t_img[0] ); ?>" />
                                 <?php } ?>
                             <?php } ?>
                             <span class="wopb-nav-title"><?php echo esc_html( get_the_title( ${$type} ) ); ?></span>
@@ -339,7 +342,7 @@ class Quickview
                     echo '<div class="woocommerce-product-rating">';
                         echo wc_get_rating_html( $average, $rating_count );
                         echo '<span class="woocommerce-review-link">';
-                            echo '(<span class="count">' . $review_count .'</span> ' . __('customer review', 'product-blocks') . ')';
+                            echo '(<span class="count">' . esc_html( $review_count ) .'</span> ' . esc_html__('customer review', 'product-blocks') . ')';
                         echo '</span>';
                     echo '</div>';
                 ?>
@@ -398,10 +401,13 @@ class Quickview
                                         add_action('woocommerce_before_quantity_input_field', [$this, 'quick_view_before_add_to_cart_quantity']);
                                         add_action('woocommerce_after_quantity_input_field', [$this, 'quick_view_after_add_to_cart_quantity']);
                                         woocommerce_template_single_add_to_cart();
-                                    echo ob_get_clean(); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                                    echo ob_get_clean(); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
                                     echo '<div class="wopb-cart-bottom">' . apply_filters('wopb_quick_view_bottom_cart', '', $product->get_id()) . '</div>';
                                     if ( wopb_function()->get_setting( 'quick_view_buy_now' ) && ! $product->is_type( 'external' ) ) {
-                                        echo $this->quick_buy_now_button();
+                                        ob_start();
+                                        $this->quick_buy_now_button();
+                                        $quick_buy_now_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                                        echo $quick_buy_now_safe; // phpcs:disable
                                     }
                                 echo '</div>';
                                 break;
@@ -582,7 +588,10 @@ class Quickview
                             data-colxs="3"
                             data-position=<?php echo esc_attr($position); ?>
                         >
-                            <?php echo $nav_html; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                            <?php 
+                                $nav_html_safe = wopb_function()->wp_kses_safe( $nav_html );
+                                echo $nav_html_safe; // phpcs:ignore
+                            ?>
                         </div>
                     <?php } ?>
                 </div>
@@ -621,7 +630,7 @@ class Quickview
      * @return null
      */
     public function quick_view_before_add_to_cart_quantity() {
-        echo '<span class="wopb-add-to-cart-minus">' . wopb_function()->svg_icon( 'minus_2' ) . '</span>';
+        echo '<span class="wopb-add-to-cart-minus">' . wp_kses( wopb_function()->svg_icon( 'minus_2' ), wopb_function()->allowed_html_tags() ) . '</span>';
     }
 
     /**
@@ -632,7 +641,7 @@ class Quickview
      * @return null
      */
     public function quick_view_after_add_to_cart_quantity() {
-        echo '<span class="wopb-add-to-cart-plus">' . wopb_function()->svg_icon( 'plus_3' ) . '</span>';
+        echo '<span class="wopb-add-to-cart-plus">' . wp_kses( wopb_function()->svg_icon( 'plus_3' ), wopb_function()->allowed_html_tags() ) . '</span>';
     }
 
     /**
@@ -649,19 +658,19 @@ class Quickview
         <div class="wopb-product-social-share">
             <span><?php echo esc_html__( 'Social Share','product-blocks' ); ?></span>
             <a href="<?php echo esc_url( 'http://www.facebook.com/sharer.php?u=' . $link ); ?>" target="_blank" class="wopb-share-facebook">
-                <?php echo wopb_function()->svg_icon( 'facebook' ); ?>
+                <?php echo wp_kses( wopb_function()->svg_icon( 'facebook' ), $this->allowed_html_tag ); ?>
             </a>
             <a href="<?php echo esc_url( 'https://www.linkedin.com/sharing/share-offsite/?url=' . $link ); ?>" target="_blank" class="wopb-share-linkedin">
-                <?php echo wopb_function()->svg_icon( 'linkedin' ); ?>
+                <?php echo wp_kses( wopb_function()->svg_icon( 'linkedin' ), $this->allowed_html_tag ); ?>
             </a>
             <a href="<?php echo esc_url( 'http://twitter.com/share?url=' . $link ); ?>" target="_blank" class="wopb-share-twitter">
-                <?php echo wopb_function()->svg_icon( 'twitter' ); ?>
+                <?php echo wp_kses( wopb_function()->svg_icon( 'twitter' ), $this->allowed_html_tag ); ?>
             </a>
             <a href="<?php echo esc_url( 'http://pinterest.com/pin/create/link/?url=' . $link ); ?>" target="_blank" class="wopb-share-pinterest">
-                <?php echo wopb_function()->svg_icon( 'pinterest' ); ?>
+                <?php echo wp_kses( wopb_function()->svg_icon( 'pinterest' ), $this->allowed_html_tag ); ?>
             </a>
             <a href="<?php echo esc_url( 'https://web.skype.com/share?url=' . $link ); ?>" target="_blank" class="wopb-share-skype">
-                <?php echo wopb_function()->svg_icon( 'skype' ); ?>
+                <?php echo wp_kses( wopb_function()->svg_icon( 'skype' ), $this->allowed_html_tag ); ?>
             </a>
         </div>
     <?php
@@ -680,7 +689,8 @@ class Quickview
             'post'      => new \WP_Query( $wp_query->query_vars ),
             'post_id'   => get_the_ID(),
         );
-        echo $this->get_quick_view($params); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+        $quick_view_safe = wopb_function()->wp_kses_safe( $this->get_quick_view($params));
+        echo $quick_view_safe; // phpcs:ignore
     }
 
     /**
@@ -722,7 +732,7 @@ class Quickview
                             $output .= $quick_view_icon;
                             if ( $quick_view_text ) {
                                 $output .= '<span class="' . ( in_array( $params['layout'] , $params['position'] ) ? 'wopb-tooltip-text-left' : 'wopb-tooltip-text-top' ) .'">';
-                                    $output .= $quick_view_text;
+                                    $output .= esc_html( $quick_view_text );
                                 $output .= '</span>';
                             }
                         $output .= '</span>';

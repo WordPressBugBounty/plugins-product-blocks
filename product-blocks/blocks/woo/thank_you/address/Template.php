@@ -5,6 +5,7 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+
 $order_id = absint( get_query_var('order-received') );
 $order = wc_get_order( $order_id );
 

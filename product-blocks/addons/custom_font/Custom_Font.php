@@ -85,9 +85,9 @@ class Custom_Font {
             array_push( $font_src, 'url(' . esc_url( $settings['eot'] ) . ') format("eot")' );
         }
         $font_face = '@font-face {
-            font-family: "'.$font_name.'";
-            font-weight: '.$settings['weight'].';
-            src: '.implode( ', ', $font_src ).';
+            font-family: "'.esc_attr($font_name).'";
+            font-weight: '.esc_attr($settings['weight']).';
+            src: '. implode( ', ', $font_src ).';
         }';
 
         return $font_face;
@@ -108,11 +108,11 @@ class Custom_Font {
                 if ($value['eot']) { $eot = true; }
             }
             $font_face =  $this->get_font_face( $settings[0] , get_the_title($post_id));
-            echo '<style type="text/css">'.$font_face.'</style>'; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo wopb_function()->esc_inline( $font_face ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 
             switch ($column_id) {
                 case 0:
-                    echo '<span class="wopb-custom-font-preview" style="font-family: '.get_the_title($post_id).'">' . esc_html__('The quick brown fox jumps over the lazy dog.', 'product-blocks') . '</span>';
+                    echo '<span class="wopb-custom-font-preview" style="font-family: '.esc_attr( get_the_title( $post_id ) ).'">' . esc_html__('The quick brown fox jumps over the lazy dog.', 'product-blocks') . '</span>';
                     break;
                 case 1:
                     echo '<span class="dashicons '.($woff ? 'dashicons-yes' : 'dashicons-no-alt').'"></span>';
@@ -139,7 +139,7 @@ class Custom_Font {
     function init_metabox_callback() {
         add_meta_box(
             'wopb-custom-font-id',
-            __('Font Vaiations', 'product-blocks'),
+            esc_html__('Font Vaiations', 'product-blocks'),
             array($this, 'custom_font_callback'),
             'wopb_custom_font',
             'advanced'
@@ -148,10 +148,10 @@ class Custom_Font {
 
 
     function set_data($arr = [], $font_name='') { ?>
-        <div class="wopb-custom-font-container wopb-custom-font<?php echo empty($arr) ? '-copy' : ''; ?>">
+        <div class="wopb-custom-font-container wopb-custom-font<?php echo esc_attr( empty( $arr ) ) ? '-copy' : ''; ?>">
             <div class="wopb-custom-font-heading">
                 <div>
-                    <label class="font-label"><?php echo esc_html__('Weight:  ', 'product-blocks'); ?> <span class="wopb-custom-font-weight"> <?php echo isset( $arr['weight'] ) ? esc_html( $arr['weight'])  : ''; ?> </span></label>
+                    <label class="font-label"><?php echo esc_html__('Weight:  ', 'product-blocks'); ?> <span class="wopb-custom-font-weight"> <?php echo esc_html( isset( $arr['weight'] ) ? $arr['weight']  : '' ); ?> </span></label>
                     <select name="weight[]">
                         <?php $weight = isset($arr['weight']) ? $arr['weight'] : ''; ?>
                         <option <?php selected( $weight, 'normal' ); ?> value="normal"><?php echo esc_html__('Normal', 'product-blocks'); ?></option>
@@ -170,11 +170,17 @@ class Custom_Font {
                     $styles = '';
                     if (!empty($arr)) {
                         $font_face = $this->get_font_face($arr , $font_name);
-                        echo '<style type="text/css">'.$font_face.'</style>'; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-                        $styles = 'style="font-family: '.$font_name.'; font-weight: '.$arr['weight'].' "';
+                        echo wopb_function()->esc_inline( $font_face ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                        $styles = 'style="font-family: '.esc_attr( $font_name ).'; font-weight: '.esc_attr( $arr['weight'] ).' "';
                     }
                 ?>
-                <span <?php echo $styles; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?> class="wopb-custom-font-preview"><?php echo esc_html__('The quick brown fox jumps over the lazy dog', 'product-blocks'); ?></span>
+                <span 
+                    <?php 
+                        $styles_safe = wopb_function()->wp_kses_safe( $styles);
+                        echo $styles_safe;
+                     ?> 
+                    class="wopb-custom-font-preview"><?php echo esc_html__('The quick brown fox jumps over the lazy dog', 'product-blocks'); ?>
+                </span>
                 <div class="wopb-custom-font-actions">
                     <span class="wopb-custom-font-edit"><span class="dashicons dashicons-edit"></span><?php echo esc_html__('Edit', 'product-blocks'); ?></span>
                     <span class="wopb-custom-font-close"><span class="dashicons dashicons-no-alt"></span><?php echo esc_html__('Close', 'product-blocks'); ?></span>
@@ -228,25 +234,27 @@ class Custom_Font {
 
 
     function metabox_save_data($post_id) {
-        if (!isset($_POST['custom_font_nonce'])) { return; }
-        if (! (isset($_POST['custom_font_nonce']) && wp_verify_nonce( sanitize_key(wp_unslash($_POST['custom_font_nonce'])), 'font_meta_box'))) { return; }
+        if ( ! isset($_POST['custom_font_nonce']) || ! wp_verify_nonce( sanitize_key(wp_unslash($_POST['custom_font_nonce'])), 'font_meta_box') ) {
+            return;
+        }
 
         $arr = array();
-        if (isset($_POST['weight'])) { 
-            foreach ($_POST['weight'] as $i => $value) { //phpcs:ignore 
-                if ( isset($_POST['weight'][$i]) && 
-                    (!empty($_POST['woff'][$i]) || 
-                    !empty($_POST['woff2'][$i]) || 
+        $font_weight = isset($_POST['weight']) ? wopb_function()->rest_sanitize_params($_POST['weight']) : array();
+        if (!empty($font_weight) ) {
+            foreach ($font_weight as $i => $value) {
+                if ( isset($font_weight[$i]) &&
+                    (!empty($_POST['woff'][$i]) ||
+                    !empty($_POST['woff2'][$i]) ||
                     !empty($_POST['ttf'][$i]) || 
                     !empty($_POST['svg'][$i]) || 
-                    !empty($_POST['eot'][$i])) ) {
+                    !empty($_POST['eot'][$i])) ) { //phpcs:ignore
                             $temp = array();
-                            $temp['weight'] = isset($_POST['weight'][$i]) ? sanitize_text_field($_POST['weight'][$i]) : '';
-                            $temp['woff'] = isset($_POST['woff'][$i]) ? sanitize_text_field($_POST['woff'][$i]) : '';
-                            $temp['woff2'] = isset($_POST['woff2'][$i]) ? sanitize_text_field($_POST['woff2'][$i]) : '';
-                            $temp['ttf'] = isset($_POST['ttf'][$i]) ? sanitize_text_field($_POST['ttf'][$i]) : '';
-                            $temp['svg'] = isset($_POST['svg'][$i]) ? sanitize_text_field($_POST['svg'][$i]) : '';
-                            $temp['eot'] = isset($_POST['eot'][$i]) ? sanitize_text_field($_POST['eot'][$i]) : '';
+                            $temp['weight'] = isset($_POST['weight'][$i]) ? sanitize_text_field($_POST['weight'][$i]) : ''; // phpcs:ignore
+                            $temp['woff'] = isset($_POST['woff'][$i]) ? sanitize_text_field($_POST['woff'][$i]) : ''; // phpcs:ignore
+                            $temp['woff2'] = isset($_POST['woff2'][$i]) ? sanitize_text_field($_POST['woff2'][$i]) : ''; // phpcs:ignore
+                            $temp['ttf'] = isset($_POST['ttf'][$i]) ? sanitize_text_field($_POST['ttf'][$i]) : ''; // phpcs:ignore
+                            $temp['svg'] = isset($_POST['svg'][$i]) ? sanitize_text_field($_POST['svg'][$i]) : ''; // phpcs:ignore
+                            $temp['eot'] = isset($_POST['eot'][$i]) ? sanitize_text_field($_POST['eot'][$i]) : ''; // phpcs:ignore
                             $arr[] = $temp;
                         }
             }

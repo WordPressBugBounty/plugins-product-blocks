@@ -169,18 +169,18 @@ class SalesNotification {
                 }
 
                 $html = '<div class="wopb-notification wopb-animation-notification active">';
-                    $html .= '<div class="wopb-notification-wrap" style="' . $wrap_style . '">';
-                        $html .= '<a href="' . $product_url . '">';
+                    $html .= '<div class="wopb-notification-wrap" style="' . wopb_function()->core_esc_wp( $wrap_style ) . '">';
+                        $html .= '<a href="' . esc_url( $product_url ) . '">';
                             if ( $image == 'yes' && $image_url ) {
                                 $html .= '<div class="wopb-img-wrap">';
-                                    $html .= '<img src="' . $image_url . '"/>';
+                                    $html .= '<img src="' . esc_url( $image_url ) . '"/>';
                                 $html .= '</div>';
                             }
                             $html .= '<div class="wopb-col">';
-                                $html .= '<div class="wopb-notification-name">' . $customer_name . ' ' . ( $label ? '<span>' . $label . '</span>' : '' ) . '</div>';
-                                $html .= '<div class="wopb-notification-product">' . $product_name . '</div>';
+                                $html .= '<div class="wopb-notification-name">' . esc_html( $customer_name ) . ' ' . ( $label ? '<span>' .esc_html( $label ) . '</span>' : '' ) . '</div>';
+                                $html .= '<div class="wopb-notification-product">' . esc_html( $product_name ) . '</div>';
                                 if ( $time == 'yes' ) {
-                                    $html .= '<div class="wopb-notification-time">' . $prefix . ' ' . $time_deff . ' ' . $postfix . '</div>';
+                                    $html .= '<div class="wopb-notification-time">' . esc_html( $prefix . ' ' . $time_deff . ' ' . $postfix ) . '</div>';
                                 }
                             $html .= '</div>';
                         $html .= '</a>';

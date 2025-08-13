@@ -1,5 +1,6 @@
 <?php
 defined( 'ABSPATH' ) || exit;
+
 global $post;
 global $WOPB_HEADER_ID;
 global $WOPB_FOOTER_ID;
@@ -24,8 +25,8 @@ if ( wp_is_block_theme() ) {
     if ( ! $WOPB_HEADER_ID ) {
         ob_start();
         block_template_part( 'header' );
-        $header = ob_get_clean();
-		echo '<header class="wp-block-template-part">'.$header.'</header>';
+        $header_safe = wopb_function()->core_esc_wp(ob_get_clean());
+		echo '<header class="wp-block-template-part">'. $header_safe . '</header>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 } else {
     get_header();
@@ -84,7 +85,9 @@ if( is_checkout() && !(is_wc_endpoint_url() || is_wc_endpoint_url( 'order-pay' )
             $blocks = parse_blocks( $content );
             $embed = new WP_Embed();
             foreach ( $blocks as $block ) {
-                echo $embed->autoembed(do_shortcode(render_block( $block ))); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                $contents = $embed->autoembed(do_shortcode(render_block( $block )));
+                $content_safe = wopb_function()->wp_kses_safe($contents);
+                echo $content_safe;
             }
         }
     } else {
@@ -125,8 +128,8 @@ if ( wp_is_block_theme() ) {
 	if ( !$WOPB_FOOTER_ID ) {
 		ob_start();
         block_template_part('footer');
-		$footer = ob_get_clean();
-		echo '<footer class="wp-block-template-part">'.$footer.'</footer>';
+		$footer_safe = wopb_function()->core_esc_wp(ob_get_clean());
+		echo '<footer class="wp-block-template-part">'.$footer_safe.'</footer>';
     }
 	wp_head();
 	wp_footer();

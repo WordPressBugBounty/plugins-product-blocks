@@ -4,7 +4,10 @@ namespace WOPB\blocks;
 defined('ABSPATH') || exit;
 
 class Product_Slider {
+    private $allowed_html_tags;
+
     public function __construct() {
+        $this->allowed_html_tags = wopb_function()->allowed_html_tags(array('form'=> array('class'  => true,)));
         add_action( 'init', array( $this, 'register' ) );
     }
     
@@ -86,7 +89,7 @@ class Product_Slider {
                 $attr['className'] = !empty($attr['className']) ? preg_replace('/[^A-Za-z0-9_ -]/', '', $attr['className']) : '';
                 $attr['align'] = !empty($attr['align']) ? 'align' . preg_replace('/[^A-Za-z0-9_ -]/', '', $attr['align']) : '';
                 ob_start();
-                echo '<div '.(isset($attr['advanceId'])?'id="'.sanitize_html_class($attr['advanceId']).'" ':'').' class="wp-block-product-blocks-'.esc_attr($block_name).' wopb-block-'.sanitize_html_class($attr["blockId"]).' '. $attr['className'] . $attr['align'] . ' wopb-product-slider-block">';
+                echo '<div '.(isset($attr['advanceId'])?'id="'.sanitize_html_class($attr['advanceId']).'" ':'').' class="wp-block-product-blocks-'.esc_attr($block_name).' wopb-block-'. esc_attr( $attr["blockId"] ) . ' ' . esc_attr( $attr['className'] ) .' '. esc_attr( $attr['align'] ) . ' wopb-product-slider-block">';
 ?>
                         <div class="wopb-block-wrapper">
                             <div class="wopb-slider-section">
@@ -101,9 +104,15 @@ class Product_Slider {
                                                 <div class="wopb-block-item">
                                                     <div class="wopb-slide-wrap">
                                                         <?php
-                                                            echo $this->content_section($product, $attr); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                                            ob_start();
+                                                            $this->content_section($product, $attr);
+                                                            $section_content_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                                                            echo $section_content_safe; // phpcs:ignore
                                                             if($attr['showImage']) {
-                                                                echo $this->image_section($product, $_discount, $attr); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                                                ob_start();
+                                                                $this->image_section($product, $_discount, $attr);
+                                                                $section_image_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                                                                echo $section_image_safe; // phpcs:ignore
                                                             }
                                                         ?>
                                                     </div>
@@ -122,12 +131,16 @@ class Product_Slider {
                                     <div class="wopb-slick-nav" style="display:none">
                                         <div class="wopb-slick-prev">
                                             <div class="slick-arrow slick-prev">
-                                                <?php echo wopb_function()->svg_icon($nav[0]); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                                <?php 
+                                                    echo wp_kses( wopb_function()->svg_icon($nav[0]), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+                                                ?>
                                             </div>
                                         </div>
                                         <div class="wopb-slick-next">
                                             <div class="slick-arrow slick-next">
-                                                <?php echo wopb_function()->svg_icon($nav[1]); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                                <?php
+                                                    echo wp_kses( wopb_function()->svg_icon($nav[1]), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+                                                ?>
                                             </div>
                                         </div>
                                     </div>
@@ -150,22 +163,31 @@ class Product_Slider {
         <div class="wopb-content-section">
             <?php
                 if(!$attr['taxonomyUnderTitle']) {
-                    echo $this->taxonomyContent($product, $attr); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    ob_start();
+                    $this->taxonomyContent($product, $attr);
+                    $tax_content_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                    echo $tax_content_safe; // phpcs:ignore
                 }
                 if($attr['showTitle']) {
             ?>
-                    <<?php echo $attr['titleTag']; ?> class="wopb-product-title <?php echo $attr['titleHoverEffect'] == 'none' ? '' :  'wopb-title-' . esc_attr($attr['titleHoverEffect']) ?>">
+                    <<?php echo esc_attr($attr['titleTag']); ?> class="wopb-product-title <?php echo ( $attr['titleHoverEffect'] == 'none' ? '' :  'wopb-title-' . esc_attr($attr['titleHoverEffect']) ); ?>">
                         <a href="<?php echo esc_url(get_permalink($product->get_id())) ?>">
-                            <?php echo wp_kses_post((isset($attr['titleLength']) && $attr['titleLength'] !=0) ? wp_trim_words($product->get_title(), $attr['titleLength'], '...' ) : $product->get_title()); ?>
+                            <?php echo (isset($attr['titleLength']) && $attr['titleLength'] !=0) ? wp_trim_words($product->get_title(), $attr['titleLength'], '...' ) : $product->get_title(); // phpcs:ignore ?>
                         </a>
-                    </<?php echo $attr['titleTag'] ?>>
+                    </<?php echo esc_attr( $attr['titleTag'] ); ?>>
             <?php
                 }
                 if($attr['taxonomyUnderTitle']) {
-                    echo $this->taxonomyContent($product, $attr); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    ob_start();
+                    $this->taxonomyContent($product, $attr);
+                    $tax_content_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                    echo $tax_content_safe; // phpcs:ignore
                 }
                 if($attr['priceOverDescription']) {
-                    echo $this->priceContent($product, $attr); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    ob_start();
+                    $this->priceContent($product, $attr);
+                    $price_content_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                    echo $price_content_safe; // phpcs:ignore
                 }
                 if($attr['showDescription']) {
             ?>
@@ -177,9 +199,15 @@ class Product_Slider {
             <?php
                 }
                 if(!$attr['priceOverDescription']) {
-                    echo $this->priceContent($product, $attr); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    ob_start();
+                    $this->priceContent($product, $attr);
+                    $price_content_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                    echo $price_content_safe; // phpcs:ignore
                 }
-                echo $this->cartContent($product, $attr); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                ob_start();
+                $this->cartContent($product, $attr);
+                $cart_content_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                echo $cart_content_safe; // phpcs:ignore
             ?>
         </div>
 
@@ -214,13 +242,20 @@ class Product_Slider {
                         ?>
                                 <span class="wopb-sale-shape">
                                     <?php
-                                        echo $shape; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                                        echo $this->saleStyle($_discount, $attr); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                        $shape_safe = wopb_function()->wp_kses_safe($shape);
+                                        echo $shape_safe; // phpcs:ignore
+                                        ob_start();
+                                        $this->saleStyle($_discount, $attr);
+                                        $sale_style_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                                        echo $sale_style_safe; // phpcs:ignore
                                     ?>
                                 </span>
                         <?php
                             }else {
-                                echo $this->saleStyle($_discount, $attr); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                ob_start();
+                                $this->saleStyle($_discount, $attr);
+                                $sale_style_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                                echo $sale_style_safe; // phpcs:ignore
                             }
                         ?>
                     </div>
@@ -299,7 +334,7 @@ class Product_Slider {
                     ?>
                     <span class="wopb-prices wopb-<?php echo esc_attr( $product->get_type() ); ?>-price">
                         <?php
-                            echo $product->get_price_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            echo wp_kses( $product->get_price_html(), $this->allowed_html_tags ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                         ?>
                     </span>
                 </span>
@@ -316,17 +351,22 @@ class Product_Slider {
                     <?php if($attr['showQty'] && $product->is_type('simple')) { ?>
                         <div class="quantity wopb-qty-wrap">
                             <?php if($attr['showPlusMinus'] && $attr['plusMinusPosition'] == 'both') { ?>
-                                <span class="wopb-cart-minus wopb-add-to-cart-minus"><?php echo wopb_function()->svg_icon('minus'); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+                                <span class="wopb-cart-minus wopb-add-to-cart-minus"><?php echo wp_kses( wopb_function()->svg_icon('minus'), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
                         <?php } ?>
                             <input type="number" class="wopb-qty" step="1" min="1" max="" name="quantity" value="1" title="Qty" size="4" placeholder="" inputMode="numeric"/>
                         <?php if($attr['showPlusMinus'] && $attr['plusMinusPosition'] == 'both') { ?>
-                            <span class="wopb-cart-plus wopb-add-to-cart-plus"><?php echo wopb_function()->svg_icon('plus'); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+                            <span class="wopb-cart-plus wopb-add-to-cart-plus"><?php echo wp_kses( wopb_function()->svg_icon('plus'), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
                         <?php
                             }
                             if($attr['showPlusMinus'] && ($attr['plusMinusPosition'] == 'left' || $attr['plusMinusPosition'] == 'right')) {
                         ?>
                             <span class="wopb-cart-plus-minus-icon">
-                                <?php echo $this->plusMinusContent(); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                <?php 
+                                    ob_start();
+                                    $this->plusMinusContent();
+                                    $plus_Minus_Content_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+                                    echo $plus_Minus_Content_safe; // phpcs:ignore
+                                ?>
                             </span>
                         <?php
                             }
@@ -358,7 +398,8 @@ class Product_Slider {
                 </form>
                 <?php
                     if( $after_loop = apply_filters( 'wopb_after_loop_item', $content = '' ) ) {
-                        echo '<div class="wopb-after-loop-item">' . $after_loop . '</div>';
+                        $after_loop_safe = wopb_function()->core_esc_wp( $after_loop );
+                        echo '<div class="wopb-after-loop-item">' . $after_loop_safe . '</div>'; // phpcs:ignore
                     }
                 ?>
             </div>
@@ -368,8 +409,8 @@ class Product_Slider {
 
     public function plusMinusContent() {
 ?>
-        <span class="wopb-cart-plus wopb-add-to-cart-plus"><?php echo wopb_function()->svg_icon('plus'); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
-        <span class="wopb-cart-minus wopb-add-to-cart-minus"><?php echo wopb_function()->svg_icon('minus'); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+        <span class="wopb-cart-plus wopb-add-to-cart-plus"><?php echo wp_kses( wopb_function()->svg_icon('plus'), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+        <span class="wopb-cart-minus wopb-add-to-cart-minus"><?php echo wp_kses( wopb_function()->svg_icon('minus'), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 <?php
     }
 

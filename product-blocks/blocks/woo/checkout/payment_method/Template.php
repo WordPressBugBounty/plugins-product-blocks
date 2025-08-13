@@ -1,5 +1,6 @@
 <?php
 defined( 'ABSPATH' ) || exit;
+
 if ( ! wp_doing_ajax() ) {
 	do_action( 'woocommerce_review_order_before_payment' );
 }
@@ -37,7 +38,7 @@ $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
 			<?php do_action( 'woocommerce_review_order_before_submit' ); ?>
 
-			<?php echo apply_filters( 'woocommerce_order_button_html', '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Place order" data-value="Place order">' . esc_html__( "Place order", "product_blocks" ) . '</button>' ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo apply_filters( 'woocommerce_order_button_html', '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Place order" data-value="Place order">' . esc_html__( "Place order", "product-blocks" ) . '</button>' ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 			<?php do_action( 'woocommerce_review_order_after_submit' ); ?>
 

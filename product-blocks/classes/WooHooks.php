@@ -41,22 +41,22 @@ class WooHooks {
         
         if ( $top_filter ) {
             $before .= '<div class="wopb-cart-top">';
-            $before .= $top_filter;
+            $before .= wopb_function()->core_esc_wp( $top_filter );
             $before .= '</div>';
         }
         if ( $before_filter ) {
             $before .= '<span class="wopb-cart-before">';
-            $before .= $before_filter;
+            $before .= wopb_function()->core_esc_wp( $before_filter );
             $before .= '</span>';
         }
         if ( $after_filter ) {
             $after .= '<span class="wopb-cart-after">';
-            $after .= $after_filter;
+            $after .= wopb_function()->core_esc_wp( $after_filter );
             $after .= '</span>';
         }
         if ( $bottom_filter ) {
             $after .= '<div class="wopb-cart-bottom">';
-            $after .= $bottom_filter;
+            $after .= wopb_function()->core_esc_wp( $bottom_filter );
             $after .= '</div>';
         }
 
@@ -74,9 +74,10 @@ class WooHooks {
         $before_title = apply_filters( 'wopb_before_shop_loop_title', $content = '', $args );
         if ( $before_title ) {
             $content = '<div class="wopb-loop-image-top">';
-            $content .= $before_title;
+            $content .= wopb_function()->core_esc_wp( $before_title );
             $content .= '</div>';
-            echo $content; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+            $content_safe = wopb_function()->wp_kses_safe($content);
+            echo $content_safe; // phpcs:ignore
         }
     }
 
@@ -92,15 +93,16 @@ class WooHooks {
         $before_filter = apply_filters( 'wopb_before_add_to_cart', $content = '' );
         if ( $top_filter ) {
             $content .= '<div class="wopb-cart-top">';
-            $content .= $top_filter;
+            $content .= wopb_function()->core_esc_wp( $top_filter );
             $content .= '</div>';
         }
         if ( $before_filter ) {
             $content .= '<span class="wopb-cart-before">';
-            $content .= $before_filter;
+            $content .= wopb_function()->core_esc_wp( $before_filter );
             $content .= '</span>';
         }
-        echo $content; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+        $content_safe = wopb_function()->wp_kses_safe($content);
+        echo $content_safe; // phpcs:ignore
     }
 
     /**
@@ -115,16 +117,17 @@ class WooHooks {
         $content = '';
         if( $after_filter ) {
             $content .= '<span class="wopb-cart-after">';
-            $content .= $after_filter;
+            $content .= wopb_function()->core_esc_wp( $after_filter );
             $content .= '</span>';
         }
         if ( $bottom_filter ) {
             $content .= '<div class="wopb-cart-bottom">';
-            $content .= $bottom_filter;
+            $content .= wopb_function()->core_esc_wp( $bottom_filter );
             $content .= "</div>";
         }
 
-        echo $content; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+        $content_safe = wopb_function()->wp_kses_safe($content);
+        echo $content_safe; // phpcs:ignore
     }
 
     /**

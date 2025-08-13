@@ -990,10 +990,14 @@ th:has(.wopb-custom-font-preview-th) {
     /* height: 80px; */
     padding: 10px 0px;
     position: relative;
+    background-color: #fff;
 }
 /*.wrap .wopb-notice-wrapper {*/
 /*    width: 100%;*/
 /*}*/
+.wopb-notice-wrapper.notice.data_collection_notice {
+    background-color: #fff;
+}
 
 .wopb-notice-type-1 .wopb-notice-icon img,
 .wopb-notice-type-2 .wopb-notice-icon img,

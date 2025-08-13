@@ -1,12 +1,12 @@
-=== WooCommerce Builder & Gutenberg WooCommerce Blocks - WowStore ===
+=== WowStore – Store Builder & Product Blocks for WooCommerce ===
 Contributors: wpxpo, anik4e, jakirhasan
 Tags: woocommerce builder, woocommerce blocks, product filter, variation swatches, woocommerce compare
 Requires at least: 5.0
-Tested up to: 6.8.1
+Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 4.3.1
+Stable tag: 4.3.3
 License: GPLv3
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCommerce Blocks, and more effective features.
 
@@ -174,6 +174,9 @@ We are glad that you are considering WowStore. Please have a look at our other p
 = Author =
 Developed by [WPXPO](https://www.wpxpo.com). [Contribute to Gutenberg WooCommerce Blocks on Bitbucket](https://bitbucket.org/wpstabon/product-blocks/src/master/) and join the party.
 
+= Plugin Source =
+This plugin code is accesible and any contribution will be appretiated. [Source Code](https://bitbucket.org/wpstabon/product-blocks/src/master/)
+
 == Installation ==
 
 = Minimum Requirements =
@@ -204,6 +207,14 @@ Bugs can be reported on the WordPress support forum.
 = Is it working with older versions of WordPress? =
 It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5.x.x or more. And WordPress older version with Gutenberg plugin.
 
+== External services ==
+
+= IPinfo =
+This plugin connects to an API [IPinfo](https://ipinfo.io/) to obtain the user's IP address location with user consent when user wants to share their address.
+
+= Remote Files =
+This plugin uses External Files from [Country Flags](https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags). This resources is open for all and owned by this plugin owner.
+This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags/bdt.png)
 
 == Screenshots ==
 1. Woo Builder
@@ -218,6 +229,12 @@ It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5
 
 
 == Changelog ==
+= 4.3.3 – 13 August 2025 =
+* Fix: Product Compare addon issue
+
+= 4.3.2 – 10 August 2025 =
+* Fix: Trademark Violation issue
+
 = 4.3.1 – 5 August 2025 =
 * Fix: WowStore notice updated
 

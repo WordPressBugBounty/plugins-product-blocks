@@ -110,7 +110,7 @@ class Product_Category_1{
                                 $post_loop .= '<div class="wopb-block-item">';
                                     $post_loop .= '<div class="wopb-block-content-wrap wopb-category-wrap">';
                                         if( $attr['showImage'] ) {
-                                            $post_loop .= '<div class="wopb-block-image wopb-block-image-'.sanitize_html_class($attr['imgAnimation']).'"><a href="'.esc_url($value['url']).'" class="wopb-product-cat-img"><img src='.( $value['image'] ? esc_url($value['image'][$image_size]) : WOPB_URL.'assets/img/wopb_fallback.jpg' ).' alt='.esc_attr($value['name']).'/></a></div>';
+                                            $post_loop .= '<div class="wopb-block-image wopb-block-image-'.sanitize_html_class($attr['imgAnimation']).'"><a href="'.esc_url($value['url']).'" class="wopb-product-cat-img"><img src="'.esc_url( $value['image'] ? $value['image'][$image_size] : WOPB_URL.'assets/img/wopb_fallback.jpg' ).'" alt="'.esc_attr($value['name']).'"/></a></div>';
                                         }
                                         if( $attr['titleShow'] || $attr['countShow'] || $attr['descShow'] || $attr['readMore']){
                                             $post_loop .= '<div class="wopb-category-content-items wopb-category-content-'.sanitize_html_class($attr['contentVerticalPosition']).' wopb-category-content-'.sanitize_html_class($attr['contentHorizontalPosition']).'">';
@@ -146,7 +146,7 @@ class Product_Category_1{
                 $wraper_after .= '</div>';
             $wraper_after .= '</div>';
 
-            wp_reset_query();
+            wp_reset_postdata();
         }
 
         return $noAjax ? $post_loop : $wraper_before.$wrapper_main_content.$wraper_after;

@@ -11,8 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php if ( ! current_theme_supports( 'title-tag' ) ) : ?>
 		<title>
 			<?php
-				// PHPCS - already escaped by WordPress.
-				echo wp_get_document_title(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				$title_safe = wopb_function()->wp_kses_safe(wp_get_document_title());
+				echo $title_safe;
 			?>
 		</title>
 	<?php endif; ?>

@@ -101,8 +101,14 @@ class FlipImage {
      * @since v.1.1.0
 	 */
     function feature_image_add_metabox() {
-        $title = '<div class="wopb-single-product-meta-box"><img src="' . WOPB_URL . 'assets/img/logo-sm.svg" /><span>'. __( 'Flip Image', 'product-blocks' ).'</span></div>';
-        add_meta_box( 'flipimage-feature-image', $title, array( $this, 'feature_image_metabox' ), 'product', 'side', 'low' );
+        add_meta_box( 
+            'flipimage-feature-image', 
+            '<div class="wopb-single-product-meta-box"><img src="' . esc_url( WOPB_URL . 'assets/img/logo-sm.svg' ) . '" /><span>'. esc_html__( 'Flip Image', 'product-blocks' ).'</span></div>',
+            array( $this, 'feature_image_metabox' ),
+            'product',
+            'side',
+            'low'
+        );
     }
 
     /**
@@ -116,8 +122,24 @@ class FlipImage {
         $image_id = get_post_meta( $post->ID, '_flip_image_id', true );
         $thumbnail_html = $image_id ? wp_get_attachment_image( $image_id, array( 254, 254 ) ) : ''; ?>
         <div class="wopb-flip-image">
-            <?php echo $thumbnail_html ? wp_kses_post( $thumbnail_html ) : '<img class="hidden" src=""/>'; ?>
-            <p class="hide-if-no-js"><a href="javascript:;" id="<?php echo $thumbnail_html ? 'remove_feature_image_button' : 'upload_feature_image_button'; ?>" data-uploader_title="<?php esc_attr_e( 'Select Flip Image', 'product-blocks' ); ?>" data-uploader_button_text="<?php esc_attr_e( 'Set Flip Image', 'product-blocks' ); ?>"><?php  echo $thumbnail_html ? esc_html__( 'Remove Flip Image', 'product-blocks' ) : esc_html__( 'Set Flip Image Source', 'product-blocks' ); ?></a></p>
+            <?php 
+                if ( $thumbnail_html ) {
+                    echo wp_kses_post( $thumbnail_html );
+                } else {
+                    echo '<img class="hidden" src=""/>';
+                }
+            ?>
+            <p class="hide-if-no-js">
+                <a href="javascript:;" id="<?php echo esc_attr( $thumbnail_html ? 'remove_feature_image_button' : 'upload_feature_image_button' ); ?>" data-uploader_title="<?php esc_attr_e( 'Select Flip Image', 'product-blocks' ); ?>" data-uploader_button_text="<?php esc_attr_e( 'Set Flip Image', 'product-blocks' ); ?>">
+                    <?php 
+                        if ( $thumbnail_html ) {
+                            esc_html__( 'Remove Flip Image', 'product-blocks' );
+                        } else {
+                            esc_html__( 'Set Flip Image Source', 'product-blocks' );
+                        }
+                    ?>
+                </a>
+            </p>
             <input type="hidden" id="upload_feature_image" name="_flip_image" value="<?php echo esc_attr( $image_id ); ?>" />
         </div>
     <?php }
@@ -130,8 +152,8 @@ class FlipImage {
      * @since v.1.1.0
      */
     function feature_image_save( $post_id ) {
-        if ( isset( $_POST['_flip_image'] ) ) { //phpcs:disable WordPress.Security.NonceVerification.Missing
-            $image_id = (int) sanitize_text_field( $_POST['_flip_image'] );  //phpcs:disable WordPress.Security.NonceVerification.Missing
+        if ( isset( $_POST['_flip_image'] ) && sanitize_text_field( wp_unslash($_POST['_flip_image']) ) ) { // phpcs:ignore
+            $image_id = (int) sanitize_text_field( wp_unslash($_POST['_flip_image']) );  //phpcs:ignore
             if ( $image_id ) {
                 update_post_meta( $post_id, '_flip_image_id', $image_id );
             } else {

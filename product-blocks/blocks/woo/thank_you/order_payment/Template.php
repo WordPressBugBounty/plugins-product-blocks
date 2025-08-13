@@ -1,6 +1,6 @@
 <?php
-
 defined( 'ABSPATH' ) || exit;
+
 $order_id = absint( get_query_var('order-received') );
 $order = wc_get_order( $order_id );
 
@@ -11,7 +11,7 @@ if ( $order && !($order->has_status( 'failed' ))) {
 
 			<li class="woocommerce-order-overview__order order">
 				<?php echo esc_html( $attr['orderText'] ); ?>
-				<strong><?php echo $order->get_order_number(); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
+				<strong><?php echo esc_html( $order->get_order_number() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
 			</li>
 			<div class="wopb-separator"></div>
 
@@ -24,14 +24,14 @@ if ( $order && !($order->has_status( 'failed' ))) {
 			<?php if ( is_user_logged_in() && $order->get_user_id() === get_current_user_id() && $order->get_billing_email() ) : ?>
 				<li class="woocommerce-order-overview__email email">
 					<?php echo esc_html( $attr['emailText'] ); ?>
-					<strong><?php echo $order->get_billing_email(); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped?></strong>
+					<strong><?php echo esc_html( $order->get_billing_email() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped?></strong>
 				</li>
 				<div class="wopb-separator"></div>
 			<?php endif; ?>
 
 			<li class="woocommerce-order-overview__total total">
 				<?php echo esc_html( $attr['totalText'] ); ?>
-				<strong><?php echo $order->get_formatted_order_total(); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
+				<strong><?php echo wp_kses_post( $order->get_formatted_order_total() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
 			</li>
 			<div class="wopb-separator"></div>
 			<?php if ( $order->get_payment_method_title() ) : ?>

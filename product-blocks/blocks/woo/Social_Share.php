@@ -58,7 +58,8 @@ class Social_Share {
         $wraper_before = $wraper_after = $wrapper_content = '';
         $attr = wp_parse_args( $attr, $this->get_attributes() );
         $post_id = get_the_ID();
-        $post_link = isset($_SERVER['REQUEST_URI'])? esc_url(home_url($_SERVER['REQUEST_URI'])):''; //phpcs:ignore
+        $post_link = isset($_SERVER['REQUEST_URI']) ? home_url( sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) : '';
+
         $total_share = get_post_meta($post_id, 'wopb_share_count', true);
         $total_share = $total_share ? $total_share : 0;
 
@@ -87,7 +88,7 @@ class Social_Share {
 
                                 foreach ($attr["repeatableSocialShare"] as $key => $value) {
                                     $wrapper_content .= '<div class="wopb-share-item wopb-repeat-'.$key.' wopb-social-'.$value["type"].'" postId="'.$post_id.'" count="'.$total_share.'">';
-                                        $wrapper_content .= '<a href="javascript:" class="wopb-share-item-' . sanitize_html_class($value["type"]) . '" url="' . esc_url($this->share_link($value['type'], $post_link)) . '">';
+                                        $wrapper_content .= '<a href="javascript:" class="wopb-share-item-' . sanitize_html_class($value["type"]) . '" data-url="' . esc_url($this->share_link($value['type'], $post_link)) . '">';
                                             $wrapper_content .= '<span class="wopb-share-item-icon">'.wopb_function()->svg_icon($value['type']).'</span>';
                                             $wrapper_content .= ''.$value['enableLabel'] && $attr['enableLabel'] ? '<span class="wopb-share-item-label">' . esc_html($value['label']). '</span>' : "".' ';
                                         $wrapper_content .= '</a>';

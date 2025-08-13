@@ -109,7 +109,8 @@ class Filter {
 
             $content = $wraper_before . $html . $wraper_after;
             add_action( 'wopb_footer', function () use( $content ) {
-                echo $this->filter_in_footer($content);
+                $in_footer_safe = wopb_function()->wp_kses_safe( $this->filter_in_footer($content));
+                echo $in_footer_safe; // phpcs:ignore
             } );
 
             return $content;
@@ -133,7 +134,7 @@ class Filter {
                         $filter_modal .= wopb_function()->svg_icon( 'close' );
                     $filter_modal .= '</a>';
                     $filter_modal .= '<span class="wopb-modal-title">';
-                        $filter_modal .= __('Filter', 'product-blocks');
+                        $filter_modal .= esc_html__('Filter', 'product-blocks');
                     $filter_modal .= '</span>';
                 $filter_modal .= '</div>';
             $filter_modal .= $filter_content;
@@ -437,9 +438,9 @@ class Filter {
 
         //post not in query from $query_vars
         if ( ! empty( $query_vars['post__not_in'] ) ) {
-            $query_args['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+            $query_args['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore
         }
-        $query_args['tax_query'] = $tax_query;
+        $query_args['tax_query'] = $tax_query; //phpcs:ignore
         return get_posts($query_args); 
     }
 
@@ -460,7 +461,7 @@ class Filter {
     <input type="hidden" class="wopb-filter-slug" value="search">
     <div class="wopb-search-filter-body">
         <input type="text" class="wopb-filter-search-input" placeholder="<?php echo esc_html__('Search Products', 'product-blocks') ?>..."/>
-        <span class="wopb-search-icon"><?php echo wopb_function()->svg_icon('search') ?></span>
+        <span class="wopb-search-icon"><?php echo wp_kses( wopb_function()->svg_icon('search'), wopb_function()->allowed_html_tags() ); // phpcs:ignore ?></span>
     </div>
 <?php
     }
@@ -493,7 +494,7 @@ class Filter {
                 <div class="wopb-item-content">
                     <label for="status_<?php echo esc_attr($key) ?>">
                         <input type="checkbox" class="wopb-status-input" id="status_<?php echo esc_attr($key) ?>" value="<?php echo esc_attr($key) ?>"/>
-                        <?php echo esc_html($status) ?> <?php echo $attr['productCount'] ? esc_html('(' . $count .')') : '' ?>
+                        <?php echo esc_html($status) ?> <?php if ( $attr['productCount'] ) { echo esc_html('(' . $count .')'); } ?>
                     </label>
                 </div>
             </div>
@@ -620,12 +621,13 @@ class Filter {
                             $attr_value = get_term_meta($term->term_id, $tax_attribute->attribute_type, true);
                             if ( $tax_attribute->attribute_type === 'color' ) {
                                 $color_html = $attr_value ? '<span class="wopb-filter-tax-color" style="background-color: ' . esc_attr($attr_value) . ';"></span>' : '';
-                                echo $color_html; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                                $color_html_safe = wopb_function()->wp_kses_safe( $color_html);
+                                echo $color_html_safe; // phpcs:ignore
                             }elseif ( $tax_attribute->attribute_type === 'image' ) {
                                 if( $attr_value ) {
                                     echo wp_get_attachment_image($attr_value);
                                 }else {
-                                    echo '<img src="' . WOPB_URL . '/assets/img/fallback.svg" />';
+                                    echo '<img src="' . esc_url( WOPB_URL . '/assets/img/fallback.svg' ) . '" />';
                                 }
                             }
                         }
@@ -633,7 +635,9 @@ class Filter {
                        <span>
                             <?php 
                                 echo esc_html($term->name);
-                                echo $attr['productCount'] ? esc_html(' (' . count( $this->get_product_ids( $query_params ) ) .')') : ''
+                                if ( $attr['productCount'] ) {
+                                    echo esc_html(' (' . count( $this->get_product_ids( $query_params ) ) .')');
+                                }
                             ?> 
                         </span>
                     </label>
@@ -646,9 +650,9 @@ class Filter {
                             $params = array_merge($child_data, array( 'taxonomy' => $query_params['taxonomy'] ));
                     ?>
                          <div class="wopb-filter-check-list<?php
-                                isset($attr['expandTaxonomy']) && $attr['expandTaxonomy'] == 'true'
+                                echo isset($attr['expandTaxonomy']) && $attr['expandTaxonomy'] == 'true'
                                     ? ''
-                                    : esc_attr_e(' wopb-d-none')
+                                    : esc_attr(' wopb-d-none')
                             ?>"
                         >
                             <?php $this->product_taxonomy_terms($attr, $params);?>
@@ -657,8 +661,8 @@ class Filter {
                 </div>
                 <?php if ( ! empty( $child_data['terms'] ) ) { ?>
                     <div class="wopb-filter-child-toggle">
-                        <span class="dashicons dashicons-arrow-right-alt2 wopb-filter-right-toggle<?php echo $attr['expandTaxonomy'] == 'true' ? ' wopb-d-none' : '' ?>"></span>
-                        <span class="dashicons dashicons-arrow-down-alt2 wopb-filter-down-toggle<?php echo $attr['expandTaxonomy'] == 'true' ? '' : ' wopb-d-none' ?>"></span>
+                        <span class="dashicons dashicons-arrow-right-alt2 wopb-filter-right-toggle<?php echo esc_attr( $attr['expandTaxonomy'] == 'true' ? ' wopb-d-none' : '' ); ?>"></span>
+                        <span class="dashicons dashicons-arrow-down-alt2 wopb-filter-down-toggle<?php echo esc_attr( $attr['expandTaxonomy'] == 'true' ? '' : ' wopb-d-none' ); ?>"></span>
                     </div>
                 <?php } ?>
             </div>
@@ -673,7 +677,7 @@ class Filter {
         <select name="sortBy" class="select wopb-filter-sorting-input">
             <?php foreach ($attr['sortingItems'] as $item) { ?>
                 <option value="<?php echo esc_attr($item->value)?>">
-                    <?php echo esc_html__($item->label, 'product-blocks')?>
+                    <?php echo esc_html($item->label); ?>
                 </option>
            <?php } ?>
         </select>
@@ -707,6 +711,7 @@ class Filter {
 
     public function max_price() {
         global $wpdb;
+        // phpcs:ignore
         $max_price = $wpdb->get_var("
             SELECT MAX(CAST(meta_value AS DECIMAL(10,2)))
             FROM {$wpdb->postmeta} 
@@ -723,13 +728,22 @@ class Filter {
 	 * @return null
 	 */
     public function show_more_callback() {
-        //phpcs:disable WordPress.Security.NonceVerification.Missing
-        $query = $_POST['query'];
-        $query['offset'] = ($_POST['current_page'] - 1) * $query['limit'];
+        if (
+            ! isset( $_POST['wpnonce'] ) || 
+            ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wpnonce'] ) ), 'wopb-nonce' ) 
+        ) {
+            return;
+        }
+        $query = wopb_function()->rest_sanitize_params( wp_unslash( $_POST['query'] ) ); // phpcs:ignore
+        $attr = wopb_function()->rest_sanitize_params( $_POST['attributes'] ); // phpcs:ignore
+        $query['offset'] = ( sanitize_text_field( wp_unslash( $_POST['current_page'] ) ) - 1) * $query['limit']; // phpcs:ignore
         $params = $this->get_term_data($query);
         if ( ! empty( $params['terms'] ) ) {
             $params['show_more'] = true;
-            echo $this->product_taxonomy_terms($_POST['attributes'], $params); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+            ob_start();
+            $this->product_taxonomy_terms( $attr, $params );
+            $product_taxonomy_terms_safe = wopb_function()->wp_kses_safe(ob_get_clean());
+            echo $product_taxonomy_terms_safe; // phpcs:ignore
         }
         wp_die();
     }

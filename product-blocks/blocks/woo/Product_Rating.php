@@ -46,7 +46,7 @@ class Product_Rating{
                                 $content .= wc_get_star_rating_html( $average, $rating_count );
                             $content .= '</div>';
                             $content .= '<a href="#reviews" class="woocommerce-review-link" rel="nofollow">';
-                                $content .= '(<span class="count">' . $review_count .'</span> ' . __('customer review', 'product-blocks') . ')';
+                                $content .= '(<span class="count">' . $review_count .'</span> ' . esc_html__('customer review', 'product-blocks') . ')';
                             $content .= '</a>';
                         $content .= '</div>';
                         ob_start();

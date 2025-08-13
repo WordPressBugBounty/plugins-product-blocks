@@ -1,4 +1,6 @@
 <?php
+defined( 'ABSPATH' ) || exit;
+
 add_action( 'et_builder_ready', 'wopb_productx_template_divi_modules' );
 
 function wopb_productx_template_divi_modules() {
@@ -11,18 +13,18 @@ function wopb_productx_template_divi_modules() {
 		public $vb_support = 'partial';
 		
 		function init() {
-			$this->name			= esc_html__( 'WowStore Template', 'product-blocks' );
+			$this->name			= __( 'WowStore Template', 'product-blocks' );
 			$this->icon_path	= plugin_dir_path( __FILE__ ) . 'icon.svg';
 		}
 	
 		function get_fields() {
 			return array(
 				'templates' => array(
-					'label'			=> esc_html__( 'Select Your Template', 'product-blocks' ),
+					'label'			=> __( 'Select Your Template', 'product-blocks' ),
 					'type'			=> 'select',
 					'options'		=> wopb_function()->get_all_lists('wopb_templates', 'none'),
 					'default'		=> 'none',
-					'description'	=> esc_html__( 'Pick a Template from your saved ones. Or create a template from: <strong><i>Dashboard > WowStore > Saved Templates</i></strong>', 'product-blocks' ),
+					'description'	=> __( 'Pick a Template from your saved ones. Or create a template from: Dashboard > WowStore > Saved Templates', 'product-blocks' ),
 				)
 			);
 		}

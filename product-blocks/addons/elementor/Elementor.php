@@ -49,7 +49,7 @@ final class Elementor_WOPB_Extension {
             'url' => WOPB_URL,
             'ajax' => admin_url('admin-ajax.php'),
             'security' => wp_create_nonce('wopb-nonce'),
-            'currency_symbol' => class_exists( 'WooCommerce' ) && is_plugin_active( 'woocommerce/woocommerce.php' ) ? get_woocommerce_currency_symbol() : '' ,
+            'currency_symbol' => get_woocommerce_currency_symbol(),
             'currency_position' => get_option( 'woocommerce_currency_pos' ),
             'errorElementGroup' => [
                 'errorElement' => '<div class="wopb-error-element"></div>'
