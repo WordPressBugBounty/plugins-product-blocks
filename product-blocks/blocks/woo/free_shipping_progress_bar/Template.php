@@ -42,8 +42,9 @@ function progressBar($free_shipping_progress, $attr) {
             <span><?php echo wp_kses( $attr['beforePriceText'], wopb_function()->allowed_html_tags()); ?></span>
             <strong>
                 <span class="woocommerce-Price-amount amount wopb-shippingRemainingAmount">
-<!--                    <span class="woocommerce-Price-currencySymbol">--><?php //echo get_woocommerce_currency_symbol(); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?><!--</span>-->
-                    <?php echo wc_price($free_shipping_cart_due);?>
+                    <?php 
+                        echo wc_price($free_shipping_cart_due); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+                    ?>
                 </span>
             </strong>
             <span><?php echo wp_kses( $attr['afterPriceText'], wopb_function()->allowed_html_tags());?></span>

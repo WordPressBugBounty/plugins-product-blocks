@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 4.3.3
+Stable tag: 4.3.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -229,6 +229,13 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 
 
 == Changelog ==
+= 4.3.4 – 24 August 2025 =
+* Fix: Compare addon issue
+* Fix: Builder content broken issue
+* Fix: Block overlay background color issue
+* Fix: WowRevenue Campaign count query improved
+* Fix: Free shipping broken issue in single product
+
 = 4.3.3 – 13 August 2025 =
 * Fix: Product Compare addon issue
 

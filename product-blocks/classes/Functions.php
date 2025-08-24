@@ -630,7 +630,7 @@ class Functions{
                         $query_args['tax_query'][] = $var;
                     }
                 }else {
-                    $queryCats = json_decode($attr['queryCat']);
+                    $queryCats = !empty($attr['queryCat']) ? json_decode($attr['queryCat']) : '';
                     if (!empty($queryCats)) {
                         if(!isset($query_args['tax_query']['relation'])) {
                             $query_args['tax_query']['relation'] = 'OR';

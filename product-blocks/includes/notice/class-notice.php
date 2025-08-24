@@ -418,6 +418,7 @@ class Notice {
 	 * @return void
 	 */
 	public function our_plugin_install_notice_callback() {
+		global $pagenow;
 		$notice_content = array(
 			array(
 				'type'	 	 => 'wow_revenue',
@@ -426,14 +427,14 @@ class Notice {
 						'utmKey' => 'summer_db',
 					)
 				),
-				'visibility' => ! Xpo::is_lc_active(),
+				'visibility' => ! Xpo::is_lc_active() && ( 'plugins.php' === $pagenow || 'index.php' === $pagenow ),
 			),
 		);
 
 		foreach ( $notice_content as $key => $notice ) {
 				// phpcs:ignore
 				if ( ( isset( $_GET['wopb_install_key'] ) && sanitize_key( $_GET['wopb_install_key'] ) === $notice['type'] ) ||
-					'off' === Xpo::get_transient_without_cache( 'wopb_install_notice_' . $notice['type'], )
+					'off' === Xpo::get_transient_without_cache( 'wopb_install_notice_' . $notice['type'], ) || isset($notice['visibility']) && !($notice['visibility'])
 				) {
 					return;
 				}
@@ -1466,8 +1467,9 @@ class Notice {
 		// phpcs:ignore
 		$res = $wpdb->get_row(
 			$wpdb->prepare(
-				"SELECT COUNT(*) AS total_campaigns FROM {$wpdb->prefix}revenue_campaigns;"
-			) //phpcs:ignore
+				"SELECT 1 AS total_campaigns FROM {$wpdb->prefix}revenue_campaigns LIMIT %d",
+				1
+			)
 		);
 
 		return $res;

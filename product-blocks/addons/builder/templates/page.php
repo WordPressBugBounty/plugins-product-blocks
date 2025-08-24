@@ -79,6 +79,25 @@ if( is_checkout() && !(is_wc_endpoint_url() || is_wc_endpoint_url( 'order-pay' )
 }
 
     if ($page_id) {
+        $allow_script_tag = array(
+            'allowed' => array(
+                'script' => array(   // Wp
+                    'type'              => true,
+                    'src'               => true,
+                    'id'                => true,
+                    'defer'             => true,
+                    'integrity'         => true,
+                    'crossorigin'       => true,
+                    'referrerpolicy'    => true,
+                    'async'             => true,
+                    'nomodule'          => true,
+                    'charset'           => true,
+                    'nonce'             => true,
+                    'data-*'            => true,
+                )
+            )
+        );
+        // 'allowed'
         $content_post = get_post($page_id);
         $content = $content_post->post_content;
         if (has_blocks($content)) {
@@ -86,7 +105,7 @@ if( is_checkout() && !(is_wc_endpoint_url() || is_wc_endpoint_url( 'order-pay' )
             $embed = new WP_Embed();
             foreach ( $blocks as $block ) {
                 $contents = $embed->autoembed(do_shortcode(render_block( $block )));
-                $content_safe = wopb_function()->wp_kses_safe($contents);
+                $content_safe = wopb_function()->wp_kses_safe($contents, $allow_script_tag);
                 echo $content_safe;
             }
         }

@@ -277,6 +277,11 @@ li.product:has(.wopb-loop-image-top) {
     cursor: wait;
     position: absolute;
 }
+
+.wopb-block-wrapper .wopb-processing .wopb-block-overlay {
+    background: transparent !important; /* Conflict with dark theme that's why use transparent all grid block  */
+}
+
 .wopb-processing .wopb-block-overlay::before {
     height: 1em;
     width: 1em;

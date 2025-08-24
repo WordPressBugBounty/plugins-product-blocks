@@ -236,6 +236,7 @@ class Compare {
             if ( is_object( $cookie_data ) ) {
                 $cookie_data = (array) $cookie_data;
             }
+            $data = $cookie_data;
         }
         if( $user_id = get_current_user_id() ) {
             $data = get_user_meta( $user_id, 'wopb_compare_ids', true );
@@ -538,7 +539,7 @@ class Compare {
             }
             if( $user_id = get_current_user_id() ) {
                 update_user_meta( $user_id, 'wopb_compare_ids', $data_id );
-            }else {
+            } else {
                 setcookie('wopb_compare', wp_json_encode($data_id), time() + 604800, '/'); // 7 Days
             }
             $params['data_id'] = $data_id;
@@ -868,7 +869,7 @@ class Compare {
                                                     break;
                                                     case 'price':
                                                         if ( $product->get_price_html() ) {
-                                                            wp_kses_post( $product->get_price_html() );
+                                                            echo wp_kses_post( $product->get_price_html() );
                                                         } else {
                                                             echo esc_html( 'N/A' );
                                                         }
@@ -927,7 +928,7 @@ class Compare {
                                                         $additional = ob_get_clean();
                                             ?>
                                                     <span class="wopb-additional">
-                                                        <?php echo esc_html( $additional ? $additional : 'N/A' ); ?>
+                                                        <?php echo  $additional ? wopb_function()->wp_kses_safe( $additional ) : 'N/A' ; ?>
                                                     </span>
                                             <?php
                                                         break;

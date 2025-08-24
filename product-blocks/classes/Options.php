@@ -129,7 +129,7 @@ class Options{
             array(
                 'revenue'           => __( 'Revenue', 'product-blocks' ) . '<span class="wopb-revenue-tag">New</span>',
                 'settings'          => __( 'Settings', 'product-blocks' ),
-                'support'           => __( 'Quick Support', 'product-blocks' )
+                // 'support'           => __( 'Quick Support', 'product-blocks' )
             )
         );
 
