@@ -133,9 +133,9 @@ class FlipImage {
                 <a href="javascript:;" id="<?php echo esc_attr( $thumbnail_html ? 'remove_feature_image_button' : 'upload_feature_image_button' ); ?>" data-uploader_title="<?php esc_attr_e( 'Select Flip Image', 'product-blocks' ); ?>" data-uploader_button_text="<?php esc_attr_e( 'Set Flip Image', 'product-blocks' ); ?>">
                     <?php 
                         if ( $thumbnail_html ) {
-                            esc_html__( 'Remove Flip Image', 'product-blocks' );
+                            echo esc_html__( 'Remove Flip Image', 'product-blocks' );
                         } else {
-                            esc_html__( 'Set Flip Image Source', 'product-blocks' );
+                            echo esc_html__( 'Set Flip Image Source', 'product-blocks' );
                         }
                     ?>
                 </a>

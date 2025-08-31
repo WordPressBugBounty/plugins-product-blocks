@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore – Store Builder & Product Blocks for WooCommerce 4.3.4\n"
+"Project-Id-Version: WowStore – Store Builder & Product Blocks for WooCommerce 4.3.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-24T05:06:33+00:00\n"
+"POT-Creation-Date: 2025-08-31T04:51:30+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: product-blocks\n"
@@ -1466,7 +1466,7 @@ msgid "Compare Products"
 msgstr ""
 
 #: addons/compare/Compare.php:625
-#: blocks/Filter.php:453
+#: blocks/Filter.php:454
 #: assets/js/editor.blocks.js:338
 msgid "Clear All"
 msgstr ""
@@ -1503,8 +1503,8 @@ msgstr ""
 
 #: addons/compare/Compare.php:910
 #: blocks/Product_Slider.php:396
-#: classes/Functions.php:3183
-#: classes/Functions.php:3185
+#: classes/Functions.php:3198
+#: classes/Functions.php:3200
 msgid "View Cart"
 msgstr ""
 
@@ -3033,7 +3033,7 @@ msgstr ""
 msgid "Wishlist Not Added."
 msgstr ""
 
-#: blocks/Filter.php:137
+#: blocks/Filter.php:138
 #: assets/js/editor.blocks.js:712
 #: assets/js/editor.blocks.js:767
 #: assets/js/editor.blocks.js:822
@@ -3042,21 +3042,17 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: blocks/Filter.php:463
-msgid "Search Products"
-msgstr ""
-
-#: blocks/Filter.php:532
+#: blocks/Filter.php:533
 #: assets/js/editor.blocks.js:338
 #: assets/js/editor.blocks.js:2494
 msgid "Taxonomy Relation"
 msgstr ""
 
-#: blocks/Filter.php:576
+#: blocks/Filter.php:577
 msgid "Show More"
 msgstr ""
 
-#: blocks/Filter.php:583
+#: blocks/Filter.php:584
 msgid "Show Less"
 msgstr ""
 
@@ -3269,11 +3265,11 @@ msgstr ""
 msgid "Note:"
 msgstr ""
 
-#: classes/Blocks.php:400
+#: classes/Blocks.php:404
 msgid "Username or Email is required."
 msgstr ""
 
-#: classes/Blocks.php:404
+#: classes/Blocks.php:408
 msgid "Password is required."
 msgstr ""
 
@@ -3389,26 +3385,26 @@ msgstr ""
 msgid "Seconds"
 msgstr ""
 
-#: classes/Functions.php:1217
+#: classes/Functions.php:1218
 #: assets/js/editor.blocks.js:2494
 #: assets/js/setup.wizard.js:1
 msgid "Next"
 msgstr ""
 
-#: classes/Functions.php:1218
+#: classes/Functions.php:1219
 #: assets/js/editor.blocks.js:2494
 msgid "Previous"
 msgstr ""
 
-#: classes/Functions.php:1602
+#: classes/Functions.php:1603
 msgid "Select Page"
 msgstr ""
 
-#: classes/Functions.php:1618
+#: classes/Functions.php:1619
 msgid "Select Location"
 msgstr ""
 
-#: classes/Functions.php:2739
+#: classes/Functions.php:2754
 msgid "- Select Template -"
 msgstr ""
 

@@ -427,6 +427,7 @@ class Functions{
         ];
         
         $wopb_search_builder = (isset($attr['is_search']) && $attr['is_search']);
+        $archive = isset($attr['is_archive']) ? $attr['is_archive'] : ''; // double check because built in function not working after click on pagination
 
         if (
             !$this->is_specific_archive_product($attr) &&
@@ -1221,7 +1222,7 @@ class Functions{
         $data = ($paged >= 3) ? [($paged - 1), $paged, $paged + 1] : [1, 2, 3];
 
         if ($pages > 1) {
-            $html .= '<ul class="wopb-pagination">';
+            $html .= '<ul class="wopb-pagination ' . ( $is_ajax ? "wopb-pagination-ajax" : '' ) . '">';
             $display_none = 'style="display:none"';
             // Previous Button
             if ($pages > 2) {
@@ -2283,6 +2284,8 @@ class Functions{
                 'multiple' => true,
                 'name' => true,
                 'data-*'   => true,
+                'class' => true,
+                'name' => true,
             ),
             'option'   => array(
                 'value'  => true,
@@ -2412,9 +2415,21 @@ class Functions{
                 'referrerpolicy' => true,
                 'allowfullscreen' => true,
             ),
+            'circle'   => array(
+                'cx'    => true,
+                'cy'    => true,
+                'r'     => true,
+                'fill'  => true,
+                'class' => true,
+            ),
+            'li' => array(
+                'class' => true,
+                'style' => true,
+                'data-*' => true,
+            ),
         );
 
-        $default_allowed = wp_kses_allowed_html('post'); 
+        $default_allowed = wp_kses_allowed_html('post');
         $allow_merged = array_replace_recursive(
             $default_allowed,
             $allowed,

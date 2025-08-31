@@ -43,6 +43,7 @@ class Filter {
             'toggleInitialMobile' => false,
             'filterHeadText' => 'Filter',
             'currentPostId' =>  '',
+            'searchPlaceHolder' => 'Search Products...'
         );
     }
 
@@ -172,7 +173,7 @@ class Filter {
                 ob_start();
                 switch ( $active_filter['type'] ) {
                     case 'search':
-                        $this->search_filter();
+                        $this->search_filter($attr['searchPlaceHolder']);
                         break;
                     case 'price':
                         $body_class = ' wopb-price-range-slider';
@@ -456,11 +457,11 @@ class Filter {
 <?php
     }
 
-    public function search_filter() {
+    public function search_filter($searchPlaceholder = "Search Products...") {
 ?>
     <input type="hidden" class="wopb-filter-slug" value="search">
     <div class="wopb-search-filter-body">
-        <input type="text" class="wopb-filter-search-input" placeholder="<?php echo esc_html__('Search Products', 'product-blocks') ?>..."/>
+        <input type="text" class="wopb-filter-search-input" placeholder="<?php echo esc_attr( $searchPlaceholder ); ?>" />
         <span class="wopb-search-icon"><?php echo wp_kses( wopb_function()->svg_icon('search'), wopb_function()->allowed_html_tags() ); // phpcs:ignore ?></span>
     </div>
 <?php

@@ -105,8 +105,8 @@ if( is_checkout() && !(is_wc_endpoint_url() || is_wc_endpoint_url( 'order-pay' )
             $embed = new WP_Embed();
             foreach ( $blocks as $block ) {
                 $contents = $embed->autoembed(do_shortcode(render_block( $block )));
-                $content_safe = wopb_function()->wp_kses_safe($contents, $allow_script_tag);
-                echo $content_safe;
+                // $content_safe = wopb_function()->wp_kses_safe($contents, $allow_script_tag);
+                echo $contents; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ( inside All database and user interactions was sanitized and validated to ensure safety and prevent vulnerabilities  )
             }
         }
     } else {

@@ -218,7 +218,7 @@ class Blocks {
      * @return STRING
      * @since v.2.1.4
      */
-    public function block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params = [], $search = '' ){
+    public function block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params = [], $search = '', $archive_builder = null ){
         foreach ( $blocks as $key => $value ) {
             if ( $blockName == $value['blockName'] ) {
                 if ($value['attrs']['blockId'] == $blockId ) {
@@ -233,6 +233,10 @@ class Blocks {
                     if($search && strlen($search)) {
                         $value['attrs']['is_search'] = $search;
                     }
+                    if(!empty($archive_builder)) {
+                        $value['attrs']['is_archive'] = $archive_builder;
+                    }
+
                     if ( isset($params['filterAttributes']) && $params['filterAttributes'] ) {
                         $attr = array_merge( $attr, $params['filterAttributes'] );
                     }
@@ -341,7 +345,7 @@ class Blocks {
         $postId   = isset( $_POST['postId'] ) ? sanitize_text_field( wp_unslash( $_POST['postId'] ) ) : '';
         $blockRaw = isset( $_POST['blockName'] ) ? sanitize_text_field( wp_unslash( $_POST['blockName'] ) ) : '';
         $builder  = isset( $_POST['builder'] ) ? sanitize_text_field( wp_unslash( $_POST['builder'] ) ) : '';
-
+        $archive_builder  = isset( $_POST['is_archive'] ) ? sanitize_text_field( wp_unslash( $_POST['is_archive'] ) ) : '';
 
         $blockName  = str_replace( '_', '/', $blockRaw );
         
@@ -351,17 +355,17 @@ class Blocks {
         );
 
         if ( isset( $_POST['filterAttributes'] ) ) {
-            $params['filterAttributes'] = isset( $_POST['filterAttributes'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['filterAttributes'] ) ) : array();
+            $params['filterAttributes'] = map_deep( wp_unslash( $_POST['filterAttributes'] ), 'sanitize_text_field' );
         }
 
         if ( $paged ) {
             $post = get_post( $postId );
             if ( $widgetBlockId ) {
                 $blocks = parse_blocks( get_option( 'widget_block' )[$widgetBlockId]['content'] );
-                $this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params, $isSearch );
+                $this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params, $isSearch, $archive_builder );
             } elseif ( has_blocks( $post->post_content ) ) {
                 $blocks = parse_blocks( $post->post_content );
-                $this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params, $isSearch );
+                $this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params, $isSearch, $archive_builder );
             }
         }
     }
