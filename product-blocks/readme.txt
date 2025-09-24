@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 4.3.5
+Stable tag: 4.3.6
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -229,13 +229,17 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 
 
 == Changelog ==
+= 4.3.6 – 24 September 2025 =
+* Fix: Grid Block content alignment issue
+* Fix: Variable product stock status issue
+* Fix: Gutenberg Customer Account Block Compatibility issue
+
 = 4.3.5 – 31 August 2025 =
 * Fix: WowStore builder pagination issue
 * Fix: Product Image flipper addon issue
 * Fix: Filter Block product sorting result issue
 * Fix: WowStore Archive builder query reset issue
 * Fix: Dynamic Placeholder text added in Filter Block search field
-
 
 = 4.3.4 – 24 August 2025 =
 * Fix: Compare addon issue

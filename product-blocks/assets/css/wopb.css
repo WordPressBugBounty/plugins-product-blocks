@@ -1153,3 +1153,13 @@ div del, div ins {
         flex-direction: column;
     }
 }
+#wpob-header-template .wp-block-woocommerce-customer-account a svg,
+#wpob-footer-template .wp-block-woocommerce-customer-account a svg {
+    height: 1.5em;
+    width: 1.5em;
+}
+#wpob-header-template .wp-block-woocommerce-customer-account a svg circle,
+#wpob-footer-template .wp-block-woocommerce-customer-account a svg circle {
+    stroke: currentColor;
+    stroke-width: 2;
+}
