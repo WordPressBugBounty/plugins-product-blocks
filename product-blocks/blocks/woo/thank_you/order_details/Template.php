@@ -5,8 +5,8 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-$order_id = absint( get_query_var('order-received') );
-$order = wc_get_order( $order_id );
+$order_id = absint( get_query_var( 'order-received' ) );
+$order    = wc_get_order( $order_id );
 
 $order_items           = $order->get_items( apply_filters( 'woocommerce_purchase_order_item_types', 'line_item' ) );
 $show_purchase_note    = $order->has_status( apply_filters( 'woocommerce_purchase_note_order_statuses', array( 'completed', 'processing' ) ) );
@@ -120,19 +120,16 @@ if ( ! $order ) {
 
 		<tfoot>
 			<?php
-			
+
 			foreach ( $order->get_order_item_totals() as $key => $total ) {
-				if($key=='cart_subtotal') {
-					$total['label']= $attr['subTotalText'];
-				}
-				else if($key=='shipping') {
-					$total['label']= $attr['shippingText'];
-				}
-				else if($key=='payment_method') {
-					$total['label']= $attr['payMethodText'];
-				}
-				else if($key=='order_total') {
-					$total['label']= $attr['footTotalText'];
+				if ( $key == 'cart_subtotal' ) {
+					$total['label'] = $attr['subTotalText'];
+				} elseif ( $key == 'shipping' ) {
+					$total['label'] = $attr['shippingText'];
+				} elseif ( $key == 'payment_method' ) {
+					$total['label'] = $attr['payMethodText'];
+				} elseif ( $key == 'order_total' ) {
+					$total['label'] = $attr['footTotalText'];
 				}
 				?>
 					<tr>

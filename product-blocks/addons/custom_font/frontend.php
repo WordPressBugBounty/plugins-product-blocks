@@ -3,6 +3,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Custom Font Addons Feature
+ *
  * @since v.4.0.0
  */
 add_action( 'init', 'wopb_custom_font_init' );

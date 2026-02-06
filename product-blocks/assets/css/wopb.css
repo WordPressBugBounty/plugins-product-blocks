@@ -272,7 +272,7 @@ li.product:has(.wopb-loop-image-top) {
     height: 100%;
     top: 0px;
     left: 0px;
-    background: rgb(255, 255, 255);
+    /* background: rgb(0 0 0 / 5%); */
     opacity: 0.6;
     cursor: wait;
     position: absolute;

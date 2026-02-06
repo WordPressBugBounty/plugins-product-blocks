@@ -75,10 +75,9 @@ class Initialization {
 				if ( file_exists( $file_name . '/backend.php' ) ) {
 					include_once $file_name . '/backend.php';
 				}
-			} else {
-				if ( $wc_ready && file_exists( $file_name . '/frontend.php' ) ) { // include if is not in settings
+			} elseif ( $wc_ready && file_exists( $file_name . '/frontend.php' ) ) {
+				// include if is not in settings
 					include_once $file_name . '/frontend.php';
-				}
 			}
 		}
 	}
@@ -97,8 +96,8 @@ class Initialization {
 				do_action( 'wopb_footer' );
 			$html .= ob_get_clean();
 
-		$html .= '</div>';
-		$content_safe = wopb_function()->wp_kses_safe($html);
+		$html        .= '</div>';
+		$content_safe = wopb_function()->wp_kses_safe( $html );
         echo $content_safe; // phpcs:ignore
 	}
 
@@ -150,7 +149,6 @@ class Initialization {
 			</div>
 			<?php
 		}
-
 	}
 
 	/**
@@ -161,7 +159,7 @@ class Initialization {
 	 */
 	public function register_scripts_option_panel_callback( $screen ) {
 		global $post;
-		$is_active   = wopb_function()->get_setting( 'is_lc_active' );
+		$is_active   = wopb_function()->is_lc_active();
 		$post_id     = isset( $post->ID ) ? $post->ID : '';
 		$post_type   = isset( $post->post_type ) ? $post->post_type : '';
 		$_page       = wopb_function()->get_screen();
@@ -192,8 +190,8 @@ class Initialization {
 
 		wp_enqueue_media();
 
-		$taxonomy = isset( $_GET['taxonomy'] ) ? sanitize_text_field( wp_unslash( $_GET['taxonomy'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$variation_swatches_attribute_poststype = wopb_function()->get_setting( 'wopb_variation_swatches' ) == "true" && strpos($taxonomy, 'pa_') == 0;
+		$taxonomy                               = isset( $_GET['taxonomy'] ) ? sanitize_text_field( wp_unslash( $_GET['taxonomy'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$variation_swatches_attribute_poststype = wopb_function()->get_setting( 'wopb_variation_swatches' ) == 'true' && strpos( $taxonomy, 'pa_' ) == 0;
 		if ( $taxonomy == 'pa_color' || $variation_swatches_attribute_poststype ) {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_script( 'wp-color-picker' );
@@ -244,23 +242,24 @@ class Initialization {
 			wp_localize_script(
 				'wopb-dashboard-script',
 				'wopb_dashboard_pannel',
-				array_merge(array(
-					'url'               => WOPB_URL,
-					'ajax'              => admin_url( 'admin-ajax.php' ),
-					'security'          => wp_create_nonce( 'wopb-nonce' ),
-					'active'            => $is_active,
-					'license'           => Xpo::get_lc_key(),
-					'settings'          => wopb_function()->get_setting(),
-					'addons'            => apply_filters( 'wopb_addons_config', array() ),
-					'addons_settings'   => apply_filters( 'wopb_settings', array() ),
-					'version'           => WOPB_VER,
-					'setup_wizard_link' => admin_url( 'admin.php?page=wopb-initial-setup-wizard' ),
-					'helloBar'          => Xpo::get_transient_without_cache('wopb_hellobar'),
-					'userInfo'          => array(
-						'name'  => $user_info->first_name ? $user_info->first_name . ( $user_info->last_name ? ' ' . $user_info->last_name : '' ) : $user_info->user_login,
-						'email' => $user_info->user_email,
+				array_merge(
+					array(
+						'url'               => WOPB_URL,
+						'ajax'              => admin_url( 'admin-ajax.php' ),
+						'security'          => wp_create_nonce( 'wopb-nonce' ),
+						'active'            => $is_active,
+						'license'           => Xpo::get_lc_key(),
+						'settings'          => wopb_function()->get_setting(),
+						'addons'            => apply_filters( 'wopb_addons_config', array() ),
+						'addons_settings'   => apply_filters( 'wopb_settings', array() ),
+						'version'           => WOPB_VER,
+						'setup_wizard_link' => admin_url( 'admin.php?page=wopb-initial-setup-wizard' ),
+						'helloBar'          => Xpo::get_transient_without_cache( 'wopb_hellobar' ),
+						'userInfo'          => array(
+							'name'  => $user_info->first_name ? $user_info->first_name . ( $user_info->last_name ? ' ' . $user_info->last_name : '' ) : $user_info->user_login,
+							'email' => $user_info->user_email,
+						),
 					),
-				),
 					Xpo::get_wow_products_details()
 				)
 			);
@@ -300,7 +299,7 @@ class Initialization {
 					'isBuilder'               => $is_builder,
 					'isVariationSwitchActive' => wopb_function()->get_setting( 'wopb_variation_swatches' ),
 					'settings'                => wopb_function()->get_setting(),
-					'productTaxonomyList'     => wopb_function()->get_product_taxonomies( array( 'term_limit' => 3 ) ),
+					// 'productTaxonomyList'     => has_block( 'product-blocks/filter' ) ? wopb_function()->get_product_taxonomies( array( 'term_limit' => 3 ) ) : array(),
 					'product_category'        => get_terms(
 						array(
 							'taxonomy'   => 'product_cat',
@@ -392,7 +391,7 @@ class Initialization {
 		new \WOPB\Options();
 		new \WOPB\ProPlugins();
 		new \WOPB\SetupWizard();
-		
+
 		require_once WOPB_PATH . 'includes/durbin/class-deactive.php';
 		require_once WOPB_PATH . 'includes/durbin/class-durbin-client.php';
 		require_once WOPB_PATH . 'includes/durbin/class-xpo.php';

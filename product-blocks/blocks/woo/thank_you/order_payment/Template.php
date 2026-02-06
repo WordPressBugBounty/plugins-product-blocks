@@ -1,11 +1,11 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-$order_id = absint( get_query_var('order-received') );
-$order = wc_get_order( $order_id );
+$order_id = absint( get_query_var( 'order-received' ) );
+$order    = wc_get_order( $order_id );
 
-if ( $order && !($order->has_status( 'failed' ))) {
-?>
+if ( $order && ! ( $order->has_status( 'failed' ) ) ) {
+	?>
 	<div class="wopb-thankyou-order-payment-container">
 		<ul class="woocommerce-order-overview woocommerce-thankyou-order-details order_details">
 
@@ -24,7 +24,7 @@ if ( $order && !($order->has_status( 'failed' ))) {
 			<?php if ( is_user_logged_in() && $order->get_user_id() === get_current_user_id() && $order->get_billing_email() ) : ?>
 				<li class="woocommerce-order-overview__email email">
 					<?php echo esc_html( $attr['emailText'] ); ?>
-					<strong><?php echo esc_html( $order->get_billing_email() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped?></strong>
+					<strong><?php echo esc_html( $order->get_billing_email() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
 				</li>
 				<div class="wopb-separator"></div>
 			<?php endif; ?>
@@ -42,5 +42,5 @@ if ( $order && !($order->has_status( 'failed' ))) {
 			<?php endif; ?>
 		</ul>
 	</div>
-<?php
+	<?php
 }

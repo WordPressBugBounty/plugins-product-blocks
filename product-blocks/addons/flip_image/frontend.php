@@ -3,6 +3,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Require Main File
+ *
  * @since v.1.1.0
  */
 add_action( 'wp_loaded', 'wopb_flipimage_init' );

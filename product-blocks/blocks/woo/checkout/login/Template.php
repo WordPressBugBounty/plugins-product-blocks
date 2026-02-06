@@ -18,9 +18,9 @@
 defined( 'ABSPATH' ) || exit;
 
 if ( is_user_logged_in() || 'no' === get_option( 'woocommerce_enable_checkout_login_reminder' ) ) {
-    return;
+	return;
 }
-$hidden = true;
+$hidden  = true;
 $message = 'If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing section.';
 
 ?>
@@ -34,7 +34,7 @@ $message = 'If you have shopped with us before, please enter your details below.
 		<?php do_action( 'woocommerce_login_form_start' ); ?>
 		<?php echo ( $message ) ? wpautop( wptexturize( $message ) ) : ''; // @codingStandardsIgnoreLine ?>
 
-        <span class="wopb-form-error"></span>
+		<span class="wopb-form-error"></span>
 		<p class="form-row form-row-first">
 			<label for="username"><?php esc_html_e( 'Username or Email', 'product-blocks' ); ?>&nbsp;<span class="required">*</span></label>
 			<input type="text" class="input-text" name="username" id="username" autocomplete="username" />

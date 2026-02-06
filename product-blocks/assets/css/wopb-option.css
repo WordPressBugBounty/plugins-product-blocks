@@ -1004,7 +1004,7 @@ th:has(.wopb-custom-font-preview-th) {
 .wopb-notice-type-3 .wopb-notice-icon img,
 .data_collection_notice .wopb-notice-icon img
  {
-    width: 36px;
+    max-width: 72px;
 }
 
 .wopb-notice-type-4 .wopb-notice-icon {
@@ -1414,4 +1414,14 @@ Flip Image Addon [START]
     margin-left: 8px;
     position: absolute;
     transform: scale(0.8);
+}
+
+.form-field.wopb_video_autoplay_field a,
+.form-field.wopb_video_repeat_field a,
+.form-field.wopb_video_hover_field a {
+    color: #FF176B;
+}
+
+#wopb-size-chart-assign .wopb-sc-products > select, #wopb_sc_include_products {
+    min-width: auto !important;
 }

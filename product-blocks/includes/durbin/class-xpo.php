@@ -6,7 +6,6 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Core class for managing plugin actions and integrations.
- *
  */
 class Xpo {
 
@@ -201,72 +200,87 @@ class Xpo {
 
 	public static function generate_utm_link( $params ) {
 		$default_config = array(
-			'example'     => array(
+			'example'                     => array(
 				'source'   => 'db-wowaddons-featurename',
 				'medium'   => 'block-feature',
 				'campaign' => 'wowaddons-dashboard',
 			),
-			'menu_saved_template_go_pro' => array(
-                'source' => 'wowstore-ghost',
-                'medium' => 'ST-upgrade_to_pro',
-                'campaign' => 'wowstore-dashboard'
-            ),
-            'menu_WB_go_pro' => array(
-                'source' => 'wowstore-ghost',
-                'medium' => 'WB-upgrade_to_pro',
-                'campaign' => 'wowstore-dashboard'
-            ),
-            
-            //productx main menu
-            'main_menu_go_pro' => array(
-                'source' => 'db-wstore-plugin',
-                'medium' => 'left-menu-upgrade',
-                'campaign' => 'wstore-dashboard'
-            ),
+			'menu_saved_template_go_pro'  => array(
+				'source'   => 'wowstore-ghost',
+				'medium'   => 'ST-upgrade_to_pro',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'menu_WB_go_pro'              => array(
+				'source'   => 'wowstore-ghost',
+				'medium'   => 'WB-upgrade_to_pro',
+				'campaign' => 'wowstore-dashboard',
+			),
 
-            //Wordpress plugin list
-            'plugin_list_productx_go_pro' => array(
-                'source' => 'db-wstore-plugin',
-                'medium' => 'upgrade',
-                'campaign' => 'wstore-dashboard'
-            ),
-			'plugin_dir_pro'     => array(
+			// productx main menu
+			'main_menu_go_pro'            => array(
+				'source'   => 'db-wstore-plugin',
+				'medium'   => 'left-menu-upgrade',
+				'campaign' => 'wstore-dashboard',
+			),
+
+			// Wordpress plugin list
+			'plugin_list_productx_go_pro' => array(
+				'source'   => 'db-wstore-plugin',
+				'medium'   => 'upgrade',
+				'campaign' => 'wstore-dashboard',
+			),
+			'plugin_dir_pro'              => array(
 				'source'   => 'db-wstore-plugin',
 				'medium'   => 'upgrade-pro',
 				'campaign' => 'wstore-dashboard',
 			),
-			'sub_menu'    => array(
+			'sub_menu'                    => array(
 				'source'   => 'db-wstore-plugin',
 				'medium'   => 'sub-menu',
 				'campaign' => 'wstore-dashboard',
 			),
-			'final_hour_sale' => array(
+			'final_hour_sale'             => array(
 				'source'   => 'db-wowstore-notice-text',
 				'medium'   => 'final-hour-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'massive_sale' => array(
+			'massive_sale'                => array(
 				'source'   => 'db-wowstore-notice-logo',
 				'medium'   => 'massive-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'flash_sale' => array(
+			'flash_sale'                  => array(
 				'source'   => 'db-wowstore-notice-text',
 				'medium'   => 'flash-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'exclusive_deals' => array(
+			'exclusive_deals'             => array(
 				'source'   => 'db-wowstore-notice-logo',
 				'medium'   => 'exclusive-deals',
 				'campaign' => 'wowstore-dashboard',
 			),
+			'black_friday'                => array(
+				'source'   => 'db-wowstore-notice-logo',
+				'medium'   => 'black-friday',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'new_year_sale'               => array(
+				'source'   => 'db-wowstore-notice-logo',
+				'medium'   => 'new-year-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'preorder'                    => array(
+				'source'   => 'wowstore',
+				'medium'   => 'preorder',
+				'campaign' => 'product-addons',
+			),
 		);
 
 		// Step 1: Get parameters
-		$base_url      = $params['url'] ?? 'https://www.wpxpo.com/wowstore/pricing/';
+		$base_url      = $params['url'] ?? 'https://www.wpxpo.com/wowstore/';
 		$utm_key       = $params['utmKey'] ?? null;
 		$affiliate     = $params['affiliate'] ?? apply_filters( 'wopb_affiliate_id', '' );
-		$hash          = $params['hash'] ?? '';
+		$hash          = $params['hash'] ?? 'pricing';
 		$custom_config = $params['config'] ?? null;
 
 		$parsed_url = wp_parse_url( $base_url );
@@ -437,26 +451,26 @@ class Xpo {
 	}
 
 	public static function is_pro_feature_visible( $date ) {
-		if ( defined('WOPB_PRO_VER') ) {
-			$license_data = get_option('edd_wopb_license_data');
-			if ( isset($license_data['expires']) ) {
+		if ( defined( 'WOPB_PRO_VER' ) ) {
+			$license_data = get_option( 'edd_wopb_license_data' );
+			if ( isset( $license_data['expires'] ) ) {
 				$expires = $license_data['expires'];
 				if ( 'lifetime' === $expires ) {
 					return true;
 				}
 				return strtotime( $date ) < strtotime( $expires );
-			} 
+			}
 			return true;
 		}
 		return false;
 	}
 
-	public static function handle_hellobar_action( $type, $extras= array() ) {
+	public static function handle_hellobar_action( $type, $extras = array() ) {
 
 		$hellobar_key = 'wopb_hellobar';
 
 		if ( 'get' === $type ) {
-			return self::get_transient_without_cache($hellobar_key);
+			return self::get_transient_without_cache( $hellobar_key );
 		} else {
 			self::set_transient_without_cache( $hellobar_key, 'hide', 20 * DAY_IN_SECONDS );
 		}

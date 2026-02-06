@@ -1,18 +1,18 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-if (isset($_POST['calc_shipping_country'])) { //phpcs:disable WordPress.Security.NonceVerification.Missing
-	if (class_exists('WC_Shortcode_Cart')) {
+if ( isset( $_POST['calc_shipping_country'] ) ) { //phpcs:disable WordPress.Security.NonceVerification.Missing
+	if ( class_exists( 'WC_Shortcode_Cart' ) ) {
 		WC_Shortcode_Cart::calculate_shipping();
-}
+	}
 }
 WC()->cart->calculate_totals();
 WC()->cart->calculate_shipping();
 ?>
 
 <div class="wopb-checkout-review-order">
-	<h2 class="wopb-order-section-title"><?php echo ( $attr['showTitle'] ? esc_attr($attr['sectionTitle']) : '' ); ?></h2>
-    <?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
+	<h2 class="wopb-order-section-title"><?php echo ( $attr['showTitle'] ? esc_attr( $attr['sectionTitle'] ) : '' ); ?></h2>
+	<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
 	<div id="order_review" class="woocommerce-checkout-review-order">
 		<table class="shop_table wopb-checkout-review-table">
 			<thead>
@@ -29,21 +29,21 @@ WC()->cart->calculate_shipping();
 					$_product = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
 
 					if ( $_product && $_product->exists() && $cart_item['quantity'] > 0 && apply_filters( 'woocommerce_checkout_cart_item_visible', true, $cart_item, $cart_item_key ) ) {
-                ?>
+						?>
 						<tr class="<?php echo esc_attr( apply_filters( 'woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key ) ); ?>">
 							<td class="product-name">
-                                <div class="wopb-product-info">
-                                    <?php
-                                        if ( $attr['enableImage'] ) {
-                                            echo apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key ); //phpcs:ignore
-                                        }
-                                    ?>
-                                    <span class="wopb-product-name">
-                                        <?php echo wp_kses_post( apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key ) ) . '&nbsp;'; ?>
+								<div class="wopb-product-info">
+									<?php
+									if ( $attr['enableImage'] ) {
+										echo apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key ); //phpcs:ignore
+									}
+									?>
+									<span class="wopb-product-name">
+										<?php echo wp_kses_post( apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key ) ) . '&nbsp;'; ?>
                                         <?php echo apply_filters( 'woocommerce_checkout_cart_item_quantity', ' <strong class="product-quantity">' . sprintf( '&times;&nbsp;%s', $cart_item['quantity'] ) . '</strong>', $cart_item, $cart_item_key ); //phpcs:ignore  ?>
                                         <?php echo wc_get_formatted_cart_item_data( $cart_item ); //phpcs:ignore ?>
-                                    </span>
-                                </div>
+									</span>
+								</div>
 							</td>
 							<td class="product-total">
 								<?php echo apply_filters( 'woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ), $cart_item, $cart_item_key ); //phpcs:ignore  ?>
@@ -115,5 +115,5 @@ WC()->cart->calculate_shipping();
 			</tfoot>
 		</table>
 	</div>
-    <?php do_action( 'woocommerce_checkout_after_order_review' ); ?>
+	<?php do_action( 'woocommerce_checkout_after_order_review' ); ?>
 </div>

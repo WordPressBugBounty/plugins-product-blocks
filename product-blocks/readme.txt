@@ -1,14 +1,14 @@
 === WowStore – Store Builder & Product Blocks for WooCommerce ===
 Contributors: wpxpo, anik4e, jakirhasan
 Tags: woocommerce builder, woocommerce blocks, product filter, variation swatches, woocommerce compare
-Requires at least: 5.0
-Tested up to: 6.8
-Requires PHP: 7.0
-Stable tag: 4.3.6
+Requires at least: 6.8
+Tested up to: 6.9
+Requires PHP: 7.4
+Stable tag: 4.4.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCommerce Blocks, and more effective features.
+Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCommerce Blocks, and more effective features. 
 
 == Description ==
 
@@ -181,8 +181,8 @@ This plugin code is accesible and any contribution will be appretiated. [Source 
 
 = Minimum Requirements =
 
-* WordPress 5.0.0 or greater
-* PHP version 7.3 or greater
+* WordPress 6.8 or greater
+* PHP version 7.4 or greater
 * MySQL version 5.6 or greater
 
 = Automatic installation =
@@ -229,6 +229,23 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 
 
 == Changelog ==
+= 4.4.0 – 19 January 2026 =
+* Fix: WordPress 6.9 compatibility.
+* Fix: license validation improved
+* Fix: Pagination background color issue
+* Fix: Product short description HTML support
+* Update: Sales push notifications support specific pages
+
+= 4.3.9 – 31 December 2025 =
+* Update: Addons settings visibility improved
+
+= 4.3.8 – 29 October 2025 =
+* Fix: Product Filter block
+* Fix: Neve theme compatibility issue with Product Gallery Block
+
+= 4.3.7 – 29 October 2025 =
+* Fix: Cart Filter block taxonomy result issue
+
 = 4.3.6 – 24 September 2025 =
 * Fix: Grid Block content alignment issue
 * Fix: Variable product stock status issue

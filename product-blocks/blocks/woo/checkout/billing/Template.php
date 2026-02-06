@@ -7,7 +7,8 @@ $checkout = WC()->checkout();
 <div class="wopb-checkout-billing-container">
 	<div class="woocommerce-billing-fields">
 		<?php if ( wc_ship_to_billing_address_only() && WC()->cart->needs_shipping() ) : ?>
-			<?php if($attr['showTitle']) {
+			<?php
+			if ( $attr['showTitle'] ) {
 				?>
 				<h3 class="wopb-billing-title"><?php echo esc_html( $attr['billingTitle'] ); ?></h3>
 
@@ -15,22 +16,25 @@ $checkout = WC()->checkout();
 
 		<?php else : ?>
 
-			<?php if($attr['showTitle']) {
+			<?php
+			if ( $attr['showTitle'] ) {
 				?>
 				<div class="wopb-billing-title"><?php echo esc_html( $attr['billingTitle'] ); ?></div>
 
-			<?php } 
-		endif; ?>
+				<?php
+			}
+		endif;
+		?>
 
 		<?php do_action( 'woocommerce_before_checkout_billing_form', $checkout ); ?>
 
 		<div class="woocommerce-billing-fields__field-wrapper">
 			<?php
 				$fields = $checkout->get_checkout_fields( 'billing' );
-				
-				foreach ( $fields as $key => $field ) {
-					woocommerce_form_field( $key, $field, $checkout->get_value( $key ) );
-				}
+
+			foreach ( $fields as $key => $field ) {
+				woocommerce_form_field( $key, $field, $checkout->get_value( $key ) );
+			}
 			?>
 		</div>
 

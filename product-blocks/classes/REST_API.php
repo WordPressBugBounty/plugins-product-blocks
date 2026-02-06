@@ -81,7 +81,7 @@ class REST_API {
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'template_page_insert' ),
 					'permission_callback' => function () {
-						return apply_filters('wopb_rest_api_capability',current_user_can( 'manage_options' ));
+						return apply_filters( 'wopb_rest_api_capability', current_user_can( 'manage_options' ) );
 					},
 					'args'                => array(),
 				),
@@ -131,28 +131,37 @@ class REST_API {
 				'permission_callback' => '__return_true',
 			)
 		);
+		register_rest_route(
+			'wopb/v1', // Add version
+			'/get-pd-taxonomy-data', // Remove trailing slash
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_product_taxonomy_data' ),
+				'permission_callback' => '__return_true',
+			)
+		);
 	}
 
 
 	/**
 	 * Post View Counter for Every Post
-     * 
-     * @since v.1.0.0
+	 *
+	 * @since v.1.0.0
 	 * @return NULL
 	 */
-    public function popular_posts_tracker_callback( $server ) {
+	public function popular_posts_tracker_callback( $server ) {
 		$params = $server->get_params();
-        if ( ! isset( $params['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $params['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			die();
 		}
 		$post_id = sanitize_text_field( $params['postID'] );
 		if ( $post_id ) {
 			// View Product Count
-			$count = (int)get_post_meta( $post_id, '__product_views_count', true );
-			update_post_meta( $post_id, '__product_views_count', $count ? (int)$count + 1 : 1 );
+			$count = (int) get_post_meta( $post_id, '__product_views_count', true );
+			update_post_meta( $post_id, '__product_views_count', $count ? (int) $count + 1 : 1 );
 
 			// Recently View Products
-			$viewed_products = empty( $_COOKIE['__wopb_recently_viewed'] ) ? [] : (array) explode( '|', sanitize_text_field( wp_unslash( $_COOKIE['__wopb_recently_viewed'] ) ) );
+			$viewed_products = empty( $_COOKIE['__wopb_recently_viewed'] ) ? array() : (array) explode( '|', sanitize_text_field( wp_unslash( $_COOKIE['__wopb_recently_viewed'] ) ) );
 			if ( ! in_array( $post_id, $viewed_products ) ) {
 				$viewed_products[] = $post_id;
 			}
@@ -161,9 +170,9 @@ class REST_API {
 			}
 			wc_setcookie( '__wopb_recently_viewed', implode( '|', $viewed_products ) );
 
-			return rest_ensure_response([]);
+			return rest_ensure_response( array() );
 		}
-    }
+	}
 
 
 	/**
@@ -300,7 +309,7 @@ class REST_API {
 					$regular                    = $products->get_regular_price();
 					$post_data['sales_price']   = $sales;
 					$post_data['regular_price'] = $regular;
-					$post_data['range_price'] = !$regular && !$sales ? $products->get_price_html() : '';
+					$post_data['range_price']   = ! $regular && ! $sales ? $products->get_price_html() : '';
 					$post_data['percentage']    = ( $regular && $sales ) ? round( ( ( $regular - $sales ) / $regular ) * 100 ) : 0;
 					$post_data['symbol']        = get_woocommerce_currency_symbol();
 					break;
@@ -368,10 +377,10 @@ class REST_API {
 			return rest_ensure_response( array() );
 		}
 
-        $queryCat = isset($prams['queryCat']) ? wopb_function()->rest_sanitize_params($prams['queryCat']):'';
-        $queryNumber = isset($prams['queryNumber']) ? wopb_function()->rest_sanitize_params($prams['queryNumber']):'';
-        $queryType = isset($prams['queryType']) ? wopb_function()->rest_sanitize_params($prams['queryType']):'';
-		$data = wopb_function()->get_category_data( json_decode( $queryCat ), $queryNumber, $queryType );
+		$queryCat    = isset( $prams['queryCat'] ) ? wopb_function()->rest_sanitize_params( $prams['queryCat'] ) : '';
+		$queryNumber = isset( $prams['queryNumber'] ) ? wopb_function()->rest_sanitize_params( $prams['queryNumber'] ) : '';
+		$queryType   = isset( $prams['queryType'] ) ? wopb_function()->rest_sanitize_params( $prams['queryType'] ) : '';
+		$data        = wopb_function()->get_category_data( json_decode( $queryCat ), $queryNumber, $queryType );
 		return rest_ensure_response( $data );
 	}
 
@@ -389,7 +398,7 @@ class REST_API {
 		}
 
 		$data = array();
-        $loop = new \WP_Query( wopb_function()->get_query(wopb_function()->rest_sanitize_params($prams)) );
+		$loop = new \WP_Query( wopb_function()->get_query( wopb_function()->rest_sanitize_params( $prams ) ) );
 
 		if ( $loop->have_posts() ) {
 			while ( $loop->have_posts() ) {
@@ -495,10 +504,10 @@ class REST_API {
 	 */
 	public function search_settings_action( $server ) {
 		global $wpdb;
-		$post = $server->get_params();
-		$type =  isset($post['type']) ? wopb_function()->rest_sanitize_params( $post['type'] ) : '';
-		$condition_type = isset($post['condition']) ? wopb_function()->rest_sanitize_params( $post['condition'] ) : '';
-		$term_type = isset($post['term']) ? wopb_function()->rest_sanitize_params( $post['term'] ) : '';
+		$post           = $server->get_params();
+		$type           = isset( $post['type'] ) ? wopb_function()->rest_sanitize_params( $post['type'] ) : '';
+		$condition_type = isset( $post['condition'] ) ? wopb_function()->rest_sanitize_params( $post['condition'] ) : '';
+		$term_type      = isset( $post['term'] ) ? wopb_function()->rest_sanitize_params( $post['term'] ) : '';
 		switch ( $type ) {
 			case 'posts':
 			case 'allpost':
@@ -593,7 +602,7 @@ class REST_API {
 				break;
 
 			case 'author':
-				$term         = '%' . $wpdb->esc_like( $term_type ) . '%';
+				$term = '%' . $wpdb->esc_like( $term_type ) . '%';
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 				$post_results = $wpdb->get_results(
 					$wpdb->prepare(
@@ -790,7 +799,7 @@ class REST_API {
 			'product_filters' => $product_filters,
 			'ajax_source'     => 'filter',
 		);
-		
+
 		$block_list = $this->product_filter_block_target( $blocks, $blockName, $blockRaw, $params, $block_list );
 		return array(
 			'blockList' => $block_list,
@@ -798,39 +807,39 @@ class REST_API {
 	}
 
 	/**
-     * Filter Callback of the Blocks
-     *
-     * @param $blocks
-     * @param $blockName
-     * @param $blockRaw
-     * @param $params
-     * @param $block_list
-     * @return STRING
-     * @since v.2.1.4
-     */
-    public function product_filter_block_target( $blocks, $blockName , $blockRaw, $params, &$block_list ) {
-        foreach ( $blocks as $key => $value ) {
-            if ( $blockName == $value['blockName'] ) {
-                $objName = str_replace( ' ','_', ucwords( join( ' ', explode( '-', explode( '/', $blockName )[1] ) ) ) );
-                $obj = '\WOPB\blocks\\'.$objName;
-                $newObj = new $obj();
-                $attr = $newObj->get_attributes( true );
+	 * Filter Callback of the Blocks
+	 *
+	 * @param $blocks
+	 * @param $blockName
+	 * @param $blockRaw
+	 * @param $params
+	 * @param $block_list
+	 * @return STRING
+	 * @since v.2.1.4
+	 */
+	public function product_filter_block_target( $blocks, $blockName, $blockRaw, $params, &$block_list ) {
+		foreach ( $blocks as $key => $value ) {
+			if ( $blockName == $value['blockName'] ) {
+				$objName = str_replace( ' ', '_', ucwords( join( ' ', explode( '-', explode( '/', $blockName )[1] ) ) ) );
+				$obj     = '\WOPB\blocks\\' . $objName;
+				$newObj  = new $obj();
+				$attr    = $newObj->get_attributes( true );
 
-                $attr = array_merge( $attr, $params );
-                $attr = array_merge( $attr, $value['attrs'] );
-                $block_list[] = array(
-                    'blockId' => $value['attrs']['blockId'],
-                    'content' => $newObj->content( $attr, true )
-                );
-                remove_filter( 'posts_where', 'title_filter', 1000 );
-                remove_filter( 'posts_join', 'custom_join_product_filter', 1000 );
-            }
-            if ( ! empty( $value['innerBlocks'] ) ) {
-                $this->product_filter_block_target( $value['innerBlocks'], $blockName, $blockRaw, $params, $block_list );
-            }
-        }
-        return $block_list;
-    }
+				$attr         = array_merge( $attr, $params );
+				$attr         = array_merge( $attr, $value['attrs'] );
+				$block_list[] = array(
+					'blockId' => $value['attrs']['blockId'],
+					'content' => $newObj->content( $attr, true ),
+				);
+				remove_filter( 'posts_where', 'title_filter', 1000 );
+				remove_filter( 'posts_join', 'custom_join_product_filter', 1000 );
+			}
+			if ( ! empty( $value['innerBlocks'] ) ) {
+				$this->product_filter_block_target( $value['innerBlocks'], $blockName, $blockRaw, $params, $block_list );
+			}
+		}
+		return $block_list;
+	}
 
 	/**
 	 * Get Product Search Block Search Content
@@ -874,83 +883,110 @@ class REST_API {
 	}
 
 	/**
-     * Get Product Search Block Search Data
-     *
-     * @since v.2.6.8
-     * @param $blocks
-     * @param $blockId
-     * @param $blockRaw
-     * @param $blockName
-     * @return array
-     */
-    public function search_block_attr( $blocks, $blockId, $blockRaw, $blockName, &$params ) {
-        foreach ( $blocks as $key => $value ) {
-            if ( $blockName == $value['blockName'] && $value['attrs']['blockId'] == $blockId ) {
-                $objName = str_replace( ' ','_', ucwords( join( ' ', explode( '-', explode( '/', $blockName )[1] ) ) ) );
-                $obj = '\WOPB\blocks\\' . $objName;
-                $newObj = new $obj();
-                $attr = $newObj->get_attributes( true );
-                $params['attr'] = array_merge( $attr, $value['attrs'] );
-                break;
-            }
-            if ( ! empty( $value['innerBlocks'] ) ) {
-                $this->search_block_attr( $value['innerBlocks'], $blockId, $blockRaw, $blockName, $params );
-            }
-        }
-
-        return $params;
-    }
-
-
-    /**
-	 * Get Product Search Param
-     *
-	 *@since v.2.6.8
-     * @param $params
+	 * Get Product Search Block Search Data
+	 *
+	 * @since v.2.6.8
+	 * @param $blocks
+	 * @param $blockId
+	 * @param $blockRaw
+	 * @param $blockName
 	 * @return array
-     */
-    public function search_block_param($params = []) {
-        $query_args = [
-            'post_type' => 'product',
-            'posts_per_page' => -1,
-            'post_status' => 'publish',
-        ];
-        $tax_args = [
-            'taxonomy' => 'product_cat',
-            'hide_empty' => true,
-        ];
-        $tax_terms = '';
+	 */
+	public function search_block_attr( $blocks, $blockId, $blockRaw, $blockName, &$params ) {
+		foreach ( $blocks as $key => $value ) {
+			if ( $blockName == $value['blockName'] && $value['attrs']['blockId'] == $blockId ) {
+				$objName        = str_replace( ' ', '_', ucwords( join( ' ', explode( '-', explode( '/', $blockName )[1] ) ) ) );
+				$obj            = '\WOPB\blocks\\' . $objName;
+				$newObj         = new $obj();
+				$attr           = $newObj->get_attributes( true );
+				$params['attr'] = array_merge( $attr, $value['attrs'] );
+				break;
+			}
+			if ( ! empty( $value['innerBlocks'] ) ) {
+				$this->search_block_attr( $value['innerBlocks'], $blockId, $blockRaw, $blockName, $params );
+			}
+		}
 
-        if(isset($params['search']) && $params['search']) {
-            $query_args['filter_search_key'] = $params['search'];
-            add_filter( 'posts_join', array( wopb_function(), 'custom_post_join' ), 100, 2 );
-            add_filter( 'posts_where', [wopb_function(), 'custom_post_query'], 1000,2 );
-			add_filter('posts_distinct', function() {
-				return 'DISTINCT'; // duplicate data remove
-			});
+		return $params;
+	}
 
-            $tax_args['search'] = $params['search'];
-        }
-        if(isset($params['category']) && $params['category']) {
-            $query_args['tax_query'][] = [
-                'taxonomy' => 'product_cat',
-                'field' => 'slug',
-                'terms' => $params['category'],
-                'operator' => 'IN'
-            ];
-        }else {
-            $tax_terms = get_terms($tax_args);
-        }
 
-        $products = new \WP_Query( $query_args);
-        $params = [
-            'search' => $params['search'],
-            'attr' => isset($params['attr']) ? $params['attr'] : '',
-            'products' => $products,
-            'total_product' => count($products->posts),
-            'tax_terms' => $tax_terms,
-        ];
-        return $params;
-    }
+	/**
+	 * Get Product Search Param
+	 *
+	 * @since v.2.6.8
+	 * @param $params
+	 * @return array
+	 */
+	public function search_block_param( $params = array() ) {
+		$query_args = array(
+			'post_type'      => 'product',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+		);
+		$tax_args   = array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => true,
+		);
+		$tax_terms  = '';
 
+		if ( isset( $params['search'] ) && $params['search'] ) {
+			$query_args['filter_search_key'] = $params['search'];
+			add_filter( 'posts_join', array( wopb_function(), 'custom_post_join' ), 100, 2 );
+			add_filter( 'posts_where', array( wopb_function(), 'custom_post_query' ), 1000, 2 );
+			add_filter(
+				'posts_distinct',
+				function () {
+					return 'DISTINCT'; // duplicate data remove
+				}
+			);
+
+			$tax_args['search'] = $params['search'];
+		}
+		if ( isset( $params['category'] ) && $params['category'] ) {
+			$query_args['tax_query'][] = array(
+				'taxonomy' => 'product_cat',
+				'field'    => 'slug',
+				'terms'    => $params['category'],
+				'operator' => 'IN',
+			);
+		} else {
+			$tax_terms = get_terms( $tax_args );
+		}
+
+		$products = new \WP_Query( $query_args );
+		$params   = array(
+			'search'        => $params['search'],
+			'attr'          => isset( $params['attr'] ) ? $params['attr'] : '',
+			'products'      => $products,
+			'total_product' => count( $products->posts ),
+			'tax_terms'     => $tax_terms,
+		);
+		return $params;
+	}
+	/**
+	 * Get Product Search Param
+	 *
+	 * @since v.2.6.8
+	 * @param $params
+	 * @return array
+	 */
+	public function get_product_taxonomy_data() {
+		$product_taxonomies = array();
+		$object_taxonomies  = array_diff( get_object_taxonomies( 'product' ), array( 'product_type', 'product_visibility', 'product_shipping_class' ) );
+		foreach ( $object_taxonomies as $key ) {
+			$params          = array(
+				'taxonomy'           => $key,
+				'product_visibility' => true,
+				'term_limit'         => 3,
+			);
+			$taxonomy        = get_taxonomy( $key );
+			$taxonomy->terms = wopb_function()->taxonomy_terms_tree( $params );
+			if ( wopb_function()->get_attribute_by_taxonomy( $key ) ) {
+				$taxonomy->attribute = wopb_function()->get_attribute_by_taxonomy( $key );
+			}
+			$product_taxonomies[] = $taxonomy;
+		}
+		wp_send_json_success( $product_taxonomies );
+	}
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace WOPB\Includes\Durbin;
+
 use WOPB\Includes\Durbin\Xpo;
 
 defined( 'ABSPATH' ) || exit;
@@ -31,7 +32,7 @@ class OurPlugins {
 		}
 
 		$plugin = isset( $_POST['plugin'] ) ? sanitize_text_field( wp_unslash( $_POST['plugin'] ) ) : ''; // phpcs:ignore
-		
+
 		$res = array( 'message' => 'false' );
 
 		if ( $plugin ) {

@@ -34,11 +34,12 @@ $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
 			<?php wc_get_template( 'checkout/terms.php' ); ?>
 			<?php
-			//  echo '<a href="' . esc_url( get_permalink( wc_privacy_policy_page_id() ) ) . '" class="woocommerce-privacy-policy-link" target="_blank">' . __( 'privacy policyX', 'product-blocks' ) . '</a>' ?>
+			// echo '<a href="' . esc_url( get_permalink( wc_privacy_policy_page_id() ) ) . '" class="woocommerce-privacy-policy-link" target="_blank">' . __( 'privacy policyX', 'product-blocks' ) . '</a>'
+			?>
 
 			<?php do_action( 'woocommerce_review_order_before_submit' ); ?>
 
-			<?php echo apply_filters( 'woocommerce_order_button_html', '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Place order" data-value="Place order">' . esc_html__( "Place order", "product-blocks" ) . '</button>' ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo apply_filters( 'woocommerce_order_button_html', '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Place order" data-value="Place order">' . esc_html__( 'Place order', 'product-blocks' ) . '</button>' ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 			<?php do_action( 'woocommerce_review_order_after_submit' ); ?>
 

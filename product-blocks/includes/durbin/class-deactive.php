@@ -36,11 +36,11 @@ class Deactive {
 	 */
 	public function send_plugin_data() {
 		if (
-            ! isset( $_POST['wopb_nonce'] ) || 
-            ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wopb_nonce'] ) ), 'wopb-nonce' ) 
-        ) {
+			! isset( $_POST['wopb_nonce'] ) ||
+			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wopb_nonce'] ) ), 'wopb-nonce' )
+		) {
 			return;
-        }
+		}
 		DurbinClient::send( DurbinClient::DEACTIVATE_ACTION );
 	}
 
@@ -63,31 +63,31 @@ class Deactive {
 	public function get_deactive_settings() {
 		return array(
 			array(
-				'id'          	=> 'not-working',
-				'input' 		=> false,
-				'text'        	=> __( "The plugin isn’t working properly.", "product-blocks" )
+				'id'    => 'not-working',
+				'input' => false,
+				'text'  => __( 'The plugin isn’t working properly.', 'product-blocks' ),
 			),
 			array(
-				'id'          	=> 'limited-features',
-				'input' 		=> false,
-				'text'        	=> __( "Limited features on the free version.", "product-blocks" )
+				'id'    => 'limited-features',
+				'input' => false,
+				'text'  => __( 'Limited features on the free version.', 'product-blocks' ),
 			),
 			array(
-				'id'          	=> 'better-plugin',
-				'input' 		=> true,
-				'text'        	=> __( "I found a better plugin.", "product-blocks" ),
-				'placeholder' 	=> __( "Please share which plugin.", "product-blocks" ),
+				'id'          => 'better-plugin',
+				'input'       => true,
+				'text'        => __( 'I found a better plugin.', 'product-blocks' ),
+				'placeholder' => __( 'Please share which plugin.', 'product-blocks' ),
 			),
 			array(
-				'id'          	=> 'temporary-deactivation',
-				'input' 		=> false,
-				'text'        	=> __( "It's a temporary deactivation.", "product-blocks" )
+				'id'    => 'temporary-deactivation',
+				'input' => false,
+				'text'  => __( "It's a temporary deactivation.", 'product-blocks' ),
 			),
 			array(
-				'id'          	=> 'other',
-				'input' 		=> true,
-				'text'        	=> __( "Other.", "product-blocks" ),
-				'placeholder' 	=> __( "Please share the reason.", "product-blocks" ),
+				'id'          => 'other',
+				'input'       => true,
+				'text'        => __( 'Other.', 'product-blocks' ),
+				'placeholder' => __( 'Please share the reason.', 'product-blocks' ),
 			),
 		);
 	}

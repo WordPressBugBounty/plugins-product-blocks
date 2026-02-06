@@ -3,6 +3,7 @@ defined( 'ABSPATH' ) || exit;
 
 /**
  * Require Main File
+ *
  * @since v.4.0.0
  */
 add_action( 'wp_loaded', 'wopb_name_price_init' );
