@@ -28,13 +28,9 @@ class FlipImage {
 			add_action( 'add_meta_boxes', array( $this, 'feature_image_add_metabox' ) );
 			add_action( 'save_post', array( $this, 'feature_image_save' ), 10, 1 );
 		}
-		add_action(
-			'woocommerce_before_shop_loop_item',
-			function () {
-				add_filter( 'wp_get_attachment_image', array( $this, 'flip_image_default_callback' ), 10, 1 );
-			},
-			10
-		);
+
+		add_filter( 'wp_get_attachment_image', array( $this, 'flip_image_default_callback' ), 10, 1 );
+
 		add_filter( 'wopb_flip_image', array( $this, 'flip_image_callback' ), 10, 3 );
 	}
 
@@ -85,16 +81,31 @@ class FlipImage {
 	 * @since v.3.1.5
 	 */
 	public function flip_image_default_callback( $html ) {
-		global $product;
-		global $woocommerce_loop;
-		if (
-			$product &&
-			( is_archive() || $woocommerce_loop )
-		) {
-			$html .= $this->flip_image_callback( '', $product );
+		global $woocommerce_loop, $product;
+
+		if ( ! $product instanceof \WC_Product ) {
 			return $html;
 		}
-		return $html;
+		// only work for shop page, category page, tag page, product page(recommended products section).
+		// (add more if needed.)
+		// otherwise return.
+		if (
+			! (
+				is_shop() ||
+				is_product() ||
+				is_archive() ||
+				is_product_tag() ||
+				is_product_category()
+			)
+		) {
+			return $html;
+		}
+		// if not an woocommerce loop then return. may add more checks later.
+		if ( ! $woocommerce_loop ) {
+			return $html;
+		}
+
+		return $html . $this->flip_image_callback( '', $product );
 	}
 
 

@@ -1695,7 +1695,7 @@ class Functions {
 	 */
 	public function is_lc_active() {
 		$is_lc_active = $this->get_setting( 'is_lc_active' );
-		if ( '' !== $is_lc_active || !($is_lc_active) ) {  // compatibility for - get setting return cahcing data , some times provide invalid data.
+		if ( '' !== $is_lc_active || ! ( $is_lc_active ) ) {  // compatibility for - get setting return cahcing data , some times provide invalid data.
 			return $is_lc_active;
 		}
 		return Xpo::is_lc_active();
@@ -2387,12 +2387,15 @@ class Functions {
 		$allowed = array(
 			'del'      => array(),
 			'ins'      => array(),
+			'source'   => array(
+				'src'  => true,
+				'type' => true,
+			),
 			'select'   => array(
 				'multiple' => true,
 				'name'     => true,
 				'data-*'   => true,
 				'class'    => true,
-				'name'     => true,
 			),
 			'option'   => array(
 				'value'    => true,

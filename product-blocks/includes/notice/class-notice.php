@@ -1586,7 +1586,6 @@ class Notice {
 				$(document).on('click', '.wc-install-btn.wopb-install-btn', function(e) {
 					e.preventDefault();
 					const $that = $(this);
-					console.log("testing xyz");
 					console.log($that.attr('data-plugin-slug'), "data-plugin-slug");
 					$.ajax({
 						type: 'POST',

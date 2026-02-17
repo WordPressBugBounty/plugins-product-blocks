@@ -283,7 +283,7 @@ class Initialization {
 			if ( $pagenow != 'widgets.php' ) {
 				wp_enqueue_script( 'wp-editor' );
 			}
-			wp_enqueue_script( 'wopb-blocks-editor-script', WOPB_URL . 'assets/js/editor.blocks.min.js', array( 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components' ), WOPB_VER, true );
+			wp_enqueue_script( 'wopb-blocks-editor-script', WOPB_URL . 'assets/js/editor.blocks.js', array( 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components' ), WOPB_VER, true );
 			wp_enqueue_style( 'wopb-blocks-editor-css', WOPB_URL . 'assets/css/blocks.editor.css', array(), WOPB_VER );
 
 			wp_localize_script(
@@ -325,20 +325,21 @@ class Initialization {
 	public function install_hook() {
 		$data      = get_option( 'wopb_options', array() );
 		$init_data = array(
-			'preloader_style'     => 'style1',
-			'preloader_color'     => '#FF176B',
-			'container_width'     => '1140',
-			'hide_import_btn'     => '',
-			'editor_container'    => 'theme_default',
-			'wopb_builder'        => 'true',
-			'wopb_compare'        => 'true',
-			'wopb_flipimage'      => 'true',
-			'wopb_quickview'      => 'true',
-			'wopb_wishlist'       => 'true',
-			'wopb_product_video'  => 'true',
-			'save_version'        => wp_rand( 1, 1000 ),
-			'disable_google_font' => '',
-			'wopb_custom_font'    => 'true',
+			'preloader_style'          => 'style1',
+			'preloader_color'          => '#FF176B',
+			'container_width'          => '1140',
+			'hide_import_btn'          => '',
+			'editor_container'         => 'theme_default',
+			'wopb_builder'             => 'true',
+			'wopb_compare'             => 'true',
+			'wopb_flipimage'           => 'true',
+			'wopb_quickview'           => 'true',
+			'wopb_wishlist'            => 'true',
+			'wopb_product_video'       => 'true',
+			'save_version'             => wp_rand( 1, 1000 ),
+			'disable_google_font'      => '',
+			'wopb_custom_font'         => 'true',
+			'wprocket_cache_exclusion' => 'false',
 		);
 
 		if ( empty( $data ) ) {
@@ -407,11 +408,13 @@ class Initialization {
 			require_once WOPB_PATH . 'classes/Styles.php';
 			require_once WOPB_PATH . 'classes/Caches.php';
 			require_once WOPB_PATH . 'classes/WooHooks.php';
+			require_once WOPB_PATH . 'classes/ExternalCompatibility.php';
 			new \WOPB\REST_API();
 			new \WOPB\Styles();
 			new \WOPB\Blocks();
 			new \WOPB\Caches();
 			new \WOPB\WooHooks();
+			new \WOPB\ExternalCompatibility();
 		}
 	}
 

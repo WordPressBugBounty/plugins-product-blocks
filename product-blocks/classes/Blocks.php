@@ -40,6 +40,9 @@ class Blocks {
 		add_action( 'wp_ajax_nopriv_wopb_checkout_login', array( $this, 'wopb_checkout_login_callback' ) );
 		add_action( 'wp_ajax_wopb_share_count', array( $this, 'wopb_share_count_callback' ) );
 		add_action( 'wp_ajax_nopriv_wopb_share_count', array( $this, 'wopb_share_count_callback' ) );
+		// Nonce Generating Callback
+		add_action( 'wp_ajax_wopb_get_nonce', array( $this, 'wopb_get_nonce_callback' ) ); // Nonce Generating Callback
+		add_action( 'wp_ajax_nopriv_wopb_get_nonce', array( $this, 'wopb_get_nonce_callback' ) ); // Nonce Generating Callback
 	}
 
 	public function wopb_addcart_callback() {
@@ -455,6 +458,22 @@ class Blocks {
 			array(
 				'success' => true,
 				'count'   => $count,
+			)
+		);
+	}
+
+	/**
+	 * Nonce Generation Callback
+	 *
+	 * @since v.4.4.1
+	 *
+	 * @return STRING The AJAX response.
+	 */
+	public function wopb_get_nonce_callback() {
+		nocache_headers();
+		wp_send_json_success(
+			array(
+				'nonce' => wp_create_nonce( 'wopb-nonce' ),
 			)
 		);
 	}

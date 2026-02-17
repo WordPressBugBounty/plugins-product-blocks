@@ -116,7 +116,7 @@ class Styles {
 				if ( file_exists( $_path ) ) {
 					$css = $wp_filesystem->get_contents( $_path );
 				} elseif ( $post_id == 'wopb-widget' ) {
-						$css = get_option( $post_id, true );
+					$css = get_option( $post_id, true );
 				} else {
 					$css = get_post_meta( $post_id, '_wopb_css', true );
 				}
@@ -127,6 +127,11 @@ class Styles {
 				wp_add_inline_style( "wopb-post-{$post_id}", wp_strip_all_tags( $css ) );
 				wopb_function()->register_scripts_common();
 			}
+		}
+
+		$post_type = get_post_type( $post_id );
+		if ( $post_type == 'wopb_builder' && class_exists( 'UAGB_Helper' ) ) {
+			do_action( 'wopb_enqueue_plugin_css', $post_id );
 		}
 	}
 
@@ -410,11 +415,11 @@ class Styles {
 		$post_id     = isset( $post['postId'] ) ? sanitize_text_field( $post['postId'] ) : '';
 		$c_post_type = get_post_type( $post_id );
 		if ( $post_id &&
-			(
-				wopb_function()->permission_check_for_restapi( $post_id ) ||
-				'wp_template_part' === $c_post_type ||
-				'wp_block' === $c_post_type
-			)
+		(
+			wopb_function()->permission_check_for_restapi( $post_id ) ||
+			'wp_template_part' === $c_post_type ||
+			'wp_block' === $c_post_type
+		)
 		) {
 			if ( 'wp_block' === $c_post_type ) {
 				$this->handle_wpblock_current_id( $post_id );

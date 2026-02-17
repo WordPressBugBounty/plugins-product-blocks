@@ -112,7 +112,7 @@ class SalesNotification {
 		$page_id = isset( $_POST['page_id'] ) ? $_POST['page_id'] : '';
 
 		// Check if notification should display on this page
-		if ( $this->should_display_notification( $page_id ) ) {
+		if ( ! $this->should_display_notification( $page_id ) ) {
 			return array( 'html' => array() );
 		}
 		$output      = array();
@@ -162,7 +162,18 @@ class SalesNotification {
 						$customer_name = $user_info->first_name . ' ' . $user_info->last_name;
 					}
 				} else {
-					$customer_name = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+					// use billing first and last name for guest user.
+					// first name and last name can be used easily based on user settings.
+					// for any other case like display_name, nick_name, username, full_name show "Full Billing Name".
+					$billing_first_name = $order->get_billing_first_name();
+					$billing_last_name  = $order->get_billing_last_name();
+					if ( 'first_name' === $name && $billing_first_name ) {
+						$customer_name = $billing_first_name;
+					} elseif ( 'last_name' === $name && $billing_last_name ) {
+						$customer_name = $billing_last_name;
+					} else {
+						$customer_name = $billing_first_name . ' ' . $billing_last_name;
+					}
 				}
 
 				foreach ( $order->get_items() as $item ) {
@@ -218,10 +229,11 @@ class SalesNotification {
 		$action = wopb_function()->get_setting( 'select_page_visibility' );
 
 		if ( $action === 'all' ) {
-			return false;
+			return true;
 		}
 
 		$selected_page_list = wopb_function()->get_setting( 'custom_page_selection' );
+
 		$is_page_in_list    = is_array( $selected_page_list ) && in_array( $page_id, $selected_page_list );
 
 		return $action === 'include' ? $is_page_in_list : ! $is_page_in_list;

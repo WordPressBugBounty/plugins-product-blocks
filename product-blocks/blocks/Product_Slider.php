@@ -166,6 +166,7 @@ class Product_Slider {
 
 	public function content_section( $product, $attr ) {
 		$attr['titleTag'] = in_array( $attr['titleTag'], wopb_function()->allowed_block_tags() ) ? $attr['titleTag'] : 'h3';
+		$product_title    = ! empty( $product->get_title() ) ? $product->get_title() : $product->get_name();
 		?>
 		<div class="wopb-content-section">
 			<?php
@@ -179,7 +180,7 @@ class Product_Slider {
 				?>
 					<<?php echo esc_attr( $attr['titleTag'] ); ?> class="wopb-product-title <?php echo ( $attr['titleHoverEffect'] == 'none' ? '' : 'wopb-title-' . esc_attr( $attr['titleHoverEffect'] ) ); ?>">
 						<a href="<?php echo esc_url( get_permalink( $product->get_id() ) ); ?>">
-						<?php echo (isset($attr['titleLength']) && $attr['titleLength'] !=0) ? wp_trim_words($product->get_title(), $attr['titleLength'], '...' ) : $product->get_title(); // phpcs:ignore ?>
+						<?php echo (isset($attr['titleLength']) && $attr['titleLength'] !=0) ? wp_trim_words($product_title, $attr['titleLength'], '...' ) : $product_title; // phpcs:ignore ?>
 						</a>
 					</<?php echo esc_attr( $attr['titleTag'] ); ?>>
 				<?php
@@ -234,6 +235,7 @@ class Product_Slider {
 					break;
 			}
 		}
+		$product_title = ! empty( $product->get_title() ) ? $product->get_title() : $product->get_name();
 		?>
 		<div class="wopb-image-section">
 			<span class="wopb-product-image">
@@ -271,11 +273,11 @@ class Product_Slider {
 				if ( $product->get_image_id() && wp_get_attachment_image_src( $product->get_image_id(), 'large' )[0] ) {
 					?>
 						<a href="<?php echo esc_url( get_permalink( $product->get_id() ) ); ?>">
-							<img class="wopb-block-image" alt="<?php echo esc_attr( $product->get_title() ); ?>" src="<?php echo esc_url( wp_get_attachment_image_src( $product->get_image_id(), 'large' )[0] ); ?>"/>
+							<img class="wopb-block-image" alt="<?php echo esc_attr( $product_title ); ?>" src="<?php echo esc_url( wp_get_attachment_image_src( $product->get_image_id(), 'large' )[0] ); ?>"/>
 						</a>
 				<?php } else { ?>
 						<a href="<?php echo esc_url( get_permalink( $product->get_id() ) ); ?>">
-							<img class="wopb-block-image wopb-fallback-image" alt="<?php echo esc_attr( $product->get_title() ); ?>" src="<?php echo esc_url( WOPB_URL . 'assets/img/wopb-fallback-img.png' ); ?>"/>
+							<img class="wopb-block-image wopb-fallback-image" alt="<?php echo esc_attr( $product_title ); ?>" src="<?php echo esc_url( WOPB_URL . 'assets/img/wopb-fallback-img.png' ); ?>"/>
 						</a>
 					<?php
 				}

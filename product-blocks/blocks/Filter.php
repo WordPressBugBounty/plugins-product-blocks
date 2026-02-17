@@ -16,59 +16,59 @@ class Filter {
 	public function get_attributes() {
 		return array(
 			'repeatableFilter'           => array(
+				// 1 => array('type' => 'price','label' => 'Filter By Price'),
 				0 => array(
 					'type'  => 'search',
-					'label' => 'Filter By Search',
+					'label' => __( 'Filter By Search', 'product-blocks' ),
 				),
-				// 1 => array('type' => 'price','label' => 'Filter By Price'),
 				1 => array(
 					'type'  => 'product_cat',
-					'label' => 'Filter By Category',
+					'label' => __( 'Filter By Category', 'product-blocks' ),
 				),
 				2 => array(
 					'type'  => 'product_tag',
-					'label' => 'Filter By Tag',
+					'label' => __( 'Filter By Tag', 'product-blocks' ),
 				),
 				3 => array(
 					'type'  => 'status',
-					'label' => 'Filter By Status',
+					'label' => __( 'Filter By Status', 'product-blocks' ),
 				),
 				4 => array(
 					'type'  => 'rating',
-					'label' => 'Filter By Rating',
+					'label' => __( 'Filter By Rating', 'product-blocks' ),
 				),
 				5 => array(
 					'type'  => 'pa_color',
-					'label' => 'Filter By Color',
+					'label' => __( 'Filter By Color', 'product-blocks' ),
 				),
 			),
 			'sortingItems'               => array(
 				0 => (object) array(
-					'label' => 'Select Sort By',
+					'label' => __( 'Select Sort By', 'product-blocks' ),
 					'value' => '',
 				),
 				1 => (object) array(
-					'label' => 'Default Sorting',
+					'label' => __( 'Default Sorting', 'product-blocks' ),
 					'value' => 'default',
 				),
 				2 => (object) array(
-					'label' => 'Sort by popularity',
+					'label' => __( 'Sort by popularity', 'product-blocks' ),
 					'value' => 'popular',
 				),
 				3 => (object) array(
-					'label' => 'Sort by latest',
+					'label' => __( 'Sort by latest', 'product-blocks' ),
 					'value' => 'latest',
 				),
 				4 => (object) array(
-					'label' => 'Sort by average rating',
+					'label' => __( 'Sort by average rating', 'product-blocks' ),
 					'value' => 'rating',
 				),
 				5 => (object) array(
-					'label' => 'Sort by price: low to high',
+					'label' => __( 'Sort by price: low to high', 'product-blocks' ),
 					'value' => 'price_low',
 				),
 				6 => (object) array(
-					'label' => 'Sort by price: high to low',
+					'label' => __( 'Sort by price: high to low', 'product-blocks' ),
 					'value' => 'price_high',
 				),
 			),
