@@ -244,7 +244,8 @@ class NamePrice {
 		$input    = array();
 		foreach ( $key_list as $key => $val ) {
             if ( isset( $_POST[$val] ) ) { // phpcs:ignore
-				if ( ! empty( $loop ) ) {
+				// loop is coming from woocommcerce and starts from 0.
+				if ( '' !== $loop && 0 <= $loop ) {
                     $input[$key] = sanitize_text_field( $_POST[$val][$loop] ); // phpcs:ignore
 				} else {
                     $input[$key] = sanitize_text_field( $_POST[$val] ); // phpcs:ignore

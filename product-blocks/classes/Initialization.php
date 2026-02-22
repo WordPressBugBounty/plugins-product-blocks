@@ -8,6 +8,7 @@
 namespace WOPB;
 
 use WOPB\Includes\Durbin\Xpo;
+use WOPB\Includes\Notice\Notice;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -254,7 +255,7 @@ class Initialization {
 						'addons_settings'   => apply_filters( 'wopb_settings', array() ),
 						'version'           => WOPB_VER,
 						'setup_wizard_link' => admin_url( 'admin.php?page=wopb-initial-setup-wizard' ),
-						'helloBar'          => Xpo::get_transient_without_cache( 'wopb_hellobar' ),
+						'helloBar'          => Notice::get_hellobar_config(),
 						'userInfo'          => array(
 							'name'  => $user_info->first_name ? $user_info->first_name . ( $user_info->last_name ? ' ' . $user_info->last_name : '' ) : $user_info->user_login,
 							'email' => $user_info->user_email,

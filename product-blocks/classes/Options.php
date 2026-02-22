@@ -72,40 +72,65 @@ class Options {
 	 * @return NULL
 	 */
 	public function plugin_action_links_callback( $links ) {
-		$setting_link                  = array();
-		$setting_link['wopb_settings'] = '<a href="' . esc_url( admin_url( 'admin.php?page=wopb-settings#settings' ) ) . '">' . esc_html__( 'Settings', 'product-blocks' ) . '</a>';
-		$upgrade_link                  = array();
-		if ( ! defined( 'WOPB_PRO_VER' ) || Xpo::is_lc_expired() ) {
-			if ( Xpo::is_lc_expired() ) {
-				$url  = 'https://account.wpxpo.com/checkout/?edd_license_key=' . Xpo::get_lc_key();
-				$text = esc_html__( 'Renew License', 'product-blocks' );
-			} else {
-				$url  = Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'plugin_dir_pro',
-					)
-				);
-				$text = esc_html__( 'Upgrade to Pro', 'product-blocks' );
-			}
+		$offer_config = array(
+			array(
+				'start'  => '2026-02-19 00:00 Asia/Dhaka',
+				'end'    => '2026-02-23 23:59 Asia/Dhaka',
+				'text'   => __(
+					'Flash Sale - Up to 55% OFF',
+					'product-blocks'
+				),
+				'utmKey' => 'flash_sale_meta',
+			),
+			array(
+				'start'  => '2026-02-25 00:00 Asia/Dhaka',
+				'end'    => '2026-03-01 23:59 Asia/Dhaka',
+				'text'   => __(
+					'Final Hour Sale - Up to 60% OFF',
+					'product-blocks'
+				),
+				'utmKey' => 'final_hour_meta',
+			),
+		);
 
-			$is_offer_running = true;
-			if ( $is_offer_running ) {
-				$current_date         = current_time( 'Y-m-d' );
-				$menu_pro_text_period = (
-					$current_date >= '2026-01-01' &&
-					$current_date <= '2026-02-15'
-				);
-				if ( $menu_pro_text_period ) {
-					$text = esc_html__( 'New Year Offer!', 'product-blocks' );
-					$url  = Xpo::generate_utm_link(
-						array(
-							'utmKey' => 'new_year_sale',
-						)
-					);
+		$setting_link = array(
+			'wopb_settings' => '<a href="' . esc_url( admin_url( 'admin.php?page=wopb-settings#settings' ) ) . '">' . esc_html__( 'Settings', 'product-blocks' ) . '</a>',
+		);
+
+		$upgrade_link = array();
+
+		// Free user or expired license user.
+		if ( ! defined( 'WOPB_PRO_VER' ) || Xpo::is_lc_expired() ) {
+
+			$license_key = Xpo::get_lc_key() ?? '';
+
+			if ( Xpo::is_lc_expired() ) {
+				$text = esc_html__( 'Renew License', 'product-blocks' );
+				$url  = 'https://account.wpxpo.com/checkout/?edd_license_key=' . $license_key;
+			} else {
+
+				$text = esc_html__( 'Upgrade to Pro', 'product-blocks' );
+				$url  = Xpo::generate_utm_link();
+
+				foreach ( $offer_config as $offer ) {
+					$current_time = gmdate( 'U' );
+					$notice_start = gmdate( 'U', strtotime( $offer['start'] ) );
+					$notice_end   = gmdate( 'U', strtotime( $offer['end'] ) );
+					if ( $current_time >= $notice_start && $current_time <= $notice_end ) {
+						$url  = Xpo::generate_utm_link(
+							array(
+								'utmKey' => $offer['utmKey'],
+							)
+						);
+						$text = $offer['text'];
+						break;
+					}
 				}
 			}
-			$upgrade_link['wopb_pro'] = '<a style="color: #e83838; font-weight: bold;" target="_blank" href="' . esc_url( $url ) . '">' . wopb_function()->core_esc_wp( $text ) . '</a>';
+
+			$upgrade_link['wopb_pro'] = '<a style="color: #e83838; font-weight: bold;" target="_blank" href="' . esc_url( $url ) . '">' . esc_html( $text ) . '</a>';
 		}
+
 		return array_merge( $setting_link, $links, $upgrade_link );
 	}
 
@@ -249,7 +274,7 @@ class Options {
 				array( $this, 'builder_product_metabox_html' ),
 				'product',
 				'side',
-				'core',
+				'core'
 			);
 		}
 	}

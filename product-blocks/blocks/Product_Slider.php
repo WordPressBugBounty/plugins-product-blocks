@@ -166,7 +166,7 @@ class Product_Slider {
 
 	public function content_section( $product, $attr ) {
 		$attr['titleTag'] = in_array( $attr['titleTag'], wopb_function()->allowed_block_tags() ) ? $attr['titleTag'] : 'h3';
-		$product_title    = ! empty( $product->get_title() ) ? $product->get_title() : $product->get_name();
+		$product_title    = $product->get_name();
 		?>
 		<div class="wopb-content-section">
 			<?php
@@ -179,9 +179,14 @@ class Product_Slider {
 			if ( $attr['showTitle'] ) {
 				?>
 					<<?php echo esc_attr( $attr['titleTag'] ); ?> class="wopb-product-title <?php echo ( $attr['titleHoverEffect'] == 'none' ? '' : 'wopb-title-' . esc_attr( $attr['titleHoverEffect'] ) ); ?>">
+
 						<a href="<?php echo esc_url( get_permalink( $product->get_id() ) ); ?>">
-						<?php echo (isset($attr['titleLength']) && $attr['titleLength'] !=0) ? wp_trim_words($product_title, $attr['titleLength'], '...' ) : $product_title; // phpcs:ignore ?>
+						<?php
+							$title_length = isset( $attr['titleLength'] ) ? intval( $attr['titleLength'] ) : 0;
+							echo esc_html( $title_length > 0 ? wp_trim_words( $product_title, $title_length, '...' ) : $product_title );
+						?>
 						</a>
+
 					</<?php echo esc_attr( $attr['titleTag'] ); ?>>
 				<?php
 			}
@@ -235,7 +240,7 @@ class Product_Slider {
 					break;
 			}
 		}
-		$product_title = ! empty( $product->get_title() ) ? $product->get_title() : $product->get_name();
+		$product_title = $product->get_name();
 		?>
 		<div class="wopb-image-section">
 			<span class="wopb-product-image">

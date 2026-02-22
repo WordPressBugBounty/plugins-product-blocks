@@ -1999,7 +1999,9 @@ class Functions {
 								if ( $data ) {
 									$data = explode( '/', $data );
 									if ( isset( $data[3] ) && $data[3] ) {
-										if ( is_object_in_term( $obj->ID, $tax, $data[3] ) ) {
+										$term_children  = get_term_children( $data[3], $tax );
+										$terms_to_check = array_merge( $term_children, array( $data[3] ) );
+										if ( is_object_in_term( $obj->ID, $tax, $terms_to_check ) ) {
 											if ( 'publish' == get_post_status( $key ) ) {
 												$page_id = $data[0] == 'exclude' ? '' : $key;
 											}

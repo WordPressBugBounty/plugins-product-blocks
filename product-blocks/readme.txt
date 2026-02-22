@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 6.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 4.4.1
+Stable tag: 4.4.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -229,6 +229,10 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 
 
 == Changelog ==
+= 4.4.2 – 22 February 2026 =
+* Fix: Name Your Price first variation of a variable product settings saving issue.
+* Fix: Single Product template in child product categories condition issue.
+
 = 4.4.1 – 17 February 2026 =
 * Fix: Product Filter block translation issue
 * Fix: Sales push notification addon user name issue

@@ -198,7 +198,7 @@ class Xpo {
 		return $result;
 	}
 
-	public static function generate_utm_link( $params ) {
+	public static function generate_utm_link( $params = array() ) {
 		$default_config = array(
 			'example'                     => array(
 				'source'   => 'db-wowaddons-featurename',
