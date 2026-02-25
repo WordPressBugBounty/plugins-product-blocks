@@ -239,19 +239,9 @@ class Xpo {
 				'medium'   => 'sub-menu',
 				'campaign' => 'wstore-dashboard',
 			),
-			'final_hour_sale'             => array(
-				'source'   => 'db-wowstore-notice-text',
-				'medium'   => 'final-hour-sale',
-				'campaign' => 'wowstore-dashboard',
-			),
 			'massive_sale'                => array(
 				'source'   => 'db-wowstore-notice-logo',
 				'medium'   => 'massive-sale',
-				'campaign' => 'wowstore-dashboard',
-			),
-			'flash_sale'                  => array(
-				'source'   => 'db-wowstore-notice-text',
-				'medium'   => 'flash-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'exclusive_deals'             => array(
@@ -273,6 +263,26 @@ class Xpo {
 				'source'   => 'wowstore',
 				'medium'   => 'preorder',
 				'campaign' => 'product-addons',
+			),
+			'flash_sale'                  => array(
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'flash-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'final_hour'                  => array(
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'final-hour-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'flash_sale_meta'                  => array(
+				'source'   => 'db-wowstore-plugin-meta',
+				'medium'   => 'flash-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'final_hour_meta'                  => array(
+				'source'   => 'db-wowstore-plugin-meta',
+				'medium'   => 'final-hour-sale',
+				'campaign' => 'wowstore-dashboard',
 			),
 		);
 

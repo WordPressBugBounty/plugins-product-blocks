@@ -11,12 +11,15 @@ class Product_Tab {
 
 	public function get_attributes() {
 		return array(
-			'showDescription' => true,
-			'showAddInfo'     => true,
-			'showReview'      => true,
-			'reviewHeading'   => true,
-			'headingText'     => 'Product Tab',
-			'currentPostId'   => '',
+			'showDescription'     => true,
+			'showAddInfo'         => true,
+			'showReview'          => true,
+			'reviewHeading'       => true,
+			'headingText'         => 'Product Tab',
+			'currentPostId'       => '',
+			'descriptionLabel'    => '',
+			'additionalInfoLabel' => '',
+			'reviewLabel'         => '',
 		);
 	}
 
@@ -92,10 +95,20 @@ class Product_Tab {
 					$content .= '<ul class="tabs wc-tabs" role="tablist">';
 				foreach ( $product_tabs as $key => $product_tab ) {
 					if ( ! empty( $product_tab['title'] ) ) {
+						// Determine the tab title - use custom label if available
+						$tab_title = $product_tab['title'];
+						if ( $key === 'description' && ! empty( $attr['descriptionLabel'] ) ) {
+							$tab_title = $attr['descriptionLabel'];
+						} elseif ( $key === 'additional_information' && ! empty( $attr['additionalInfoLabel'] ) ) {
+							$tab_title = $attr['additionalInfoLabel'];
+						} elseif ( $key === 'reviews' && ! empty( $attr['reviewLabel'] ) ) {
+							$tab_title = $attr['reviewLabel'];
+						}
+
 						$content     .= '<li class="' . esc_attr( $key ) . '_tab" id="tab-title-' . esc_attr( $key ) . '" role="tab" aria-controls="tab-' . esc_attr( $key ) . '">';
 							$content .= '<a href="#tab-' . esc_attr( $key ) . '">';
 							ob_start();
-								echo wp_kses_post( apply_filters( 'woocommerce_product_' . $key . '_tab_title', $product_tab['title'], $key ) );
+								echo wp_kses_post( apply_filters( 'woocommerce_product_' . $key . '_tab_title', $tab_title, $key ) );
 							$content .= ob_get_clean();
 							$content .= '</a>';
 						$content     .= '</li>';
