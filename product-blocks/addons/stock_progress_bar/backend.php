@@ -19,8 +19,8 @@ if ( ! function_exists( 'wopb_stock_progress_bar_init' ) ) {
 		$configuration                     = array(
 			'name'     => __( 'Stock Progress Bar', 'product-blocks' ),
 			'desc'     => __( 'Visually highlight the total and remaining stocks of products to encourage shoppers to create FOMO.', 'product-blocks' ),
-			'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-stock-progress-bar/live_demo_args',
-			'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/stock-progress-bar-addon/addon_doc_args',
+			'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-stock-progress-bar/',
+			'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/stock-progress-bar-addon/',
 			'is_pro'   => true,
 			'type'     => 'sales',
 			'priority' => 80,

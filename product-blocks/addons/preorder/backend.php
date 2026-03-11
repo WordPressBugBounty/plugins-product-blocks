@@ -18,8 +18,8 @@ if ( ! function_exists( 'wopb_preorder_init' ) ) {
 		$configuration           = array(
 			'name'     => __( 'Pre-Orders', 'product-blocks' ),
 			'desc'     => __( 'Display upcoming products as regular products to get orders for those not released yet.', 'product-blocks' ),
-			'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-pre-order/live_demo_args',
-			'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/pre-order-addon/addon_doc_args',
+			'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-pre-order/',
+			'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/pre-order-addon/',
 			'type'     => 'sales',
 			'priority' => 50,
 		);

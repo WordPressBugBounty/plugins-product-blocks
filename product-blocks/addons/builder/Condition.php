@@ -96,7 +96,7 @@ class Condition {
 				}
 			}
 			?> 
-				<header id="wpob-header-template">
+				<header id="wopb-header-template">
 					<?php
 						$header_safe = wopb_function()->wp_kses_safe( wopb_function()->content( $this->header_id ) );
 						echo $header_safe;
@@ -125,7 +125,7 @@ class Condition {
 				}
 			}
 			?>
-							<footer id="wpob-footer-template" class="<?php echo esc_attr( 'wopb-builderid-' . $this->footer_id ); ?>" role="contentinfo">
+							<footer id="wopb-footer-template" class="<?php echo esc_attr( 'wopb-builderid-' . $this->footer_id ); ?>" role="contentinfo">
 					<?php
 						$footer_safe = wopb_function()->wp_kses_safe( wopb_function()->content( $this->footer_id ) );
 						echo $footer_safe;

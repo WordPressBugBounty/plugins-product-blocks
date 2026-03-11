@@ -410,12 +410,14 @@ class Initialization {
 			require_once WOPB_PATH . 'classes/Caches.php';
 			require_once WOPB_PATH . 'classes/WooHooks.php';
 			require_once WOPB_PATH . 'classes/ExternalCompatibility.php';
+			require_once WOPB_PATH . 'classes/compatibility/GermanizedSupport.php';
 			new \WOPB\REST_API();
 			new \WOPB\Styles();
 			new \WOPB\Blocks();
 			new \WOPB\Caches();
 			new \WOPB\WooHooks();
 			new \WOPB\ExternalCompatibility();
+			new \WOPB\Compatibility\GermanizedSupport();
 		}
 	}
 

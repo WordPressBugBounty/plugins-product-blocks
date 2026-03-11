@@ -18,8 +18,8 @@ if ( ! function_exists( 'wopb_currency_switcher_init' ) ) {
 		$configuration                    = array(
 			'name'     => __( 'Currency Switcher', 'product-blocks' ),
 			'desc'     => __( 'It allows customers to switch product prices and make payments in their local currencies.', 'product-blocks' ),
-			'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-currency-switcher/live_demo_args',
-			'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/currency-switcher-addon/addon_doc_args',
+			'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-currency-switcher/',
+			'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/currency-switcher-addon/',
 			'is_pro'   => true,
 			'type'     => 'sales',
 			'priority' => 60,

@@ -13,8 +13,8 @@ function wopb_wishlist_config( $config ) {
 		'desc'     => __( 'It allows your shoppers to add their desired product to a list that they are willing to purchase later from the wishlist page.', 'product-blocks' ),
 		'img'      => WOPB_URL . '/assets/img/addons/wishlist.svg',
 		'is_pro'   => false,
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-wishlist/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/wishlist-settings/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-wishlist/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/wishlist-settings/',
 		'type'     => 'build',
 		'priority' => 10,
 	);

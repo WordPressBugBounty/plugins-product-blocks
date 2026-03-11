@@ -12,8 +12,8 @@ function wopb_product_video_setup( $config ) {
 		'name'     => __( 'Product Video', 'product-blocks' ),
 		'desc'     => __( "Display product-featured videos instead of featured images and grab users' attention to specific products.", 'product-blocks' ),
 		'is_pro'   => false,
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-product-video/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/product-video/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-product-video/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/product-video/',
 		'type'     => 'exclusive',
 		'priority' => 60,
 	);

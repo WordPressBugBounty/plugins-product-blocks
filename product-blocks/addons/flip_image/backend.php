@@ -8,15 +8,16 @@ defined( 'ABSPATH' ) || exit;
  */
 add_filter( 'wopb_addons_config', 'wopb_flipimage_config' );
 function wopb_flipimage_config( $config ) {
-	$configuration            = array(
+	$configuration = array(
 		'name'     => __( 'Product Image Flipper', 'product-blocks' ),
 		'desc'     => __( 'It allows you to display a different image of products when the shoppers of your store hover over a product.', 'product-blocks' ),
 		'is_pro'   => false,
-		'live'     => 'https://www.wpxpo.com/wowstore/product-image-flipper/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/flip-image-settings/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/features/product-image-flipper/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/flip-image-settings/',
 		'type'     => 'exclusive',
 		'priority' => 30,
 	);
+	// live link missing
 	$config['wopb_flipimage'] = $configuration;
 	return $config;
 }

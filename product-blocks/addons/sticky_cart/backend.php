@@ -12,8 +12,8 @@ function wopb_sticky_cart_init( $config ) {
 		'name'     => __( 'Sticky Add to Cart', 'product-blocks' ),
 		'desc'     => __( 'Make the Add to Cart Button Sticky on the top or bottom while shoppers scroll the product pages.', 'product-blocks' ),
 		'is_pro'   => true,
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-sticky-add-to-cart/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/sticky-add-to-cart/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-sticky-add-to-cart/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/sticky-add-to-cart/',
 		'type'     => 'checkout_cart',
 		'priority' => 20,
 	);

@@ -11,8 +11,8 @@ function wopb_backorder_setup( $config ) {
 	$configuration            = array(
 		'name'     => __( 'Backorder', 'product-blocks' ),
 		'desc'     => __( 'Keep getting orders for the products that are currently out of stock and will be restocked soon.', 'product-blocks' ),
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-backorder/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/back-order-addon/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-backorder/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/back-order-addon/',
 		'is_pro'   => false,
 		'type'     => 'sales',
 		'priority' => 40,

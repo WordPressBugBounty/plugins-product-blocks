@@ -12,8 +12,8 @@ function wopb_cart_reserved_init( $config ) {
 		'name'     => __( 'Cart Reserved Timer', 'product-blocks' ),
 		'desc'     => __( 'Display a countdown timer and show a FOMO message once someone adds products to the cart.', 'product-blocks' ),
 		'is_pro'   => false,
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-cart-reserved-timer/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/cart-reserved-timer/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-cart-reserved-timer/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/cart-reserved-timer/',
 		'type'     => 'checkout_cart',
 		'priority' => 10,
 	);

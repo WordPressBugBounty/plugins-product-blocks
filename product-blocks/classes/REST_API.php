@@ -105,13 +105,11 @@ class REST_API {
 			'wopb',
 			'/product-filter/',
 			array(
-				array(
-					'methods'             => 'POST',
-					'callback'            => array( $this, 'product_filter' ),
-					'permission_callback' => '__return_true',
-					'args'                => array(),
-				),
-			)
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'product_filter' ),
+				'permission_callback' => '__return_true',
+				'args'                => array(),
+			),
 		);
 		register_rest_route(
 			'wopb',
@@ -763,7 +761,27 @@ class REST_API {
 	 */
 	public function searchProducts( $search, $query ) {
 		global $wpdb;
-		$search = " AND ({$wpdb->prefix}posts.post_title LIKE '%{$query->query_vars['s']}%' OR {$wpdb->prefix}posts.post_content LIKE '%{$query->query_vars['s']}%' OR {$wpdb->prefix}posts.post_excerpt LIKE '%{$query->query_vars['s']}%' OR (post_meta.meta_key='_sku' AND post_meta.meta_value LIKE '%{$query->query_vars['s']}%')) ";
+
+		if ( ! empty( $query->query_vars['s'] ) ) {
+			$search_term = $query->query_vars['s'];
+			// Properly escape the search term for LIKE queries.
+			$search_term_like = '%' . $wpdb->esc_like( $search_term ) . '%';
+
+			// Use parameterized query with $wpdb->prepare().
+			$search = $wpdb->prepare(
+				" AND (
+                {$wpdb->prefix}posts.post_title LIKE %s 
+                OR {$wpdb->prefix}posts.post_content LIKE %s 
+                OR {$wpdb->prefix}posts.post_excerpt LIKE %s 
+                OR (post_meta.meta_key='_sku' AND post_meta.meta_value LIKE %s)
+            ) ",
+				$search_term_like,
+				$search_term_like,
+				$search_term_like,
+				$search_term_like
+			);
+		}
+
 		return $search;
 	}
 
@@ -786,7 +804,14 @@ class REST_API {
 	 * @return array
 	 */
 	public function product_filter( $server ) {
-		$params          = $server->get_params();
+		$params = $server->get_params();
+
+		if ( ! isset( $params['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) {
+			return array(
+				'blockList' => array(),
+			);
+		}
+
 		$product_filters = $params['product_filters'];
 		$post_id         = sanitize_text_field( $params['post_id'] );
 		$post            = get_post( $post_id );
@@ -800,6 +825,7 @@ class REST_API {
 			'ajax_source'     => 'filter',
 		);
 
+		$block_list = array();
 		$block_list = $this->product_filter_block_target( $blocks, $blockName, $blockRaw, $params, $block_list );
 		return array(
 			'blockList' => $block_list,
@@ -849,7 +875,10 @@ class REST_API {
 	 * @return HTML
 	 */
 	public function product_search( $server ) {
-		$data          = $server->get_params();
+		$data = $server->get_params();
+		if ( ! isset( $data['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $data['wpnonce'] ) ), 'wopb-nonce' ) ) {
+			return rest_ensure_response( array() );
+		}
 		$blockId       = isset( $data['blockId'] ) ? sanitize_text_field( $data['blockId'] ) : '';
 		$blockRaw      = isset( $data['blockName'] ) ? sanitize_text_field( $data['blockName'] ) : '';
 		$blockName     = str_replace( '_', '/', $blockRaw );

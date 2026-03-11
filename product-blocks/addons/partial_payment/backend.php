@@ -18,8 +18,8 @@ if ( ! function_exists( 'wopb_partial_payment_init' ) ) {
 		$configuration                  = array(
 			'name'     => __( 'Partial Payment', 'product-blocks' ),
 			'desc'     => __( 'Split product prices into parts and let the customers place orders by paying only a deposit amount.', 'product-blocks' ),
-			'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-partial-payment/live_demo_args',
-			'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/partial-payment/addon_doc_args',
+			'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-partial-payment/',
+			'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/partial-payment/',
 			'is_pro'   => true,
 			'type'     => 'sales',
 			'priority' => 70,

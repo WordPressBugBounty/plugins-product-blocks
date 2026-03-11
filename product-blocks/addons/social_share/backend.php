@@ -12,8 +12,8 @@ function wopb_social_share_init( $config ) {
 		'name'     => __( 'Quick Social Share', 'product-blocks' ),
 		'desc'     => __( 'Display social share icons and let your shoppers share products with their social profiles instantly.', 'product-blocks' ),
 		'is_pro'   => false,
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-social-share/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/quick-social-share/addon_doc_args',
+		'live'     => 'https://wpxpo.com/docs/wowstore/add-ons/quick-social-share/', // live link missing
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/quick-social-share/',
 		'type'     => 'exclusive',
 		'priority' => 20,
 	);

@@ -12,8 +12,8 @@ function wopb_add_to_cart_text_config( $config ) {
 		'name'     => __( 'Add to Cart Text', 'product-blocks' ),
 		'desc'     => __( "Change any product type's default Add to Cart Button text in the Shop, Archive, and Product pages.", 'product-blocks' ),
 		'is_pro'   => false,
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-add-to-cart-text/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/add-to-cart-text/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-change-add-to-cart-text/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/add-to-cart-text/',
 		'type'     => 'checkout_cart',
 		'priority' => 30,
 	);

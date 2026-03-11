@@ -274,12 +274,12 @@ class Xpo {
 				'medium'   => 'final-hour-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'flash_sale_meta'                  => array(
+			'flash_sale_meta'             => array(
 				'source'   => 'db-wowstore-plugin-meta',
 				'medium'   => 'flash-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'final_hour_meta'                  => array(
+			'final_hour_meta'             => array(
 				'source'   => 'db-wowstore-plugin-meta',
 				'medium'   => 'final-hour-sale',
 				'campaign' => 'wowstore-dashboard',
@@ -287,7 +287,7 @@ class Xpo {
 		);
 
 		// Step 1: Get parameters
-		$base_url      = $params['url'] ?? 'https://www.wpxpo.com/wowstore/';
+		$base_url      = $params['url'] ?? 'https://www.wpxpo.com/product/wowstore/';
 		$utm_key       = $params['utmKey'] ?? null;
 		$affiliate     = $params['affiliate'] ?? apply_filters( 'wopb_affiliate_id', '' );
 		$hash          = $params['hash'] ?? 'pricing';

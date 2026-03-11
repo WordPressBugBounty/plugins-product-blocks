@@ -12,8 +12,8 @@ function wopb_name_price_config( $config ) {
 		'name'     => __( 'Name Your Price', 'product-blocks' ),
 		'desc'     => __( 'Let customers purchase products at their desired prices. Add Min & Max restrictions if required.', 'product-blocks' ),
 		'is_pro'   => false,
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-name-your-price/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/name-your-price/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-name-your-price/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/name-your-price/',
 		'type'     => 'sales',
 		'priority' => 20,
 	);

@@ -12,8 +12,8 @@ function wopb_sales_notification_config( $config ) {
 		'name'     => __( 'Sales Push Notification', 'product-blocks' ),
 		'desc'     => __( 'Build trust and give the customers confidence to purchase products from your online store.', 'product-blocks' ),
 		'is_pro'   => false,
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-sales-push-notification/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/sales-push-notification/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-live-sales-notification/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/sales-push-notification/',
 		'type'     => 'sales',
 		'priority' => 10,
 	);

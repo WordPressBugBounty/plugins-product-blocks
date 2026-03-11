@@ -12,8 +12,8 @@ function wopb_variation_swatches_config( $config ) {
 		'name'     => __( 'Variation Swatches', 'product-blocks' ),
 		'desc'     => __( 'Convert product attributes into beautiful swatches to ensure effortless shopping experiences.', 'product-blocks' ),
 		'is_pro'   => false,
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-variation-swatches/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/variation-swatches-addon/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-variation-swatches/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/variation-swatches-addon/',
 		'type'     => 'build',
 		'priority' => 20,
 	);

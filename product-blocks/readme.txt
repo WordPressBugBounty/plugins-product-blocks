@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 6.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 4.4.3
+Stable tag: 4.4.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -18,7 +18,7 @@ Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCom
 📞 Benefit from dedicated support, with a **4.9/5** [Trustpilot](https://uk.trustpilot.com/review/wpxpo.com) customer rating!
 
 
-😲 [**Free Demo**](https://trywowstore.wpxpo.com/) | 🔥 [**WowStore Pro**](https://www.wpxpo.com/wowstore/) | 📃 [**Documentation**](https://wpxpo.com/docs/wowstore/)
+😲 [**Free Demo**](https://trywowstore.wpxpo.com/) | 🔥 [**WowStore Pro**](https://www.wpxpo.com/product/wowstore/) | 📃 [**Documentation**](https://wpxpo.com/docs/wowstore/)
 
 [youtube https://www.youtube.com/watch?v=6t9JSvAR-to]
 
@@ -88,74 +88,74 @@ WowStore helps you build store pages without leaving the Gutenberg ecosystem. It
 ✔ 404 Page
 ✔ And, Headers & Footers
 
-👉 [Explore All Templates](https://www.wpxpo.com/wowstore/templates/)
+👉 [Explore All Templates](https://www.wpxpo.com/product/wowstore/templates/)
 
 **Shopping Experience**
 
 After having a good-looking eCommerce website, the next step is to ensure a better shopping experience for the customers. And, WowStore has the right features for that.
 
-[**Product Filter:**](https://www.wpxpo.com/wowstore/woocommerce-product-filter/) Help shoppers find their desired products fast with product filtering – filter products by category, color, price, rating, and more.
+[**Product Filter:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-product-filter/) Help shoppers find their desired products fast with product filtering – filter products by category, color, price, rating, and more.
 
-[**Variation Swatches:**](https://www.wpxpo.com/wowstore/woocommerce-variation-swatches/) Convert product variations to variation swatches to help shoppers select the right colors.
+[**Variation Swatches:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-variation-swatches/) Convert product variations to variation swatches to help shoppers select the right colors.
 
-[**Wishlist:**](https://www.wpxpo.com/wowstore/woocommerce-wishlist/) Let the potential buyers create a wishlist of interested products. So they can decide later whether they want to buy them or not.
+[**Wishlist:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-wishlist/) Let the potential buyers create a wishlist of interested products. So they can decide later whether they want to buy them or not.
 
-[**Quick View:**](https://www.wpxpo.com/wowstore/quick-view/) It helps customers to instantly view the product details in a pop-up without visiting the specific product pages.
+[**Quick View:**](https://www.wpxpo.com/product/wowstore/features/quick-view/) It helps customers to instantly view the product details in a pop-up without visiting the specific product pages.
 
-[**Compare:**](https://www.wpxpo.com/wowstore/woocommerce-product-comparison/) Help customers make the buying decisions faster by letting them compare multiple products side by side.
+[**Compare:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-product-comparison/) Help customers make the buying decisions faster by letting them compare multiple products side by side.
 
-[**Product Video:**](https://www.wpxpo.com/wowstore/woocommerce-product-video/) Replace featured images with product videos. The videos can be played upon clicking or continuously in the loop.
+[**Product Video:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-product-video/) Replace featured images with product videos. The videos can be played upon clicking or continuously in the loop.
 
-[**Size Chart:**](https://www.wpxpo.com/wowstore/woocommerce-size-chart/) Create and add Size Charts to product pages. So the shoppers will be able to choose the right sizes.
+[**Size Chart:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-size-chart/) Create and add Size Charts to product pages. So the shoppers will be able to choose the right sizes.
 
 ## Boost Your Sales
 
 WowStore has multiple effective features to increase sales. Explore and implement them all to see major improvements in your sales!
 
-[**Pre-Order:**](https://www.wpxpo.com/wowstore/woocommerce-pre-order/) Showcase upcoming products in your stores with a countdown of releasing date and let shoppers preorder products.
+[**Pre-Order:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-pre-order/) Showcase upcoming products in your stores with a countdown of releasing date and let shoppers preorder products.
 
-[**Backorder:**](https://www.wpxpo.com/wowstore/woocommerce-backorder/) Enable backorder to keep taking orders for the products that are currently not available in stock but will be available soon.
+[**Backorder:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-backorder/) Enable backorder to keep taking orders for the products that are currently not available in stock but will be available soon.
 
-[**Partial Payments:**](https://www.wpxpo.com/wowstore/woocommerce-partial-payment/) Split product prices into two parts with partial payment features and let shoppers book products with a deposit amount.
+[**Partial Payments:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-partial-payment/) Split product prices into two parts with partial payment features and let shoppers book products with a deposit amount.
 
-[**Call for Price:**](https://www.wpxpo.com/wowstore/woocommerce-call-for-price/) Hide product prices and the Add to Cart button with a “Call for Price” button. It encourages shoppers to call you to know the prices.
+[**Call for Price:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-call-for-price/) Hide product prices and the Add to Cart button with a “Call for Price” button. It encourages shoppers to call you to know the prices.
 
-[**Currency Switcher:**](https://www.wpxpo.com/wowstore/woocommerce-currency-switcher/) Let customers pay with their local currencies using WowStore’s currency switcher.
+[**Currency Switcher:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-currency-switcher/) Let customers pay with their local currencies using WowStore’s currency switcher.
 
-[**Stock Progress Bar:**](https://www.wpxpo.com/wowstore/woocommerce-stock-progress-bar/) Create FOMO (Fear of Missing Out!) among customers by visually highlighting the total and remaining quantity of products.
+[**Stock Progress Bar:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-stock-progress-bar/) Create FOMO (Fear of Missing Out!) among customers by visually highlighting the total and remaining quantity of products.
 
 
 ## Increase Conversion
 
 Getting customers to your WooCommerce store is challenging and not being able to convert them is frustrating. Don’t worry, WowStore WooCommerce Builder has multiple features that help you to ensure better conversion rates.
 
-[**Name Your Price:**](https://www.wpxpo.com/wowstore/woocommerce-name-your-price/) Empower your shoppers to purchase products with their desired price. You can add some suggested prices with minimum and maximum price restrictions.
+[**Name Your Price:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-name-your-price/) Empower your shoppers to purchase products with their desired price. You can add some suggested prices with minimum and maximum price restrictions.
 
-[**Animated Add to Cart:**](https://www.wpxpo.com/wowstore/woocommerce-animated-add-to-cart/) Animate the Add to Cart buttons to encourage shoppers to buy sooner rather than later.
+[**Animated Add to Cart:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-animated-add-to-cart-button/) Animate the Add to Cart buttons to encourage shoppers to buy sooner rather than later.
 
-[**Add to Cart Button Text:**](https://www.wpxpo.com/wowstore/woocommerce-add-to-cart-text/) Replace the text of the Add to Cart buttons effortlessly. You can add your desired text for all types of products including Simple, Variable, Grouped, and External products.
+[**Add to Cart Button Text:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-change-add-to-cart-text/) Replace the text of the Add to Cart buttons effortlessly. You can add your desired text for all types of products including Simple, Variable, Grouped, and External products.
 
-[**Sales Push Notification:**](https://www.wpxpo.com/wowstore/woocommerce-sales-push-notification/) Highlight recently purchased notifications to give your store’s visitors confidence to place orders. 
+[**Sales Push Notification:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-live-sales-notification/) Highlight recently purchased notifications to give your store’s visitors confidence to place orders. 
 
-[**Sticky Add to Cart:**](https://www.wpxpo.com/wowstore/woocommerce-sticky-add-to-cart/) Make the Add to Cart button sticky while scrolling the product pages. 
+[**Sticky Add to Cart:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-sticky-add-to-cart/) Make the Add to Cart button sticky while scrolling the product pages. 
 
 ## Reduce Cart Abandonment
 
 WowStore also has solutions to reduce Cart Abandonment rates. Check out the features below:
 
-[**Smart Cart Page:**](https://www.wpxpo.com/wowstore/woocommerce-cart-page-builder/) WowStore’s WooCommerce Builder gives you the control to make cart pages from scratch to ensure the process is simpler for the shoppers.
+[**Smart Cart Page:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-cart-page-builder/) WowStore’s WooCommerce Builder gives you the control to make cart pages from scratch to ensure the process is simpler for the shoppers.
 
-[**Cart Reserved Timer:**](https://www.wpxpo.com/wowstore/woocommerce-cart-reserved-timer/) It allows you to display a countdown timer and a FOMO message. So you can create an urgency among the customers to complete the buying process faster.
+[**Cart Reserved Timer:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-cart-reserved-timer/) It allows you to display a countdown timer and a FOMO message. So you can create an urgency among the customers to complete the buying process faster.
 
 ## Increase Average Order Value
 
 Increasing the average value can help you to increase revenue with the same number of sales that you usually get. WowStore has the right features for that as well.
 
-[**Upsell Products:**](https://www.wpxpo.com/wowstore/woocommerce-upsell/) Showcase higher price alternatives as related products. The shoppers may buy any alternative product that makes them more profit.
+[**Upsell Products:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-upsell/) Showcase higher price alternatives as related products. The shoppers may buy any alternative product that makes them more profit.
 
-[**Cross Selling:**](https://www.wpxpo.com/wowstore/woocommerce-cross-sell/) Displaying related supplementary products to the cart pages increases the chances of cross-selling.
+[**Cross Selling:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-cross-sell/) Displaying related supplementary products to the cart pages increases the chances of cross-selling.
 
-[**Free Shipping Progress Bar:**](https://www.wpxpo.com/wowstore/woocommerce-free-shipping/) If you are offering free shipping based on purchase amount try adding the progress bar to the cart page. It highlights how much the customers need to spend to enjoy free shipping. 
+[**Free Shipping Progress Bar:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-free-shipping/) If you are offering free shipping based on purchase amount try adding the progress bar to the cart page. It highlights how much the customers need to spend to enjoy free shipping. 
 
 ## Other Wow Plugins by WPXPO
 
@@ -199,7 +199,7 @@ Automatic installation is the easiest option as WordPress handles the file trans
 Yes, but it is a Gutenberg WooCommerce Blocks plugin. It displays the products in a grid, listing, and slider blocks.
 
 = Where can I request new features? =
-You can share your feature request by [clicking here](https://www.wpxpo.com/wowstore/roadmap/), or directly [contact us](https://www.wpxpo.com/contact/).
+You can share your feature request by [clicking here](https://www.wpxpo.com/product/wowstore/roadmap/), or directly [contact us](https://www.wpxpo.com/contact/).
 
 = Where can I report bugs and contribute to the project? =
 Bugs can be reported on the WordPress support forum.
@@ -229,6 +229,14 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 
 
 == Changelog ==
+= 4.4.4 – 11 March 2026 =
+* New: Sticky row for header templates
+* New: Germanized Support through shortcode
+* Fix: Checkout login translation issue
+* Fix: Variation swatches dependency issue
+* Fix: Filter block Search result forbidden issue
+* Fix: Search block product search vulnerability issue
+
 = 4.4.3 – 25 February 2026 =
 * New: Product tab custom label.
 * Fix: Heading style image renamed

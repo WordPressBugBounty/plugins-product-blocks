@@ -12,8 +12,8 @@ function wopb_size_chart_init( $config ) {
 		'name'     => __( 'Size Chart', 'product-blocks' ),
 		'desc'     => __( 'Create & display size charts to help the potential buyers make better buying decisions.', 'product-blocks' ),
 		'is_pro'   => false,
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-size-chart/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/size-chart/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-size-chart/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/size-chart/',
 		'type'     => 'exclusive',
 		'priority' => 50,
 	);

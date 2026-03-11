@@ -8,15 +8,17 @@ defined( 'ABSPATH' ) || exit;
  */
 add_filter( 'wopb_addons_config', 'wopb_title_limit_config' );
 function wopb_title_limit_config( $config ) {
-	$configuration              = array(
+	$configuration = array(
 		'name'     => __( 'Product Title Limit', 'product-blocks' ),
 		'desc'     => __( 'Shorten the product title on the shop, archive, and product pages to keep your store organized.', 'product-blocks' ),
 		'is_pro'   => false,
-		'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-product-title-limit/live_demo_args',
-		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/product-title-limit/addon_doc_args',
+		'live'     => 'https://www.wpxpo.com/product/wowstore/',
+		// 'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-product-title-limit/',
+		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/product-title-limit/',
 		'type'     => 'exclusive',
 		'priority' => 10,
 	);
+	// live link missing
 	$config['wopb_title_limit'] = $configuration;
 	return $config;
 }

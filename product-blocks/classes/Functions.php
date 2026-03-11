@@ -2579,14 +2579,27 @@ class Functions {
 		return $join;
 	}
 
+	/**
+	 * Filter WHERE clause for product search query
+	 *
+	 * @param string $where WHERE clause.
+	 * @return string Modified WHERE clause
+	 * @since v.4.1.6
+	 */
 	public function custom_post_query( $where, $query ) {
 		global $wpdb;
 		if ( ! empty( $query->get( 'filter_search_key' ) ) ) {
-			$where .= " AND 
-            ( 
-                {$wpdb->prefix}posts.post_title LIKE '%{$query->get('filter_search_key')}%' 
-                OR (post_meta.meta_key='_sku' AND post_meta.meta_value LIKE '%{$query->get('filter_search_key')}%') 
-            )";
+			$search = $query->get( 'filter_search_key' );
+			$like   = '%' . $wpdb->esc_like( $search ) . '%';
+
+			$where .= $wpdb->prepare(
+				" AND (
+					{$wpdb->posts}.post_title LIKE %s
+					OR (post_meta.meta_key = '_sku' AND post_meta.meta_value LIKE %s)
+				)",
+				$like,
+				$like
+			);
 		}
 		return $where;
 	}
@@ -2773,13 +2786,15 @@ class Functions {
 	 */
 	public function front_common_script() {
 		$require_script = array( 'jquery', 'wopb-flexmenu-script', 'wp-api-fetch', 'wopb-slick-script' );
-		if ( wopb_function()->get_setting( 'wopb_variation_swatches' ) == 'true' ) {
+		if ( wopb_function()->get_setting( 'wopb_variation_swatches' ) === 'true' && ! is_admin() ) {
 			$require_script[] = 'wopb-variation-swatches';
 		}
 		wp_enqueue_style( 'wopb-css', WOPB_URL . 'assets/css/wopb.css', array(), WOPB_VER );
 		wp_enqueue_script( 'wopb-slick-script', WOPB_URL . 'assets/js/slick.min.js', array( 'jquery' ), WOPB_VER, true );
 		wp_enqueue_script( 'wopb-flexmenu-script', WOPB_URL . 'assets/js/flexmenu.min.js', array( 'jquery' ), WOPB_VER, true );
 		wp_enqueue_script( 'wopb-script', WOPB_URL . 'assets/js/wopb.js', $require_script, WOPB_VER, true );
+		// Header show/hide behaviour on scroll.
+		wp_enqueue_script( 'wopb-header-behavior', WOPB_URL . 'assets/js/header-behavior.js', array( 'jquery', 'wopb-script' ), WOPB_VER, true );
 		$wopb_core_localize = array(
 			'url'               => WOPB_URL,
 			'ajax'              => admin_url( 'admin-ajax.php' ),

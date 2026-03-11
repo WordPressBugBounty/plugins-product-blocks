@@ -19,8 +19,8 @@ if ( ! function_exists( 'wopb_call_for_price_init' ) ) {
 		$configuration                 = array(
 			'name'     => __( 'Call for Price', 'product-blocks' ),
 			'desc'     => __( "Display a calling button instead of the Add to Cart button for the products that don't have prices.", 'product-blocks' ),
-			'live'     => 'https://www.wpxpo.com/wowstore/woocommerce-call-for-price/live_demo_args',
-			'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/call-for-price-addon/addon_doc_args',
+			'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-call-for-price/',
+			'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/call-for-price-addon/',
 			'is_pro'   => false,
 			'type'     => 'sales',
 			'priority' => 30,
