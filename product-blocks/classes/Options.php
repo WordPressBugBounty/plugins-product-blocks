@@ -74,22 +74,13 @@ class Options {
 	public function plugin_action_links_callback( $links ) {
 		$offer_config = array(
 			array(
-				'start'  => '2026-02-19 00:00 Asia/Dhaka',
-				'end'    => '2026-02-23 23:59 Asia/Dhaka',
+				'start'  => '2026-03-16 00:00 Asia/Dhaka',
+				'end'    => '2026-04-14 23:59 Asia/Dhaka',
 				'text'   => __(
-					'Flash Sale - Up to 55% OFF',
+					'Spring Sale - Up to 60% OFF',
 					'product-blocks'
 				),
-				'utmKey' => 'flash_sale_meta',
-			),
-			array(
-				'start'  => '2026-02-25 00:00 Asia/Dhaka',
-				'end'    => '2026-03-01 23:59 Asia/Dhaka',
-				'text'   => __(
-					'Final Hour Sale - Up to 60% OFF',
-					'product-blocks'
-				),
-				'utmKey' => 'final_hour_meta',
+				'utmKey' => 'spring_sale_meta',
 			),
 		);
 

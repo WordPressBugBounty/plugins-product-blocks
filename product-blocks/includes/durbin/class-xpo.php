@@ -284,6 +284,24 @@ class Xpo {
 				'medium'   => 'final-hour-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
+			// 2026 spring sale utms
+			'spring_sale_meta'            => array(
+				'source'   => 'db-wowstore-plugin-meta',
+				'medium'   => 'spring-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'spring_sale'                 => array(
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'spring-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'content_notice'              => array(
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'spring-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			// -----------------------------------------
+
 		);
 
 		// Step 1: Get parameters
