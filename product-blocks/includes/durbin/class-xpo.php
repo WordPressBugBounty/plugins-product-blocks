@@ -432,15 +432,31 @@ class Xpo {
 	 * @param string $slug   The plugin slug (typically the directory name of the plugin).
 	 */
 	public static function plugin_install( $plugin, $slug ) {
-		include ABSPATH . 'wp-admin/includes/plugin-install.php';
-		include ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-
+		// Load required admin files (not auto-loaded in REST API context)
+		if ( ! function_exists( 'plugins_api' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+		}
+		if ( ! function_exists( 'request_filesystem_credentials' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+		if ( ! function_exists( 'show_message' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/misc.php';
+		}
+		if ( ! class_exists( 'WP_Upgrader' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+		}
 		if ( ! class_exists( 'Plugin_Upgrader' ) ) {
-			include ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php';
+			require_once ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php';
 		}
 		if ( ! class_exists( 'WP_Ajax_Upgrader_Skin' ) ) {
-			include ABSPATH . 'wp-admin/includes/class-wp-ajax-upgrader-skin.php';
+			require_once ABSPATH . 'wp-admin/includes/class-wp-ajax-upgrader-skin.php';
 		}
+
+		// Initialize the WP filesystem (required for upgrader file operations)
+		if ( ! function_exists( 'WP_Filesystem' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+		WP_Filesystem(); // file system and all other's add manually because Rest Api not call all of those thing
 
 		$api = plugins_api(
 			'plugin_information',
@@ -464,15 +480,36 @@ class Xpo {
 		);
 
 		if ( is_wp_error( $api ) ) {
-			wp_die( $api ); //phpcs:ignore
+			return array(
+				'done'  => false,
+				'error' => $api->get_error_message(),
+			);
 		}
 
 		$upgrader       = new \Plugin_Upgrader( new \WP_Ajax_Upgrader_Skin( compact( 'title', 'url', 'nonce', 'plugin', 'api' ) ) );
 		$install_result = $upgrader->install( $api->download_link );
 
-		if ( ! is_wp_error( $install_result ) ) {
-			activate_plugin( $plugin );
-			return array( 'done' => false );
+		if ( is_wp_error( $install_result ) ) {
+			return array(
+				'done'  => false,
+				'error' => $install_result->get_error_message(),
+			);
+		}
+
+		if ( $install_result === false ) {
+			return array(
+				'done'  => false,
+				'error' => 'Installation failed. Check filesystem permissions.',
+			);
+		}
+
+		$activation_result = activate_plugin( $plugin );
+
+		if ( is_wp_error( $activation_result ) ) {
+			return array(
+				'done'  => false,
+				'error' => $activation_result->get_error_message(),
+			);
 		}
 
 		return array( 'done' => true );

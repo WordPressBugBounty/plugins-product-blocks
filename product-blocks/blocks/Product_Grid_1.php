@@ -62,6 +62,7 @@ class Product_Grid_1 {
 			'titleTag'            => 'h3',
 			'titleLength'         => 0,
 			'cartText'            => '',
+			'cartWidth'           => 'content',
 			'cartActive'          => 'View Cart',
 			'enableCatLink'       => true,
 			'catPosition'         => 'none',
@@ -136,6 +137,7 @@ class Product_Grid_1 {
 				'cartActive'      => $attr['cartActive'],
 				'tooltipPosition' => $attr['tooltipPosition'],
 				'cartNoFollow'    => $attr['cartNoFollow'],
+				'cartWidth'       => isset( $attr['cartWidth'] ) ? $attr['cartWidth'] : 'content',
 			);
 
 			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . '">';

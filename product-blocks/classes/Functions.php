@@ -3247,6 +3247,7 @@ class Functions {
 			'data-product_id'  => $product->get_id(),
 			'data-product_sku' => $product->get_sku(),
 		);
+
 		if ( $no_follow ) {
 			$attributes['rel'] = 'nofollow';
 		}
