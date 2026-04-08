@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 6.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 4.4.6
+Stable tag: 4.4.7
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -229,6 +229,10 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 
 
 == Changelog ==
+= 4.4.7 – 08 April 2026 =
+* Fix: Product Filter block Sub category double click issue
+* Fix: Single Product Free shipping bar hidden issue
+
 = 4.4.6 – 31 March 2026 =
 * New: Product grid, list block add to cart full width option
 

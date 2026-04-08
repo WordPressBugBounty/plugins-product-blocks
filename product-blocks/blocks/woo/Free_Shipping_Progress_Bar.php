@@ -46,9 +46,8 @@ class Free_Shipping_Progress_Bar {
 				if ( ! is_admin() ) {
 					if ( isset( WC()->customer ) ) {
 						ob_start();
-						if ( ! WC()->cart->is_empty() ) {
-							require_once WOPB_PATH . 'blocks/woo/free_shipping_progress_bar/Template.php';
-						}
+						// if cart and customer is set the block should render normally.
+						require_once WOPB_PATH . 'blocks/woo/free_shipping_progress_bar/Template.php';
 						$content .= ob_get_clean();
 					}
 				}

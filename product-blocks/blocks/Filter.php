@@ -654,6 +654,8 @@ class Filter {
 	 */
 	public function product_taxonomy_terms( $attr, $params ) {
 		$query_params = $params['query_params'];
+		// do not make stict checking. loose comparison is intentional.
+		$is_expand_taxonomy = isset( $attr['expandTaxonomy'] ) && 'true' == $attr['expandTaxonomy'];
 		?>
 		<?php
 		foreach ( $params['terms'] as $term ) {
@@ -708,7 +710,7 @@ class Filter {
 							?>
 						<div class="wopb-filter-check-list
 							<?php
-								echo isset( $attr['expandTaxonomy'] ) && $attr['expandTaxonomy'] == 'true'
+								echo $is_expand_taxonomy
 									? ''
 									: esc_attr( ' wopb-d-none' )
 							?>
@@ -723,8 +725,8 @@ class Filter {
 				</div>
 				<?php if ( ! empty( $child_data['terms'] ) ) { ?>
 					<div class="wopb-filter-child-toggle">
-						<span class="dashicons dashicons-arrow-right-alt2 wopb-filter-right-toggle<?php echo esc_attr( $attr['expandTaxonomy'] == 'true' ? ' wopb-d-none' : '' ); ?>"></span>
-						<span class="dashicons dashicons-arrow-down-alt2 wopb-filter-down-toggle<?php echo esc_attr( $attr['expandTaxonomy'] == 'true' ? '' : ' wopb-d-none' ); ?>"></span>
+						<span class="dashicons dashicons-arrow-right-alt2 wopb-filter-right-toggle<?php echo esc_attr( $is_expand_taxonomy ? ' wopb-d-none' : '' ); ?>"></span>
+						<span class="dashicons dashicons-arrow-down-alt2 wopb-filter-down-toggle<?php echo esc_attr( $is_expand_taxonomy ? '' : ' wopb-d-none' ); ?>"></span>
 					</div>
 				<?php } ?>
 			</div>
