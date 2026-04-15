@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 6.8
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 4.4.8
+Stable tag: 4.4.9
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -161,6 +161,10 @@ Increasing the average value can help you to increase revenue with the same numb
 
 We are glad that you are considering WowStore. Please have a look at our other plugins that can also improve your WordPress and WooCommerce sites.
 
+🚚 [**WowShipping 🔥:**](https://wordpress.org/plugins/revenue/) An all-in-one table rate shipping plugin for WooCommerce, featuring 30+ shipping rates and seamless integrations with popular carriers including UPS, USPS, DHL, Sendle, and more.
+
+➕ [**WowAddons 🔥:**](https://wordpress.org/plugins/revenue/) Start selling highly customizable products with 25+ extra product options, addons, and custom fields, helping you increase order value while making your customer happy.
+
 💲 [**WowRevenue:**](https://wordpress.org/plugins/revenue/) The all-in-one revenue-boosting plugin with various features like WooCommerce product bundles, mix-and-match product bundles, and more.
 
 📦 [**WholesaleX:**](https://wordpress.org/plugins/wholesalex/) The ultimate dynamic pricing and discount solution with additional features to manage both B2B and B2C customers in the same store.
@@ -229,6 +233,10 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 
 
 == Changelog ==
+= 4.4.9 – 15 April 2026 =
+* Fix: Product Compare Addon translation issue
+* Fix: Product Category 3 block image placeholder issue
+
 = 4.4.8 – 09 April 2026 =
 * Fix: Dashboard Support team issue
 
