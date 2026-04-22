@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore – Store Builder & Product Blocks for WooCommerce 4.4.8\n"
+"Project-Id-Version: WowStore – Store Builder & Product Blocks for WooCommerce 4.4.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-09T05:59:18+00:00\n"
+"POT-Creation-Date: 2026-04-22T09:14:59+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: product-blocks\n"
@@ -876,7 +876,7 @@ msgid "Let your shoppers compare multiple products by displaying a pop-up or red
 msgstr ""
 
 #: addons/compare/backend.php:46
-#: addons/compare/Compare.php:1295
+#: addons/compare/Compare.php:1285
 #: addons/quick_view/backend.php:37
 #: addons/quick_view/Quickview.php:810
 #: addons/wishlist/Wishlist.php:278
@@ -887,7 +887,7 @@ msgid "Image"
 msgstr ""
 
 #: addons/compare/backend.php:50
-#: addons/compare/Compare.php:1300
+#: addons/compare/Compare.php:1290
 #: addons/quick_view/backend.php:41
 #: addons/quick_view/Quickview.php:811
 #: addons/size_chart/SizeChart.php:209
@@ -897,7 +897,7 @@ msgid "Title"
 msgstr ""
 
 #: addons/compare/backend.php:54
-#: addons/compare/Compare.php:1305
+#: addons/compare/Compare.php:1295
 #: addons/quick_view/backend.php:49
 #: addons/quick_view/Quickview.php:813
 #: addons/wishlist/Wishlist.php:280
@@ -906,7 +906,7 @@ msgid "Price"
 msgstr ""
 
 #: addons/compare/backend.php:58
-#: addons/compare/Compare.php:1310
+#: addons/compare/Compare.php:1300
 #: addons/quick_view/backend.php:57
 #: addons/quick_view/Quickview.php:815
 #: assets/js/editor.blocks.js:1
@@ -914,13 +914,13 @@ msgid "Stock Status"
 msgstr ""
 
 #: addons/compare/backend.php:62
-#: addons/compare/Compare.php:1315
+#: addons/compare/Compare.php:1305
 #: assets/js/editor.blocks.js:1
 msgid "Quantity"
 msgstr ""
 
 #: addons/compare/backend.php:66
-#: addons/compare/Compare.php:1320
+#: addons/compare/Compare.php:1310
 #: addons/quick_view/backend.php:61
 #: addons/quick_view/Quickview.php:816
 #: assets/js/editor.blocks.js:1
@@ -928,7 +928,7 @@ msgid "Add To Cart"
 msgstr ""
 
 #: addons/compare/backend.php:70
-#: addons/compare/Compare.php:1325
+#: addons/compare/Compare.php:1315
 #: assets/js/editor.blocks.js:1
 msgid "Review"
 msgstr ""
@@ -940,12 +940,12 @@ msgid "Select Column"
 msgstr ""
 
 #: addons/compare/backend.php:81
-#: addons/compare/Compare.php:1337
+#: addons/compare/Compare.php:1327
 msgid "Additional"
 msgstr ""
 
 #: addons/compare/backend.php:85
-#: addons/compare/Compare.php:1342
+#: addons/compare/Compare.php:1332
 #: addons/quick_view/backend.php:53
 #: addons/quick_view/Quickview.php:814
 #: assets/js/editor.blocks.js:1
@@ -953,24 +953,24 @@ msgid "Description"
 msgstr ""
 
 #: addons/compare/backend.php:89
-#: addons/compare/Compare.php:1347
+#: addons/compare/Compare.php:1337
 #: assets/js/editor.blocks.js:1
 msgid "Weight"
 msgstr ""
 
 #: addons/compare/backend.php:93
-#: addons/compare/Compare.php:1352
+#: addons/compare/Compare.php:1342
 msgid "Dimensions"
 msgstr ""
 
 #: addons/compare/backend.php:97
-#: addons/compare/Compare.php:1357
+#: addons/compare/Compare.php:1347
 #: assets/js/editor.blocks.js:1
 msgid "SKU"
 msgstr ""
 
 #: addons/compare/backend.php:102
-#: addons/compare/Compare.php:1267
+#: addons/compare/Compare.php:1257
 #: assets/js/editor.blocks.js:1
 msgid "Compare"
 msgstr ""
@@ -1540,38 +1540,38 @@ msgstr ""
 msgid "Add Product"
 msgstr ""
 
-#: addons/compare/Compare.php:946
+#: addons/compare/Compare.php:936
 msgid "in stock"
 msgstr ""
 
-#: addons/compare/Compare.php:972
+#: addons/compare/Compare.php:962
 #: blocks/Product_Slider.php:413
-#: classes/Functions.php:3336
-#: classes/Functions.php:3338
+#: classes/Functions.php:3339
+#: classes/Functions.php:3341
 msgid "View Cart"
 msgstr ""
 
-#: addons/compare/Compare.php:1056
+#: addons/compare/Compare.php:1046
 msgid "Search for products by name..."
 msgstr ""
 
-#: addons/compare/Compare.php:1133
+#: addons/compare/Compare.php:1123
 msgid "No products were added to compare list"
 msgstr ""
 
-#: addons/compare/Compare.php:1138
+#: addons/compare/Compare.php:1128
 msgid "Return to Shop"
 msgstr ""
 
-#: addons/compare/Compare.php:1166
+#: addons/compare/Compare.php:1156
 msgid "has been added on compare list."
 msgstr ""
 
-#: addons/compare/Compare.php:1174
+#: addons/compare/Compare.php:1164
 msgid "View Compare List"
 msgstr ""
 
-#: addons/compare/Compare.php:1331
+#: addons/compare/Compare.php:1321
 #: assets/js/editor.blocks.js:1
 msgid "- Select -"
 msgstr ""
@@ -4290,24 +4290,24 @@ msgstr ""
 msgid "Data Fetched!!!"
 msgstr ""
 
-#: classes/class-wow-shipping-promotion.php:137
+#: classes/class-wow-shipping-promotion.php:151
 msgid "You are not allowed to install plugins."
 msgstr ""
 
-#: classes/class-wow-shipping-promotion.php:145
+#: classes/class-wow-shipping-promotion.php:159
 msgid "You are not allowed to activate plugins."
 msgstr ""
 
-#: classes/class-wow-shipping-promotion.php:155
-#: classes/class-wow-shipping-promotion.php:546
+#: classes/class-wow-shipping-promotion.php:169
+#: classes/class-wow-shipping-promotion.php:575
 msgid "Failed to install WowShipping."
 msgstr ""
 
-#: classes/class-wow-shipping-promotion.php:164
+#: classes/class-wow-shipping-promotion.php:178
 msgid "WowShipping installed successfully."
 msgstr ""
 
-#: classes/class-wow-shipping-promotion.php:485
+#: classes/class-wow-shipping-promotion.php:514
 msgid "Dismiss this notice."
 msgstr ""
 
@@ -4418,7 +4418,7 @@ msgstr ""
 msgid "Select Location"
 msgstr ""
 
-#: classes/Functions.php:2881
+#: classes/Functions.php:2884
 msgid "- Select Template -"
 msgstr ""
 
@@ -4888,199 +4888,160 @@ msgid "Menu Wishlist"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Section Title Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Space"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Checkbox & Label Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Space between checkbox"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Body Content Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Description Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Link Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hover Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Full width button"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Field Container Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Rating Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Rating Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Rating Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Star Background Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Empty Star Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Rating Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Margin Top"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Margin Bottom"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Layout"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Vertical"
+msgid "Global Style"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Horizontal"
+msgid "Inline View"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Image Width"
+msgid "Vertical Alignment (Align Items)"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Image Height"
+msgid "Space Between Items"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Image Border Radius"
+msgid "Spacing Between Icon & Texts"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Spacing"
+msgid "Icon/Image"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Navigation Tab"
+msgid "Icon Type"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Width"
+msgid "List Style"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "List Spacing( Horizontal )"
+msgid "Select"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "List Spacing( Vertical )"
+msgid "By Abc"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Border(Horizontal)"
+msgid "By Roman Number"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Tab Content"
+msgid "By 123"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Box Shadow"
+msgid "By Bullet"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Table/Other"
+msgid "Icon Store"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Table Border Radius"
+msgid "Upload Custom Image"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Body"
+msgid "Icon/Image Size"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Link Hover Color"
+msgid "Background Size"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Table Footer"
+msgid "Icon Style"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Body Border"
+msgid "Icon  Background"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Body Border Radius"
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Hover"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Body Padding"
+msgid "Disable Text"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Button Color"
+msgid "Title Color"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Form"
+msgid "Title Hover Color"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Rows Gap"
+msgid "Enable Subtext"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Required Color"
+msgid "Subtext Typography"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Input"
+msgid "Space Between  Text & Subtext"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Subtext Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Subtext Hover Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Midpoint Subtext"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Content Wrap"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Separator"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Border Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Separator Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Dotted"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Solid"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Dashed"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Groove"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Border Style"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5088,27 +5049,228 @@ msgid "Advanced"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Download Text"
+msgid "Create & customize bullets and numbered lists."
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Order Details Text"
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Documentation"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Title Space"
+msgid "List Text…"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Space Between"
+msgid "List Subtext Text…"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Table Header Settings"
+msgid "Inherit"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Table Body Settings"
+msgid "Icon Hover Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Icon Hover Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover Border"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Subtext"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Space Between Text & Subtext"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Layout 1"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Layout 2"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Layout 3"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Layout 4"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Top Left"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Top Center"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Top Right"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Bottom Left"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Bottom Center"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Bottom Right"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Middle Left"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Middle Center"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Middle Right"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Banner Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Banner Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Content Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Gap"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Stack On Mobile"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Height"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Scale"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cover"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Contain"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Fill"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Scale Down"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Border"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Content Margin"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Content Padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Banner Link"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Open in New Tab"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Banner Border"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Banner Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Box Shadow"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Background Fill"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Background Overlay"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Overlay Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Offer Badge"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Badge Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Classic"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Ribbon"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Shape 1"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Shape 2"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Shape 3"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5116,27 +5278,99 @@ msgid "Text Color"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Body Typography"
+msgid "Badge Size"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Table Footer Settings"
+msgid "Badge Position"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Shipping Cost"
+msgid "Entire Banner"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Cart Update Settings"
+msgid "Badge Location"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Table Heading Settings"
+msgid "Add Text…"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Price Color"
+msgid "Create & customize banner."
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Gap"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Horizontal Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Vertical Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Vertical View"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Animation"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Style 1"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Style 2"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Style 3"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Style 4"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Transform"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Link"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Text Here…"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Small"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Medium"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Large"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Extra Large"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Custom Size"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5144,7 +5378,1453 @@ msgid "Text Typography"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Total Settings"
+msgid "Text Hover Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Box shadow"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Icon After Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Space Between Icon and Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Create & customize multiple button-styles"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "How to use currency switcher"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Show Country"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Currency Symbol Position"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "($) United States (US) dollar USD"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "United States (US) dollar($) USD"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Flag"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Space"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Height"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Arrow"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Arrow Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "FIELD"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Item Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Item Hover Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Prefix"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Prefix Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Search"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Pricing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Status"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sort By"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Select any grid"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Product Grid 1"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Product Grid 2"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Product Grid 3"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Product List 1"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "How to use filter"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "How to add Product Filter to WooCommerce Shop Page"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Grid(Select grid where will filter implement)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filter Data"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filter Type"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Label"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Clear Filter"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filter Heading"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Count"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Expand Taxonomy"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Taxonomy Limit"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Heading text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Bottom Space"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Clear All Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Clear All Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Border"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filtering Label & Content"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Label Bottom Space"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filter Item Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filter Item Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Toggle Plus / Minus"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Enable Toggle"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Initially Open"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Initially Close in Mobile"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Toggle Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Toggle Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Fields"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Range"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filled Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Empty Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Checkbox"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Mark Color(checked)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Background(checked)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Number"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Search Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Search Input Placeholder"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Select Grid"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Min"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Green"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "XS"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Setting"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Upload"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Alt Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Link Type"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Link"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Self"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Blank"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Link Target"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Left Top"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Right Top"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Center Center"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Caption Enable"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Caption"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Caption Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Caption Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Caption Margin"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Custom Image"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Border Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "BoxShadow"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Count"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Vertical Position"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Horizontal Position"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Count Background Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Count Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Count Background Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Label Position"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Icon/Label Gap"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Category Content Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Category are not available"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Make sure Add Category."
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Loading…"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "No Categories found"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product View"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Grid View"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Slide View"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Arrows"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Dots"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Description Limit"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Description Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Description Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Dimension"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Heading Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Read More Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Read More Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Read More Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Arrow Dimension"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Arrow Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Dots Dimension"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Dots Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Count Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Explore"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Display Product Categories of your store in grid or slide view."
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hide category without image"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover BoxShadow"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Fallback Image"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Position"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Top"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "With Title"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "After Title"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Count Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Product Category #3"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add to cart"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Grid Content Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Products are not available"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Make sure Add Product."
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "No Products found"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sale"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Out of Stock"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Deal"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Category"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Short Description"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Pagination"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Variation Swatch"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover Box Shadow"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Same Content Height"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "In Stock Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Stock Out Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "In Stock Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Stock Out Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Label Background Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Label Padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filter Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filter Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filter Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filter Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Description Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Description Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Category Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Category Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Category Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Category Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Review Margin"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Review Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sales Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sales Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sales Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sales Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hots Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hots Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Pagination Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Pagination Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Pagination Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Pagination Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Price Padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Price Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Price Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Var. Swatch Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Var. Swatch Dimension"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Var. Swatch Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Display desired products of your store in a grid or slide view."
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Before Title"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Over Image(Top Left)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Over Image(Top Right)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Over Image(Bottom Left)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Over Image(Bottom Right)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Over Image(Center)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Before Price"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "After Price"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Content Layout"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Flip"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Display products of your store in a classic list or slide view."
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Choose Search Field Layout"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Layout 5"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Search Product List Layout"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Columns"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Column Gap"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Search Form"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Placeholder Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Form Height"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Form Border"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Form Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Form Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Search Input Padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Search Input Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Search Input Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Placeholder Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Selected Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Dropdown Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Option Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Option Hover Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Option Hover BG"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Option Wrap BG"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Left Separator Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Right Separator Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Separator Height"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Search Button"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Click To Go Search Result Page"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Bg Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Hover Bg Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Hover Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Margin"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "More Result Button"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Dropdown Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Dropdown Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Item Spacing X"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Item Spacing Y"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Separator Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Category Label"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Label"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Search Highlighted Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Rating Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Fill Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Search product by this block"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Taxonomy"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Taxonomy Under Title"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Taxonomy Type"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Product Category"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Tag"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Taxonomy Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Spacing Between Items"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover Bg Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Tag"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Max Length"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Hover Effects"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "On Hover Underline"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "On Hover Wave"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Wave"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "underline"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "underline and wave"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Underline Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Underline Right To Left"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Underline center"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Underline Background 2"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Underline Hover Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover word spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Animation Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Description Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Description Hover Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Price Over Description"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sale Price Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Regular Price Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Space Between Sale & Regular Price"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Show Price Label"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Price Label Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Price Label Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Wrapper Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Wrapper Padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Container Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Background Margin"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Background Padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Enable Quantity"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Enable Plus Minus"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add to Cart Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Quantity Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Quantity Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Wrapper Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Quantity Padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Plus Minus"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Both Side"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Right Side"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Left Side"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Icon Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Icons/Quantity Gap"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Icon Padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover Background Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover Border Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Overlay"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover Gray Scale"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Shape Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Shape Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sales Margin"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sale Tag"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "General + Query"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Slide Animation"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Fade"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Auto Play"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Slider Speed"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Query Builder"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Container Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Alignment (Justify Content)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Show Taxonomy"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Show Title"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Show Description"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Show Price"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Show Add to Cart"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Show Image"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Show Arrows"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Show Dots"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Show Sale Tag"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Contents"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add to Cart"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hide On Extra Large"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hide On Desktop"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hide On Tablet"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hide On Mobile"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Background Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Background Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Contents Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sales Dimension"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sales Styles"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Arrow Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "ID"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "z-index"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Height Type"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Window Height"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Min Height"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Overflow"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Visible"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hidden"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Html Tag"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "div"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Section"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "header"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "footer"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "aside"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "main"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "article"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Enable Wrapper Link"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Wrapper Link"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Enable Target Blank"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5172,20 +6852,7 @@ msgid "Reverse"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Vertical Alignment (Align Items)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Background & Wrapper"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Hover"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Background Overlay"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5194,10 +6861,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "CSS Filter"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Select"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5265,10 +6928,6 @@ msgid "Spacing & Border Style"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Box shadow"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Shape Divider"
 msgstr ""
 
@@ -5309,10 +6968,6 @@ msgid "Waves Invert"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Height"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Flip"
 msgstr ""
 
@@ -5326,6 +6981,14 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Row Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Link Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Link Hover Color"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5349,6 +7012,591 @@ msgid "Breakpoint (px)"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
+msgid "Url"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Column Item"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "1"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "2"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "3"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "4"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "5"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "6"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Column Order"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Vertical"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Horizontal"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Flex Direction"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Inside Alignment ( Horizontal )"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Inside Content Alignment ( Vertical )"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Inside Items Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "No"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Wrap"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "No Wrap"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Column Wrap"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Column Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sticky Column"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add Column block for your layout."
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add Row block for your layout."
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "wrap"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "column"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Background Image"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Left Center"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Left Bottom"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Right Center"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Right Bottom"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Center Top"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Center Bottom"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Position X"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Position Y"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Auto"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Repeat"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "No-repeat"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Repeat-x"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Repeat-y"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Round"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Attachment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Scroll"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Archive Title Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Specific Color (Pro)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Choose Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Taxonomy Specific (Pro)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover Animation"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "No Animation"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Overlay Opacity"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Hover Opacity"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Excerpt Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Img Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Prefix Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Table Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Name Here"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Table Body"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Body Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Image Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Remove Button"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "With Image"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Font Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Table Footer"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Coupon Code"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Apply Coupon Button"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Text Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Border Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Hover Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Hover Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Continue Shopping Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Empty Cart Button"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Empty Cart Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Update"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Update Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cross Sell Product"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Table Right"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Table Bottom"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Empty Body"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add Product Name"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add Price Tag"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add Quantity Tag"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add Sub Total Tag"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Table Header Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Image Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Empty Cart Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Update Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Continue Shopping Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Remove Button Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Quantity Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Table Footer Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Table Body Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Total Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart Total Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Subtotal Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Total Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Checkout Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Header"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Inner Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Proceed to Checkout"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Header Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Proceed to Checkout Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Textarea Field"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Placeholder Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Field Container"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Label Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Textarea Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Field Container Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Billing Title"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Border Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Space"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Required Indicator Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Label Margin"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Margin"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Billing Title Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Fields Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Coupon Block Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Coupon Heading"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Coupon Body"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Discount Title"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Typo"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Title Position"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "With Coupon Field"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Above Coupon Field"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Field"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Placeholder"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Focus Border"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Coupon Button"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Below Coupon Field"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Coupon Heading Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Coupon Button Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Field Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Coupon Body Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Toggle Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Space Between"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Margin Bottom"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Label"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Remember checkbox"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "LInk Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Username or email"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Lost your password ?"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
 msgid "Toggle Text Settings"
 msgstr ""
 
@@ -5357,15 +7605,7 @@ msgid "Input Label Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Required Indicator Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Input Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Placeholder Color"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5373,56 +7613,71 @@ msgid "Remember Checkbox Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Unlock It! Explore More"
+msgid "Button Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Pro Features"
+msgid "Section Title"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Free Shipping Progress Bar Typography"
+msgid "Table Heading"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Free Shipping Progress Bar Color"
+msgid "Wrap Border"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Header Text Color"
+msgid "Section Title Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Progress Bar Filled Background"
+msgid "Table Heading Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Progress Bar Empty Background"
+msgid "Total Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Free Shipping Progress Bar Spacing"
+msgid "Checkbox & Label"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Builder Library"
+msgid "Space between checkbox"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Block Library"
+msgid "Body content"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Starter Packs"
+msgid "Full width button"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Premade Patterns"
+msgid "Checkbox & Label Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Synchronize"
+msgid "Body Content Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Shipping Title"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Ship to Different address checkbox"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Shipping Title Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Shipping Address Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5454,11 +7709,195 @@ msgid "Filled Background"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Product Image Spacing"
+msgid "Free Shipping Progress Bar Typography"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Style"
+msgid "Free Shipping Progress Bar Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Header Text Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Progress Bar Filled Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Progress Bar Empty Background"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Free Shipping Progress Bar Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Margin Top"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Navigation Tab"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "List Spacing( Horizontal )"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "List Spacing( Vertical )"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Border(Horizontal)"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Tab Content"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Table/Other"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Table Border Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Body"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Body Border"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Body Border Radius"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Body Padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Form"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Rows Gap"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Required Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Table Padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Value"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Additional Info Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Value Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Additional Info Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Value Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Value Background Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Additional Info Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Separator Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Separator color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Breadcrumb Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Breadcrumb Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Breadcrumb Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Breadcrumb Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Breadcrumb"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Quantity Width"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Remove Other Product"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add to Cart Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add to Cart Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Add to Cart Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Body Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Description Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Description Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Description Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Description Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Image Spacing"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5471,22 +7910,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Image scale"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cover"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Contain"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Fill"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Scale Down"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5526,27 +7949,7 @@ msgid "Gallery"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Columns"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Column Gap"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sales Margin"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Lightbox Zoom"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Top Right"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Top Left"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5555,18 +7958,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Button Right"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Icon Hover Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Icon Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Icon Hover Background"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5586,492 +7977,39 @@ msgid "Icon Hover Radius"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Icon Padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Icon Margin"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Explore"
+msgid "Gallery Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Section Title"
+msgid "Large Image Arrow Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Checkbox & Label"
+msgid "Large Image Title Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Body content"
+msgid "Lightbox Zoom Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Hover Background"
+msgid "Gallery Arrow Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Field Container"
+msgid "Meta Display"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Italic"
+msgid "Stacked"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Oblique"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Initial"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Inherit"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Underline"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Overline"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Line Through"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Select Font"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Decoration"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Transform"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Display desired products of your store in a grid or slide view."
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Documentation"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Add to cart"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Billing Title Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Border Radius"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Label Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Label Margin"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Fields Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Border"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Border Radius"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Margin"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Grid Content Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Add Text…"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Products are not available"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Make sure Add Product."
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Loading…"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "No Products found"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Breadcrumb Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Breadcrumb Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Breadcrumb Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Separator color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Breadcrumb Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Body Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Taxonomy"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Taxonomy Under Title"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Taxonomy Type"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Product Category"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Tag"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Taxonomy Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Spacing Between Items"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hover Bg Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hover Border"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hover Radius"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Tag"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Max Length"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Width"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Hover Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Hover Effects"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "On Hover Underline"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "On Hover Wave"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Wave"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "underline"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "underline and wave"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Underline Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Underline Right To Left"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Underline center"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Underline Background 2"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Underline Hover Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hover word spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Animation Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Description Width"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Description Limit"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Description Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Description Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Description Hover Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Price Over Description"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sale Price Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Regular Price Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Space Between Sale & Regular Price"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Price Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Show Price Label"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Price Label Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Price Label Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Wrapper Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Wrapper Padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Container Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Background Margin"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Background Padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "BoxShadow"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Enable Quantity"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Enable Plus Minus"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cart Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Add to Cart Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Quantity Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Quantity Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Wrapper Width"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Quantity Padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Plus Minus"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Both Side"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Right Side"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Left Side"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Icons/Quantity Gap"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Text Hover Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hover Background Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hover Border Radius"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hover Box Shadow"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Image Overlay"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Overlay Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Image Scale"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hover Gray Scale"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sales Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Classic"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Ribbon"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Shape 1"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Shape Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Shape Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Preview Products"
+msgid "Inline"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -6079,28 +8017,239 @@ msgid "Tag"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Product Category #3"
+msgid "Label Show"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Display Product Categories of your store in grid or slide view."
+msgid "Meta Label"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Create & customize banner."
+msgid "SKU Label"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Add to Cart Alignment"
+msgid "Tag Label"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Add to Cart Typography"
+msgid "Meta Value"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Add to Cart Color"
+msgid "Product Meta Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Meta Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Meta Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Value Hover Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Meta Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Related Product"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sale Price Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Discount Badge"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Off"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Price Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Price Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Price Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Price Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Star Background Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Empty Star Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Star Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Rating Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Rating Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Rating Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Rating Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Review heading Disable"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Review Author Disable"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Review Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "DESCIPTION Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Rating Bg Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Author Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Date Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Desciption Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Author Size"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Review Form Wrapper"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Form Wrapper padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Review Form Label"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Review Form Input"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Focus"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input padding"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Rating Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Author Dimension"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Button Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Input Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Short Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Short Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Short Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Short Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "On Backorder"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Available on Backorder"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Stock Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Stock Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Stock Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Out of Stock Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "On Backorder Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Product Stock Spacing"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -6121,10 +8270,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Tab Padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Bottom Space"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -6160,10 +8305,6 @@ msgid "Addional Information Tab"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Table Padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Additional label"
 msgstr ""
 
@@ -6176,55 +8317,7 @@ msgid "Review Heading Enable"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Review Author Disable"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Review Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "DESCIPTION Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Star Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Empty Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Author Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Date Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Desciption Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Author Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Review Form Label"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Review Form Input"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Background"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -6232,239 +8325,47 @@ msgid "Input Focus Color"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Input Radius"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Hover Style"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Hover BoxShadow"
+msgid "Navigation Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "To Enable This Feature"
+msgid "Navigation Style"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Cart Total Text"
+msgid "Hover color"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Subtotal Text"
+msgid "hover Bg"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Total Text"
+msgid "Description Tab Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Checkout Text"
+msgid "Additional Information Tab Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Header Settings"
+msgid "Heading Text"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Inner Spacing"
+msgid "Review Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Proceed to Checkout Settings"
+msgid "Preview Products"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Design Library"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Blocks Preview"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Layout 1"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Layout 2"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Layout 3"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Layout 4"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Link Target"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Same Tab/Window"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Open in New Tab"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "No Follow"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sponsored"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Download"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Shadow"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Inset"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Category Content Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Category are not available"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Make sure Add Category."
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "No Categories found"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "How to use currency switcher"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Show Country"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Currency Symbol Position"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "($) United States (US) dollar USD"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "United States (US) dollar($) USD"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Flag"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Arrow"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Arrow Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "FIELD"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Item Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Item Hover Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Prefix"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Prefix Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Link"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Text Here…"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Icon Type"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Icon Store"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Upload Custom Image"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Icon Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Icon  Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Subtext"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Space Between Text & Subtext"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Subtext Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Subtext Hover Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Description Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Description Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Description Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Description Spacing"
+msgid "Title Alignment"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -6472,204 +8373,107 @@ msgid "Social Share Spacing"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Custom Image"
+msgid "Social Share Style"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Count"
+msgid "Social Media"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Vertical Position"
+msgid "Linkedin"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Horizontal Position"
+msgid "Label Enable"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Count Background Size"
+msgid "Color Hover"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Count Color"
+msgid "Item Setting"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Count Background Color"
+msgid "Share Item Typography"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Label"
+msgid "Item Inline"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Label Position"
+msgid "Item Padding"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Icon/Label Gap"
+msgid "Share Label & Count"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Setting"
+msgid "Show Share label & Count"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "ID"
+msgid "Share Label Style"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "z-index"
+msgid "Share Count"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Overflow"
+msgid "Display Style"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Visible"
+msgid "right"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Hidden"
+msgid "bottom"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Enable Wrapper Link"
+msgid "Left Offset"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Url"
+msgid "Right Offset"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Enable Target Blank"
+msgid "Top Offset"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Cart Total Spacing"
+msgid "Bottom Offset"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Header"
+msgid "Responsive Position Sticky"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Table Body"
+msgid "Horizontal floating responsiveness"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Proceed to Checkout"
+msgid "Share Social Spacing"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Search product by this block"
+msgid "Billing Text"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Global Style"
+msgid "Shipping Text"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Inline View"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Space Between Items"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Spacing Between Icon & Texts"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Icon/Image"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "List Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "By Abc"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "By Roman Number"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "By 123"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "By Bullet"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Icon/Image Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Background Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Disable Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Enable Subtext"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Subtext Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Space Between  Text & Subtext"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Midpoint Subtext"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Content Wrap"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Separator"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Border Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Separator Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Dotted"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Solid"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Dashed"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Groove"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Border Style"
+msgid "Container"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -6701,307 +8505,100 @@ msgid "Thank You Address Spacing"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
+msgid "Order Message"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Message"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Order Confirmation Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Heading Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Order Message Alignment"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Order Confirmation Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Order Message Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Order Confirmation Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Order Message Color"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Order Confirmation Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Download Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Order Details Text"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
 msgid "Table Header"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Container"
+msgid "Shipping Cost"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Billing Text"
+msgid "Order Number"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Shipping Text"
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Date"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Archive Title Spacing"
+msgid "List Item"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Shipping Title"
+msgid "solid"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Ship to Different address checkbox"
+msgid "dotted"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Input Fields"
+msgid "dashed"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Input Padding"
+msgid "Order Payment Alignment"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Additional Info Typography"
+msgid "Order Payment Typography"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Value Typography"
+msgid "Order Payment Color"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Additional Info Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Label Background Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Value Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Value Background Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Additional Info Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Background Image"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Position"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Left Top"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Left Center"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Left Bottom"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Right Top"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Right Center"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Right Bottom"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Center Top"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Center Center"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Center Bottom"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Position X"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Position Y"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Auto"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Repeat"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "No-repeat"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Repeat-x"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Repeat-y"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Round"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Attachment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Scroll"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Name Here"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Image Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Image Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Empty Cart Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Empty Cart Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cart Update Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Font Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Continue Shopping Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Continue Shopping Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Coupon Code"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Apply Coupon Button"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Text Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Hover Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Hover Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Remove Button Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "With Image"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Quantity Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Billing Title"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Column Item"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "1"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "2"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "3"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "4"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "5"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "6"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Column Order"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Min Height"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Flex Direction"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Inside Alignment ( Horizontal )"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Inside Content Alignment ( Vertical )"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Inside Items Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Gap"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "No"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Wrap"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "No Wrap"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Column Wrap"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Column Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sticky Column"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Alignment"
+msgid "Order Payment Spacing"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -7145,11 +8742,6 @@ msgid "Menu Order"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Date"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Popular By Sales"
 msgstr ""
 
@@ -7214,11 +8806,6 @@ msgid "Parent"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Category"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Number of Categories"
 msgstr ""
 
@@ -7227,47 +8814,11 @@ msgid "Enable Link"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Over Image(Top Left)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Over Image(Top Right)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Over Image(Bottom Left)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Over Image(Bottom Right)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Over Image(Center)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product View"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Grid View"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Slide View"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Column Grid Gap"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Slides To Show"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Auto Play"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -7303,10 +8854,6 @@ msgid "Sort Element"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Query Builder"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Link No Follow"
 msgstr ""
 
@@ -7316,22 +8863,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Button Fit"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Arrow Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Style 1"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Style 2"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Style 3"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -7356,14 +8887,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Heading URL"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Heading Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Style 4"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -7459,14 +8982,6 @@ msgid "Large Item"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Hover Animation"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "No Animation"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Rotate Left"
 msgstr ""
 
@@ -7476,10 +8991,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Gray Scale"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Radius"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -7503,15 +9014,7 @@ msgid "Custom Color"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Overlay Opacity"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Title Max Words"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Fill Color"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -7528,14 +9031,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Sale Position"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Bottom Left"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Bottom Right"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -7587,10 +9082,6 @@ msgid "Meta to Show"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Cart"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Overlay Meta Background"
 msgstr ""
 
@@ -7608,10 +9099,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "All Filter Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Filter Type"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -7655,10 +9142,6 @@ msgid "Dropdown Hover Color"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Dropdown Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Dropdown Radius"
 msgstr ""
 
@@ -7691,10 +9174,6 @@ msgid "Load More"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Pagination"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Loadmore Text"
 msgstr ""
 
@@ -7723,27 +9202,7 @@ msgid "Pagination Gap"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Hide On Extra Large"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hide On Desktop"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hide On Tablet"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hide On Mobile"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Add {{WOPB}} before the selector to wrap element."
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "General + Query"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -7752,10 +9211,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Hots"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Deal"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -7801,339 +9256,56 @@ msgid "Want access to advanced features? WowStore Pro is the way to go!"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Arrows"
+msgid "Unlock It! Explore More"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Dots"
+msgid "Pro Features"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Sale"
+msgid "Colors"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Out of Stock"
+msgid "Use only WowStore Blocks Colors?"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Short Description"
+msgid "Editor Width"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Variation Swatch"
+msgid "Breakpoints"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Content Layout"
+msgid "Tablet (Max Width)"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Before Title"
+msgid "Mobile (Max Width)"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "After Title"
+msgid "Design Library"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Before Price"
+msgid "Blocks Preview"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "After Price"
+msgid "Grid Spacing"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Label Padding"
+msgid "Features"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Filter Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Filter Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Filter Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Filter Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Description Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Category Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Category Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Category Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Category Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cart Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cart Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cart Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cart Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Review Margin"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Review Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sales Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sales Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sales Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hots Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hots Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Pagination Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Pagination Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Pagination Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Pagination Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Price Padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Image Dimension"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Image Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Image Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Var. Swatch Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Var. Swatch Dimension"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Var. Swatch Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Arrow Dimension"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Dots Dimension"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Dots Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Confirmation Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Heading Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Message Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Confirmation Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Message Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Confirmation Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Message Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Confirmation Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Social Share Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Social Media"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Linkedin"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Label Enable"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Color Hover"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Item Setting"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Share Item Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Item Inline"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Item Padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Share Label & Count"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Show Share label & Count"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Share Label Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Share Count"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Display Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "right"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "bottom"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Left Offset"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Right Offset"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Top Offset"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Bottom Offset"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Responsive Position Sticky"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Horizontal floating responsiveness"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Share Social Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Create & customize multiple button-styles"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Same Content Height"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "In Stock Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Stock Out Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "In Stock Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Stock Out Background"
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Synchronize"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -8165,411 +9337,19 @@ msgid "No Data Found…"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Breadcrumb"
+msgid "Builder Library"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Product Meta Alignment"
+msgid "Block Library"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Product Meta Typography"
+msgid "Starter Packs"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Product Meta Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Value Hover Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Meta Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Shipping Title Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Shipping Address Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Price Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Price Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Price Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Price Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "On Backorder"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Available on Backorder"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Navigation Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Navigation Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hover color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "hover Bg"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Description Tab Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Additional Information Tab Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Heading Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Review Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Separator Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Number"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "List Item"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Value"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "solid"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "dotted"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "dashed"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Table Heading"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Wrap Border"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Create & customize bullets and numbered lists."
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Image Upload"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Image Alt Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Link Type"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Link"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Self"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Blank"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Link Target"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Caption Enable"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Caption"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Caption Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Caption Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Caption Margin"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "List Text…"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "List Subtext Text…"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Textarea Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Payment Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Payment Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Payment Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Payment Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Only Youtube & Vimeo  & Self Hosted Url"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Start Time(Seconds)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "End Time(Seconds)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Loop Video"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cart Table Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Remove Button"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Empty Cart Button"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cart Update"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cross Sell Product"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Table Right"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Table Bottom"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cart Empty Body"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Add Product Name"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Add Price Tag"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Add Quantity Tag"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Add Sub Total Tag"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Order Message"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Message"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Toggle Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Label"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Remember checkbox"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "LInk Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Username or email"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Lost your password ?"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Meta Display"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Stacked"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Inline"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Label Show"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Meta Label"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "SKU Label"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Category Label"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Tag Label"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Meta Value"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Add Row block for your layout."
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "wrap"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "column"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Search here for more…"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Review heading Disable"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Rating Bg Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Review Form Wrapper"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Form Border"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Form Radius"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Form Wrapper padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Focus"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Rating Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Author Dimension"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Grid Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Features"
+msgid "Premade Patterns"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -8619,26 +9399,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Product List 1"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Product Grid 1"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Product Grid 2"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Product Grid 3"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
 msgid "Product Category 1"
 msgstr ""
 
@@ -8673,740 +9433,31 @@ msgid "No Data found…"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Product Stock Alignment"
+msgid "Border Width"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Product Stock Typography"
+msgid "Shadow"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Product Stock Color"
+msgid "Inset"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Out of Stock Color"
+msgid "Only Youtube & Vimeo  & Self Hosted Url"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "On Backorder Color"
+msgid "Start Time(Seconds)"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Product Stock Spacing"
+msgid "End Time(Seconds)"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Colors"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Use only WowStore Blocks Colors?"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Editor Width"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Breakpoints"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Tablet (Max Width)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Mobile (Max Width)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Choose Search Field Layout"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Layout 5"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Search Product List Layout"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Search Form"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Placeholder Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Form Height"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Form Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Search Input Padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Search Input Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Search Input Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Placeholder Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Selected Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Dropdown Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Option Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Option Hover Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Option Hover BG"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Option Wrap BG"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Left Separator Width"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Right Separator Width"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Separator Height"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Search Button"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Click To Go Search Result Page"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Bg Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Radius"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Hover Bg Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Hover Radius"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Width"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Margin"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "More Result Button"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Dropdown Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Item Spacing X"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Item Spacing Y"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Separator Width"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Label"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Search Highlighted Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Rating Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Add Column block for your layout."
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Short Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Short Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Short Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Short Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Specific Color (Pro)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Choose Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Taxonomy Specific (Pro)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Hover Opacity"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Excerpt Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Img Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Prefix Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sale Price Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Discount Badge"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Off"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Read More Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Read More Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Read More Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Count Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Height Type"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Window Height"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Html Tag"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "div"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Section"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "header"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "footer"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "aside"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "main"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "article"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Wrapper Link"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Gallery Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Large Image Arrow Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Large Image Title Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Lightbox Zoom Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Gallery Arrow Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Coupon Heading Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Coupon Button Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "With Coupon Field"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Below Coupon Field"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Field Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Placeholder"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Focus Border"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Coupon Body Settings"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Discount Title"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Typo"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Title Position"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Above Coupon Field"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Top Center"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Bottom Center"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Middle Left"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Middle Center"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Middle Right"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Banner Width"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Banner Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Content Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Stack On Mobile"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Image Border"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Content Margin"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Content Padding"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Banner Link"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Banner Border"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Banner Radius"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Background Fill"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Offer Badge"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Badge Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Shape 2"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Shape 3"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Badge Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Badge Position"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Entire Banner"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Badge Location"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Small"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Medium"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Large"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Extra Large"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Custom Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Icon After Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Space Between Icon and Text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Gap"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Horizontal Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Vertical Alignment"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Vertical View"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Animation"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Button Transform"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Star Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Coupon Block Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Coupon Heading"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Coupon Body"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Input Field"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Coupon Button"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Display products of your store in a classic list or slide view."
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Search"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Pricing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Status"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sort By"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Select any grid"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "How to use filter"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "How to add Product Filter to WooCommerce Shop Page"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Grid(Select grid where will filter implement)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Filter Data"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Clear Filter"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Filter Heading"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Product Count"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Expand Taxonomy"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Taxonomy Limit"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Heading text"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Clear All Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Clear All Background"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Filtering Label & Content"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Label Bottom Space"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Filter Item Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Filter Item Typography"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Toggle Plus / Minus"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Enable Toggle"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Initially Open"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Initially Close in Mobile"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Toggle Size"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Toggle Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Range"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Filled Color"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Checkbox"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Mark Color(checked)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Background(checked)"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Number"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Search Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Search Input Placeholder"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Select Grid"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Min"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Green"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "XS"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Image Flip"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Related Product"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "image"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Quantity Width"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Remove Other Product"
+msgid "Loop Video"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -9426,168 +9477,122 @@ msgid "Blur"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Textarea Field"
+msgid "Link Target"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Hide category without image"
+msgid "Same Tab/Window"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Fallback Image"
+msgid "No Follow"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Image Top"
+msgid "Sponsored"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "With Title"
+msgid "Download"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Count Spacing"
+msgid "image"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Border Width"
+msgid "To Enable This Feature"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Sale Tag"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Slide Animation"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Fade"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Slider Speed"
+msgid "Search here for more…"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Container Width"
+msgid "Italic"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Alignment (Justify Content)"
+msgid "Oblique"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Show Taxonomy"
+msgid "Initial"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Show Title"
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Underline"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Show Description"
+msgid "Overline"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Show Price"
+msgid "Line Through"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Show Add to Cart"
+msgid "Select Font"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Show Image"
+msgid "Decoration"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Show Arrows"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Show Dots"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Show Sale Tag"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Contents"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Add to Cart"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Background Spacing"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Background Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Contents Style"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sales Dimension"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sales Styles"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Arrow Settings"
+msgid "Transform"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Tell Us About Your Dream Store…"
+msgid "Welcome"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "What type of store do you want to build?"
+msgid "Site Info"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Site Type"
+msgid "Exclusive Features"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Select Site Type"
+msgid "Congratulations"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Sunglass"
+msgid "Welcome!"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Furniture"
+msgid "Start Building with "
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Backpack"
+msgid "WowStore!"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Other"
+msgid "WowStore is the #1 Gutenberg WooCommerce Builder for building Feature-rich, Conversion-focused, Visually Agile Online Stores"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "WooCommerce"
+msgid "It only takes 4-steps to get started."
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "WowRevenue"
+msgid "Lets's Start"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "The following plugins will be installed and activated for you:"
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Back"
+msgstr ""
+
+#: assets/js/setup.wizard.js:1
+msgid "Return to Dashboard"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
@@ -9696,92 +9701,307 @@ msgid "Most Advanced and Conversion Focused Features"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Welcome"
+msgid "Tell Us About Your Dream Store…"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Site Info"
+msgid "What type of store do you want to build?"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Exclusive Features"
+msgid "Site Type"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Congratulations"
+msgid "Select Site Type"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Welcome!"
+msgid "Sunglass"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Start Building with "
+msgid "Furniture"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "WowStore!"
+msgid "Backpack"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "WowStore is the #1 Gutenberg WooCommerce Builder for building Feature-rich, Conversion-focused, Visually Agile Online Stores"
+msgid "Other"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "It only takes 4-steps to get started."
+msgid "WooCommerce"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-msgid "Lets's Start"
+msgid "WowRevenue"
 msgstr ""
 
 #: assets/js/setup.wizard.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Back"
-msgstr ""
-
-#: assets/js/setup.wizard.js:1
-msgid "Return to Dashboard"
+msgid "The following plugins will be installed and activated for you:"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Bulk Action"
+msgid "[Pro]"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Publish"
+msgid "Re-Generate Google Font"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Draft"
+msgid "Add"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Apply"
+msgid "Save Settings"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Set to"
+msgid "Unlock with WowStore Pro…"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "No Data Found !!!"
+msgid "Unfortunately, you need the PRO version of WowStore to use this feature. Unlock all Addons, templates, and features with WowStore PRO."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "of"
+msgid "Enjoy Pro-level Ready Templates!"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "items"
+msgid "Go to Templates Library"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Create Unlimited Saved Templates with WowStore Pro"
+msgid "Plugin Details"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "You can create only one saved template with the free version of WowStore. Please upgrade to a pro plan to create unlimited saved templates."
+msgid "What Do You Need?"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Do More with "
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "PRO:"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Do you have something in mind you want to share? Both we and our users would like to hear about it. Share your ideas on our Facebook group and let us know what you need."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Share Ideas"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "With the Pro features, you unlock access to:"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "This addon required this plugin:"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "PRO"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Enable"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Demo"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Start WowStore"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Product Grid Blocks"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Product List Blocks"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Single Product Builder"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Cart Builder"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Checkout Builder"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Thank You Builder"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Other Builder Blocks"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Others Product Blocks"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "List - WowStore"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Banner Maker"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Live"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Footer"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Create Unlimited Templates With WowStore Pro"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "We are sorry. Unfortunately, the free version of WowStore lets you create only one template. Please upgrade to a pro version that unlocks the full capabilities of the WooCommerce builder."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Bold"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Change Container Width of the WowStore Template."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Here you can increase or decrease the container width. It will be applicable when you create any dynamic template with the WowStore Builder or select WowStore while creating a page."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Editor Container"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Theme Default"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Full Width"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Select Editor Container Width."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Decide and select whether you want to use theme width or full width while editing a page."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Hide Import Button"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Hide Import Layout Button from the Gutenberg Editor."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Click on the check box to hide the block library (layout importer) option from Gutenberg editor."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Disable All Google Fonts"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Disable All Google Fonts From Frontend and Backend WowStore Blocks."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Click the check box to disable all Google Fonts from WowStore's typography options."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Exclude WP Rocket Cache"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Exclude only WowStore from WP Rocket caching"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Feature Request"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Can’t find your desired feature? Let us know your requirements. We will definitely take them into our consideration."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "WowStore Community"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Join the Facebook community of WowStore to stay up-to-date and share your thoughts and feedback."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "News, Tips & Update"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Getting Started with WowStore"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "How to use the WooCommerce Builder"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "How to use the WowStore Addons"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "WowStore Blog"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Show your love"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Enjoying WowStore? Give us a 5 Star review to support our ongoing work."
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Spring Sale - Enjoy Up to 60% on"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "WowStore Pro"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Grab Now"
+msgstr ""
+
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Close notification"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
@@ -9873,171 +10093,35 @@ msgid "WowStore is a product of WPXPO. The contact support team is ready to help
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Product Grid Blocks"
+msgid "Easily set up table rate shipping with 30+ powerful conditions like, weight, quantity, products, country, and more."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Product List Blocks"
+msgid "extends the functionality of your WooCommerce store with additional features and options."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Single Product Builder"
+msgid "is a B2B wholesale plugin featuring advanced wholesale pricing and customization features."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Cart Builder"
+msgid "boost sales and maximize revenue with the advanced discount campaigns of WowRevenue."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Checkout Builder"
+msgid "generates actionable leads and boost sales with popups, banners, and floating bars using WowOptin."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Thank You Builder"
+msgid "Activated"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Other Builder Blocks"
+msgid "Activate"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Others Product Blocks"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "List - WowStore"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Banner Maker"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Live"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Include"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Exclude"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Create Unlimited Size Charts with WowStore Pro"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "You can create only one size chart template with the free version of WowStore. Please upgrade to a pro plan to create unlimited size chart templates."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Change Container Width of the WowStore Template."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Here you can increase or decrease the container width. It will be applicable when you create any dynamic template with the WowStore Builder or select WowStore while creating a page."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Editor Container"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Theme Default"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Full Width"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Select Editor Container Width."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Decide and select whether you want to use theme width or full width while editing a page."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Hide Import Button"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Hide Import Layout Button from the Gutenberg Editor."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Click on the check box to hide the block library (layout importer) option from Gutenberg editor."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Disable All Google Fonts"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Disable All Google Fonts From Frontend and Backend WowStore Blocks."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Click the check box to disable all Google Fonts from WowStore's typography options."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Exclude WP Rocket Cache"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Exclude only WowStore from WP Rocket caching"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Save Settings"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Feature Request"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Can’t find your desired feature? Let us know your requirements. We will definitely take them into our consideration."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "WowStore Community"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Join the Facebook community of WowStore to stay up-to-date and share your thoughts and feedback."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "News, Tips & Update"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Getting Started with WowStore"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "How to use the WooCommerce Builder"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "How to use the WowStore Addons"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "WowStore Blog"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Show your love"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Enjoying WowStore? Give us a 5 Star review to support our ongoing work."
+msgid "Install"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
@@ -10153,143 +10237,59 @@ msgid "Upcoming"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Footer"
+msgid "Bulk Action"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Create Unlimited Templates With WowStore Pro"
+msgid "Publish"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "We are sorry. Unfortunately, the free version of WowStore lets you create only one template. Please upgrade to a pro version that unlocks the full capabilities of the WooCommerce builder."
+msgid "Draft"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Spring Sale - Enjoy Up to 60% on"
+msgid "Apply"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "WowStore Pro"
+msgid "Set to"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Grab Now"
+msgid "No Data Found !!!"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Close notification"
+msgid "of"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Easily set up table rate shipping with 30+ powerful conditions like, weight, quantity, products, country, and more."
+msgid "items"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "extends the functionality of your WooCommerce store with additional features and options."
+msgid "Create Unlimited Saved Templates with WowStore Pro"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "is a B2B wholesale plugin featuring advanced wholesale pricing and customization features."
+msgid "You can create only one saved template with the free version of WowStore. Please upgrade to a pro plan to create unlimited saved templates."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "boost sales and maximize revenue with the advanced discount campaigns of WowRevenue."
+msgid "Include"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "generates actionable leads and boost sales with popups, banners, and floating bars using WowOptin."
+msgid "Exclude"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Activated"
+msgid "Create Unlimited Size Charts with WowStore Pro"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Activate"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Install"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Plugin Details"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Bold"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Unlock with WowStore Pro…"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Unfortunately, you need the PRO version of WowStore to use this feature. Unlock all Addons, templates, and features with WowStore PRO."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Enjoy Pro-level Ready Templates!"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Go to Templates Library"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "What Do You Need?"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Do More with "
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "PRO:"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Do you have something in mind you want to share? Both we and our users would like to hear about it. Share your ideas on our Facebook group and let us know what you need."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Share Ideas"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "With the Pro features, you unlock access to:"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "This addon required this plugin:"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "PRO"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Enable"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Demo"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Start WowStore"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "[Pro]"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Re-Generate Google Font"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Add"
+msgid "You can create only one size chart template with the free version of WowStore. Please upgrade to a pro plan to create unlimited size chart templates."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1

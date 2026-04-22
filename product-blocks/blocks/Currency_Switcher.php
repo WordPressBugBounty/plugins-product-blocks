@@ -90,7 +90,7 @@ class Currency_Switcher {
 			}
 							$wraper_before .= '</div>';
 		} else {
-			$wraper_before .= '<div class="wopb-currency-switcher-container-pro-message">Enable Currency Switcher Addon to use this block.</div>';
+			$wraper_before .= '<div class="wopb-currency-switcher-container-pro-message"><a href="https://www.wpxpo.com/product/wowstore/features/woocommerce-currency-switcher/?utm_source=db-wstore-editor&utm_medium=currency_switcher&utm_campaign=wstore-dashboard">Enable Currency Switcher Addon ( Pro ) to use this block.</a><span >This is <a href="https://www.wpxpo.com/product/wowstore/#pricing">Pro</a> feature, if you want to use it, please upgrade to the pro version and also need to enable Currency Switcher Addon from WowStore Dashbord Addon pages </span></div>';
 		}
 
 			$wraper_before .= '</div>';
