@@ -1,9 +1,11 @@
 <?php
+
 namespace WOPB\blocks;
 
 defined( 'ABSPATH' ) || exit;
 
 class Product_Grid_1 {
+
 
 	public function __construct() {
 		add_action( 'init', array( $this, 'register' ) );
@@ -104,12 +106,24 @@ class Product_Grid_1 {
 		);
 	}
 
-	public function content( $attr, $noAjax = false ) {
+	public function content( $attr, $no_ajax = false ) {
 		$attr = wp_parse_args( $attr, $this->get_attributes() );
 
-		if ( ! $noAjax ) {
+		if ( ! $no_ajax ) {
 			$paged         = is_front_page() ? get_query_var( 'page' ) : get_query_var( 'paged' );
 			$attr['paged'] = $paged ? $paged : 1;
+			
+			if ( isset( $_COOKIE['productFilters'] ) ) {
+				// Remove extra backslashes.
+				$raw = sanitize_text_field( wp_unslash( $_COOKIE['productFilters'] ?? '' ) );
+
+				// Then decode JSON.
+				$product_filters = json_decode( $raw, true );
+
+				if ( is_array( $product_filters ) ) {
+					$attr['product_filters'] = $product_filters;
+				}
+			}
 		}
 
 		$wrapper_main_content  = '';
@@ -129,6 +143,7 @@ class Product_Grid_1 {
 				'data-showarrows'   => esc_attr( $attr['showArrows'] ),
 			)
 		);
+
 		if ( $recent_posts->have_posts() ) {
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 			$attr['align']     = ! empty( $attr['align'] ) ? 'align' . preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
@@ -140,38 +155,38 @@ class Product_Grid_1 {
 				'cartWidth'       => isset( $attr['cartWidth'] ) ? $attr['cartWidth'] : 'content',
 			);
 
-			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . '">';
-				$wraper_before .= '<div class="wopb-block-wrapper' . ( isset( $attr['layout'] ) ? ' wopb-has-gridlay' : '' ) . '">';
+			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . '">';
+			$wraper_before .= '<div class="wopb-block-wrapper' . ( isset( $attr['layout'] ) ? ' wopb-has-gridlay' : '' ) . '">';
 
 			if ( $attr['headingShow'] || $attr['filterShow'] ) {
-				$wraper_before     .= '<div class="wopb-heading-filter">';
-					$wraper_before .= '<div class="wopb-heading-filter-in">';
+				$wraper_before .= '<div class="wopb-heading-filter">';
+				$wraper_before .= '<div class="wopb-heading-filter-in">';
 
-						// Heading
-						include WOPB_PATH . 'blocks/template/heading.php';
+				// Heading.
+				include WOPB_PATH . 'blocks/template/heading.php';
 
-				if ( ( $attr['filterShow'] ) && $attr['productView'] == 'grid' ) {
+				if ( ( $attr['filterShow'] ) && 'grid' === $attr['productView'] ) {
 					$wraper_before .= '<div class="wopb-filter-navigation">';
 					if ( $attr['filterShow'] ) {
 						include WOPB_PATH . 'blocks/template/filter.php';
 					}
-							$wraper_before .= '</div>';
+					$wraper_before .= '</div>';
 				}
 
-					$wraper_before     .= '</div>';
-						$wraper_before .= '</div>';
+				$wraper_before .= '</div>';
+				$wraper_before .= '</div>';
 			}
 
-					$wraper_before .= '<div class="wopb-wrapper-main-content">';
-			if ( $attr['productView'] == 'slide' ) {
+			$wraper_before .= '<div class="wopb-wrapper-main-content">';
+			if ( 'slide' === $attr['productView'] ) {
 				$wrapper_main_content .= '<div class="wopb-product-blocks-slide" ' . wp_kses_post( $slider_attr ) . '>';
 			} else {
 				$wrapper_main_content .= '<div class="wopb-block-items-wrap wopb-block-row wopb-block-column-' . ( ! empty( $attr['columns']['lg'] ) ? intval( $attr['columns']['lg'] ) : 3 ) . '">';
 			}
 
-							$is_show = json_decode( $attr['sortSection'] );
+			$is_show = json_decode( $attr['sortSection'] );
 
-							$idx = $noAjax ? 1 : 0;
+			$idx = $no_ajax ? 1 : 0;
 			while ( $recent_posts->have_posts() ) :
 				$recent_posts->the_post();
 
@@ -181,31 +196,34 @@ class Product_Grid_1 {
 				include WOPB_PATH . 'blocks/template/category.php';
 
 				if ( $product ) {
-					$post_loop     .= '<div class="wopb-block-item ' . ( ! empty( $item_calss['wrapper'] ) ? $item_calss['wrapper'] : '' ) . '">';
-						$post_loop .= '<div class="wopb-block-content-wrap">';
+					$post_loop .= '<div class="wopb-block-item ' . ( ! empty( $item_calss['wrapper'] ) ? $item_calss['wrapper'] : '' ) . '">';
+					$post_loop .= '<div class="wopb-block-content-wrap">';
 
-							// Image
+					// Image.
 					if ( $attr['showImage'] && in_array( 'image', $is_show ) ) {
-								$image_data .= '<div class="wopb-block-image wopb-block-image-' . esc_attr( $attr['imgAnimation'] ) . '">';
+						$image_data .= '<div class="wopb-block-image wopb-block-image-' . esc_attr( $attr['imgAnimation'] ) . '">';
 
 						if ( $attr['showSale'] || $attr['showHot'] ) {
 							$image_data .= '<div class="wopb-onsale-hot">';
 							if ( $attr['showSale'] && $product->is_on_sale() ) {
-										$image_data .= '<span class="wopb-onsale wopb-onsale-' . esc_attr( $attr['saleStyle'] ) . '">';
-								if ( $attr['saleDesign'] == 'digit' ) {
-									$image_data .= '-' . esc_html( $_discount ); }
-								if ( $attr['saleDesign'] == 'text' ) {
-									$image_data .= isset( $attr['saleText'] ) ? esc_html( $attr['saleText'] ) : esc_html__( 'Sale!', 'product-blocks' ); }
-								if ( $attr['saleDesign'] == 'textDigit' ) {
-									$image_data .= '-' . esc_html( $_discount ) . esc_html__( ' Off', 'product-blocks' ); }
-										$image_data .= '</span>';
+								$image_data .= '<span class="wopb-onsale wopb-onsale-' . esc_attr( $attr['saleStyle'] ) . '">';
+								if ( 'digit' === $attr['saleDesign'] ) {
+									$image_data .= '-' . esc_html( $_discount );
+								}
+								if ( 'text' === $attr['saleDesign'] ) {
+									$image_data .= isset( $attr['saleText'] ) ? esc_html( $attr['saleText'] ) : esc_html__( 'Sale!', 'product-blocks' );
+								}
+								if ( 'textDigit' === $attr['saleDesign'] ) {
+									$image_data .= '-' . esc_html( $_discount ) . esc_html__( ' Off', 'product-blocks' );
+								}
+								$image_data .= '</span>';
 							}
 							if ( $attr['showHot'] && $product->is_featured() ) {
-													$image_data     .= '<span class="wopb-hot">';
-														$image_data .= isset( $attr['hotText'] ) ? esc_html( $attr['hotText'] ) : esc_html__( 'Hot', 'product-blocks' );
-													$image_data     .= '</span>';
+								$image_data .= '<span class="wopb-hot">';
+								$image_data .= isset( $attr['hotText'] ) ? esc_html( $attr['hotText'] ) : esc_html__( 'Hot', 'product-blocks' );
+								$image_data .= '</span>';
 							}
-											$image_data .= '</div>';
+							$image_data .= '</div>';
 						}
 
 						if ( ! empty( $parsedOverlayMetaList ) ) {
@@ -213,87 +231,87 @@ class Product_Grid_1 {
 							$meta_class .= ! $attr['hoverMeta'] ? ' wopb-is-visible' : '';
 							$image_data .= '<div class="wopb-product-new-meta' . $meta_class . '">';
 							foreach ( $parsedOverlayMetaList as $meta_val ) {
-								if ( $meta_val == '_wishlist' ) {
+								if ( '_wishlist' === $meta_val ) {
 									$image_data .= apply_filters( 'wopb_grid_wishlist', '', $post_id, $attr['tooltipPosition'] );
 								}
-								if ( $meta_val == '_qview' ) {
-													$image_data .= apply_filters( 'wopb_grid_quickview', '', $recent_posts, $post_id, $attr['tooltipPosition'] );
+								if ( '_qview' === $meta_val ) {
+									$image_data .= apply_filters( 'wopb_grid_quickview', '', $recent_posts, $post_id, $attr['tooltipPosition'] );
 								}
-								if ( $meta_val == '_compare' ) {
+								if ( '_compare' === $meta_val ) {
 									$image_data .= apply_filters( 'wopb_grid_compare', '', $post_id, $attr['tooltipPosition'] );
 								}
-								if ( $meta_val == '_cart' ) {
-												$cart_params['isIcon'] = true;
-												$image_data           .= wopb_function()->get_add_to_cart( $product, $cart_params );
+								if ( '_cart' === $meta_val ) {
+									$cart_params['isIcon'] = true;
+									$image_data           .= wopb_function()->get_add_to_cart( $product, $cart_params );
 								}
 							}
 							$image_data .= '</div>';
 						}
 
 						if ( $attr['showDeal'] ) {
-										$image_data .= wopb_function()->get_deals( $product, $attr['dealText'] );
+							$image_data .= wopb_function()->get_deals( $product, $attr['dealText'] );
 						}
 
-						if ( $attr['catPosition'] != 'none' && $attr['catShow'] && in_array( 'category', $is_show ) ) {
-								$image_data .= wp_kses_post( $category );
+						if ( 'none' !== $attr['catPosition'] && $attr['catShow'] && in_array( 'category', $is_show ) ) {
+							$image_data .= wp_kses_post( $category );
 						}
 
-						if ( $product->get_stock_status() == 'outofstock' && $attr['showOutStock'] ) {
+						if ( 'outofstock' === $product->get_stock_status() && $attr['showOutStock'] ) {
 							$image_data .= '<div class="wopb-product-outofstock">';
 							$image_data .= '<span>' . esc_html__( 'Out of stock', 'product-blocks' ) . '</span>';
 							$image_data .= '</div>';
-						} elseif ( $product->get_stock_status() == 'instock' && $attr['showInStock'] ) {
+						} elseif ( 'instock' === $product->get_stock_status() && $attr['showInStock'] ) {
 							$image_data .= '<div class="wopb-product-instock">';
 							$image_data .= '<span>' . esc_html__( 'In Stock', 'product-blocks' ) . '</span>';
 							$image_data .= '</div>';
 						}
 
-												// Image
-												$empty_image = false;
+						// Image.
+						$empty_image = false;
 						if ( has_post_thumbnail() ) {
 							$image_url = wp_get_attachment_image_url( $post_thumb_id, ( $attr['imgCrop'] ? $attr['imgCrop'] : 'full' ) );
 						} else {
 							$empty_image = true;
 							$image_url   = esc_url( wc_placeholder_img_src( ( $attr['imgCrop'] ? $attr['imgCrop'] : 'full' ) ) );
 						}
-												$image_data .= $empty_image ? '<div class="empty-image">' : '';
-												$image_data .= '<a href="' . esc_url( $titlelink ) . '">';
-											$image_data     .= '<img ';
-												$image_data .= 'src="' . $image_url . '" ';
-												$image_data .= 'alt="' . esc_attr( $title ) . '" ';
+						$image_data .= $empty_image ? '<div class="empty-image">' : '';
+						$image_data .= '<a href="' . esc_url( $titlelink ) . '">';
+						$image_data .= '<img ';
+						$image_data .= 'src="' . $image_url . '" ';
+						$image_data .= 'alt="' . esc_attr( $title ) . '" ';
 						if ( ! empty( $item_calss['image'] ) ) {
 							$image_data .= 'class=" ' . $item_calss['image'] . '" ';
 							$image_data .= 'srcset="' . wp_get_attachment_image_srcset( $post_thumb_id ) . '"';
 						}
-											$image_data .= '/>';
-											$image_data .= apply_filters( 'wopb_after_loop_image', '', $product, $post_thumb_id );
+						$image_data .= '/>';
+						$image_data .= apply_filters( 'wopb_after_loop_image', '', $product, $post_thumb_id );
 						if ( $attr['showVideo'] && ! $empty_image ) {
-											$image_data .= apply_filters( 'wopb_product_video', '', $product, $post_thumb_id );
+							$image_data .= apply_filters( 'wopb_product_video', '', $product, $post_thumb_id );
 						}
 						if ( ! $attr['disableFlip'] && ! $empty_image ) {
 							$image_data .= apply_filters( 'wopb_flip_image', '', $product, $attr['imgCrop'] );
 						}
-														$image_data .= '</a>';
-														$image_data .= $empty_image ? '</div>' : '';
-														$image_data .= '</div>';
+						$image_data .= '</a>';
+						$image_data .= $empty_image ? '</div>' : '';
+						$image_data .= '</div>';
 					}
 
-							// Category
-					if ( $attr['catPosition'] == 'none' && $attr['catShow'] && in_array( 'category', $is_show ) ) {
-										$category_data .= wp_kses_post( $category );
+					// Category.
+					if ( 'none' === $attr['catPosition'] && $attr['catShow'] && in_array( 'category', $is_show ) ) {
+						$category_data .= wp_kses_post( $category );
 					}
 
-													// Title
+					// Title.
 					if ( $attr['titleShow'] && in_array( 'title', $is_show ) ) {
 						include WOPB_PATH . 'blocks/template/title.php';
 					}
 
-													// Price
+					// Price.
 					if ( $attr['showPrice'] && in_array( 'price', $is_show ) ) {
 						$price_data .= '<div class="wopb-product-price">' . $product->get_price_html() . '</div>';
 					}
 
-													// Review
+					// Review.
 					if ( $attr['showReview'] && in_array( 'review', $is_show ) ) {
 						include WOPB_PATH . 'blocks/template/review.php';
 					}
@@ -310,7 +328,7 @@ class Product_Grid_1 {
 					if ( $attr['showCart'] && in_array( 'cart', $is_show ) ) {
 						$cart_params['isIcon'] = false;
 						$cart_data            .= '<div class="wopb-product-btn">';
-							$cart_data        .= wopb_function()->get_add_to_cart( $product, $cart_params );
+						$cart_data            .= wopb_function()->get_add_to_cart( $product, $cart_params );
 						$cart_data            .= '</div>';
 					}
 
@@ -321,47 +339,65 @@ class Product_Grid_1 {
 					if ( $after_loop = apply_filters( 'wopb_after_loop_item', $content = '' ) ) {
 						$post_loop .= '<div class="wopb-after-loop-item">' . $after_loop . '</div>';
 					}
-													$post_loop .= '</div>';
-													$post_loop .= '</div>';
+					$post_loop .= '</div>';
+					$post_loop .= '</div>';
 				}
 				++$idx;
-							endwhile;
+			endwhile;
 
-							$wrapper_main_content .= $post_loop;
+			$wrapper_main_content .= $post_loop;
 
-			if ( $attr['paginationShow'] && $attr['productView'] == 'grid' && $attr['paginationType'] == 'loadMore' ) {
+			if ( $attr['paginationShow'] && 'grid' === $attr['productView'] && 'loadMore' === $attr['paginationType'] ) {
 				$wrapper_main_content .= '<span class="wopb-loadmore-insert-before"></span>';
 			}
-						$wrapper_main_content .= '</div>';// wopb-block-items-wrap
+			$wrapper_main_content .= '</div>'; // wopb-block-items-wrap.
 
-						// Load More
-			if ( $attr['paginationShow'] && $attr['productView'] == 'grid' && $attr['paginationType'] == 'loadMore' ) {
+			// Load More.
+			if ( $attr['paginationShow'] && 'grid' === $attr['productView'] && 'loadMore' === $attr['paginationType'] ) {
 				include WOPB_PATH . 'blocks/template/loadmore.php';
 			}
 
-						// Pagination
-			if ( $attr['paginationShow'] && $attr['productView'] == 'grid' && $attr['paginationType'] == 'pagination' ) {
+			// Pagination.
+			if ( $attr['paginationShow'] && 'grid' === $attr['productView'] && 'pagination' === $attr['paginationType'] ) {
 				include WOPB_PATH . 'blocks/template/pagination.php';
 			}
 
-			if ( $attr['productView'] == 'slide' && $attr['showArrows'] ) {
+			if ( 'slide' === $attr['productView'] && $attr['showArrows'] ) {
 				include WOPB_PATH . 'blocks/template/arrow.php';
 			}
-					$wraper_after .= '</div>';// wopb-wrapper-main-content
-				$wraper_after     .= '</div>';
-			$wraper_after         .= '</div>';
+			$wraper_after .= '</div>'; // wopb-wrapper-main-content.
+			$wraper_after .= '</div>';
+			$wraper_after .= '</div>';
 
 			wp_reset_postdata();
-
 		}
 
-		if ( $noAjax && $attr['ajax_source'] == 'filter' || ! ( $recent_posts->have_posts() ) ) {
-			if ( $post_loop === '' ) {
-				$wrapper_main_content .= '<span class="wopb-no-product-found">' . esc_html__( 'No products were found of your matching selection', 'product-blocks' ) . '</span>';
+		if ( ( $no_ajax && 'filter' === $attr['ajax_source'] ) || ! ( $recent_posts->have_posts() ) ) {
+			// note: dont remove without proper check. - Shihab.
+			// these before after are necessary for jquery use in filter.js .
+			$wraper_before .= '<div '
+								. ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ?? '' ) . '" ' : '' )
+								. ' class="wp-block-product-blocks-' . esc_attr( $block_name ?? '' )
+								. ' wopb-block-' . sanitize_html_class( $attr['blockId'] ?? '' )
+								. ' ' . ( $attr['className'] ?? '' )
+								. ' ' . ( $attr['align'] ?? '' )
+								. '">';
+			$wraper_before .= '<div class="wopb-block-wrapper'
+								. ( isset( $attr['layout'] ) ? ' wopb-has-gridlay' : '' )
+								. '">';
+			$wraper_before .= '<div class="wopb-wrapper-main-content">';
+			if ( '' === $post_loop ) {
+				$wrapper_main_content .= '<span class="wopb-no-product-found">' .
+											esc_html__( 'No products were found of your matching selection', 'product-blocks' ) .
+											'</span>';
 			}
-			return $wrapper_main_content;
+			$wraper_after .= '</div>'; // wopb-wrapper-main-content.
+			$wraper_after .= '</div>'; // wopb-block-wrapper.
+			$wraper_after .= '</div>'; // wopb-block.
+
+			return $wraper_before . $wrapper_main_content . $wraper_after;
 		}
 
-		return $noAjax ? $post_loop : $wraper_before . $wrapper_main_content . $wraper_after;
+		return $no_ajax ? $post_loop : $wraper_before . $wrapper_main_content . $wraper_after;
 	}
 }

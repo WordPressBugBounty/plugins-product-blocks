@@ -43,6 +43,24 @@ class Blocks {
 		// Nonce Generating Callback
 		add_action( 'wp_ajax_wopb_get_nonce', array( $this, 'wopb_get_nonce_callback' ) ); // Nonce Generating Callback
 		add_action( 'wp_ajax_nopriv_wopb_get_nonce', array( $this, 'wopb_get_nonce_callback' ) ); // Nonce Generating Callback
+
+		// When a WOPB builder template is active (shop/archive), override posts_per_page
+		// with the queryNumber configured on the grid/list block in that template.
+		// On pages where no WOPB template is active, leave WooCommerce defaults untouched.
+		add_action( 'woocommerce_product_query', array( $this, 'set_global_posts_per_page' ) );
+	}
+
+	public function set_global_posts_per_page( $q ) {
+		$builder_post_id = wopb_function()->is_builder();
+		if ( ! $builder_post_id ) {
+			return;
+		}
+		$query_number = $this->get_builder_query_number( (int) $builder_post_id );
+
+		// if the block in this page is one of grid or list by our plugin and query number is available, set it to query.
+		if ( $query_number > 0 ) {
+			$q->set( 'posts_per_page', $query_number );
+		}
 	}
 
 	public function wopb_addcart_callback() {
@@ -476,5 +494,57 @@ class Blocks {
 				'nonce' => wp_create_nonce( 'wopb-nonce' ),
 			)
 		);
+	}
+
+	/**
+	 * Retrieve the queryNumber from the first product grid/list block
+	 * found in a builder post's block tree.
+	 *
+	 * Since we are using first block, if a user is using multiple blocks
+	 * will behave abnormally for 2nd block.
+	 *
+	 * @param int $post_id Builder post ID.
+	 * @return int queryNumber, or 0 when not found.
+	 */
+	private function get_builder_query_number( $post_id ) {
+		$post = get_post( $post_id );
+		if ( ! $post || ! has_blocks( $post->post_content ) ) {
+			return 0;
+		}
+		return $this->find_query_number_in_blocks( parse_blocks( $post->post_content ) );
+	}
+
+	/**
+	 * Recursively search a block tree for the first product grid/list block
+	 * and return its queryNumber attribute.
+	 *
+	 * @param array $blocks Parsed blocks array.
+	 * @return int queryNumber, or 0 when not found.
+	 */
+	private function find_query_number_in_blocks( $blocks ) {
+		$product_blocks = array(
+			'product-blocks/product-grid-1',
+			'product-blocks/product-grid-2',
+			'product-blocks/product-grid-3',
+			'product-blocks/product-list-1',
+		);
+		foreach ( $blocks as $block ) {
+
+			if ( in_array( $block['blockName'], $product_blocks, true ) ) {
+
+				$should_use_query_number = ( $block['attrs']['queryNumber'] ?? 0 ) > 0 &&
+											! ( $block['attrs']['paginationAjax'] ?? false ) &&
+											( $block['attrs']['paginationShow'] ?? false );
+
+				return $should_use_query_number ? (int) $block['attrs']['queryNumber'] : 0;
+			}
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$found = $this->find_query_number_in_blocks( $block['innerBlocks'] );
+				if ( $found > 0 ) {
+					return $found;
+				}
+			}
+		}
+		return 0;
 	}
 }

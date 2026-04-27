@@ -2793,6 +2793,8 @@ class Functions {
 		wp_enqueue_script( 'wopb-slick-script', WOPB_URL . 'assets/js/slick.min.js', array( 'jquery' ), WOPB_VER, true );
 		wp_enqueue_script( 'wopb-flexmenu-script', WOPB_URL . 'assets/js/flexmenu.min.js', array( 'jquery' ), WOPB_VER, true );
 		wp_enqueue_script( 'wopb-script', WOPB_URL . 'assets/js/wopb.js', $require_script, WOPB_VER, true );
+		// filter script moved to different file.
+		wp_enqueue_script( 'wopb-filter-script', WOPB_URL . 'assets/js/filter.js', array( 'jquery', 'wopb-script' ), WOPB_VER, true );
 		// Header show/hide behaviour on scroll.
 		wp_enqueue_script( 'wopb-header-behavior', WOPB_URL . 'assets/js/header-behavior.js', array( 'jquery', 'wopb-script' ), WOPB_VER, true );
 		$wopb_core_localize = array(
