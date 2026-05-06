@@ -85,6 +85,12 @@ class Notice {
 			'wopb_helloBar_spring_sale_2026_1' => Xpo::get_transient_without_cache( 'wopb_helloBar_spring_sale_2026_1' ),
 			'wopb_helloBar_spring_sale_2026_2' => Xpo::get_transient_without_cache( 'wopb_helloBar_spring_sale_2026_2' ),
 			'wopb_helloBar_spring_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_spring_sale_2026_3' ),
+
+
+			'wopb_helloBar_flash_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_flash_sale_2026_3' ),
+			'wopb_helloBar_surprise_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_surprise_sale_2026_3' ),
+			'wopb_helloBar_massive_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_massive_sale_2026_3' ),
+			'wopb_helloBar_final_hour_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_final_hour_2026_3' ),
 		);
 	}
 
@@ -200,6 +206,93 @@ class Notice {
 				),
 				'visibility'         => ! Xpo::is_lc_active(),
 			),
+
+			// Flash sale Notice
+			array(
+				'key'                => 'wopb_flash_sale_2026_1',
+				'start'              => '2026-05-07 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka.
+				'end'                => '2026-05-12 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka.
+
+				'brand_color'        => '#DD106C',
+
+				'left_image'         => WOPB_URL . '/assets/img/dashboard_banner/flash_sale/offer.png',
+				'right_image'        => WOPB_URL . '/assets/img/dashboard_banner/flash_sale/btn.png',
+				'bg_image'           => WOPB_URL . '/assets/img/dashboard_banner/flash_sale/bg.png',
+				'text'               => 'Deal ending soon',
+				'countdown_duration' => 259200, // Duration in seconds.
+				'countdown_color'    => '#3CF357',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'flash_sale',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+			),
+
+			// Surprise sale Notice
+			array(
+				'key'                => 'wopb_surprise_sale_2026_1',
+				'start'              => '2026-05-22 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka.
+				'end'                => '2026-05-25 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka.
+
+				'brand_color'        => '#DD106C',
+
+				'left_image'         => WOPB_URL . '/assets/img/dashboard_banner/surprise_sale/offer.png',
+				'right_image'        => WOPB_URL . '/assets/img/dashboard_banner/surprise_sale/btn.png',
+				'bg_image'           => WOPB_URL . '/assets/img/dashboard_banner/surprise_sale/bg.png',
+				'text'               => 'Limited Time Offer',
+				'countdown_duration' => 259200, // Duration in seconds.
+				'countdown_color'    => '#3CF357',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'surprise_sale',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+			),
+			// Massive sale Notice
+			array(
+				'key'                => 'wopb_massive_sale_2026_1',
+				'start'              => '2026-06-02 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka.
+				'end'                => '2026-06-10 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka.
+
+				'brand_color'        => '#DD106C',
+
+				'left_image'         => WOPB_URL . '/assets/img/dashboard_banner/massive_sale/offer.png',
+				'right_image'        => WOPB_URL . '/assets/img/dashboard_banner/massive_sale/btn.png',
+				'bg_image'           => WOPB_URL . '/assets/img/dashboard_banner/massive_sale/bg.png',
+				'text'               => 'Deal ending soon',
+				'countdown_duration' => 259200, // Duration in seconds.
+				'countdown_color'    => '#3CF357',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'massive_sale',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+			),
+			// Final hours sale Notice
+			array(
+				'key'                => 'wopb_final_hours_sale_2026_1',
+				'start'              => '2026-06-21 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka.
+				'end'                => '2026-06-24 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka.
+
+				'brand_color'        => '#DD106C',
+
+				'left_image'         => WOPB_URL . '/assets/img/dashboard_banner/final_hour_sale/offer.png',
+				'right_image'        => WOPB_URL . '/assets/img/dashboard_banner/final_hour_sale/btn.png',
+				'bg_image'           => WOPB_URL . '/assets/img/dashboard_banner/final_hour_sale/bg.png',
+				'text'               => 'Hurry Before It Ends!',
+				'countdown_duration' => 259200, // Duration in seconds.
+				'countdown_color'    => '#3CF357',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'final_hour',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+			),
+			
 		);
 
 		foreach ( $banner_notices as $notice ) {
@@ -328,7 +421,7 @@ class Notice {
 						<div class="wopb-banner-content">
 							<img class="wopb-banner-side-image" loading="lazy" src="<?php echo esc_url( $notice['left_image'] ); ?>" />
 							<div class="wopb-banner-main">
-								<span>
+								<span style="color: #fff">
 									<?php echo esc_html( $notice['text'] ); ?>
 								</span>	
 								<div 
@@ -498,6 +591,155 @@ class Notice {
 				'is_discount_logo'   => true,
 			),
 
+			// FFlash sale
+			array(
+				'key'                => 'wopb_dashboard_content_notice_flash_sale_v1',
+				'start'              => '2026-05-13 00:00 Asia/Dhaka',
+				'end'                => '2026-05-17 23:59 Asia/Dhaka',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'flash_sale_content',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Flash Sale:', 'product-blocks' ),
+				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
+				'discount_content'   => ' up to 55% OFF',
+				'border_color'       => '#DD106C',
+				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/logo.svg',
+				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
+				'is_discount_logo'   => true,
+			),
+			array(
+				'key'                => 'wopb_dashboard_content_notice_flash_sale_discount_v2',
+				'start'              => '2026-05-18 00:00 Asia/Dhaka',
+				'end'                => '2026-05-21 23:59 Asia/Dhaka',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'flash_sale_content',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Flash Sale:', 'product-blocks' ),
+				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
+				'discount_content'   => ' up to 55% OFF',
+				'border_color'       => '#DD106C',
+				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/55_off.svg',
+				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
+				'is_discount_logo'   => true,
+			),
+
+			// Surprise sale 
+			array(
+				'key'                => 'wopb_dashboard_content_notice_surprise_sale_v1',
+				'start'              => '2026-05-26 00:00 Asia/Dhaka',
+				'end'                => '2026-05-28 23:59 Asia/Dhaka',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'surprise_sale_content',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Surprise Sale:', 'product-blocks' ),
+				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
+				'discount_content'   => ' up to 60% OFF',
+				'border_color'       => '#DD106C',
+				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/logo.svg',
+				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
+				'is_discount_logo'   => true,
+			),
+			array(
+				'key'                => 'wopb_dashboard_content_notice_surprise_sale_discount_v1',
+				'start'              => '2026-05-29 00:00 Asia/Dhaka',
+				'end'                => '2026-06-01 23:59 Asia/Dhaka',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'surprise_sale_content',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Surprise Sale:', 'product-blocks' ),
+				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
+				'discount_content'   => ' up to 60% OFF',
+				'border_color'       => '#DD106C',
+				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/discount.svg',
+				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
+				'is_discount_logo'   => true,
+			),
+			// Massive sale
+			array(
+				'key'                => 'wopb_dashboard_content_notice_massive_sale_v1',
+				'start'              => '2026-06-11 00:00 Asia/Dhaka',
+				'end'                => '2026-06-16 23:59 Asia/Dhaka',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'massive_sale_content',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Massive Sale:', 'product-blocks' ),
+				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
+				'discount_content'   => ' up to 55% OFF',
+				'border_color'       => '#DD106C',
+				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/logo.svg',
+				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
+				'is_discount_logo'   => true,
+			),
+			array(
+				'key'                => 'wopb_dashboard_content_notice_massive_sale_discount_v1',
+				'start'              => '2026-06-17 00:00 Asia/Dhaka',
+				'end'                => '2026-06-20 23:59 Asia/Dhaka',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'massive_sale_content',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Massive Sale:', 'product-blocks' ),
+				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
+				'discount_content'   => ' up to 55% OFF',
+				'border_color'       => '#DD106C',
+				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/55_off.svg',
+				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
+				'is_discount_logo'   => true,
+			),
+			// Final hours sale
+			array(
+				'key'                => 'wopb_dashboard_content_notice_final_hours_sale_v1',
+				'start'              => '2026-06-25 00:00 Asia/Dhaka',
+				'end'                => '2026-06-27 23:59 Asia/Dhaka',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'final_hour_content',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Final Hours Sale:', 'product-blocks' ),
+				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
+				'discount_content'   => ' up to 60% OFF',
+				'border_color'       => '#DD106C',
+				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/logo.svg',
+				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
+				'is_discount_logo'   => true,
+			),
+			array(
+				'key'                => 'wopb_dashboard_content_notice_final_hours_sale_discount_v1',
+				'start'              => '2026-06-28 00:00 Asia/Dhaka',
+				'end'                => '2026-06-30 23:59 Asia/Dhaka',
+				'url'                => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'final_hour_content',
+					)
+				),
+				'visibility'         => ! Xpo::is_lc_active(),
+				'content_heading'    => __( 'Final Hours Sale:', 'product-blocks' ),
+				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
+				'discount_content'   => ' up to 60% OFF',
+				'border_color'       => '#DD106C',
+				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/discount.svg',
+				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
+				'is_discount_logo'   => true,
+			),
 		);
 
 		$wopb_db_nonce = wp_create_nonce( 'wopb-dashboard-nonce' );

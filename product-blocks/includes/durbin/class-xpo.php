@@ -239,11 +239,6 @@ class Xpo {
 				'medium'   => 'sub-menu',
 				'campaign' => 'wstore-dashboard',
 			),
-			'massive_sale'                => array(
-				'source'   => 'db-wowstore-notice-logo',
-				'medium'   => 'massive-sale',
-				'campaign' => 'wowstore-dashboard',
-			),
 			'exclusive_deals'             => array(
 				'source'   => 'db-wowstore-notice-logo',
 				'medium'   => 'exclusive-deals',
@@ -264,14 +259,16 @@ class Xpo {
 				'medium'   => 'preorder',
 				'campaign' => 'product-addons',
 			),
+
+			// Flash sale 
 			'flash_sale'                  => array(
 				'source'   => 'db-wowstore-notice',
 				'medium'   => 'flash-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'final_hour'                  => array(
-				'source'   => 'db-wowstore-notice',
-				'medium'   => 'final-hour-sale',
+			'flash_sale_content'                  => array(
+				'source'   => 'db-wowstore-notice-content',
+				'medium'   => 'flash-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'flash_sale_meta'             => array(
@@ -279,11 +276,57 @@ class Xpo {
 				'medium'   => 'flash-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
+
+			// surprise sale
+			'surprise_sale'                  => array(
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'surprise-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'surprise_sale_content'                  => array(
+				'source'   => 'db-wowstore-notice-content',
+				'medium'   => 'surprise-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'surprise_sale_meta'                  => array(
+				'source'   => 'db-wowstore-notice-meta',
+				'medium'   => 'surprise-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			// massive sale
+			'massive_sale'                => array(
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'massive-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'massive_sale_content'                => array(
+				'source'   => 'db-wowstore-notice-content',
+				'medium'   => 'massive-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'massive_sale_meta'                => array(
+				'source'   => 'db-wowstore-notice-meta',
+				'medium'   => 'massive-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			
+			// Final hours
+			'final_hour'                  => array(
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'final-hour-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			'final_hour_content'                  => array(
+				'source'   => 'db-wowstore-notice-content',
+				'medium'   => 'final-hour-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
 			'final_hour_meta'             => array(
 				'source'   => 'db-wowstore-plugin-meta',
 				'medium'   => 'final-hour-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
+
 			// 2026 spring sale utms
 			'spring_sale_meta'            => array(
 				'source'   => 'db-wowstore-plugin-meta',
