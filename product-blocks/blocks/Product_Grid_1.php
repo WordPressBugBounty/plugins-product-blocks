@@ -106,10 +106,10 @@ class Product_Grid_1 {
 		);
 	}
 
-	public function content( $attr, $no_ajax = false ) {
+	public function content( $attr,  $noAjax = false ) {
 		$attr = wp_parse_args( $attr, $this->get_attributes() );
 
-		if ( ! $no_ajax ) {
+		if ( ! $noAjax ) {
 			$paged         = is_front_page() ? get_query_var( 'page' ) : get_query_var( 'paged' );
 			$attr['paged'] = $paged ? $paged : 1;
 			
@@ -186,7 +186,7 @@ class Product_Grid_1 {
 
 			$is_show = json_decode( $attr['sortSection'] );
 
-			$idx = $no_ajax ? 1 : 0;
+			$idx =  $noAjax ? 1 : 0;
 			while ( $recent_posts->have_posts() ) :
 				$recent_posts->the_post();
 
@@ -372,7 +372,7 @@ class Product_Grid_1 {
 			wp_reset_postdata();
 		}
 
-		if ( ( $no_ajax && 'filter' === $attr['ajax_source'] ) || ! ( $recent_posts->have_posts() ) ) {
+		if ( (  $noAjax && 'filter' === $attr['ajax_source'] ) || ! ( $recent_posts->have_posts() ) ) {
 			// note: dont remove without proper check. - Shihab.
 			// these before after are necessary for jquery use in filter.js .
 			$wraper_before .= '<div '
@@ -398,6 +398,6 @@ class Product_Grid_1 {
 			return $wraper_before . $wrapper_main_content . $wraper_after;
 		}
 
-		return $no_ajax ? $post_loop : $wraper_before . $wrapper_main_content . $wraper_after;
+		return  $noAjax ? $post_loop : $wraper_before . $wrapper_main_content . $wraper_after;
 	}
 }

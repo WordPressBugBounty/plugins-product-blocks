@@ -82,11 +82,6 @@ class Notice {
 	 */
 	public static function get_hellobar_config() {
 		return array(
-			'wopb_helloBar_spring_sale_2026_1' => Xpo::get_transient_without_cache( 'wopb_helloBar_spring_sale_2026_1' ),
-			'wopb_helloBar_spring_sale_2026_2' => Xpo::get_transient_without_cache( 'wopb_helloBar_spring_sale_2026_2' ),
-			'wopb_helloBar_spring_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_spring_sale_2026_3' ),
-
-
 			'wopb_helloBar_flash_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_flash_sale_2026_3' ),
 			'wopb_helloBar_surprise_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_surprise_sale_2026_3' ),
 			'wopb_helloBar_massive_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_massive_sale_2026_3' ),

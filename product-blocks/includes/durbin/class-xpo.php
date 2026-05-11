@@ -262,68 +262,68 @@ class Xpo {
 
 			// Flash sale 
 			'flash_sale'                  => array(
-				'source'   => 'db-wowstore-notice',
-				'medium'   => 'flash-sale',
+				'source'   => 'db-wowstore-notice-content',
+				'medium'   => 'summer-flash-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'flash_sale_content'                  => array(
-				'source'   => 'db-wowstore-notice-content',
-				'medium'   => 'flash-sale',
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'summer-flash-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'flash_sale_meta'             => array(
 				'source'   => 'db-wowstore-plugin-meta',
-				'medium'   => 'flash-sale',
+				'medium'   => 'summer-flash-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 
 			// surprise sale
 			'surprise_sale'                  => array(
-				'source'   => 'db-wowstore-notice',
-				'medium'   => 'surprise-sale',
+				'source'   => 'db-wowstore-notice-content',
+				'medium'   => 'summer-surprise-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'surprise_sale_content'                  => array(
-				'source'   => 'db-wowstore-notice-content',
-				'medium'   => 'surprise-sale',
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'summer-surprise-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'surprise_sale_meta'                  => array(
 				'source'   => 'db-wowstore-notice-meta',
-				'medium'   => 'surprise-sale',
+				'medium'   => 'summer-surprise-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			// massive sale
 			'massive_sale'                => array(
-				'source'   => 'db-wowstore-notice',
-				'medium'   => 'massive-sale',
+				'source'   => 'db-wowstore-notice-content',
+				'medium'   => 'summer-massive-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'massive_sale_content'                => array(
-				'source'   => 'db-wowstore-notice-content',
-				'medium'   => 'massive-sale',
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'summer-massive-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'massive_sale_meta'                => array(
 				'source'   => 'db-wowstore-notice-meta',
-				'medium'   => 'massive-sale',
+				'medium'   => 'summer-massive-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			
 			// Final hours
 			'final_hour'                  => array(
-				'source'   => 'db-wowstore-notice',
-				'medium'   => 'final-hour-sale',
+				'source'   => 'db-wowstore-notice-content',
+				'medium'   => 'summer-final-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'final_hour_content'                  => array(
-				'source'   => 'db-wowstore-notice-content',
-				'medium'   => 'final-hour-sale',
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'summer-final-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 			'final_hour_meta'             => array(
 				'source'   => 'db-wowstore-plugin-meta',
-				'medium'   => 'final-hour-sale',
+				'medium'   => 'summer-final-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
 
