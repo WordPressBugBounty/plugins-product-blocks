@@ -82,10 +82,10 @@ class Notice {
 	 */
 	public static function get_hellobar_config() {
 		return array(
-			'wopb_helloBar_flash_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_flash_sale_2026_3' ),
+			'wopb_helloBar_flash_sale_2026_3'    => Xpo::get_transient_without_cache( 'wopb_helloBar_flash_sale_2026_3' ),
 			'wopb_helloBar_surprise_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_surprise_sale_2026_3' ),
-			'wopb_helloBar_massive_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_massive_sale_2026_3' ),
-			'wopb_helloBar_final_hour_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_final_hour_2026_3' ),
+			'wopb_helloBar_massive_sale_2026_3'  => Xpo::get_transient_without_cache( 'wopb_helloBar_massive_sale_2026_3' ),
+			'wopb_helloBar_final_hour_2026_3'    => Xpo::get_transient_without_cache( 'wopb_helloBar_final_hour_2026_3' ),
 		);
 	}
 
@@ -287,7 +287,7 @@ class Notice {
 				),
 				'visibility'         => ! Xpo::is_lc_active(),
 			),
-			
+
 		);
 
 		foreach ( $banner_notices as $notice ) {
@@ -624,7 +624,7 @@ class Notice {
 				'is_discount_logo'   => true,
 			),
 
-			// Surprise sale 
+			// Surprise sale
 			array(
 				'key'                => 'wopb_dashboard_content_notice_surprise_sale_v1',
 				'start'              => '2026-05-26 00:00 Asia/Dhaka',
@@ -1049,7 +1049,7 @@ class Notice {
 		<style>
 				.wopb-consent-box {
 					width: 656px;
-					padding: 16px;
+					padding: 16px !important;
 					border: 1px solid #070707;
 					border-left-width: 4px;
 					border-radius: 4px;

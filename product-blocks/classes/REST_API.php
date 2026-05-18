@@ -631,7 +631,7 @@ class REST_API {
 
 			case 'taxValue':
 				$split     = explode( '###', $condition_type );
-				$condition = $split[1] != 'multiTaxonomy' ? array( $split[1] ) : get_object_taxonomies( $split[0] );
+				$condition = $split && isset( $split[1] ) && $split[1] != 'multiTaxonomy' ? array( $split[1] ) : get_object_taxonomies( $split[0] );
 				$args      = array(
 					'taxonomy'   => $condition,
 					'fields'     => 'all',
@@ -649,7 +649,7 @@ class REST_API {
 				if ( ! empty( $post_results ) ) {
 					foreach ( $post_results as $key => $val ) {
 						$taxonomy = get_taxonomy( $val->taxonomy );
-						if ( $split[1] == 'multiTaxonomy' ) {
+						if ( $split && isset( $split[1] ) && $split[1] == 'multiTaxonomy' ) {
 							$data[] = array(
 								'value' => $val->taxonomy . '###' . $val->slug,
 								'title' => '[ID: ' . $val->term_id . '] ' . $taxonomy->label . ': ' . $val->name,
@@ -700,7 +700,7 @@ class REST_API {
 			case 'product_cat':
 			case 'product_tag':
 				$split     = explode( '###', $condition_type );
-				$condition = $split && $split[1] != 'multiTaxonomy' ? array( $split[1] ) : get_object_taxonomies( $split[0] );
+				$condition = $split && isset( $split[1] ) && $split[1] != 'multiTaxonomy' ? array( $split[1] ) : get_object_taxonomies( $split[0] );
 				$args      = array(
 					'taxonomy'   => $type,
 					'fields'     => 'all',
@@ -718,7 +718,7 @@ class REST_API {
 				if ( ! empty( $post_results ) ) {
 					foreach ( $post_results as $key => $val ) {
 						$taxonomy = get_taxonomy( $val->taxonomy );
-						if ( $split && $split[1] == 'multiTaxonomy' ) {
+						if ( $split && isset( $split[1] ) && $split[1] == 'multiTaxonomy' ) {
 							$data[] = array(
 								'value' => $val->taxonomy . '###' . $val->slug,
 								'title' => '[ID: ' . $val->term_id . '] ' . $taxonomy->label . ': ' . $val->name,

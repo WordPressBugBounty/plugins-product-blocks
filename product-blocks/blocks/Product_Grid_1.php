@@ -106,13 +106,14 @@ class Product_Grid_1 {
 		);
 	}
 
-	public function content( $attr,  $noAjax = false ) {
+	public function content( $attr, $noAjax = false ) {
+
 		$attr = wp_parse_args( $attr, $this->get_attributes() );
 
 		if ( ! $noAjax ) {
 			$paged         = is_front_page() ? get_query_var( 'page' ) : get_query_var( 'paged' );
 			$attr['paged'] = $paged ? $paged : 1;
-			
+
 			if ( isset( $_COOKIE['productFilters'] ) ) {
 				// Remove extra backslashes.
 				$raw = sanitize_text_field( wp_unslash( $_COOKIE['productFilters'] ?? '' ) );
@@ -186,7 +187,7 @@ class Product_Grid_1 {
 
 			$is_show = json_decode( $attr['sortSection'] );
 
-			$idx =  $noAjax ? 1 : 0;
+			$idx = $noAjax ? 1 : 0;
 			while ( $recent_posts->have_posts() ) :
 				$recent_posts->the_post();
 
@@ -372,32 +373,39 @@ class Product_Grid_1 {
 			wp_reset_postdata();
 		}
 
-		if ( (  $noAjax && 'filter' === $attr['ajax_source'] ) || ! ( $recent_posts->have_posts() ) ) {
-			// note: dont remove without proper check. - Shihab.
-			// these before after are necessary for jquery use in filter.js .
-			$wraper_before .= '<div '
-								. ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ?? '' ) . '" ' : '' )
-								. ' class="wp-block-product-blocks-' . esc_attr( $block_name ?? '' )
-								. ' wopb-block-' . sanitize_html_class( $attr['blockId'] ?? '' )
-								. ' ' . ( $attr['className'] ?? '' )
-								. ' ' . ( $attr['align'] ?? '' )
-								. '">';
-			$wraper_before .= '<div class="wopb-block-wrapper'
-								. ( isset( $attr['layout'] ) ? ' wopb-has-gridlay' : '' )
-								. '">';
-			$wraper_before .= '<div class="wopb-wrapper-main-content">';
+		if ( ( $noAjax && 'filter' === $attr['ajax_source'] ) || ! ( $recent_posts->have_posts() ) ) {
 			if ( '' === $post_loop ) {
-				$wrapper_main_content .= '<span class="wopb-no-product-found">' .
-											esc_html__( 'No products were found of your matching selection', 'product-blocks' ) .
-											'</span>';
-			}
-			$wraper_after .= '</div>'; // wopb-wrapper-main-content.
-			$wraper_after .= '</div>'; // wopb-block-wrapper.
-			$wraper_after .= '</div>'; // wopb-block.
+				// note: dont remove without proper check. - Shihab.
+				// these before after are necessary for jquery use in filter.js .
+				$wraper_before .= '<div '
+					. ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ?? '' ) . '" ' : '' )
+					. ' class="wp-block-product-blocks-' . esc_attr( $block_name ?? '' )
+					. ' wopb-block-' . sanitize_html_class( $attr['blockId'] ?? '' )
+					. ' ' . ( $attr['className'] ?? '' )
+					. ' ' . ( $attr['align'] ?? '' )
+					. '">';
+				$wraper_before .= '<div class="wopb-block-wrapper'
+					. ( isset( $attr['layout'] ) ? ' wopb-has-gridlay' : '' )
+					. '">';
+				$wraper_before .= '<div class="wopb-wrapper-main-content">';
 
-			return $wraper_before . $wrapper_main_content . $wraper_after;
+				$wrapper_main_content .= '<span class="wopb-no-product-found">' .
+					esc_html__( 'No products were found of your matching selection', 'product-blocks' ) .
+					'</span>';
+
+				$wraper_after .= '</div>'; // wopb-wrapper-main-content.
+				$wraper_after .= '</div>'; // wopb-block-wrapper.
+				$wraper_after .= '</div>'; // wopb-block.
+
+				// before after needed when no products found when it is rendering without ajax/api.
+				if ( ! $noAjax ) {
+					return $wraper_before . $wrapper_main_content . $wraper_after;
+				}
+			}
+			return $wrapper_main_content;
+
 		}
 
-		return  $noAjax ? $post_loop : $wraper_before . $wrapper_main_content . $wraper_after;
+		return $noAjax ? $post_loop : $wraper_before . $wrapper_main_content . $wraper_after;
 	}
 }

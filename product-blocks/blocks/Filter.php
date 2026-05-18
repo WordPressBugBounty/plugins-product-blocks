@@ -545,7 +545,9 @@ class Filter {
 			?>
 			<div class="wopb-filter-item">
 				<div class="wopb-item-content">
-					<label for="status_<?php echo esc_attr( $key ); ?>">
+					<?php //removed the for from label, because with it, mobile version click misbehaves - shihab. ?>
+					<?php // when label wraps input, no need for 'for' attribute - shihab. ?>
+					<label>
 						<input type="checkbox" class="wopb-status-input" id="status_<?php echo esc_attr( $key ); ?>" value="<?php echo esc_attr( $key ); ?>"/>
 					<?php echo esc_html( $status ); ?>
 					<?php
@@ -567,7 +569,9 @@ class Filter {
 		<?php for ( $row = 5; $row > 0; $row-- ) { ?>
 			<div class="wopb-filter-item">
 				<div class="wopb-item-content">
-					<label for="filter-rating-<?php echo esc_attr( $row ); ?>">
+					<?php //removed the 'for' from label, because with it, mobile version click misbehaves - shihab. ?>
+					<?php // when label wraps input, no need for 'for' attribute - shihab. ?>
+					<label>
 						<input type="checkbox" class="wopb-rating-input" value="<?php echo esc_attr( $row ); ?>" id="filter-rating-<?php echo esc_attr( $row ); ?>">
 						<?php for ( $filledStar = $row; $filledStar > 0; $filledStar-- ) { ?>
 							<span class="dashicons dashicons-star-filled"></span>
@@ -589,11 +593,13 @@ class Filter {
 			<div class="wopb-relation-heading"><?php echo esc_html__( 'Taxonomy Relation', 'product-blocks' ); ?></div>
 			<div class="wopb-filter-body">
 				<input type="hidden" class="wopb-filter-slug" value="tax_relation">
-				<label for="wopb_tax_relation_and">
+				<?php //removed the 'for' from label, because with it, mobile version click misbehaves - shihab. ?>
+				<?php // when label wraps input, no need for 'for' attribute - shihab. ?>
+				<label>
 					<input name="tax_relation" type="radio" class="wopb-filter-tax-relation" id="wopb_tax_relation_and" value="AND" checked>
 					<span>AND</span>
 				</label>
-				<label for="wopb_tax_relation_or">
+				<label>
 					<input name="tax_relation" type="radio" class="wopb-filter-tax-relation" id="wopb_tax_relation_or" value="OR">
 					<span>OR</span>
 				</label>
@@ -664,7 +670,9 @@ class Filter {
 			?>
 			<div class="wopb-filter-item <?php echo esc_attr( $extended_item_class ); ?>">
 				<div class="wopb-item-content">
-					<label for="tax_term_<?php echo esc_attr( $term->name . '_' . $term->term_id ); ?>">
+					<?php //removed the for from label, because with it, mobile version click misbehaves - shihab. ?>
+					<?php // when label wraps input, no need for 'for' attribute - shihab. ?>
+					<label>
 						<input
 							type="checkbox"
 							class="wopb-filter-tax-term-input"
@@ -692,13 +700,13 @@ class Filter {
 					}
 					?>
 						<span>
-						<?php
+							<?php
 							echo esc_html( $term->name );
-						if ( $attr['productCount'] ) {
-							echo esc_html( ' (' . count( $this->get_product_ids( $query_params ) ) . ')' );
-						}
-						?>
-													</span>
+							if ( $attr['productCount'] ) {
+								echo esc_html( ' (' . count( $this->get_product_ids( $query_params ) ) . ')' );
+							}
+							?>
+						</span>
 					</label>
 					<?php
 					if ( ! str_starts_with( $query_params['taxonomy'], 'pa_' ) ) {

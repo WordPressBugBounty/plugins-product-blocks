@@ -289,7 +289,7 @@ class Blocks {
 					$attr         = array_merge( $attr, $params );
 					$attr         = array_merge( $attr, $value['attrs'] );
 					$content_safe = wopb_function()->wp_kses_safe( $newObj->content( $attr, true ) );
-                    echo $content_safe; // phpcs:ignore
+					echo $content_safe; // phpcs:ignore
 					die();
 				}
 			}

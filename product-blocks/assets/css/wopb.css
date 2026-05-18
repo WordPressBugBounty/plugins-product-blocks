@@ -1188,3 +1188,6 @@ div del, div ins {
     display: none;
 }
 
+.wopb-filter-navigation .flexMenu-popup {
+    z-index: 1;
+}

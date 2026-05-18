@@ -34,6 +34,20 @@ class Initialization {
 		add_filter( 'block_categories_all', array( $this, 'register_category_callback' ), 10, 1 ); // Block Category Register
 		register_activation_hook( WOPB_PATH . 'product-blocks.php', array( $this, 'install_hook' ) ); // Initial Activation Call
 		add_action( 'wp_footer', array( $this, 'footer_callback' ) ); // Footer Text Added
+		
+		$this->include_promotions();
+	}
+
+	/**
+	 * Inlcudes promotional classes.
+	 *
+	 * @return void
+	 */
+	public function include_promotions() {
+		require_once WOPB_PATH . 'classes/class-wow-addons-promotion.php';
+		require_once WOPB_PATH . 'classes/class-wow-revenue-promotion.php';
+		new WowAddonsPromotion();
+		new WowRevenuePromotion();
 	}
 
 	/**
