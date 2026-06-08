@@ -25,7 +25,7 @@ class Initialization {
 	public function __construct() {
 		$this->compatibility_check();
 		$this->requires();
-		$this->include_addons(); // Include Addons
+		$this->include_addons(); // Include Addons.
 
 		add_action( 'enqueue_block_editor_assets', array( $this, 'register_scripts_back_callback' ) ); // Only editor
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_scripts_option_panel_callback' ) ); // Option Panel
@@ -34,7 +34,8 @@ class Initialization {
 		add_filter( 'block_categories_all', array( $this, 'register_category_callback' ), 10, 1 ); // Block Category Register
 		register_activation_hook( WOPB_PATH . 'product-blocks.php', array( $this, 'install_hook' ) ); // Initial Activation Call
 		add_action( 'wp_footer', array( $this, 'footer_callback' ) ); // Footer Text Added
-		
+		add_action( 'wp_enqueue_scripts', array( $this, 're_enqueue_wc_scripts' ), 99999 );
+
 		$this->include_promotions();
 	}
 
@@ -48,6 +49,43 @@ class Initialization {
 		require_once WOPB_PATH . 'classes/class-wow-revenue-promotion.php';
 		new WowAddonsPromotion();
 		new WowRevenuePromotion();
+	}
+
+	/**
+	 * Re-enqueues WooCommerce scripts on the single product page.
+	 *
+	 * @return void
+	 */
+	public function re_enqueue_wc_scripts() {
+		if ( ! is_product() ) {
+			return;
+		}
+
+		$register_scripts                      = array();
+		$register_scripts['wc-single-product'] = array(
+			'src'  => plugins_url( 'assets/js/frontend/single-product.min.js', WC_PLUGIN_FILE ),
+			'deps' => array( 'jquery' ),
+		);
+
+		if ( current_theme_supports( 'wc-product-gallery-zoom' ) ) {
+			$register_scripts['zoom'] = array(
+				'src'  => plugins_url( 'assets/js/zoom/jquery.zoom.min.js', WC_PLUGIN_FILE ),
+				'deps' => array( 'jquery' ),
+			);
+		}
+
+		// Enqueue variation scripts.
+		$product = wc_get_product();
+		if ( $product && $product->is_type( 'variable' ) ) {
+			$register_scripts['wc-add-to-cart-variation'] = array(
+				'src'  => plugins_url( 'assets/js/frontend/add-to-cart-variation.min.js', WC_PLUGIN_FILE ),
+				'deps' => array( 'jquery', 'wp-util', 'jquery-blockui' ),
+			);
+		}
+
+		foreach ( $register_scripts as $name => $props ) {
+			wp_enqueue_script( $name, $props['src'], $props['deps'], WC_VERSION, true );
+		}
 	}
 
 	/**

@@ -2,9 +2,9 @@
 Contributors: wpxpo, anik4e, jakirhasan
 Tags: woocommerce builder, woocommerce blocks, product filter, variation swatches, woocommerce compare
 Requires at least: 6.8
-Tested up to: 6.9
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 4.4.15
+Stable tag: 4.4.17
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -161,6 +161,8 @@ Increasing the average value can help you to increase revenue with the same numb
 
 We are glad that you are considering WowStore. Please have a look at our other plugins that can also improve your WordPress and WooCommerce sites.
 
+📄 [**WowInvoice 🔥:**](https://wordpress.org/plugins/wow-pdf-invoices-packing-slips/) A powerful PDF invoices & packing slips plugin for WooCommerce that helps you automate essential order documents with ease.
+
 🚚 [**WowShipping 🔥:**](https://wordpress.org/plugins/revenue/) An all-in-one table rate shipping plugin for WooCommerce, featuring 30+ shipping rates and seamless integrations with popular carriers including UPS, USPS, DHL, Sendle, and more.
 
 ➕ [**WowAddons 🔥:**](https://wordpress.org/plugins/revenue/) Start selling highly customizable products with 25+ extra product options, addons, and custom fields, helping you increase order value while making your customer happy.
@@ -231,8 +233,15 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 8. WooCommerce Wishlist
 9. WooCommerce Compare
 
-
 == Changelog ==
+= 4.4.17 – 8 June 2026 =
+* Fix: WordPress 7 compatibility issue
+
+= 4.4.16 – 8 June 2026 =
+* Fix: Addition tabs are now compatible with all themes.
+* Fix: Last compare product from compare list now removes without fail.
+* Fix: Filter tabs now translate and show properly for all languages (e.g. Hebrew, Arabic)
+
 = 4.4.15 – 19 May 2026 =
 * Fix: Builder dashboard video tutorials added 
 

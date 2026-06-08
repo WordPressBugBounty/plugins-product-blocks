@@ -1379,6 +1379,12 @@ class Functions {
 		if ( ! empty( $terms ) ) {
 			foreach ( $terms as $val ) {
 				$data[ urldecode_deep( $val->slug ) ] = $val->name;
+
+				// adding the undecoded slug as well, 
+				// because in case of when slug is encoded,
+				// it prints out the encoded slug instead of name.
+				// but it should print the name. - shihab
+				$data[ $val->slug ] = $val->name;
 			}
 		}
 		return $data;
@@ -1581,6 +1587,7 @@ class Functions {
 			}
 		}
 	}
+	// phpcs:disable
 
 	/**
 	 * Filter HTML Generator
@@ -1589,7 +1596,17 @@ class Functions {
 	 * @param STRING | TEXT, TYPE, CATEGORY, TAG
 	 * @return STRING | Filter HTML as String
 	 */
-	public function filter( $filterText = '', $filterType = '', $filterCat = '[]', $filterTag = '[]', $action = '[]', $actionText = '', $noAjax = false, $filterMobileText = '...', $filterMobile = true ) {
+	public function filter(
+		$filterText = '',
+		$filterType = '',
+		$filterCat = '[]',
+		$filterTag = '[]',
+		$action = '[]',
+		$actionText = '',
+		$noAjax = false,
+		$filterMobileText = '...',
+		$filterMobile = true
+	) {
 		$html = '';
 
 		$filterData = array(
@@ -1610,14 +1627,19 @@ class Functions {
 		}
 		$count = $noAjax ? 1 : 0;
 
-		$html .= '<ul ' . ( $filterMobile ? 'class="wopb-flex-menu"' : '' ) . ' data-name="' . ( $filterMobileText ? $filterMobileText : '&nbsp;' ) . '">';
+		$html .= '<ul ';
+		$html .= $filterMobile ? 'class="wopb-flex-menu"' : '';
+		$html .= ' data-name="' . ( $filterMobileText ? $filterMobileText : '&nbsp;' ) . '">';
 		if ( $filterText && strlen( $action ) <= 2 ) {
 			$class = '';
 			if ( $count == 0 ) {
 				$count = 1;
 				$class = 'class="filter-active"';
 			}
-			$html .= '<li class="filter-item"><a ' . $class . ' data-taxonomy="" href="#">' . esc_html( $filterText ) . '</a></li>';
+			$html .= '<li class="filter-item">';
+			$html .= '<a ' . $class . ' data-taxonomy="" href="#">';
+			$html .= esc_html( $filterText );
+			$html .= '</a></li>';
 		}
 		if ( $filterType == 'product_cat' ) {
 			$cat = $this->taxonomy( 'product_cat' );
@@ -1628,7 +1650,10 @@ class Functions {
 					$count = 1;
 					$class = 'class="filter-active"';
 				}
-				$html .= '<li class="filter-item"><a ' . $class . ' data-taxonomy="' . esc_attr( $val == 'all' ? '' : $val ) . '" href="#">' . esc_html( isset( $cat[ $val ] ) ? $cat[ $val ] : $val ) . '</a></li>';
+				$html .= '<li class="filter-item">';
+				$html .= '<a ' . $class . ' data-taxonomy="' . esc_attr( $val == 'all' ? '' : $val ) . '" href="#">';
+				$html .= esc_html( isset( $cat[ $val ] ) ? $cat[ $val ] : $val );
+				$html .= '</a></li>';
 			}
 		} else {
 			$tag = $this->taxonomy( 'product_tag' );
@@ -1639,7 +1664,10 @@ class Functions {
 					$count = 1;
 					$class = 'class="filter-active"';
 				}
-				$html .= '<li class="filter-item"><a ' . $class . ' data-taxonomy="' . esc_attr( $val == 'all' ? '' : $val ) . '" href="#">' . esc_html( isset( $tag[ $val ] ) ? $tag[ $val ] : $val ) . '</a></li>';
+				$html .= '<li class="filter-item">';
+				$html .= '<a ' . $class . ' data-taxonomy="' . esc_attr( $val == 'all' ? '' : $val ) . '" href="#">';
+				$html .= esc_html( isset( $tag[ $val ] ) ? $tag[ $val ] : $val );
+				$html .= '</a></li>';
 			}
 		}
 
@@ -1650,7 +1678,10 @@ class Functions {
 					$count = 1;
 					$class = 'class="filter-active"';
 				}
-				$html .= '<li class="filter-item"><a ' . $class . ' data-taxonomy="custom_action#' . esc_attr( $val ) . '" href="#">' . esc_html( $filterData[ $val ] ) . '</a></li>';
+				$html .= '<li class="filter-item">';
+				$html .= '<a ' . $class . ' data-taxonomy="custom_action#' . esc_attr( $val ) . '" href="#">';
+				$html .= esc_html( $filterData[ $val ] );
+				$html .= '</a></li>';
 			}
 		}
 
@@ -2789,6 +2820,7 @@ class Functions {
 		if ( wopb_function()->get_setting( 'wopb_variation_swatches' ) === 'true' && ! is_admin() ) {
 			$require_script[] = 'wopb-variation-swatches';
 		}
+		
 		wp_enqueue_style( 'wopb-css', WOPB_URL . 'assets/css/wopb.css', array(), WOPB_VER );
 		wp_enqueue_script( 'wopb-slick-script', WOPB_URL . 'assets/js/slick.min.js', array( 'jquery' ), WOPB_VER, true );
 		wp_enqueue_script( 'wopb-flexmenu-script', WOPB_URL . 'assets/js/flexmenu.min.js', array( 'jquery' ), WOPB_VER, true );

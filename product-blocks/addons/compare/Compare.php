@@ -561,7 +561,10 @@ class Compare {
 				$data_id = array();
 				$message = __( 'Compare Item Clear.', 'product-blocks' );
 			} elseif ( $postId && 'nav_popup' !== $action_type ) {
-				if ( false != ( $key = array_search( $postId, $data_id ) ) ) {
+				// strict comparison is necessary. 
+				// array search returns false if not found and 0 or "0" if found at the first position.
+				// if we use loose comparison then it will treat 0 or "0" as false and will not remove the item from compare list.
+				if ( false !== ( $key = array_search( $postId, $data_id ) ) ) {
 					unset( $data_id[ $key ] );
 					$message = __( 'Compare Removed.', 'product-blocks' );
 				}

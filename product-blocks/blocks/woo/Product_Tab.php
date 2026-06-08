@@ -82,69 +82,69 @@ class Product_Tab {
 			$attr['align']     = ! empty( $attr['align'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
 			$reviewHeading     = ! ( isset( $attr['reviewHeading'] ) && $attr['reviewHeading'] == true ) ? ' wopb_hide_r_head' : '';
 
-			$wraper_before         .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . $reviewHeading . '">';
-				$wraper_before     .= '<div class="wopb-product-wrapper">';
-					$wraper_before .= '<div class="product">';
+			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . $reviewHeading . '">';
+			$wraper_before .= '<div class="wopb-product-wrapper">';
+			$wraper_before .= '<div class="product">';
 
-					add_filter( 'woocommerce_product_tabs', $hide_description );
-					add_filter( 'woocommerce_product_additional_information_heading', $hide_heading );
-					add_filter( 'woocommerce_product_description_heading', $hide_heading );
+			add_filter( 'woocommerce_product_tabs', $hide_description );
+			add_filter( 'woocommerce_product_additional_information_heading', $hide_heading );
+			add_filter( 'woocommerce_product_description_heading', $hide_heading );
 
 			if ( ! empty( $product_tabs ) ) {
-				$content     .= '<div class="woocommerce-tabs wc-tabs-wrapper">';
-					$content .= '<ul class="tabs wc-tabs" role="tablist">';
+				$content .= '<div class="woocommerce-tabs wc-tabs-wrapper">';
+				$content .= '<ul class="tabs wc-tabs" role="tablist">';
 				foreach ( $product_tabs as $key => $product_tab ) {
 					if ( ! empty( $product_tab['title'] ) ) {
-						// Determine the tab title - use custom label if available
+						// Determine the tab title - use custom label if available.
 						$tab_title = $product_tab['title'];
-						if ( $key === 'description' && ! empty( $attr['descriptionLabel'] ) ) {
+						if ( 'description' === $key && ! empty( $attr['descriptionLabel'] ) ) {
 							$tab_title = $attr['descriptionLabel'];
-						} elseif ( $key === 'additional_information' && ! empty( $attr['additionalInfoLabel'] ) ) {
+						} elseif ( 'additional_information' === $key && ! empty( $attr['additionalInfoLabel'] ) ) {
 							$tab_title = $attr['additionalInfoLabel'];
-						} elseif ( $key === 'reviews' && ! empty( $attr['reviewLabel'] ) ) {
+						} elseif ( 'reviews' === $key && ! empty( $attr['reviewLabel'] ) ) {
 							$tab_title = $attr['reviewLabel'];
 						}
 
-						$content     .= '<li class="' . esc_attr( $key ) . '_tab" id="tab-title-' . esc_attr( $key ) . '" role="tab" aria-controls="tab-' . esc_attr( $key ) . '">';
-							$content .= '<a href="#tab-' . esc_attr( $key ) . '">';
-							ob_start();
-								echo wp_kses_post( apply_filters( 'woocommerce_product_' . $key . '_tab_title', $tab_title, $key ) );
-							$content .= ob_get_clean();
-							$content .= '</a>';
-						$content     .= '</li>';
+						$content .= '<li class="' . esc_attr( $key ) . '_tab" id="tab-title-' . esc_attr( $key ) . '" role="tab" aria-controls="tab-' . esc_attr( $key ) . '">';
+						$content .= '<a href="#tab-' . esc_attr( $key ) . '">';
+						ob_start();
+						echo wp_kses_post( apply_filters( 'woocommerce_product_' . $key . '_tab_title', $tab_title, $key ) );
+						$content .= ob_get_clean();
+						$content .= '</a>';
+						$content .= '</li>';
 					}
 				}
-					$content .= '</ul>';
+				$content .= '</ul>';
 				foreach ( $product_tabs as $key => $product_tab ) {
-							$content .= '<div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--' . esc_attr( $key ) . ' panel entry-content wc-tab" id="tab-' . esc_attr( $key ) . '" role="tabpanel" aria-labelledby="tab-title-' . esc_attr( $key ) . '">';
+					$content .= '<div class="woocommerce-Tabs-panel woocommerce-Tabs-panel--' . esc_attr( $key ) . ' panel entry-content wc-tab" id="tab-' . esc_attr( $key ) . '" role="tabpanel" aria-labelledby="tab-title-' . esc_attr( $key ) . '">';
 					if ( isset( $product_tab['callback'] ) ) {
-						if ( $key == 'description' ) {
+						if ( 'description' === $key ) {
 							if ( $description = $product->get_description() ) {
 								$content .= wpautop( $description );
 							}
 						} else {
 							ob_start();
-								call_user_func( $product_tab['callback'], $key, $product_tab );
+							call_user_func( $product_tab['callback'], $key, $product_tab );
 							$content .= ob_get_clean();
 						}
 					}
-							$content .= '</div>';
+					$content .= '</div>';
 				}
 
-								ob_start();
-								do_action( 'woocommerce_product_after_tabs' );
-								$content .= ob_get_clean();
-								$content .= '</div>';
+				ob_start();
+				do_action( 'woocommerce_product_after_tabs' );
+				$content .= ob_get_clean();
+				$content .= '</div>';
 			}
 
-					remove_filter( 'woocommerce_product_tabs', $hide_description );
+			remove_filter( 'woocommerce_product_tabs', $hide_description );
 
-					remove_filter( 'woocommerce_product_additional_information_heading', $hide_heading );
-					remove_filter( 'woocommerce_product_description_heading', $hide_heading );
+			remove_filter( 'woocommerce_product_additional_information_heading', $hide_heading );
+			remove_filter( 'woocommerce_product_description_heading', $hide_heading );
 
-					$wraper_after .= '</div>';
-				$wraper_after     .= '</div>';
-			$wraper_after         .= '</div>';
+			$wraper_after .= '</div>';
+			$wraper_after .= '</div>';
+			$wraper_after .= '</div>';
 		}
 
 		return $wraper_before . $content . $wraper_after;

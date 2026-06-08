@@ -1189,5 +1189,5 @@ div del, div ins {
 }
 
 .wopb-filter-navigation .flexMenu-popup {
-    z-index: 1;
+    z-index: 10;
 }

@@ -260,13 +260,13 @@ class Xpo {
 				'campaign' => 'product-addons',
 			),
 
-			// Flash sale 
+			// Flash sale
 			'flash_sale'                  => array(
 				'source'   => 'db-wowstore-notice-content',
 				'medium'   => 'summer-flash-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'flash_sale_content'                  => array(
+			'flash_sale_content'          => array(
 				'source'   => 'db-wowstore-notice',
 				'medium'   => 'summer-flash-sale',
 				'campaign' => 'wowstore-dashboard',
@@ -278,17 +278,17 @@ class Xpo {
 			),
 
 			// surprise sale
-			'surprise_sale'                  => array(
+			'surprise_sale'               => array(
 				'source'   => 'db-wowstore-notice-content',
 				'medium'   => 'summer-surprise-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'surprise_sale_content'                  => array(
+			'surprise_sale_content'       => array(
 				'source'   => 'db-wowstore-notice',
 				'medium'   => 'summer-surprise-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'surprise_sale_meta'                  => array(
+			'surprise_sale_meta'          => array(
 				'source'   => 'db-wowstore-notice-meta',
 				'medium'   => 'summer-surprise-sale',
 				'campaign' => 'wowstore-dashboard',
@@ -299,24 +299,24 @@ class Xpo {
 				'medium'   => 'summer-massive-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'massive_sale_content'                => array(
+			'massive_sale_content'        => array(
 				'source'   => 'db-wowstore-notice',
 				'medium'   => 'summer-massive-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'massive_sale_meta'                => array(
+			'massive_sale_meta'           => array(
 				'source'   => 'db-wowstore-notice-meta',
 				'medium'   => 'summer-massive-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			
+
 			// Final hours
 			'final_hour'                  => array(
 				'source'   => 'db-wowstore-notice-content',
 				'medium'   => 'summer-final-sale',
 				'campaign' => 'wowstore-dashboard',
 			),
-			'final_hour_content'                  => array(
+			'final_hour_content'          => array(
 				'source'   => 'db-wowstore-notice',
 				'medium'   => 'summer-final-sale',
 				'campaign' => 'wowstore-dashboard',
@@ -409,21 +409,23 @@ class Xpo {
 		return array(
 			'products'        => array(
 				'wow_shipping' => file_exists( WP_PLUGIN_DIR . '/wow-table-rate-shipping/wow-table-rate-shipping.php' ),
-				'post_x'      => file_exists( WP_PLUGIN_DIR . '/ultimate-post/ultimate-post.php' ),
-				'wow_store'   => file_exists( WP_PLUGIN_DIR . '/product-blocks/product-blocks.php' ),
-				'wow_optin'   => file_exists( WP_PLUGIN_DIR . '/optin/optin.php' ),
-				'wow_revenue' => file_exists( WP_PLUGIN_DIR . '/revenue/revenue.php' ),
-				'wholesale_x' => file_exists( WP_PLUGIN_DIR . '/wholesalex/wholesalex.php' ),
-				'wow_addon'   => file_exists( WP_PLUGIN_DIR . '/product-addons/product-addons.php' ),
+				'post_x'       => file_exists( WP_PLUGIN_DIR . '/ultimate-post/ultimate-post.php' ),
+				'wow_store'    => file_exists( WP_PLUGIN_DIR . '/product-blocks/product-blocks.php' ),
+				'wow_optin'    => file_exists( WP_PLUGIN_DIR . '/optin/optin.php' ),
+				'wow_revenue'  => file_exists( WP_PLUGIN_DIR . '/revenue/revenue.php' ),
+				'wholesale_x'  => file_exists( WP_PLUGIN_DIR . '/wholesalex/wholesalex.php' ),
+				'wow_addon'    => file_exists( WP_PLUGIN_DIR . '/product-addons/product-addons.php' ),
+				'wow_invoice'  => file_exists( WP_PLUGIN_DIR . '/wow-pdf-invoices-packing-slips/wow-pdf-invoices-packing-slips.php' ),
 			),
 			'products_active' => array(
 				'wow_shipping' => defined( 'WTRS_VER' ),
-				'post_x'      => defined( 'ULTP_VER' ),
-				'wow_store'   => defined( 'WOPB_VER' ),
-				'wow_optin'   => defined( 'OPTN_VERSION' ),
-				'wow_revenue' => defined( 'REVENUE_VER' ),
-				'wholesale_x' => defined( 'WHOLESALEX_VER' ),
-				'wow_addon'   => defined( 'PRAD_VER' ),
+				'post_x'       => defined( 'ULTP_VER' ),
+				'wow_store'    => defined( 'WOPB_VER' ),
+				'wow_optin'    => defined( 'OPTN_VERSION' ),
+				'wow_revenue'  => defined( 'REVENUE_VER' ),
+				'wholesale_x'  => defined( 'WHOLESALEX_VER' ),
+				'wow_addon'    => defined( 'PRAD_VER' ),
+				'wow_invoice'  => defined( 'WINV_VER' ),
 			),
 		);
 	}
@@ -437,27 +439,39 @@ class Xpo {
 	public static function install_and_active_plugin( $name ) {
 		$to_r        = array( 'done' => true );
 		$plugin_slug = $name;
+		$active_url  = '';
 		switch ( $name ) {
+			case 'wow_invoice':
+				$plugin_slug = 'wow-pdf-invoices-packing-slips';
+				$active_url  = admin_url( 'admin.php?page=winv-dashboard#overview' );
+				break;
 			case 'wow_shipping':
-                $plugin_slug = 'wow-table-rate-shipping';
-                break;
+				$plugin_slug = 'wow-table-rate-shipping';
+				$active_url  = admin_url( 'admin.php?page=wtrs-dashboard#overview' );
+				break;
 			case 'post_x':
 				$plugin_slug = 'ultimate-post';
+				$active_url  = admin_url( 'admin.php?page=ultp-settings#home' );
 				break;
 			case 'wow_store':
 				$plugin_slug = 'product-blocks';
+				$active_url  = admin_url( 'admin.php?page=wow-invoices' );
 				break;
 			case 'wow_optin':
 				$plugin_slug = 'optin';
+				$active_url  = admin_url( 'admin.php?page=wowoptin-dashboard' );
 				break;
 			case 'wow_revenue':
 				$plugin_slug = 'revenue';
+				$active_url  = admin_url( 'admin.php?page=revenue' );
 				break;
 			case 'wholesale_x':
 				$plugin_slug = 'wholesalex';
+				$active_url  = admin_url( 'admin.php?page=wholesalex/' );
 				break;
 			case 'wow_addon':
 				$plugin_slug = 'product-addons';
+				$active_url  = admin_url( 'admin.php?page=prad-dashboard#dashboard' );
 				break;
 		}
 
@@ -466,6 +480,7 @@ class Xpo {
 		} else {
 			activate_plugin( $plugin_slug . '/' . $plugin_slug . '.php' );
 		}
+		$to_r['active_url'] = $active_url;
 		return $to_r;
 	}
 
