@@ -6,6 +6,8 @@
  */
 namespace WOPB;
 
+use WOPB\Includes\Durbin\Xpo;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -32,8 +34,10 @@ class WowRevenuePromotion {
 	 * @return void
 	 */
 	public function run_promotions() {
-		if ( ! class_exists( '\WooCommerce' ) ||
-			defined( 'REVENUE_VER' )
+		if (
+			! class_exists( '\WooCommerce' ) ||
+			defined( 'REVENUE_VER' ) ||
+			Xpo::is_lc_active()
 		) {
 			return;
 		}

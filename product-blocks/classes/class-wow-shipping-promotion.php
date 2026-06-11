@@ -6,6 +6,8 @@
  */
 namespace WOPB; // CHANGE THIS.
 
+use WOPB\Includes\Durbin\Xpo;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -32,7 +34,11 @@ class WowShippingPromotion {
 	 * @return void
 	 */
 	public function run_promotions() {
-		if ( ! class_exists( '\WooCommerce' ) || defined( 'WTRS_VER' ) ) {
+		if (
+			! class_exists( '\WooCommerce' ) ||
+			defined( 'WTRS_VER' ) ||
+			Xpo::is_lc_active()
+		) {
 			return;
 		}
 
