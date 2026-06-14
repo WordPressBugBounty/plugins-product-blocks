@@ -127,6 +127,7 @@ class SetupWizard {
 
 		$woocommerce_required = isset( $params['install_woocommerce'] ) && 'yes' === $params['install_woocommerce'];
 		$revenue__required    = isset( $params['install_revenue'] ) && 'yes' === $params['install_revenue'];
+		$wowshipping_required = isset( $params['install_wowshipping'] ) && 'yes' === $params['install_wowshipping'];
 
 		if ( isset( $params['siteType'] ) ) {
 			$site_type = sanitize_text_field( $params['siteType'] );
@@ -139,6 +140,9 @@ class SetupWizard {
 			}
 			if ( $revenue__required ) {
 				$this->handle_plugin_activation( 'revenue' );
+			}
+			if ( $wowshipping_required ) {
+				$this->handle_plugin_activation( 'wowshipping' );
 			}
 
 			return rest_ensure_response( array( 'success' => true ) );
@@ -193,6 +197,9 @@ class SetupWizard {
 			case 'revenue':
 				Xpo::install_and_active_plugin( 'revenue' );
 				$redirect = admin_url( 'admin.php?page=revenue' );
+				break;
+			case 'wowshipping':
+				Xpo::install_and_active_plugin( 'wow-table-rate-shipping' );
 				break;
 			default:
 				break;

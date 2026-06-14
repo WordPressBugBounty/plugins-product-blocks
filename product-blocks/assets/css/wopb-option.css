@@ -1377,7 +1377,9 @@ td.plugin-title .wopb_plugin_action_links strong {
     color: #CE1F92;
 }
 #woocommerce-product-data ul.wc-tabs li.wopb_product_tab a::before {
-    content: url( "../../assets/img/logo-sm.svg" );
+    content: "";
+    background-image: url("../../assets/img/logo-sm.svg");
+    background-repeat: no-repeat;
 }
 
 /* ----------------------------------------
