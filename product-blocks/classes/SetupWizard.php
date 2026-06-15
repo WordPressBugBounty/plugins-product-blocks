@@ -87,7 +87,11 @@ class SetupWizard {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'wizard_site_action_callback' ),
-					'permission_callback' => function () {
+					'permission_callback' => function ( $request ) {
+						if ( 'install' === $request->get_param( 'action' ) ) {
+							return current_user_can( 'install_plugins' ) && current_user_can( 'activate_plugins' );
+						}
+
 						return current_user_can( 'manage_options' );
 					},
 					'args'                => array(),
@@ -103,7 +107,7 @@ class SetupWizard {
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'install_extra_plugin' ),
 					'permission_callback' => function () {
-						return current_user_can( 'manage_options' );
+						return current_user_can( 'install_plugins' ) && current_user_can( 'activate_plugins' );
 					},
 					'args'                => array(),
 				),
@@ -172,7 +176,7 @@ class SetupWizard {
 			die();
 		}
 
-		$plugin = $this->handle_plugin_activation( $params['name'] );
+		$plugin = $this->handle_plugin_activation( sanitize_text_field( $params['name'] ) );
 		return rest_ensure_response(
 			array(
 				'redirect' => ! empty( $plugin['redirect'] ) ? $plugin['redirect'] : '',

@@ -475,10 +475,32 @@ class Xpo {
 				break;
 		}
 
-		if ( ! file_exists( WP_PLUGIN_DIR . '/' . $plugin_slug . '/' . $plugin_slug . '.php' ) ) {
-				$to_r = self::plugin_install( $plugin_slug . '/' . $plugin_slug . '.php', $plugin_slug );
+		$plugin_file = $plugin_slug . '/' . $plugin_slug . '.php';
+
+		if ( ! file_exists( WP_PLUGIN_DIR . '/' . $plugin_file ) ) {
+			if ( ! current_user_can( 'install_plugins' ) || ! current_user_can( 'activate_plugins' ) ) {
+				return array(
+					'done'  => false,
+					'error' => esc_html__( 'Sorry, you are not allowed to install and activate plugins.', 'product-blocks' ),
+				);
+			}
+
+			$to_r = self::plugin_install( $plugin_file, $plugin_slug );
 		} else {
-			activate_plugin( $plugin_slug . '/' . $plugin_slug . '.php' );
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				return array(
+					'done'  => false,
+					'error' => esc_html__( 'Sorry, you are not allowed to activate plugins.', 'product-blocks' ),
+				);
+			}
+
+			$activation_result = activate_plugin( $plugin_file );
+			if ( is_wp_error( $activation_result ) ) {
+				return array(
+					'done'  => false,
+					'error' => $activation_result->get_error_message(),
+				);
+			}
 		}
 		$to_r['active_url'] = $active_url;
 		return $to_r;
@@ -495,6 +517,13 @@ class Xpo {
 	 * @param string $slug   The plugin slug (typically the directory name of the plugin).
 	 */
 	public static function plugin_install( $plugin, $slug ) {
+		if ( ! current_user_can( 'install_plugins' ) || ! current_user_can( 'activate_plugins' ) ) {
+			return array(
+				'done'  => false,
+				'error' => esc_html__( 'Sorry, you are not allowed to install and activate plugins.', 'product-blocks' ),
+			);
+		}
+
 		// Load required admin files (not auto-loaded in REST API context)
 		if ( ! function_exists( 'plugins_api' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
