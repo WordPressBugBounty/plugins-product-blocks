@@ -142,7 +142,13 @@ class SizeChart {
 						'wopb-size-chart-image-upgrade',
 						esc_html__( 'Size chart Image', 'product-blocks' ),
 						function () {
-							echo '<a style="padding:10px 0;color: #ff176b;" target="_blank" href="' . esc_url( wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore' ) ) . '" class="wopb-pro-feature-note">' . esc_html__( 'Upgrade to Pro to set a Size Chart Image.', 'product-blocks' ) . '</a>';
+							$is_expired = wopb_function()->is_lc_expired();
+							$url        = $is_expired ? wopb_function()->get_renew_link() : wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore' );
+							$text       = $is_expired
+								? esc_html__( 'Renew your license to set a Size Chart Image.', 'product-blocks' )
+								: esc_html__( 'Upgrade to Pro to set a Size Chart Image.', 'product-blocks' );
+							// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
+							echo '<a style="padding:10px 0;color: #ff176b;" target="_blank" href="' . esc_url( $url ) . '" class="wopb-pro-feature-note">' . esc_html( $text ) . '</a>';
 						},
 						$this->size_chart,
 						'side',
@@ -439,10 +445,14 @@ class SizeChart {
 			<?php
 
 			if ( $pro && ! $is_active ) {
+				// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
+				$is_expired = wopb_function()->is_lc_expired();
 				printf(
 					'<a style="padding:10px 0;color: #ff176b;" target="_blank" href="%s" class="wopb-pro-feature-note">%s</a>',
-					esc_url( wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore' ) ),
-					esc_html__( 'Upgrade to Pro to use this feature.', 'product-blocks' )
+					esc_url( $is_expired ? wopb_function()->get_renew_link() : wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore' ) ),
+					$is_expired
+						? esc_html__( 'Renew your license to use this feature.', 'product-blocks' )
+						: esc_html__( 'Upgrade to Pro to use this feature.', 'product-blocks' )
 				);
 			}
 			?>

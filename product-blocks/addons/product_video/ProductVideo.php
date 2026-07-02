@@ -350,25 +350,29 @@ class ProductVideo {
 			</p>
 			<?php
 				$is_active = wopb_function()->get_setting( 'is_lc_active' );
+				// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
+				$is_expired = wopb_function()->is_lc_expired();
+				$pro_url    = $is_expired ? wopb_function()->get_renew_link() : wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore' );
+				$pro_text   = $is_expired ? esc_html__( 'Renew', 'product-blocks' ) : esc_html__( 'Pro', 'product-blocks' );
 			?>
 			<p class="form-field wopb_video_autoplay_field">
 				<input type="checkbox"  name="wopb_video_autoplay" value="yes" class="checkbox" <?php echo $is_active ? '' : 'disabled'; ?> <?php echo checked( $data_value['auto'], 'yes', false ); ?>>
 				<label for="wopb_video_autoplay"><?php echo __( 'Video Autoplay', 'product-blocks' ); ?></label>
 				<?php if ( ! $is_active ) { ?>
-					<a target="_blank" href="<?php echo esc_url( wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore' ) ); ?>" class="wopb-pro-feature-note"><?php echo esc_html__( 'Pro', 'product-blocks' ); ?></a>
+					<a target="_blank" href="<?php echo esc_url( $pro_url ); ?>" class="wopb-pro-feature-note"><?php echo esc_html( $pro_text ); ?></a>
 				<?php } ?>
 			<p class="form-field wopb_video_repeat_field<?php echo $type_depend_class; ?>">
 				<input type="checkbox" name="wopb_video_repeat" value="yes" class="checkbox" <?php echo checked( $data_value['repeat'], 'yes', false ); ?> <?php echo $is_active ? '' : 'disabled'; ?>>
 				<label for="wopb_video_repeat"><?php echo esc_html__( 'Video Repeat', 'product-blocks' ); ?></label>
 				<?php if ( ! $is_active ) { ?>
-					<a target="_blank" href="<?php echo esc_url( wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore' ) ); ?>" class="wopb-pro-feature-note"><?php echo esc_html__( 'Pro', 'product-blocks' ); ?></a>
+					<a target="_blank" href="<?php echo esc_url( $pro_url ); ?>" class="wopb-pro-feature-note"><?php echo esc_html( $pro_text ); ?></a>
 				<?php } ?>
 			</p>
 			<p class="form-field  wopb_video_hover_field <?php echo ( $data_value['auto'] == 'yes' || isset( $_POST['wopb_video_autoplay'] ) ? ' wopb-d-none ' . ( isset( $_POST['wopb_video_type'] ) ? $_POST['wopb_video_type'] : ' x ' ) : $type_depend_class ); ?>">
 				<input type="checkbox" name="wopb_video_hover" value="yes" class="checkbox" <?php echo checked( $data_value['hover'], 'yes', false ); ?> <?php echo $is_active ? '' : 'disabled'; ?>>
 				<label for="wopb_video_hover"><?php echo esc_html__( 'Play On Hover', 'product-blocks' ); ?></label>
 				<?php if ( ! $is_active ) { ?>
-					<a target="_blank" href="<?php echo esc_url( wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore' ) ); ?>" class="wopb-pro-feature-note"><?php echo esc_html__( 'Pro', 'product-blocks' ); ?></a>
+					<a target="_blank" href="<?php echo esc_url( $pro_url ); ?>" class="wopb-pro-feature-note"><?php echo esc_html( $pro_text ); ?></a>
 				<?php } ?>
 			</p>
 		</div>

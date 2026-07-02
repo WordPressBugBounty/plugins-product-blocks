@@ -1380,6 +1380,10 @@ td.plugin-title .wopb_plugin_action_links strong {
     content: "";
     background-image: url("../../assets/img/logo-sm.svg");
     background-repeat: no-repeat;
+    width: 18px;
+    height: 18px;
+    background-size: 18px 18px;
+    display: inline-block;
 }
 
 /* ----------------------------------------

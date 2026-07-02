@@ -302,6 +302,8 @@ class Initialization {
 						'security'          => wp_create_nonce( 'wopb-nonce' ),
 						'active'            => $is_active,
 						'license'           => Xpo::get_lc_key(),
+						// @wopb-upgrade-renew: renew or upgrade CTA rendered on the React side based on the license expiry status.
+						'is_expired'        => Xpo::is_lc_expired(),
 						'settings'          => wopb_function()->get_setting(),
 						'addons'            => apply_filters( 'wopb_addons_config', array() ),
 						'addons_settings'   => apply_filters( 'wopb_settings', array() ),
@@ -349,6 +351,11 @@ class Initialization {
 					'premium_link'            => wopb_function()->get_premium_link(),
 					'license'                 => $is_active ? get_option( 'edd_wopb_license_key' ) : '',
 					'active'                  => $is_active,
+					// @wopb-upgrade-renew: renew or upgrade CTA rendered on the React side based on the license expiry status.
+					'is_expired'              => Xpo::is_lc_expired(),
+					// license key is being used in expired notice.
+					// todo: merge the license key so there is no duplicate.
+					'license_key'             => Xpo::is_lc_expired() ? Xpo::get_lc_key() : '',
 					'isBuilder'               => $is_builder,
 					'isVariationSwitchActive' => wopb_function()->get_setting( 'wopb_variation_swatches' ),
 					'settings'                => wopb_function()->get_setting(),

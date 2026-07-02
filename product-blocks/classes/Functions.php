@@ -1733,6 +1733,57 @@ class Functions {
 	}
 
 	/**
+	 * Check if the pro license is expired.
+	 *
+	 * @since v.4.0.0
+	 * @return bool Is pro license expired or not.
+	 */
+	public function is_lc_expired() {
+		return Xpo::is_lc_expired();
+	}
+
+	/**
+	 * Build the "renew license" checkout URL.
+	 *
+	 * @since v.4.0.0
+	 * @return string Renew checkout URL for the stored license key.
+	 */
+	public function get_renew_link() {
+		return 'https://account.wpxpo.com/checkout/?edd_license_key=' . Xpo::get_lc_key();
+	}
+
+	/**
+	 * Pro-gated field notice for admin product panels.
+	 *
+	 * Renders a "renew license" notice for expired users, otherwise the
+	 * standard "upgrade to pro" upsell. Used by the Preorder & Backorder
+	 * addons where a Pro-only field is replaced by this notice.
+	 *
+	 * @since v.4.0.0
+	 * @param string $tag UTM tag used for the upgrade link.
+	 * @return string Field notice markup.
+	 */
+	public function pro_or_renew_field_notice( $tag ) {
+		// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
+		if ( $this->is_lc_expired() ) {
+			$message = __( 'Your license has expired. Renew to keep using this feature.', 'product-blocks' );
+			$url     = $this->get_renew_link();
+			$text    = __( 'Renew License', 'product-blocks' );
+		} else {
+			$message = __( 'This feature is available in the Pro version.', 'product-blocks' );
+			$url     = $this->get_premium_link( 'https://www.wpxpo.com/wowstore', $tag );
+			$text    = __( 'Upgrade to Pro', 'product-blocks' );
+		}
+
+		$html  = '<span class="description" style="display:block;">';
+		$html .= esc_html( $message );
+		$html .= ' <a href="' . esc_url( $url ) . '" target="_blank">' . esc_html( $text ) . '</a>';
+		$html .= '</span>';
+
+		return $html;
+	}
+
+	/**
 	 * All Pages as Array.
 	 *
 	 * @since v.1.1.0

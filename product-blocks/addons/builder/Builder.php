@@ -12,11 +12,19 @@ class Builder {
 	}
 
 	public function disable_new_post_templates() {
-		if ( get_current_screen()->post_type == 'wopb_builder' && ( ! defined( 'WOPB_PRO_VER' ) ) ) {
+		// this function is not being used anymore. logic moved to rest api endpoint.
+		// and creating wowstore templates/pages is now unlimited for free users.
+		// decision taken by content head long ago.
+		// still implmeneted the renew license part here for consistentcy.
+		if ( get_current_screen()->post_type == 'wopb_builder' && ( ! defined( 'WOPB_PRO_VER' ) || wopb_function()->is_lc_expired() ) ) {
 			$post_count = wp_count_posts( 'wopb_builder' );
 			$post_count = $post_count->publish + $post_count->draft;
 			if ( $post_count > 0 ) {
-				wp_die( 'You are not allowed to do that! Please <a target="_blank" href="' . esc_url( wopb_function()->get_premium_link( '', 'menu_WB_go_pro' ) ) . '">Upgrade Pro.</a>' );
+				$is_expired = wopb_function()->is_lc_expired();
+				$url        = $is_expired ? wopb_function()->get_renew_link() : wopb_function()->get_premium_link( '', 'menu_WB_go_pro' );
+				$text       = $is_expired ? __( 'Renew License.', 'product-blocks' ) : __( 'Upgrade Pro.', 'product-blocks' );
+				// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
+				wp_die( wp_kses_post( __( 'You are not allowed to do that! Please ', 'product-blocks' ) . '<a target="_blank" href="' . esc_url( $url ) . '">' . esc_html( $text ) . '</a>' ) );
 			}
 		}
 	}

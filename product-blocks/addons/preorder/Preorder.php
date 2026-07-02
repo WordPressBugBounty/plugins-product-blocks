@@ -428,12 +428,7 @@ class Preorder {
 		} else {
 			echo '<p class="form-field">';
 			echo '<label>' . esc_html__( 'Availability Date', 'product-blocks' ) . '</label>';
-			echo '<span class="description" style="display:block;">';
-			echo esc_html__( 'This feature is available in the Pro version.', 'product-blocks' );
-			echo ' <a href="' . esc_url( wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore', 'preorder' ) ) . '" target="_blank">';
-			echo esc_html__( 'Upgrade to Pro', 'product-blocks' );
-			echo '</a>';
-			echo '</span>';
+			echo wopb_function()->pro_or_renew_field_notice( 'preorder' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo '</p>';
 		}
 
@@ -477,12 +472,7 @@ class Preorder {
 		} else {
 			echo '<p class="form-field">';
 			echo '<label>' . esc_html__( 'Auto Convert', 'product-blocks' ) . '</label>';
-			echo '<span class="description" style="display:block;">';
-			echo esc_html__( 'This feature is available in the Pro version.', 'product-blocks' );
-			echo ' <a href="' . esc_url( wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore', 'preorder' ) ) . '" target="_blank">';
-			echo esc_html__( 'Upgrade to Pro', 'product-blocks' );
-			echo '</a>';
-			echo '</span>';
+			echo wopb_function()->pro_or_renew_field_notice( 'preorder' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo '</p>';
 		}
 
@@ -500,12 +490,7 @@ class Preorder {
 		} else {
 			echo '<p class="form-field">';
 			echo '<label>' . esc_html__( 'Manage Discount', 'product-blocks' ) . '</label>';
-			echo '<span class="description" style="display:block;">';
-			echo esc_html__( 'This feature is available in the Pro version.', 'product-blocks' );
-			echo ' <a href="' . esc_url( wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore', 'preorder' ) ) . '" target="_blank">';
-			echo esc_html__( 'Upgrade to Pro', 'product-blocks' );
-			echo '</a>';
-			echo '</span>';
+			echo wopb_function()->pro_or_renew_field_notice( 'preorder' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo '</p>';
 		}
 

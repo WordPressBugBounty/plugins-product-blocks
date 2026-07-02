@@ -133,7 +133,7 @@ class Options {
 
 		$upgrade_link = array();
 
-		// Free user or expired license user.
+		// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status (free or expired license user).
 		if ( ! defined( 'WOPB_PRO_VER' ) || Xpo::is_lc_expired() ) {
 
 			$license_key = Xpo::get_lc_key() ?? '';
@@ -236,7 +236,14 @@ class Options {
 			$current_date <= '2026-02-15'
 		);
 
-		if ( ! Xpo::is_lc_active() ) {
+		// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
+		// swapped lc expired on if so we check the expiry first.
+		// then we check if the pro is available and the pro license is valid.
+		if ( Xpo::is_lc_expired() ) {
+			$license_key   = Xpo::get_lc_key();
+			$pro_link      = 'https://account.wpxpo.com/checkout/?edd_license_key=' . $license_key;
+			$pro_link_text = __( 'Renew License', 'product-blocks' );
+		} elseif ( ! Xpo::is_lc_active() ) {
 			$pro_link      = Xpo::generate_utm_link(
 				array(
 					'utmKey' => $menu_pro_text_period ? 'new_year_sale' : 'sub_menu',
@@ -244,10 +251,6 @@ class Options {
 			);
 			$pro_link_text = $menu_pro_text_period ? __( 'New Year Offer!', 'ultimate-post' ) : __( 'Upgrade to Pro', 'ultimate-post' );
 
-		} elseif ( Xpo::is_lc_expired() ) {
-			$license_key   = Xpo::get_lc_key();
-			$pro_link      = 'https://account.wpxpo.com/checkout/?edd_license_key=' . $license_key;
-			$pro_link_text = __( 'Renew License', 'product-blocks' );
 		}
 
 		if ( ! empty( $pro_link ) ) {
@@ -280,7 +283,9 @@ class Options {
 			return;
 		}
 		if ( wopb_function()->get_screen() === 'wopb-pro' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-            wp_redirect( wopb_function()->get_premium_link( '', 'main_menu_go_pro' ) ); //phpcs:ignore
+			// @wopb-upgrade-renew: redirect to renew or upgrade link based on the license expiry status.
+			$redirect_url = wopb_function()->is_lc_expired() ? wopb_function()->get_renew_link() : wopb_function()->get_premium_link( '', 'main_menu_go_pro' );
+			wp_redirect( $redirect_url ); //phpcs:ignore
 			die();
 		}
 	}

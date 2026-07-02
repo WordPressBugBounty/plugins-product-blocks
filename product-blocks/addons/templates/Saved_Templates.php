@@ -26,11 +26,16 @@ class Saved_Templates {
 	 * @return NULL
 	 */
 	public function custom_head_templates() {
-		if ( 'wopb_templates' == get_current_screen()->post_type && ( ! defined( 'WOPB_PRO_VER' ) ) ) {
+		if ( 'wopb_templates' == get_current_screen()->post_type && ( ! defined( 'WOPB_PRO_VER' ) || wopb_function()->is_lc_expired() ) ) {
 			$post_count = wp_count_posts( 'wopb_templates' );
 			$post_count = $post_count->publish + $post_count->draft;
-			if ( $post_count > 0 ) { ?>
-				<span class="wopb-saved-templates-action" data-link="<?php echo esc_url( wopb_function()->get_premium_link( '', 'menu_saved_template_go_pro' ) ); ?>" data-text="Go Pro for Unlimited Templates" data-count="<?php echo esc_attr( $post_count ); ?>" style="display:none;"></span>
+			if ( $post_count > 0 ) {
+				$is_expired = wopb_function()->is_lc_expired();
+				$url        = $is_expired ? wopb_function()->get_renew_link() : wopb_function()->get_premium_link( '', 'menu_saved_template_go_pro' );
+				$text       = $is_expired ? __( 'Renew License for Unlimited Templates', 'product-blocks' ) : __( 'Go Pro for Unlimited Templates', 'product-blocks' );
+				// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
+				?>
+				<span class="wopb-saved-templates-action" data-link="<?php echo esc_url( $url ); ?>" data-text="<?php echo esc_attr( $text ); ?>" data-count="<?php echo esc_attr( $post_count ); ?>" style="display:none;"></span>
 				<?php
 			}
 		}
@@ -43,11 +48,15 @@ class Saved_Templates {
 	 * @return NULL
 	 */
 	public function disable_new_post_templates() {
-		if ( get_current_screen()->post_type == 'wopb_templates' && ( ! defined( 'WOPB_PRO_VER' ) ) ) {
+		if ( get_current_screen()->post_type == 'wopb_templates' && ( ! defined( 'WOPB_PRO_VER' ) || wopb_function()->is_lc_expired() ) ) {
 			$post_count = wp_count_posts( 'wopb_templates' );
 			$post_count = $post_count->publish + $post_count->draft;
 			if ( $post_count > 0 ) {
-				wp_die( 'You are not allowed to do that! Please <a target="_blank" href="' . esc_url( wopb_function()->get_premium_link( '', 'menu_saved_template_go_pro' ) ) . '">Upgrade Pro.</a>' );
+				$is_expired = wopb_function()->is_lc_expired();
+				$url        = $is_expired ? wopb_function()->get_renew_link() : wopb_function()->get_premium_link( '', 'menu_saved_template_go_pro' );
+				$text       = $is_expired ? __( 'Renew License.', 'product-blocks' ) : __( 'Upgrade Pro.', 'product-blocks' );
+				// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
+				wp_die( wp_kses_post( __( 'You are not allowed to do that! Please ', 'product-blocks' ) . '<a target="_blank" href="' . esc_url( $url ) . '">' . esc_html( $text ) . '</a>' ) );
 			}
 		}
 	}
