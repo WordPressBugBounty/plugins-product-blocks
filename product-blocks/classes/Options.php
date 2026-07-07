@@ -74,56 +74,13 @@ class Options {
 	public function plugin_action_links_callback( $links ) {
 		$offer_config = array(
 			array(
-				'start'  => '2026-03-16 00:00 Asia/Dhaka',
-				'end'    => '2026-04-14 23:59 Asia/Dhaka',
+				'start'  => '2026-07-06 00:00 Asia/Dhaka',
+				'end'    => '2026-08-01 23:59 Asia/Dhaka',
 				'text'   => __(
-					'Spring Sale - Up to 60% OFF',
+					'Summer Sale - Up to 60% OFF',
 					'product-blocks'
 				),
-				'utmKey' => 'spring_sale_meta',
-			),
-			// Flash sale
-			array(
-				'start'  => '2026-05-07 00:00 Asia/Dhaka',
-				'end'    => '2026-05-21 23:59 Asia/Dhaka',
-				'text'   => __(
-					'Flash Sale - Up to 55% OFF',
-					'ultimate-post'
-				),
-				'utmKey' => 'flash_sale_meta',
-			),
-
-			// Surprise Sale
-			array(
-				'start'  => '2026-05-22 00:00 Asia/Dhaka',
-				'end'    => '2026-06-01 23:59 Asia/Dhaka',
-				'text'   => __(
-					'Surprise Sale - Up to 60% OFF',
-					'ultimate-post'
-				),
-				'utmKey' => 'surprise_sale_meta',
-			),
-
-			// Massive Sale
-			array(
-				'start'  => '2026-06-02 00:00 Asia/Dhaka',
-				'end'    => '2026-06-20 23:59 Asia/Dhaka',
-				'text'   => __(
-					'Massive Sale - Up to 55% OFF',
-					'ultimate-post'
-				),
-				'utmKey' => 'massive_sale_meta',
-			),
-
-			// Final hours sale
-			array(
-				'start'  => '2026-06-21 00:00 Asia/Dhaka',
-				'end'    => '2026-06-30 23:59 Asia/Dhaka',
-				'text'   => __(
-					'Final Hour Sale - Up to 60% OFF',
-					'ultimate-post'
-				),
-				'utmKey' => 'final_hour_meta',
+				'utmKey' => 'summer_db',
 			),
 		);
 

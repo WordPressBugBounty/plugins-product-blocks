@@ -13,7 +13,7 @@ class Product_Grid_1 {
 
 	public function get_attributes() {
 		return array(
-			'sortSection'         => '["image","variationSwitcher","category","title","description","price","review","cart"]',
+			'sortSection'         => '["image","variationSwitcher","category","brand","title","description","price","review","cart"]',
 			'productView'         => 'grid',
 			'columns'             => array(
 				'lg' => '3',
@@ -68,6 +68,9 @@ class Product_Grid_1 {
 			'cartActive'          => 'View Cart',
 			'enableCatLink'       => true,
 			'catPosition'         => 'none',
+			'brandShow'           => false,
+			'enableBrandLink'     => true,
+			'brandPosition'       => 'none',
 			'hotText'             => 'Hot',
 			'dealText'            => 'Days|Hours|Minutes|Seconds',
 			'imgCrop'             => 'full',
@@ -187,14 +190,21 @@ class Product_Grid_1 {
 
 			$is_show = json_decode( $attr['sortSection'] );
 
+			// Support blocks saved before the brand element existed.
+			if ( $attr['brandShow'] && ! in_array( 'brand', $is_show ) ) {
+				$cat_index = array_search( 'category', $is_show );
+				array_splice( $is_show, false === $cat_index ? count( $is_show ) : $cat_index + 1, 0, 'brand' );
+			}
+
 			$idx = $noAjax ? 1 : 0;
 			while ( $recent_posts->have_posts() ) :
 				$recent_posts->the_post();
 
-				$image_data = $category_data = $title_data = $price_data = $review_data = $cart_data = $description_data = $variationSwitcher_data = '';
+				$image_data = $category_data = $brand_data = $title_data = $price_data = $review_data = $cart_data = $description_data = $variationSwitcher_data = '';
 
 				include WOPB_PATH . 'blocks/template/data.php';
 				include WOPB_PATH . 'blocks/template/category.php';
+				include WOPB_PATH . 'blocks/template/brand.php';
 
 				if ( $product ) {
 					$post_loop .= '<div class="wopb-block-item ' . ( ! empty( $item_calss['wrapper'] ) ? $item_calss['wrapper'] : '' ) . '">';
@@ -257,6 +267,10 @@ class Product_Grid_1 {
 							$image_data .= wp_kses_post( $category );
 						}
 
+						if ( 'none' !== $attr['brandPosition'] && $attr['brandShow'] && in_array( 'brand', $is_show ) ) {
+							$image_data .= wp_kses_post( $brand );
+						}
+
 						if ( 'outofstock' === $product->get_stock_status() && $attr['showOutStock'] ) {
 							$image_data .= '<div class="wopb-product-outofstock">';
 							$image_data .= '<span>' . esc_html__( 'Out of stock', 'product-blocks' ) . '</span>';
@@ -300,6 +314,11 @@ class Product_Grid_1 {
 					// Category.
 					if ( 'none' === $attr['catPosition'] && $attr['catShow'] && in_array( 'category', $is_show ) ) {
 						$category_data .= wp_kses_post( $category );
+					}
+
+					// Brand.
+					if ( 'none' === $attr['brandPosition'] && $attr['brandShow'] && in_array( 'brand', $is_show ) ) {
+						$brand_data .= wp_kses_post( $brand );
 					}
 
 					// Title.

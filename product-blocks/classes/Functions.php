@@ -3150,6 +3150,22 @@ class Functions {
 					}
 					$var['category'] = $v;
 				}
+
+				// brand
+				if ( taxonomy_exists( 'product_brand' ) ) {
+					$brand = get_the_terms( $post_id, 'product_brand' );
+					if ( ! empty( $brand ) && ! is_wp_error( $brand ) ) {
+						$v = array();
+						foreach ( $brand as $val ) {
+							$v[] = array(
+								'slug' => $val->slug,
+								'name' => $val->name,
+								'url'  => esc_url( get_term_link( $val->term_id ) ),
+							);
+						}
+						$var['brand'] = $v;
+					}
+				}
 				$data[] = $var;
 			}
 			wp_reset_postdata();

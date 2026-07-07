@@ -347,6 +347,14 @@ class Xpo {
 			),
 			// -----------------------------------------
 
+			// 2026 Summer sale utms
+			'summer_db'                 => array(
+				'source'   => 'db-wowstore-notice',
+				'medium'   => 'summer-sale',
+				'campaign' => 'wowstore-dashboard',
+			),
+			// -----------------------------------------
+
 		);
 
 		// Step 1: Get parameters

@@ -33,6 +33,12 @@ class Product_List_1 {
 			'paginationShow'   => false,
 			'headingShow'      => false,
 			'titleShow'        => true,
+			'catShow'          => false,
+			'enableCatLink'    => true,
+			'catPosition'      => 'aboveTitle',
+			'brandShow'        => false,
+			'enableBrandLink'  => true,
+			'brandPosition'    => 'aboveTitle',
 			'showShortDesc'    => false,
 			'showImage'        => true,
 			'disableFlip'      => false,
@@ -173,6 +179,8 @@ class Product_List_1 {
 				$title_data = $price_data = $review_data = $cart_data = $description_data = '';
 
 				include WOPB_PATH . 'blocks/template/data.php';
+				include WOPB_PATH . 'blocks/template/category.php';
+				include WOPB_PATH . 'blocks/template/brand.php';
 				if ( $product ) {
 					$post_loop     .= '<div class="wopb-block-item wopb-block-media ' . ( ! empty( $item_calss['wrapper'] ) ? $item_calss['wrapper'] : '' ) . '">';
 						$post_loop .= '<div class="wopb-block-content-wrap">';
@@ -233,6 +241,24 @@ class Product_List_1 {
 					if ( $attr['titleShow'] && in_array( 'title', $is_show ) ) {
 										include WOPB_PATH . 'blocks/template/title.php';
 					}
+
+								// Category & Brand
+					$above_title = $below_title = '';
+					if ( $attr['catShow'] ) {
+						if ( $attr['catPosition'] == 'belowTitle' ) {
+							$below_title .= wp_kses_post( $category );
+						} else {
+							$above_title .= wp_kses_post( $category );
+						}
+					}
+					if ( $attr['brandShow'] ) {
+						if ( $attr['brandPosition'] == 'belowTitle' ) {
+							$below_title .= wp_kses_post( $brand );
+						} else {
+							$above_title .= wp_kses_post( $brand );
+						}
+					}
+					$title_data = $above_title . $title_data . $below_title;
 
 					if ( $attr['showShortDesc'] ) {
 						$description_data .= '<div class="wopb-short-description">' . wopb_function()->excerpt( $post_id, $attr['shortDescLimit'] ) . '</div>';

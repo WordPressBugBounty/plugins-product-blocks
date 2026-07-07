@@ -68,6 +68,9 @@ class Product_Grid_2 {
 			'cartActive'              => 'View Cart',
 			'enableCatLink'           => true,
 			'catPosition'             => 'none',
+			'brandShow'               => false,
+			'enableBrandLink'         => true,
+			'brandPosition'           => 'none',
 			'imgCrop'                 => 'full',
 			'imgAnimation'            => 'none',
 			'filterType'              => 'product_cat',
@@ -190,6 +193,7 @@ class Product_Grid_2 {
 
 				include WOPB_PATH . 'blocks/template/data.php';
 				include WOPB_PATH . 'blocks/template/category.php';
+				include WOPB_PATH . 'blocks/template/brand.php';
 
 				if ( $product ) {
 					$post_loop         .= '<div class="wopb-block-item ' . ( ! empty( $item_calss['wrapper'] ) ? $item_calss['wrapper'] : '' ) . '">';
@@ -254,6 +258,10 @@ class Product_Grid_2 {
 							$image_data .= wp_kses_post( $category );
 						}
 
+						if ( $attr['brandShow'] && $attr['brandPosition'] != 'none' && $attr['brandPosition'] != 'beforeTitle' ) {
+							$image_data .= wp_kses_post( $brand );
+						}
+
 						if ( $product->get_stock_status() == 'outofstock' && $attr['showOutStock'] ) {
 							$image_data     .= '<div class="wopb-product-outofstock">';
 								$image_data .= '<span>' . esc_html__( 'Out of stock', 'product-blocks' ) . '</span>';
@@ -301,6 +309,10 @@ class Product_Grid_2 {
 					if ( $attr['catShow'] && $attr['catPosition'] == 'beforeTitle' ) {
 						$content_data .= wp_kses_post( $category );
 					}
+													// Brand
+					if ( $attr['brandShow'] && $attr['brandPosition'] == 'beforeTitle' ) {
+						$content_data .= wp_kses_post( $brand );
+					}
 													// Title
 					if ( $attr['titleShow'] ) {
 						if ( $attr['variationSwitchPosition'] == 'before_title' ) {
@@ -317,6 +329,10 @@ class Product_Grid_2 {
 													// Category
 					if ( $attr['catShow'] && $attr['catPosition'] == 'none' ) {
 						$content_data .= wp_kses_post( $category );
+					}
+													// Brand
+					if ( $attr['brandShow'] && $attr['brandPosition'] == 'none' ) {
+						$content_data .= wp_kses_post( $brand );
 					}
 													// Price
 					if ( $attr['showPrice'] ) {

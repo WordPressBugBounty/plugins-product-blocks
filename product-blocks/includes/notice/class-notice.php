@@ -96,10 +96,7 @@ class Notice {
 	 */
 	public static function get_hellobar_config() {
 		return array(
-			'wopb_helloBar_flash_sale_2026_3'    => Xpo::get_transient_without_cache( 'wopb_helloBar_flash_sale_2026_3' ),
-			'wopb_helloBar_surprise_sale_2026_3' => Xpo::get_transient_without_cache( 'wopb_helloBar_surprise_sale_2026_3' ),
-			'wopb_helloBar_massive_sale_2026_3'  => Xpo::get_transient_without_cache( 'wopb_helloBar_massive_sale_2026_3' ),
-			'wopb_helloBar_final_hour_2026_3'    => Xpo::get_transient_without_cache( 'wopb_helloBar_final_hour_2026_3' ),
+			'wopb_helloBar_summer_sale_2026_123'    => Xpo::get_transient_without_cache( 'wopb_helloBar_summer_sale_2026_123' ),
 		);
 	}
 
@@ -186,6 +183,7 @@ class Notice {
 		if ( $this->is_available_for_notice() ) {
 			$this->wopb_dashboard_banner_notice();
 			$this->wopb_dashboard_content_notice();
+			$this->wopb_dashboard_image_banner_notice();
 		}
 	}
 
@@ -578,186 +576,40 @@ class Notice {
 
 		$content_notices = array(
 			array(
-				'key'                => 'wopb_dashboard_content_notice_spring_sale_v1',
-				'start'              => '2026-03-16 00:00 Asia/Dhaka',
-				'end'                => '2026-03-25 23:59 Asia/Dhaka',
+				'key'                => 'wopb_dashboard_content_notice_summer_sale_2026_vv1',
+				'start'              => defined( 'WOPB_DEV_MODE' )
+											? '2026-05-20 00:00 Asia/Dhaka'
+											: '2026-07-13 00:00 Asia/Dhaka',
+				'end'                => '2026-07-19 23:59 Asia/Dhaka',
 				'url'                => Xpo::generate_utm_link(
 					array(
-						'utmKey' => 'content_notice',
+						'utmKey' => 'summer_db',
 					)
 				),
 				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Spring Sale:', 'product-blocks' ),
-				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
-				'discount_content'   => ' up to 60% OFF',
+				'content_heading'    => __( '', 'product-blocks' ),
+				'content_subheading' => __( 'WowStore Summer Sale Offer is Live - Enjoy %s Off NOW.', 'product-blocks' ),
+				'discount_content'   => ' Up to 60%',
 				'border_color'       => '#DD106C',
 				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/logo.svg',
 				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
 				'is_discount_logo'   => true,
 			),
 			array(
-				'key'                => 'wopb_dashboard_content_notice_spring_sale_v2',
-				'start'              => '2026-03-26 00:00 Asia/Dhaka',
-				'end'                => '2026-04-04 23:59 Asia/Dhaka',
+				'key'                => 'wopb_dashboard_content_notice_summer_sale_2026_vv2',
+				'start'              => defined( 'WOPB_DEV_MODE' )
+											? '2026-05-20 00:00 Asia/Dhaka'
+											: '2026-07-20 00:00 Asia/Dhaka',
+				'end'                => '2026-08-01 23:59 Asia/Dhaka',
 				'url'                => Xpo::generate_utm_link(
 					array(
-						'utmKey' => 'content_notice',
+						'utmKey' => 'summer_db',
 					)
 				),
 				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Spring Sale:', 'product-blocks' ),
-				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
-				'discount_content'   => ' up to 60% OFF',
-				'border_color'       => '#DD106C',
-				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/discount.svg',
-				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
-				'is_discount_logo'   => true,
-			),
-
-			// FFlash sale
-			array(
-				'key'                => 'wopb_dashboard_content_notice_flash_sale_v1',
-				'start'              => '2026-05-13 00:00 Asia/Dhaka',
-				'end'                => '2026-05-17 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'flash_sale_content',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Flash Sale:', 'product-blocks' ),
-				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
-				'discount_content'   => ' up to 55% OFF',
-				'border_color'       => '#DD106C',
-				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/logo.svg',
-				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
-				'is_discount_logo'   => true,
-			),
-			array(
-				'key'                => 'wopb_dashboard_content_notice_flash_sale_discount_v2',
-				'start'              => '2026-05-18 00:00 Asia/Dhaka',
-				'end'                => '2026-05-21 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'flash_sale_content',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Flash Sale:', 'product-blocks' ),
-				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
-				'discount_content'   => ' up to 55% OFF',
-				'border_color'       => '#DD106C',
-				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/55_off.svg',
-				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
-				'is_discount_logo'   => true,
-			),
-
-			// Surprise sale
-			array(
-				'key'                => 'wopb_dashboard_content_notice_surprise_sale_v1',
-				'start'              => '2026-05-26 00:00 Asia/Dhaka',
-				'end'                => '2026-05-28 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'surprise_sale_content',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Surprise Sale:', 'product-blocks' ),
-				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
-				'discount_content'   => ' up to 60% OFF',
-				'border_color'       => '#DD106C',
-				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/logo.svg',
-				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
-				'is_discount_logo'   => true,
-			),
-			array(
-				'key'                => 'wopb_dashboard_content_notice_surprise_sale_discount_v1',
-				'start'              => '2026-05-29 00:00 Asia/Dhaka',
-				'end'                => '2026-06-01 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'surprise_sale_content',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Surprise Sale:', 'product-blocks' ),
-				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
-				'discount_content'   => ' up to 60% OFF',
-				'border_color'       => '#DD106C',
-				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/discount.svg',
-				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
-				'is_discount_logo'   => true,
-			),
-			// Massive sale
-			array(
-				'key'                => 'wopb_dashboard_content_notice_massive_sale_v1',
-				'start'              => '2026-06-11 00:00 Asia/Dhaka',
-				'end'                => '2026-06-16 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'massive_sale_content',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Massive Sale:', 'product-blocks' ),
-				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
-				'discount_content'   => ' up to 55% OFF',
-				'border_color'       => '#DD106C',
-				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/logo.svg',
-				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
-				'is_discount_logo'   => true,
-			),
-			array(
-				'key'                => 'wopb_dashboard_content_notice_massive_sale_discount_v1',
-				'start'              => '2026-06-17 00:00 Asia/Dhaka',
-				'end'                => '2026-06-20 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'massive_sale_content',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Massive Sale:', 'product-blocks' ),
-				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
-				'discount_content'   => ' up to 55% OFF',
-				'border_color'       => '#DD106C',
-				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/55_off.svg',
-				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
-				'is_discount_logo'   => true,
-			),
-			// Final hours sale
-			array(
-				'key'                => 'wopb_dashboard_content_notice_final_hours_sale_v1',
-				'start'              => '2026-06-25 00:00 Asia/Dhaka',
-				'end'                => '2026-06-27 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'final_hour_content',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Final Hours Sale:', 'product-blocks' ),
-				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
-				'discount_content'   => ' up to 60% OFF',
-				'border_color'       => '#DD106C',
-				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/logo.svg',
-				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
-				'is_discount_logo'   => true,
-			),
-			array(
-				'key'                => 'wopb_dashboard_content_notice_final_hours_sale_discount_v1',
-				'start'              => '2026-06-28 00:00 Asia/Dhaka',
-				'end'                => '2026-06-30 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'final_hour_content',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Final Hours Sale:', 'product-blocks' ),
-				'content_subheading' => __( 'WowStore offers are live - Enjoy %s off on WowStore.', 'product-blocks' ),
-				'discount_content'   => ' up to 60% OFF',
+				'content_heading'    => __( '', 'product-blocks' ),
+				'content_subheading' => __( 'WowStore Summer Sale Offer is Live - Enjoy %s Off NOW.', 'product-blocks' ),
+				'discount_content'   => ' Up to 60%',
 				'border_color'       => '#DD106C',
 				'icon'               => WOPB_URL . 'assets/img/dashboard_banner/discount.svg',
 				'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
@@ -948,6 +800,121 @@ class Notice {
 	}
 
 	/**
+	 * Dashboard Image Banner Notice
+	 *
+	 * @param boolean $return_bool Early return flag for other plugin notice.
+	 * @return void|bool
+	 */
+	public function wopb_dashboard_image_banner_notice( $return_bool = false ) {
+		$wopb_db_nonce  = wp_create_nonce( 'wopb-dashboard-nonce' );
+		$banner_notices = array(
+			array(
+				'key'         => 'wopb_summer_sale_2026',
+				// testing in dev mode.
+				'start'       => defined( 'WOPB_DEV_MODE' )
+									? '2026-05-20 00:00 Asia/Dhaka'
+									: '2026-07-06 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka.
+				'end'         => '2026-07-12 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka.
+				'banner_src'  => WOPB_URL . 'assets/img/dashboard_banner/summer_sale/summer_sale_26.png',
+				'url'         => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'summer_db',
+					)
+				),
+				'close_color' => '#000000',
+				'visibility'  => ! Xpo::is_lc_active(),
+			),
+		);
+
+		foreach ( $banner_notices as $notice ) {
+			$notice_key = isset( $notice['key'] ) ? $notice['key'] : $this->notice_version;
+			if ( isset( $_GET['disable_wopb_notice'] ) && $notice_key === sanitize_key( $_GET['disable_wopb_notice'] ) ) { // phpcs:ignore
+				continue;
+			}
+
+			$current_time = gmdate( 'U' );
+			$notice_start = gmdate( 'U', strtotime( $notice['start'] ) );
+			$notice_end   = gmdate( 'U', strtotime( $notice['end'] ) );
+			if ( $current_time >= $notice_start && $current_time <= $notice_end && $notice['visibility'] ) {
+
+				$notice_transient = Xpo::get_transient_without_cache( 'wopb_get_pro_notice_' . $notice_key );
+
+				if ( 'off' === $notice_transient ) {
+					continue;
+				}
+
+				if ( $return_bool ) { // Early return for Other plugin notice.
+					return true;
+				}
+
+				$query_args = array(
+					'disable_wopb_notice' => $notice_key,
+					'wopb_db_nonce'       => $wopb_db_nonce,
+				);
+				if ( isset( $notice['repeat_interval'] ) && $notice['repeat_interval'] ) {
+					$query_args['wopb_interval'] = $notice['repeat_interval'];
+				}
+				?>
+				<style type="text/css">
+					.wopb-notice-wrapper.wopb-image-notice-wrapper {
+						padding: 0 !important;
+						position: relative;
+						box-sizing: border-box;
+						overflow: hidden;
+						border-radius: 0px;
+						border: none !important;
+					}
+					.wopb-notice-wrapper.wopb-image-notice-wrapper .wopb-image-banner {
+						position: relative;
+						line-height: 0;
+					}
+					.wopb-notice-wrapper.wopb-image-notice-wrapper .wopb-btn-image {
+						display: block;
+					}
+					.wopb-notice-wrapper.wopb-image-notice-wrapper .wopb-btn-image img {
+						display: block;
+						width: 100%;
+						height: auto;
+						border-radius: 0;
+					}
+					.wopb-notice-wrapper.wopb-image-notice-wrapper .wopb-content-notice-close {
+						top: 4px;
+						right: 4px;
+						position: absolute;
+						z-index: 999;
+						text-decoration: none;
+					}
+					.wopb-notice-wrapper.wopb-image-notice-wrapper .wopb-content-notice-close-icon {
+						font-size: 14px;
+					}
+					@media screen and (max-width: 650px) {
+						.wopb-image-notice-wrapper {
+							display: none;
+						}
+					}
+				</style>
+				<div class="wopb-notice-wrapper wopb-image-notice-wrapper notice wc-install wopb-free-notice">
+					<div class="wopb-install-body wopb-image-banner">
+						<a class="wc-dismiss-notice wopb-content-notice-close" href="
+						<?php
+						echo esc_url(
+							add_query_arg(
+								$query_args
+							)
+						);
+						?>
+						"><span class="wopb-content-notice-close-icon dashicons dashicons-dismiss" style="color: <?php echo esc_attr( $notice['close_color'] ); ?>;"> </span></a>
+						<a class="wopb-btn-image" target="_blank" href="<?php echo esc_url( $notice['url'] ); ?>">
+							<img loading="lazy" src="<?php echo esc_url( $notice['banner_src'] ); ?>" alt="Discount Banner"/>
+						</a>
+					</div>
+				</div>
+				<?php
+			}
+		}
+	}
+
+	/**
 	 * Dashboard Content Notice
 	 *
 	 * @return void
@@ -1075,7 +1042,7 @@ class Notice {
 			$this->notice_js_css_applied = true;
 		}
 
-		$wopb_db_nonce = wp_create_nonce( 'wopb-nonce' );
+		$wopb_db_nonce = wp_create_nonce( 'wopb-dashboard-nonce' );
 
 		?>
 		<style>
@@ -1142,7 +1109,7 @@ class Notice {
 									array(
 										'wopb_durbin_key' => $durbin_key,
 										'wopb_get_durbin' => 'get',
-										'wpnonce'         => $wopb_db_nonce,
+										'wopb_db_nonce'   => $wopb_db_nonce,
 									)
 								)
 							);
@@ -1159,6 +1126,7 @@ class Notice {
 							add_query_arg(
 								array(
 									'wopb_durbin_key' => $durbin_key,
+									'wopb_db_nonce'   => $wopb_db_nonce,
 								)
 							)
 						);
@@ -1702,7 +1670,11 @@ class Notice {
 	 */
 	public function handle_xpo_active_notice_lists( $active_lists ) {
 
-		if ( $this->wopb_dashboard_banner_notice( true ) || $this->wopb_dashboard_content_notice( true ) ) {
+		if (
+			$this->wopb_dashboard_banner_notice( true ) ||
+			$this->wopb_dashboard_content_notice( true ) ||
+			$this->wopb_dashboard_image_banner_notice( true )
+		) {
 			$active_lists[ $this->plugin_notice_priority_key ] = $this->plugin_notice_priority;
 		}
 

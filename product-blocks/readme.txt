@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 4.4.23
+Stable tag: 4.4.24
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -234,6 +234,12 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 9. WooCommerce Compare
 
 == Changelog ==
+= 4.4.24 – 07 July 2026 =
+* Fix: Loop off now works correctly for self hosted videos 
+* Fix: Start and End time now works correctly for self hosted videos 
+* New: Brand option in all grid block 
+* New: Brand and Category option in List Block 
+
 = 4.4.23 – 02 July 2026 =
 * Fix: Performance Imroved
 

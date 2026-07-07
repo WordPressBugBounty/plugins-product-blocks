@@ -68,6 +68,9 @@ class Product_Grid_3 {
 			'cartActive'              => 'View Cart',
 			'enableCatLink'           => true,
 			'catPosition'             => 'none',
+			'brandShow'               => false,
+			'enableBrandLink'         => true,
+			'brandPosition'           => 'none',
 			'imgCrop'                 => 'full',
 			'imgAnimation'            => 'none',
 			'filterType'              => 'product_cat',
@@ -189,6 +192,7 @@ class Product_Grid_3 {
 
 				include WOPB_PATH . 'blocks/template/data.php';
 				include WOPB_PATH . 'blocks/template/category.php';
+				include WOPB_PATH . 'blocks/template/brand.php';
 
 				if ( $product ) {
 					$post_loop     .= '<div class="wopb-block-item ' . ( ! empty( $item_calss['wrapper'] ) ? $item_calss['wrapper'] : '' ) . '">';
@@ -262,6 +266,10 @@ class Product_Grid_3 {
 							$image_data .= wp_kses_post( $category );
 						}
 
+						if ( $attr['brandPosition'] != 'none' && $attr['brandShow'] ) {
+							$image_data .= wp_kses_post( $brand );
+						}
+
 						if ( $product->get_stock_status() == 'outofstock' && $attr['showOutStock'] ) {
 							$image_data     .= '<div class="wopb-product-outofstock">';
 								$image_data .= '<span>' . esc_html__( 'Out of stock', 'product-blocks' ) . '</span>';
@@ -307,6 +315,10 @@ class Product_Grid_3 {
 													// Category
 					if ( ( $attr['catPosition'] == 'none' ) && $attr['catShow'] ) {
 						$cat_price_data .= wp_kses_post( $category );
+					}
+													// Brand
+					if ( ( $attr['brandPosition'] == 'none' ) && $attr['brandShow'] ) {
+						$cat_price_data .= wp_kses_post( $brand );
 					}
 													// Price
 					if ( $attr['showPrice'] ) {
