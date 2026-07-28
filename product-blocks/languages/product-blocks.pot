@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore – Store Builder & Product Blocks for WooCommerce 4.4.22\n"
+"Project-Id-Version: WowStore – Store Builder & Product Blocks for WooCommerce 4.5.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-02T05:53:42+00:00\n"
+"POT-Creation-Date: 2026-07-28T06:26:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: product-blocks\n"
@@ -213,8 +213,8 @@ msgstr ""
 #: addons/stock_progress_bar/backend.php:55
 #: addons/variation_swatches/backend.php:45
 #: addons/wishlist/backend.php:42
-#: classes/Options.php:131
-#: classes/Options.php:209
+#: classes/Options.php:77
+#: classes/Options.php:148
 #: assets/js/editor.blocks.js:1
 #: assets/js/wopb_dashboard_min.js:3
 msgid "Settings"
@@ -429,7 +429,7 @@ msgid "Dashboard > WowStore > Saved Templates"
 msgstr ""
 
 #: addons/builder/backend.php:7
-#: classes/Options.php:197
+#: classes/Options.php:136
 #: assets/js/wopb_dashboard_min.js:3
 msgid "Woo Builder"
 msgstr ""
@@ -1546,8 +1546,8 @@ msgstr ""
 
 #: addons/compare/Compare.php:965
 #: blocks/Product_Slider.php:413
-#: classes/Functions.php:3421
-#: classes/Functions.php:3423
+#: classes/Functions.php:3470
+#: classes/Functions.php:3472
 msgid "View Cart"
 msgstr ""
 
@@ -1635,7 +1635,7 @@ msgid "Payment Method Disables\t"
 msgstr ""
 
 #: addons/custom_font/backend.php:12
-#: classes/Options.php:201
+#: classes/Options.php:140
 msgid "Custom Font"
 msgstr ""
 
@@ -1872,7 +1872,7 @@ msgstr ""
 
 #: addons/elementor/Elementor_Widget.php:33
 #: addons/templates/backend.php:12
-#: classes/Options.php:200
+#: classes/Options.php:139
 msgid "Saved Template"
 msgstr ""
 
@@ -2515,6 +2515,8 @@ msgid "Renew"
 msgstr ""
 
 #: addons/product_video/ProductVideo.php:356
+#: includes/notice/promos/hellobar.php:32
+#: includes/notice/promos/hellobar.php:51
 #: assets/js/editor.blocks.js:3
 #: assets/js/wopb_dashboard_min.js:1
 #: assets/js/wopb_dashboard_min.js:3
@@ -2822,17 +2824,17 @@ msgstr ""
 #: addons/quick_view/Quickview.php:463
 #: addons/wishlist/Wishlist.php:300
 #: addons/wishlist/Wishlist.php:302
-#: blocks/Product_Grid_1.php:266
-#: blocks/Product_Grid_2.php:263
-#: blocks/Product_Grid_3.php:271
+#: blocks/Product_Grid_1.php:280
+#: blocks/Product_Grid_2.php:271
+#: blocks/Product_Grid_3.php:279
 #: assets/js/editor.blocks.js:1
 msgid "In Stock"
 msgstr ""
 
 #: addons/quick_view/Quickview.php:465
-#: blocks/Product_Grid_1.php:262
-#: blocks/Product_Grid_2.php:259
-#: blocks/Product_Grid_3.php:267
+#: blocks/Product_Grid_1.php:276
+#: blocks/Product_Grid_2.php:267
+#: blocks/Product_Grid_3.php:275
 #: assets/js/editor.blocks.js:1
 msgid "Out of stock"
 msgstr ""
@@ -2844,9 +2846,9 @@ msgid "Buy Now"
 msgstr ""
 
 #: addons/quick_view/Quickview.php:589
-#: blocks/Product_Grid_1.php:215
-#: blocks/Product_Grid_2.php:215
-#: blocks/Product_Grid_3.php:213
+#: blocks/Product_Grid_1.php:225
+#: blocks/Product_Grid_2.php:219
+#: blocks/Product_Grid_3.php:217
 #: blocks/Product_Slider.php:302
 #: assets/js/editor.blocks.js:1
 msgid "Sale!"
@@ -3046,7 +3048,7 @@ msgstr ""
 #: addons/size_chart/SizeChart.php:112
 #: addons/size_chart/SizeChart.php:113
 #: addons/size_chart/SizeChart.php:503
-#: classes/Options.php:204
+#: classes/Options.php:143
 #: classes/ProPlugins.php:102
 msgid "Size Chart"
 msgstr ""
@@ -4124,24 +4126,24 @@ msgstr ""
 msgid "Read More"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:218
-#: blocks/Product_Grid_2.php:217
-#: blocks/Product_Grid_3.php:215
+#: blocks/Product_Grid_1.php:228
+#: blocks/Product_Grid_2.php:221
+#: blocks/Product_Grid_3.php:219
 #: blocks/Product_Slider.php:304
 msgid " Off"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:224
-#: blocks/Product_Grid_2.php:222
-#: blocks/Product_Grid_3.php:220
+#: blocks/Product_Grid_1.php:234
+#: blocks/Product_Grid_2.php:226
+#: blocks/Product_Grid_3.php:224
 #: assets/js/editor.blocks.js:1
 msgid "Hot"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:393
-#: blocks/Product_Grid_2.php:414
-#: blocks/Product_Grid_3.php:402
-#: blocks/Product_List_1.php:313
+#: blocks/Product_Grid_1.php:412
+#: blocks/Product_Grid_2.php:430
+#: blocks/Product_Grid_3.php:414
+#: blocks/Product_List_1.php:339
 msgid "No products were found of your matching selection"
 msgstr ""
 
@@ -4381,47 +4383,43 @@ msgstr ""
 msgid "New Support Ticket is not Created Due to Some Issues."
 msgstr ""
 
-#: classes/Dashboard.php:354
-msgid "Notice is removed."
-msgstr ""
-
-#: classes/Dashboard.php:486
-#: classes/Dashboard.php:516
+#: classes/Dashboard.php:479
+#: classes/Dashboard.php:509
 msgid "An error occurred, please try again."
 msgstr ""
 
 #. translators: %s: is date
-#: classes/Dashboard.php:495
+#: classes/Dashboard.php:488
 msgid "Your license key expired on %s."
 msgstr ""
 
-#: classes/Dashboard.php:500
+#: classes/Dashboard.php:493
 msgid "Your license key has been disabled."
 msgstr ""
 
-#: classes/Dashboard.php:503
-#: classes/Dashboard.php:530
-#: classes/Dashboard.php:533
+#: classes/Dashboard.php:496
+#: classes/Dashboard.php:523
+#: classes/Dashboard.php:526
 msgid "Invalid license."
 msgstr ""
 
-#: classes/Dashboard.php:507
+#: classes/Dashboard.php:500
 msgid "Your license is not active for this URL."
 msgstr ""
 
-#: classes/Dashboard.php:510
+#: classes/Dashboard.php:503
 msgid "This appears to be an invalid license key."
 msgstr ""
 
-#: classes/Dashboard.php:513
+#: classes/Dashboard.php:506
 msgid "Your license key has reached its activation limit."
 msgstr ""
 
-#: classes/Dashboard.php:520
+#: classes/Dashboard.php:513
 msgid "Your license key has been updated."
 msgstr ""
 
-#: classes/Dashboard.php:536
+#: classes/Dashboard.php:529
 msgid "Install & Acivate WowStore Pro plugin."
 msgstr ""
 
@@ -4436,37 +4434,37 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
-#: classes/Functions.php:1769
+#: classes/Functions.php:1802
 msgid "Your license has expired. Renew to keep using this feature."
 msgstr ""
 
-#: classes/Functions.php:1771
-#: classes/Options.php:142
-#: classes/Options.php:245
+#: classes/Functions.php:1804
+#: classes/Options.php:88
+#: classes/Options.php:184
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Renew License"
 msgstr ""
 
-#: classes/Functions.php:1773
+#: classes/Functions.php:1806
 msgid "This feature is available in the Pro version."
 msgstr ""
 
-#: classes/Functions.php:1775
-#: classes/Options.php:146
+#: classes/Functions.php:1808
+#: classes/Options.php:94
 #: assets/js/editor.blocks.js:3
 #: assets/js/wopb_dashboard_min.js:3
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: classes/Functions.php:1794
+#: classes/Functions.php:1827
 msgid "Select Page"
 msgstr ""
 
-#: classes/Functions.php:1810
+#: classes/Functions.php:1843
 msgid "Select Location"
 msgstr ""
 
-#: classes/Functions.php:2966
+#: classes/Functions.php:2999
 msgid "- Select Template -"
 msgstr ""
 
@@ -4494,61 +4492,57 @@ msgstr ""
 msgid "My Account (WowStore)"
 msgstr ""
 
-#: classes/Options.php:58
+#: classes/Options.php:59
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Docs"
 msgstr ""
 
-#: classes/Options.php:59
+#: classes/Options.php:60
 msgid "Tutorials"
 msgstr ""
 
-#: classes/Options.php:60
+#: classes/Options.php:61
 msgid "Support"
 msgstr ""
 
-#: classes/Options.php:79
-msgid "Spring Sale - Up to 60% OFF"
-msgstr ""
-
-#: classes/Options.php:181
-#: classes/Options.php:182
+#: classes/Options.php:120
+#: classes/Options.php:121
 #: assets/js/setup.wizard.js:1
 msgid "WowStore"
 msgstr ""
 
-#: classes/Options.php:191
+#: classes/Options.php:130
 msgid "WowStore Dashboard"
 msgstr ""
 
-#: classes/Options.php:192
+#: classes/Options.php:131
 #: assets/js/wopb_dashboard_min.js:3
 msgid "Addons"
 msgstr ""
 
-#: classes/Options.php:198
+#: classes/Options.php:137
 msgid "Template Kits"
 msgstr ""
 
-#: classes/Options.php:199
+#: classes/Options.php:138
 #: assets/js/wopb_dashboard_min.js:3
 msgid "Blocks"
 msgstr ""
 
-#: classes/Options.php:208
+#: classes/Options.php:147
 #: assets/js/wopb_dashboard_min.js:3
 msgid "Revenue"
 msgstr ""
 
-#: classes/Options.php:215
+#: classes/Options.php:154
 msgid "License"
 msgstr ""
 
-#: classes/Options.php:312
+#: classes/Options.php:251
 msgid "WowStore Settings"
 msgstr ""
 
-#: classes/Options.php:324
+#: classes/Options.php:263
 msgid "Enable Product Single Builder"
 msgstr ""
 
@@ -4629,93 +4623,101 @@ msgstr ""
 msgid "Skip & Deactivate"
 msgstr ""
 
-#: includes/durbin/class-xpo.php:486
-#: includes/durbin/class-xpo.php:525
+#: includes/durbin/class-xpo.php:409
+#: includes/durbin/class-xpo.php:448
 msgid "Sorry, you are not allowed to install and activate plugins."
 msgstr ""
 
-#: includes/durbin/class-xpo.php:495
+#: includes/durbin/class-xpo.php:418
 msgid "Sorry, you are not allowed to activate plugins."
 msgstr ""
 
-#: includes/notice/class-notice.php:127
+#: includes/notice/class-notice.php:353
 msgid "Hello Bar Action performed"
 msgstr ""
 
-#: includes/notice/class-notice.php:439
-msgid "Close Banner"
+#. translators: %s: plugin brand name, from config.php.
+#: includes/notice/class-notice.php:528
+msgid "Want to help make %s even more awesome?"
 msgstr ""
 
-#: includes/notice/class-notice.php:590
-#: includes/notice/class-notice.php:608
-msgid "Spring Sale:"
+#: includes/notice/class-notice.php:532
+msgid "Allow us to collect diagnostic data and usage information. see "
 msgstr ""
 
-#: includes/notice/class-notice.php:591
-#: includes/notice/class-notice.php:609
-#: includes/notice/class-notice.php:629
-#: includes/notice/class-notice.php:647
+#: includes/notice/class-notice.php:533
+msgid "what we collect."
+msgstr ""
+
+#: includes/notice/class-notice.php:551
+msgid "Accept & Close"
+msgstr ""
+
+#: includes/notice/class-notice.php:653
+msgid "🚀 Offer Discounts, Boost Sales, and Increase Revenue"
+msgstr ""
+
+#: includes/notice/class-notice.php:654
+msgid "Looking to maximize profits? WowRevenue can help send your store's sales through the roof - It's a discount builder that ignites growth with flexible upselling, cross-selling, and downselling campaigns."
+msgstr ""
+
+#: includes/notice/class-notice.php:656
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Bundle Discount"
+msgstr ""
+
+#: includes/notice/class-notice.php:657
+msgid "Quantity Discount"
+msgstr ""
+
+#: includes/notice/class-notice.php:658
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Frequently Bought Together"
+msgstr ""
+
+#: includes/notice/class-notice.php:659
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Buy X Get Y"
+msgstr ""
+
+#: includes/notice/class-notice.php:664
+msgid "Create Discount Campaign"
+msgstr ""
+
+#: includes/notice/class-notice.php:666
+msgid "Activate WowRevenue"
+msgstr ""
+
 #: includes/notice/class-notice.php:667
-#: includes/notice/class-notice.php:685
-#: includes/notice/class-notice.php:704
-#: includes/notice/class-notice.php:722
-#: includes/notice/class-notice.php:741
-#: includes/notice/class-notice.php:759
-msgid "WowStore offers are live - Enjoy %s off on WowStore."
+msgid "Free Install WowRevenue"
 msgstr ""
 
-#: includes/notice/class-notice.php:595
-#: includes/notice/class-notice.php:613
-#: includes/notice/class-notice.php:633
-#: includes/notice/class-notice.php:651
-#: includes/notice/class-notice.php:671
-#: includes/notice/class-notice.php:689
-#: includes/notice/class-notice.php:708
-#: includes/notice/class-notice.php:726
-#: includes/notice/class-notice.php:745
-#: includes/notice/class-notice.php:763
+#: includes/notice/promos/hellobar.php:31
+#: includes/notice/promos/hellobar.php:50
+msgid "Summer Sale: Enjoy Up to 60% Off on"
+msgstr ""
+
+#: includes/notice/promos/notice.php:72
+#: includes/notice/promos/notice.php:94
+#: includes/notice/promos/notice.php:116
+#: includes/notice/promos/notice.php:138
+msgid " Summer Sale Offer is Live - Enjoy %s Off NOW."
+msgstr ""
+
+#: includes/notice/promos/notice.php:76
+#: includes/notice/promos/notice.php:98
+#: includes/notice/promos/notice.php:120
+#: includes/notice/promos/notice.php:142
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Upgrade Now"
 msgstr ""
 
-#: includes/notice/class-notice.php:628
-#: includes/notice/class-notice.php:646
-msgid "Flash Sale:"
+#: includes/notice/promos/plugin-meta.php:27
+msgid "Summer Sale - Up to 60% OFF"
 msgstr ""
 
-#: includes/notice/class-notice.php:666
-#: includes/notice/class-notice.php:684
-msgid "Surprise Sale:"
-msgstr ""
-
-#: includes/notice/class-notice.php:703
-#: includes/notice/class-notice.php:721
-msgid "Massive Sale:"
-msgstr ""
-
-#: includes/notice/class-notice.php:740
-#: includes/notice/class-notice.php:758
-msgid "Final Hours Sale:"
-msgstr ""
-
-#: includes/notice/class-notice.php:1130
-msgid "Want to help make WowStore even more awesome?"
-msgstr ""
-
-#: includes/notice/class-notice.php:1132
-msgid "Allow us to collect diagnostic data and usage information. see "
-msgstr ""
-
-#: includes/notice/class-notice.php:1133
-msgid "what we collect."
-msgstr ""
-
-#: includes/notice/class-notice.php:1152
-msgid "Accept & Close"
-msgstr ""
-
-#: includes/notice/class-notice.php:1202
-msgid "Invalid request."
+#: includes/notice/templates/split-countdown.php:124
+msgid "Close Banner"
 msgstr ""
 
 #: assets/js/blocks-placeholder.js:10
@@ -6083,6 +6085,10 @@ msgid "Category"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
+msgid "Brand"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
 msgid "Cart"
 msgstr ""
 
@@ -6168,6 +6174,22 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Category Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Brand Typography"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Brand Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Brand Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Brand Settings"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -6300,6 +6322,14 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Image Flip"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Above Title"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Below Title"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -8135,6 +8165,10 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "SKU Label"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Brand Label"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -10083,26 +10117,6 @@ msgid "Enjoying WowStore? Give us a 5 Star review to support our ongoing work."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Flash Sale - Enjoy Up to 55% Off on"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "WowStore Pro"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Surprise Sale - Enjoy Up to 60% Off on"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Massive Sale - Enjoy Up to 55% Off on"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Final Hour - Enjoy Up to 60% Off on"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
 msgid "Grab Now"
 msgstr ""
 
@@ -10235,10 +10249,6 @@ msgid "Install"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Bundle Discount"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
 msgid "Bundle products easily to boost profits and attract more buyers."
 msgstr ""
 
@@ -10251,15 +10261,7 @@ msgid "Offer quantity discounts to encourage larger purchases and boost sales."
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1
-msgid "Buy X Get Y"
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
 msgid "Attract buyers with unbeatable BOGO deals on best-selling products."
-msgstr ""
-
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Frequently Bought Together"
 msgstr ""
 
 #: assets/js/wopb_dashboard_min.js:1

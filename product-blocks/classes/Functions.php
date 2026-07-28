@@ -1619,7 +1619,7 @@ class Functions {
 			'arrival'    => 'New Arrival',
 		);
 
-		$arr = explode( '|', $actionText );
+		$arr = explode( '|', is_string( $actionText ) ? $actionText : '' );
 		if ( count( $arr ) == 7 ) {
 			foreach ( array_keys( $filterData ) as $k => $v ) {
 				$filterData[ $v ] = $arr[ $k ];
@@ -1627,10 +1627,12 @@ class Functions {
 		}
 		$count = $noAjax ? 1 : 0;
 
+		$actions = $this->filter_item_values( $action );
+
 		$html .= '<ul ';
 		$html .= $filterMobile ? 'class="wopb-flex-menu"' : '';
-		$html .= ' data-name="' . ( $filterMobileText ? $filterMobileText : '&nbsp;' ) . '">';
-		if ( $filterText && strlen( $action ) <= 2 ) {
+		$html .= ' data-name="' . ( $filterMobileText ? esc_attr( $filterMobileText ) : '&nbsp;' ) . '">';
+		if ( $filterText && ! $actions ) {
 			$class = '';
 			if ( $count == 0 ) {
 				$count = 1;
@@ -1643,8 +1645,7 @@ class Functions {
 		}
 		if ( $filterType == 'product_cat' ) {
 			$cat = $this->taxonomy( 'product_cat' );
-			foreach ( json_decode( $filterCat ) as $val ) {
-				$val   = isset( $val->value ) ? $val->value : $val;
+			foreach ( $this->filter_item_values( $filterCat ) as $val ) {
 				$class = '';
 				if ( $count == 0 ) {
 					$count = 1;
@@ -1657,8 +1658,7 @@ class Functions {
 			}
 		} else {
 			$tag = $this->taxonomy( 'product_tag' );
-			foreach ( json_decode( $filterTag ) as $val ) {
-				$val   = isset( $val->value ) ? $val->value : $val;
+			foreach ( $this->filter_item_values( $filterTag ) as $val ) {
 				$class = '';
 				if ( $count == 0 ) {
 					$count = 1;
@@ -1671,22 +1671,55 @@ class Functions {
 			}
 		}
 
-		if ( strlen( $action ) > 2 ) {
-			foreach ( json_decode( $action ) as $val ) {
-				$class = '';
-				if ( $count == 0 ) {
-					$count = 1;
-					$class = 'class="filter-active"';
-				}
-				$html .= '<li class="filter-item">';
-				$html .= '<a ' . $class . ' data-taxonomy="custom_action#' . esc_attr( $val ) . '" href="#">';
-				$html .= esc_html( $filterData[ $val ] );
-				$html .= '</a></li>';
+		foreach ( $actions as $val ) {
+			$class = '';
+			if ( $count == 0 ) {
+				$count = 1;
+				$class = 'class="filter-active"';
 			}
+			$html .= '<li class="filter-item">';
+			$html .= '<a ' . $class . ' data-taxonomy="custom_action#' . esc_attr( $val ) . '" href="#">';
+			$html .= esc_html( isset( $filterData[ $val ] ) ? $filterData[ $val ] : $val );
+			$html .= '</a></li>';
 		}
 
 		$html .= '</ul>';
 		return $html;
+	}
+
+	/**
+	 * Normalize a filter attribute (JSON string, array or object) to a flat
+	 * list of scalar values, so that malformed or unexpected input can never
+	 * reach the output buffer as an object/array.
+	 *
+	 * @since v.4.5.0
+	 * @param mixed $data Raw attribute value.
+	 * @return array List of string values.
+	 */
+	private function filter_item_values( $data ) {
+		if ( is_string( $data ) ) {
+			$data = json_decode( $data );
+		}
+		if ( is_object( $data ) ) {
+			$data = (array) $data;
+		}
+		if ( ! is_array( $data ) ) {
+			return array();
+		}
+
+		$values = array();
+		foreach ( $data as $val ) {
+			if ( is_object( $val ) ) {
+				$val = isset( $val->value ) ? $val->value : null;
+			} elseif ( is_array( $val ) ) {
+				$val = isset( $val['value'] ) ? $val['value'] : null;
+			}
+			if ( is_scalar( $val ) ) {
+				$values[] = (string) $val;
+			}
+		}
+
+		return $values;
 	}
 
 

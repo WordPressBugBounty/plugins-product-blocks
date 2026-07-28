@@ -8,6 +8,7 @@
 namespace WOPB;
 
 use WOPB\Includes\Durbin\Xpo;
+use WOPB\Includes\Notice\Notice;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -72,18 +73,6 @@ class Options {
 	 * @return NULL
 	 */
 	public function plugin_action_links_callback( $links ) {
-		$offer_config = array(
-			array(
-				'start'  => '2026-07-06 00:00 Asia/Dhaka',
-				'end'    => '2026-08-01 23:59 Asia/Dhaka',
-				'text'   => __(
-					'Summer Sale - Up to 60% OFF',
-					'product-blocks'
-				),
-				'utmKey' => 'summer_db',
-			),
-		);
-
 		$setting_link = array(
 			'wopb_settings' => '<a href="' . esc_url( admin_url( 'admin.php?page=wopb-settings#settings' ) ) . '">' . esc_html__( 'Settings', 'product-blocks' ) . '</a>',
 		);
@@ -100,22 +89,15 @@ class Options {
 				$url  = 'https://account.wpxpo.com/checkout/?edd_license_key=' . $license_key;
 			} else {
 
+				// Evergreen default. Not a promo, so it stays here rather than in
+				// includes/notice/promos/ — a live entry there simply overrides it.
 				$text = esc_html__( 'Upgrade to Pro', 'product-blocks' );
 				$url  = Xpo::generate_utm_link();
 
-				foreach ( $offer_config as $offer ) {
-					$current_time = gmdate( 'U' );
-					$notice_start = gmdate( 'U', strtotime( $offer['start'] ) );
-					$notice_end   = gmdate( 'U', strtotime( $offer['end'] ) );
-					if ( $current_time >= $notice_start && $current_time <= $notice_end ) {
-						$url  = Xpo::generate_utm_link(
-							array(
-								'utmKey' => $offer['utmKey'],
-							)
-						);
-						$text = $offer['text'];
-						break;
-					}
+				$promo = Notice::get_active_promo( 'plugin-meta' );
+				if ( $promo ) {
+					$text = $promo['text'];
+					$url  = $promo['url'];
 				}
 			}
 

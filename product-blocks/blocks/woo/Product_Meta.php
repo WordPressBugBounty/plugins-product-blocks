@@ -13,10 +13,12 @@ class Product_Meta {
 		return array(
 			'metaSku'       => true,
 			'metaCategory'  => true,
+			'metaBrand'     => false,
 			'metaTag'       => true,
 			'metaLabelShow' => true,
 			'labelSku'      => 'sku : ',
 			'labelCat'      => 'category :  ',
+			'labelBrand'    => 'brand : ',
 			'labelTag'      => 'tag : ',
 			'currentPostId' => '',
 		);
@@ -79,6 +81,23 @@ class Product_Meta {
 					}
 						$content     .= '<div class="wopb-meta-list-cat meta-block__value">';
 							$content .= $this->list_items( $terms, 'product_cat' );
+						$content     .= '</div>';
+							$content .= '</div>';
+				}
+			}
+			if ( $attr['metaBrand'] && taxonomy_exists( 'product_brand' ) ) {
+				// intentionally did not use $product->get_brand_ids
+				// because it is a recent function of woocommerce 10.3
+				// many users are still using older versions.
+				$brand_terms = get_the_terms( $product->get_id(), 'product_brand' );
+				$brand_terms = ( ! empty( $brand_terms ) && ! is_wp_error( $brand_terms ) ) ? wp_list_pluck( $brand_terms, 'term_id' ) : array();
+				if ( count( $brand_terms ) ) {
+					$content .= '<div class="wopb-meta-brand">';
+					if ( $attr['metaLabelShow'] ) {
+							$content .= '<div class="wopb-meta-label-brand meta-block__label">' . esc_html( $attr['labelBrand'] ) . '</div>';
+					}
+						$content     .= '<div class="wopb-meta-list-brand meta-block__value">';
+							$content .= $this->list_items( $brand_terms, 'product_brand' );
 						$content     .= '</div>';
 							$content .= '</div>';
 				}

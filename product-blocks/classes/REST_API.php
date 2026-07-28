@@ -300,6 +300,9 @@ class REST_API {
 				case 'meta':
 					$post_data['sku']      = $products->get_sku();
 					$post_data['category'] = '<div className="meta-block__cat">' . wp_kses_post( $this->list_items( $products->get_category_ids(), 'product_cat' ) ) . '</div>';
+					$brand_terms           = taxonomy_exists( 'product_brand' ) ? get_the_terms( $products->get_id(), 'product_brand' ) : array();
+					$brand_terms           = ( ! empty( $brand_terms ) && ! is_wp_error( $brand_terms ) ) ? wp_list_pluck( $brand_terms, 'term_id' ) : array();
+					$post_data['brand']    = '<div className="meta-block__brand">' . wp_kses_post( $this->list_items( $brand_terms, 'product_brand' ) ) . '</div>';
 					$post_data['tag']      = '<div className="meta-block__tag">' . wp_kses_post( $this->list_items( $products->get_tag_ids(), 'product_tag' ) ) . '</div>';
 					break;
 				case 'price':

@@ -5,9 +5,9 @@ global $wp_query;
 $query_vars        = $wp_query->query_vars;
 $queried_object    = get_queried_object();
 $page_post_id      = ! empty( $attr['currentPostId'] )
-	? sanitize_html_class( $attr['currentPostId'] )
-	: wopb_function()->get_page_post_id( wopb_function()->get_ID(), $attr['blockId'] );
-$page_post_id      = $page_post_id ? $page_post_id : ( ! empty( $attr['page_post_id'] ) ? $attr['page_post_id'] : '' );
+	? absint( $attr['currentPostId'] )
+	: absint( wopb_function()->get_page_post_id( wopb_function()->get_ID(), $attr['blockId'] ) );
+$page_post_id      = $page_post_id ? $page_post_id : ( ! empty( $attr['page_post_id'] ) ? absint( $attr['page_post_id'] ) : '' );
 $filter_attributes = array();
 if ( isset( $attr['product_filters'] ) ) {
 	$filter_attributes['product_filters'] = $attr['product_filters'];
@@ -29,7 +29,7 @@ if ( isset( $query_vars['post__not_in'] ) ) {
 	$filter_attributes['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
 }
 
-$data_filter_attributes = ' data-filter-attributes=' . wp_json_encode( $filter_attributes );
+$data_filter_attributes = ' data-filter-attributes="' . esc_attr( wp_json_encode( $filter_attributes ) ) . '"';
 $wrapper_main_content  .= '<div data-archive-builder="'
 							. ( ( is_archive() || is_search() || is_product_taxonomy() || is_product_tag() ) && ! is_shop() ) . '"
 							 data-search-block="' . is_search() . '"

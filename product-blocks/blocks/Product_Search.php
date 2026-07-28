@@ -72,7 +72,7 @@ class Product_Search {
 			}
 
 			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . '">';
-				$wraper_before .= '<div class="wopb-block-wrapper wopb-front-block-wrapper wopb-product-search-block " data-blockid="' . esc_attr( $attr['blockId'] ) . '" data-postid = "' . $page_post_id . '" data-blockname="product-blocks_' . esc_attr( $block_name ) . '">';
+				$wraper_before .= '<div class="wopb-block-wrapper wopb-front-block-wrapper wopb-product-search-block " data-blockid="' . esc_attr( $attr['blockId'] ) . '" data-postid="' . esc_attr( absint( $page_post_id ) ) . '" data-blockname="product-blocks_' . esc_attr( $block_name ) . '">';
 
 					$wraper_before     .= '<div class="wopb-search-section">';
 						$wraper_before .= '<form action="javascript:" ' . $form_action . '>';

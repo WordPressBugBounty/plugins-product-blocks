@@ -113,7 +113,7 @@ class Filter {
 		}
 		$is_active = Xpo::is_lc_active();
 
-		$page_post_id = ! empty( $attr['currentPostId'] ) ? $attr['currentPostId'] : wopb_function()->get_ID();
+		$page_post_id = ! empty( $attr['currentPostId'] ) ? absint( $attr['currentPostId'] ) : absint( wopb_function()->get_ID() );
 		if ( ( $is_active || $is_visible ) && $post = get_post( $page_post_id ) ) {
 			$is_mobile           = wp_is_mobile();
 			$html                = $wraper_before = '';
@@ -133,7 +133,7 @@ class Filter {
 			$attr['blockTarget'] = ! empty( $attr['blockTarget'] ) ? sanitize_html_class( $attr['blockTarget'] ) : '';
 
 			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
-				$wraper_before .= '<div class="wopb-product-wrapper wopb-filter-block ' . $wrapper_class . '" data-postid = "' . $page_post_id . '" data-block-target = "' . $attr['blockTarget'] . '" data-current-url="' . get_pagenum_link() . '">';
+				$wraper_before .= '<div class="wopb-product-wrapper wopb-filter-block ' . esc_attr( $wrapper_class ) . '" data-postid="' . esc_attr( $page_post_id ) . '" data-block-target="' . esc_attr( $attr['blockTarget'] ) . '" data-current-url="' . esc_url( get_pagenum_link() ) . '">';
 
 			if ( $attr['filterHeading'] || $is_mobile ) {
 				$html     .= '<div class="wopb-filter-title-section">';
@@ -790,7 +790,9 @@ class Filter {
             WHERE meta_key = '_price'
         "
 		);
-		return ceil( (float) $max_price );
+		// filter for code snippet and custom code to modify the max price value.
+		// price range slider max value.
+		return apply_filters( 'wopb_filter_max_price', ceil( (float) $max_price ) );
 	}
 
 

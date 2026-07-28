@@ -2,9 +2,9 @@
 Contributors: wpxpo, anik4e, jakirhasan
 Tags: woocommerce builder, woocommerce blocks, product filter, variation swatches, woocommerce compare
 Requires at least: 6.8
-Tested up to: 7.1
+Tested up to: 7.0.2
 Requires PHP: 7.4
-Stable tag: 4.4.24
+Stable tag: 4.5.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -234,6 +234,13 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 9. WooCommerce Compare
 
 == Changelog ==
+= 4.5.0 – 28 July 2026 =
+* New: Brand option in the Product Meta block, with label and styling controls in the block editor.
+* New: New 'wopb_filter_max_price' filter to override the Filter block's maximum price value.
+* Fix: Security improvements in Product Grid and Product List filter tabs
+* Fix: Security improvements in Product Filter, Product Search, Pagination and Load More
+* Improvement: Refactored code for better maintainability.
+
 = 4.4.24 – 07 July 2026 =
 * Fix: Loop off now works correctly for self hosted videos 
 * Fix: Start and End time now works correctly for self hosted videos 

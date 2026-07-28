@@ -347,13 +347,6 @@ class Dashboard {
 					);
 					break;
 
-				case 'helloBarAction':
-					set_transient( 'wopb_helloBar', sanitize_text_field( $post['helloData'] ), 1296000 ); // 15 days
-					return array(
-						'success' => true,
-						'message' => __( 'Notice is removed.', 'product-blocks' ),
-					);
-				break;
 				case 'wopb-size-chart':
 					$post_per_page = 10;
 					$data          = array();
