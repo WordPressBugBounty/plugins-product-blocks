@@ -15,8 +15,21 @@ function wopb_builder_init() {
 
 if ( wopb_function()->get_setting( 'wopb_builder' ) == 'true' ) {
 	add_action( 'after_setup_theme', 'wopb_gallery_image_support' );
+	function wopb_should_enable_wc_gallery_slider() {
+		if ( class_exists( 'Flatsome_Default' ) ) {
+			return false;
+		}
+
+		$theme = wp_get_theme();
+		if ( $theme && $theme->get_template() === 'bridge' ) {
+			return false;
+		}
+
+		return true;
+	}
+
 	function wopb_gallery_image_support() {
-		if ( ! class_exists( 'Flatsome_Default' ) ) {
+		if ( wopb_should_enable_wc_gallery_slider() ) {
 			add_theme_support( 'wc-product-gallery-slider' );
 		}
 	}
