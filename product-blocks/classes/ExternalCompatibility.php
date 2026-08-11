@@ -33,6 +33,9 @@ class ExternalCompatibility {
 	public function __construct() {
 		$this->init_wopb_spectra_compatibility();
 		$this->init_wopb_wp_rocket_css_exclusion();
+		$this->init_wopb_wp_rocket_js_exclusion();
+		$this->init_wopb_wp_rocket_style_compatibility();
+		add_action( 'wopb_save_settings', array( $this, 'purge_wp_rocket_cache_on_settings_save' ) );
 	}
 
 	// ========================================
@@ -206,6 +209,24 @@ class ExternalCompatibility {
 	}
 
 	/**
+	 * Check if WP Rocket is active.
+	 *
+	 * @since v.1.0.0
+	 * @return bool
+	 */
+	private function is_wp_rocket_active() {
+		if ( defined( 'WP_ROCKET_VERSION' ) || function_exists( 'rocket_clean_domain' ) ) {
+			return true;
+		}
+
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		return is_plugin_active( 'wp-rocket/wp-rocket.php' );
+	}
+
+	/**
 	 * WP Rocket CSS exclusion for WOPB
 	 *
 	 * @since v.1.0.0
@@ -217,13 +238,8 @@ class ExternalCompatibility {
 		if ( 'yes' !== $wprocket_cache_exclusion ) {
 			return;
 		}
-		// Load plugin.php if not already loaded
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
 
-		// Check if WP Rocket is active
-		if ( ! is_plugin_active( 'wp-rocket/wp-rocket.php' ) ) {
+		if ( ! $this->is_wp_rocket_active() ) {
 			return;
 		}
 
@@ -238,6 +254,29 @@ class ExternalCompatibility {
 			}
 		);
 
+		add_filter(
+			'rocket_rucss_safelist',
+			function ( $selectors ) {
+				$selectors[] = '.wopb-product';
+				$selectors[] = '.productx-global-style';
+				$selectors[] = '.wopb-(.*)';
+				$selectors[] = '[class^="wopb-"]';
+				$selectors[] = '.wp-block-navigation__responsive-container';
+				$selectors[] = '.wp-block-navigation__responsive-container.is-menu-open';
+				$selectors[] = '.wp-block-navigation__responsive-close';
+				$selectors[] = '.wp-block-navigation__responsive-dialog';
+				$selectors[] = '.wp-block-navigation__responsive-container-content';
+				$selectors[] = '.wp-block-navigation__responsive-container-open';
+				$selectors[] = '.wp-block-navigation__responsive-container-close';
+				$selectors[] = '.wp-block-navigation__overlay-container';
+				$selectors[] = '.has-modal-open';
+				$selectors[] = 'html.has-modal-open';
+				$selectors[] = '.disable-default-overlay';
+
+				return $selectors;
+			}
+		);
+
 		// Exclude inline styles from Remove Unused CSS
 		add_filter(
 			'rocket_rucss_inline_content_exclusions',
@@ -245,6 +284,7 @@ class ExternalCompatibility {
 				$excluded_inline[] = 'wopb-post-(.*?)';
 				$excluded_inline[] = 'productx-global-style';
 				$excluded_inline[] = 'wopb-(.*)';
+				$excluded_inline[] = 'wp-block-navigation__responsive-container';
 				return $excluded_inline;
 			}
 		);
@@ -259,5 +299,129 @@ class ExternalCompatibility {
 				return $excluded_files;
 			}
 		);
+	}
+
+	/**
+	 * WP Rocket JS exclusion for WOPB
+	 *
+	 * @since v.1.0.0
+	 * @return void
+	 */
+	public function init_wopb_wp_rocket_js_exclusion() {
+		$wprocket_cache_exclusion = wopb_function()->get_setting( 'wprocket_cache_exclusion' );
+
+		if ( 'yes' !== $wprocket_cache_exclusion ) {
+			return;
+		}
+
+		if ( ! $this->is_wp_rocket_active() ) {
+			return;
+		}
+
+		$js_exclusions = function ( $excluded_files ) {
+			$excluded_files[] = 'wopb-slick-script';
+			$excluded_files[] = 'wopb-slick-script-js';
+			$excluded_files[] = 'wopb-script';
+			$excluded_files[] = 'wopb-script-js';
+			$excluded_files[] = 'wopb-filter-script';
+			$excluded_files[] = 'wopb-filter-script-js';
+			$excluded_files[] = 'product-blocks/assets/js/slick.min.js';
+			$excluded_files[] = 'product-blocks/assets/js/wopb.js';
+			$excluded_files[] = 'product-blocks/assets/js/filter.js';
+			$excluded_files[] = '/wp-content/plugins/product-blocks/assets/js/slick.min.js';
+			$excluded_files[] = '/wp-content/plugins/product-blocks/assets/js/wopb.js';
+			$excluded_files[] = '/wp-content/plugins/product-blocks/assets/js/filter.js';
+			$excluded_files[] = '/wp-content/plugins/product-blocks/(.*)\.js';
+			$excluded_files[] = '/wp-content/plugins/product-blocks-pro/(.*)\.js';
+			$excluded_files[] = 'product-blocks/assets/js/.*\.js';
+			$excluded_files[] = 'product-blocks-pro/(.*)\.js';
+
+			return array_unique( $excluded_files );
+		};
+
+		$wp_script_module_exclusions = function ( $excluded_files ) use ( $js_exclusions ) {
+			$excluded_files = $js_exclusions( $excluded_files );
+
+			$excluded_files[] = '/wp-includes/js/jquery/jquery.min.js';
+			$excluded_files[] = '/wp-includes/js/jquery/jquery.js';
+			$excluded_files[] = '/wp-includes/js/jquery/jquery-migrate.min.js';
+			$excluded_files[] = '/wp-includes/js/jquery/jquery-migrate.js';
+			$excluded_files[] = '/jquery-?[0-9.]*(.min|.slim|.slim.min)?.js';
+			$excluded_files[] = '/jquery-migrate(.min)?.js';
+			$excluded_files[] = '/wp-includes/js/dist/script-modules/(.*)\.js';
+			$excluded_files[] = '@wordpress/(.*)-js-module';
+
+			return array_unique( $excluded_files );
+		};
+
+		add_filter( 'rocket_exclude_js', $js_exclusions );
+		add_filter( 'rocket_exclude_defer_js', $wp_script_module_exclusions );
+		add_filter( 'rocket_delay_js_exclusions', $wp_script_module_exclusions );
+		add_filter(
+			'rocket_cdn_reject_files',
+			function ( $excluded_files ) {
+				$excluded_files[] = '/wp-includes/js/dist/script-modules/(.*)\.js';
+
+				return $excluded_files;
+			}
+		);
+	}
+
+	/**
+	 * WP Rocket style compatibility for WordPress blocks inside WOPB templates
+	 *
+	 * @since v.1.0.0
+	 * @return void
+	 */
+	public function init_wopb_wp_rocket_style_compatibility() {
+		$wprocket_cache_exclusion = wopb_function()->get_setting( 'wprocket_cache_exclusion' );
+
+		if ( 'yes' !== $wprocket_cache_exclusion ) {
+			return;
+		}
+
+		if ( ! $this->is_wp_rocket_active() ) {
+			return;
+		}
+
+		add_action(
+			'init',
+			function () {
+				wp_enqueue_block_style(
+					'core/navigation',
+					array(
+						'handle' => 'wopb-core-navigation-compat',
+						'src'    => WOPB_URL . 'assets/css/core-navigation-compat.css',
+						'path'   => WOPB_PATH . 'assets/css/core-navigation-compat.css',
+						'ver'    => WOPB_VER,
+					)
+				);
+			}
+		);
+	}
+
+	/**
+	 * Purge WP Rocket cache when WowStore WP Rocket compatibility setting is saved.
+	 *
+	 * @since v.1.0.0
+	 * @param string $key Saved settings key/group.
+	 * @return void
+	 */
+	public function purge_wp_rocket_cache_on_settings_save( $key ) {
+		if ( 'general' !== $key ) {
+			return;
+		}
+
+		if ( 'yes' !== wopb_function()->get_setting( 'wprocket_cache_exclusion' ) ) {
+			return;
+		}
+
+		if ( function_exists( 'rocket_clean_domain' ) ) {
+			rocket_clean_domain();
+		}
+
+		if ( function_exists( 'rocket_clean_minify' ) ) {
+			rocket_clean_minify();
+		}
 	}
 }

@@ -1,0 +1,6 @@
+@media (max-width: 599px) {
+	.wp-block-navigation__responsive-container.disable-default-overlay .wp-block-navigation__responsive-close {
+		max-width: 70%;
+		margin-inline-start: 0;
+	}
+}

@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, product filter, variation swatche
 Requires at least: 6.8
 Tested up to: 7.0.2
 Requires PHP: 7.4
-Stable tag: 4.5.1
+Stable tag: 4.5.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -234,6 +234,9 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 9. WooCommerce Compare
 
 == Changelog ==
+= 4.5.2 - 11 August 2026 =
+* Fix: WP Rocket chaching plugin compatility with Wordpress Blocks
+
 = 4.5.1 - 03 August 2026 =
 * Fix: Bridge theme slider compatibility
 
