@@ -14,6 +14,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 $wrapper_class    = $prefix . '-notice-wrapper';
 $image_wrap_class = $prefix . '-image-notice-wrapper';
 $banner_class     = $prefix . '-image-banner';
@@ -76,3 +78,5 @@ $scope            = '.' . $wrapper_class . '.' . $image_wrap_class;
 		</a>
 	</div>
 </div>
+
+<?php // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals ?>

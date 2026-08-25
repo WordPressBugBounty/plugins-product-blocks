@@ -1,6 +1,8 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 $order_id = absint( get_query_var( 'order-received' ) );
 $order    = wc_get_order( $order_id );
 
@@ -41,6 +43,7 @@ if ( $order ) {
 	<?php
 } else {
 	?>
-	<p class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received"><?php echo apply_filters( 'woocommerce_thankyou_order_received_text', esc_html__( 'Thank you. Your order has been received.', 'product-blocks' ), null );//phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+	<p class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received"><?php echo apply_filters( 'woocommerce_thankyou_order_received_text', esc_html__( 'Thank you. Your order has been received.', 'product-blocks' ), null ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 	<?php
 }
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

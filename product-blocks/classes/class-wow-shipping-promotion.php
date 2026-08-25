@@ -48,8 +48,8 @@ class WowShippingPromotion {
 			return;
 		}
 
-		$GLOBALS['wtrs_promotion'] = array( 'init' => true );
-		$hooks                     = apply_filters( 'wtrs_promotion_hooks', array() );
+		$GLOBALS['wtrs_promotion'] = array( 'init' => true ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- shared cross-plugin coordination key used by other WPXPO plugins bundling this same module.
+		$hooks                     = apply_filters( 'wtrs_promotion_hooks', array() ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- shared hook name used across WPXPO plugins bundling this same module.
 
 		if ( ! is_array( $hooks ) ) {
 			return;
@@ -236,9 +236,9 @@ class WowShippingPromotion {
 		global $pagenow;
 		$post_type = get_post_type();
 		if ( empty( $post_type ) ) {
-			$post_type = sanitize_text_field( wp_unslash( $_GET['post_type'] ?? '' ) );
+			$post_type = sanitize_text_field( wp_unslash( $_GET['post_type'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
-		$action = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) );
+		$action = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		$is_edit_product_page = 'post.php' === $pagenow && 'edit' === $action;
 		$is_new_product_page  = 'post-new.php' === $pagenow;
@@ -477,7 +477,7 @@ class WowShippingPromotion {
 	 * @return void
 	 */
 	private function render_promotion_notice( $id, $type, $message, $style = '', $inline = true, $button_labels = array() ) {
-		$GLOBALS['wtrs_promotion'][ $type ] = true;
+		$GLOBALS['wtrs_promotion'][ $type ] = true; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- shared cross-plugin coordination key used by other WPXPO plugins bundling this same module.
 
 		$button_labels = wp_parse_args(
 			is_array( $button_labels ) ? $button_labels : array(),

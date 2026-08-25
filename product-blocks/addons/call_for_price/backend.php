@@ -38,6 +38,7 @@ if ( ! function_exists( 'wopb_call_for_price_init' ) ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_call_price_opt', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_call_price_opt( $config ) {
 	$arr = array(
 		'wopb_call_for_price' => array(

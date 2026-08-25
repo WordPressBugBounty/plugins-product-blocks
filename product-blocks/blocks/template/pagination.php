@@ -1,5 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
+
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
 global $wpdb;
 global $wp_query;
 $query_vars        = $wp_query->query_vars;
@@ -42,3 +44,4 @@ $wrapper_main_content  .= '<div data-archive-builder="'
 							 ' . wopb_function()->get_builder_attr() . $data_filter_attributes . '>';
 $wrapper_main_content  .= wopb_function()->pagination( $pageNum, $attr['paginationNav'], $attr['paginationText'], $attr );
 $wrapper_main_content  .= '</div>';
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

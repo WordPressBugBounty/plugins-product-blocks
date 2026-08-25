@@ -165,7 +165,7 @@ class Options {
 			);
 		}
 
-		do_action( 'wowstore_menu' );
+		do_action( 'wowstore_menu' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- established hook name, renaming would break existing integrations.
 
 		$pro_link             = '';
 		$pro_link_text        = '';
@@ -188,7 +188,7 @@ class Options {
 					'utmKey' => $menu_pro_text_period ? 'new_year_sale' : 'sub_menu',
 				)
 			);
-			$pro_link_text = $menu_pro_text_period ? __( 'New Year Offer!', 'ultimate-post' ) : __( 'Upgrade to Pro', 'ultimate-post' );
+			$pro_link_text = $menu_pro_text_period ? __( 'New Year Offer!', 'product-blocks' ) : __( 'Upgrade to Pro', 'product-blocks' );
 
 		}
 

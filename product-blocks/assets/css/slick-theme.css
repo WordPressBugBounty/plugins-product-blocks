@@ -184,3 +184,7 @@
     opacity: .75;
     color: black;
 }
+/* A weird issue from wordpress version 7.1 */
+.editor-styles-wrapper { 
+    color: inherit;
+}

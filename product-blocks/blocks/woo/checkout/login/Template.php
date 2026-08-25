@@ -17,6 +17,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 if ( is_user_logged_in() || 'no' === get_option( 'woocommerce_enable_checkout_login_reminder' ) ) {
 	return;
 }
@@ -32,7 +34,7 @@ $message = esc_html__( 'If you have shopped with us before, please enter your de
 	<div class="woocommerce-form woocommerce-form-login login" <?php echo ( $hidden ) ? 'style="display:none;"' : ''; ?>>
 
 		<?php do_action( 'woocommerce_login_form_start' ); ?>
-		<?php echo ( $message ) ? wpautop( wptexturize( $message ) ) : ''; // @codingStandardsIgnoreLine ?>
+		<?php echo ( $message ) ? wpautop( wptexturize( $message ) ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 		<span class="wopb-form-error"></span>
 		<p class="form-row form-row-first">
@@ -65,3 +67,5 @@ $message = esc_html__( 'If you have shopped with us before, please enter your de
 
 	</div>
 </div>
+
+<?php // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals ?>

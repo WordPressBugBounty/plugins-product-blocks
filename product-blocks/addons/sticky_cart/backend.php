@@ -29,6 +29,7 @@ function wopb_sticky_cart_init( $config ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_sticky_cart_opt', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_sticky_cart_opt( $config ) {
 	$is_active = wopb_function()->get_setting( 'is_lc_active' );
 	$arr       = array(

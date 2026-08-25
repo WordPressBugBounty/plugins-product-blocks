@@ -47,6 +47,7 @@ class Cart_Total {
 
 				ob_start();
 				require_once WOPB_PATH . 'blocks/woo/cart_total/Template.php';
+				do_action( 'woocommerce_after_cart_totals' );
 				$content .= ob_get_clean();
 
 				$wraper_after .= '</div>';

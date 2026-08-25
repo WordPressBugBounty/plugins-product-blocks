@@ -29,6 +29,7 @@ function wopb_sales_notification_config( $config ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_sales_notification_settings', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_sales_notification_settings( $config ) {
 	$arr = array(
 		'wopb_sales_notification' => array(
@@ -130,7 +131,7 @@ function get_sales_notification_settings( $config ) {
 											'label'   => __( 'Page', 'product-blocks' ),
 											'display' => 'inline-box',
 											'options' => array(
-												'exclude' => __( 'Exclude Selected Page', 'product-blocks' ),
+												'exclude' => __( 'Exclude Selected Page', 'product-blocks' ), // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- UI option list, not a query argument.
 												'include' => __( 'include Selected Page', 'product-blocks' ),
 												'all'     => __( 'All Selected Page', 'product-blocks' ),
 											),
@@ -307,7 +308,7 @@ function wopb_get_all_pages_list() {
 		array(
 			'sort_column' => 'post_title',
 			'post_status' => 'publish',
-			'exclude'     => $woo_page_ids,
+			'exclude'     => $woo_page_ids, // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- excludes a small, known set of WooCommerce-managed page IDs from an admin dropdown.
 		)
 	);
 	foreach ( $pages as $page ) {

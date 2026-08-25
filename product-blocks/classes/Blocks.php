@@ -75,6 +75,9 @@ class Blocks {
 
 		$cart_type = isset( $_POST['cartType'] ) ? sanitize_text_field( wp_unslash( $_POST['cartType'] ) ) : '';
 
+		if ( $product_id && ! wopb_function()->can_view_product( $product_id ) ) {
+			wp_send_json_error( __( 'This product is not available.', 'product-blocks' ) );
+		}
 		if ( $product_id ) {
 			global $woocommerce;
 			if ( $cart_type == 'buy_now' ) {
@@ -217,9 +220,10 @@ class Blocks {
 		$blockName     = str_replace( '_', '/', $blockRaw );
 		$widgetBlockId = isset( $_POST['widgetBlockId'] ) ? sanitize_text_field( wp_unslash( $_POST['widgetBlockId'] ) ) : '';
 		if ( $paged && $blockId && $postId && $blockName ) {
-			$post             = get_post( $postId );
-			$filterAttributes = wopb_function()->rest_sanitize_params( wp_unslash( ! empty( $_POST['filterAttributes'] ) && is_array( $_POST['filterAttributes'] ) ? $_POST['filterAttributes'] : array() ) );
-			$params           = array(
+			$post                  = get_post( $postId );
+			$raw_filter_attributes = isset( $_POST['filterAttributes'] ) ? wp_unslash( $_POST['filterAttributes'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$filterAttributes      = wopb_function()->rest_sanitize_params( ! empty( $raw_filter_attributes ) && is_array( $raw_filter_attributes ) ? $raw_filter_attributes : array() );
+			$params                = array(
 				'filterAttributes' => $filterAttributes,
 				'ajax_source'      => 'pagination',
 			);

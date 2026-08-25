@@ -86,7 +86,7 @@ class Notice {
 	private static function fail_in_dev( $message ) {
 		if ( ( defined( 'WP_DEBUG' ) && WP_DEBUG ) || defined( 'XPO_DEV_MODE' ) ) {
 			$config = self::config();
-			throw new \RuntimeException( $config['brand_name'] . ' promos: ' . $message );
+			throw new \RuntimeException( esc_html( $config['brand_name'] ) . ' promos: ' . esc_html( $message ) );
 		}
 	}
 
@@ -188,7 +188,7 @@ class Notice {
 		}
 
 		$current_time = gmdate( 'U' );
-		$start = defined( 'XPO_DEV_MODE' ) ? '2026-01-01 00:00 Asia/Dhaka' : $notice['start'];
+		$start        = defined( 'XPO_DEV_MODE' ) ? '2026-01-01 00:00 Asia/Dhaka' : $notice['start'];
 		$notice_start = gmdate( 'U', strtotime( $start ) );
 		$notice_end   = gmdate( 'U', strtotime( $notice['end'] ) );
 
@@ -240,7 +240,7 @@ class Notice {
 	 * @return bool
 	 */
 	public function is_available_for_notice() {
-		$active_notices = apply_filters( 'xpo_active_notice_lists', array() );
+		$active_notices = apply_filters( 'xpo_active_notice_lists', array() ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- shared "Xpo" notice framework hook used across WPXPO plugins.
 
 		if ( empty( $active_notices ) ) {
 			return true;
@@ -412,10 +412,10 @@ class Notice {
 	 * @return void
 	 */
 	private function render_notices( $promos ) {
-		$shown = array();
+		$shown                = array();
 		$enforce_one_per_type = ! defined( 'XPO_DEV_MODE' );
-		$prefix      = $this->config['prefix'];
-		$brand_color = $this->config['brand_color'];
+		$prefix               = $this->config['prefix'];
+		$brand_color          = $this->config['brand_color'];
 
 		foreach ( $promos as $notice ) {
 			$type = isset( $notice['type'] ) ? $notice['type'] : '';
@@ -505,7 +505,7 @@ class Notice {
 
 				.<?php echo esc_attr( $accept_btn ); ?> {
 					background-color: #070707;
-					color: #fff;
+					color: #fff !important;
 					border: none;
 					padding: 6px 10px;
 					border-radius: 4px;
@@ -556,7 +556,7 @@ class Notice {
 								add_query_arg(
 									array(
 										$prefix . '_durbin_key' => $durbin_key,
-										'wpnonce'                => $db_nonce,
+										'wpnonce' => $db_nonce,
 									)
 								)
 							);

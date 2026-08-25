@@ -1,6 +1,8 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 $order_id = absint( get_query_var( 'order-received' ) );
 $order    = wc_get_order( $order_id );
 
@@ -44,3 +46,4 @@ if ( $order && ! ( $order->has_status( 'failed' ) ) ) {
 	</div>
 	<?php
 }
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

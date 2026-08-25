@@ -109,7 +109,8 @@ class SalesNotification {
 	 * @since v.4.0.0
 	 */
 	public function sales_notification_action() {
-		$page_id = isset( $_POST['page_id'] ) ? $_POST['page_id'] : '';
+		// Public REST route (permission_callback => '__return_true'); no WP nonce applies here.
+		$page_id = isset( $_POST['page_id'] ) ? sanitize_text_field( wp_unslash( $_POST['page_id'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
 		// Check if notification should display on this page
 		if ( ! $this->should_display_notification( $page_id ) ) {

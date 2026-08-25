@@ -29,6 +29,7 @@ function wopb_animated_cart_config( $config ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_animated_cart_settings', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_animated_cart_settings( $config ) {
 	$arr = array(
 		'wopb_animated_cart' => array(

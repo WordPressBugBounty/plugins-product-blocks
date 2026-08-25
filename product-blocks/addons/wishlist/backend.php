@@ -30,6 +30,7 @@ function wopb_wishlist_config( $config ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_wishlist_settings', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_wishlist_settings( $config ) {
 	$arr = array(
 		'wopb_wishlist' => array(

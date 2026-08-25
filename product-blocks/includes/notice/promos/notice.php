@@ -69,6 +69,7 @@ return array(
 			)
 		),
 		'visibility'         => ! Xpo::is_lc_active(),
+		// translators: %s is the discount_content value (e.g. "Up to 60%") substituted into this string.
 		'content_subheading' => $brand_name . __( ' Summer Sale Offer is Live - Enjoy %s Off NOW.', 'product-blocks' ),
 		'discount_content'   => ' Up to 60%',
 		'border_color'       => $brand_color,
@@ -91,6 +92,7 @@ return array(
 			)
 		),
 		'visibility'         => ! Xpo::is_lc_active(),
+		// translators: %s is the discount_content value (e.g. "Up to 60%") substituted into this string.
 		'content_subheading' => $brand_name . __( ' Summer Sale Offer is Live - Enjoy %s Off NOW.', 'product-blocks' ),
 		'discount_content'   => ' Up to 60% ',
 		'border_color'       => $brand_color,
@@ -113,6 +115,7 @@ return array(
 			)
 		),
 		'visibility'         => ! Xpo::is_lc_active(),
+		// translators: %s is the discount_content value (e.g. "Up to 60%") substituted into this string.
 		'content_subheading' => $brand_name . __( ' Summer Sale Offer is Live - Enjoy %s Off NOW.', 'product-blocks' ),
 		'discount_content'   => ' Up to 60%',
 		'border_color'       => $brand_color,
@@ -135,6 +138,7 @@ return array(
 			)
 		),
 		'visibility'         => ! Xpo::is_lc_active(),
+		// translators: %s is the discount_content value (e.g. "Up to 60%") substituted into this string.
 		'content_subheading' => $brand_name . __( ' Summer Sale Offer is Live - Enjoy %s Off NOW.', 'product-blocks' ),
 		'discount_content'   => ' Up to 60% ',
 		'border_color'       => $brand_color,
@@ -161,6 +165,46 @@ return array(
 		),
 		'close_color' => '#000000',
 		'visibility'  => ! Xpo::is_lc_active(),
+	),
+
+	// -- wow recommendation promo -----------------------------------------
+	array(
+		'type'        => 'image-only',
+		'key'         => $prefix . '_preco_sale_campaign_262_1',
+		'start'       => '2026-08-23 00:00 Asia/Dhaka',
+		'end'         => '2026-08-29 23:59 Asia/Dhaka',
+		'banner_src'  => $asset_url . 'dashboard_banner/wowrecommend_banner/preco_banner_insider_deal.png',
+		'url'         => Xpo::generate_utm_link(
+			array(
+				'url'    => 'https://www.wpxpo.com/product/wowrecommend/',
+				'config' => array(
+					'source'   => $config['utm_source'],
+					'medium'   => 'insider-deal',
+					'campaign' => $config['utm_campaign'],
+				),
+			)
+		),
+		'close_color' => '#ffffff',
+		'visibility'  => true,
+	),
+	array(
+		'type'        => 'image-only',
+		'key'         => $prefix . '_preco_sale_campaign_262_2',
+		'start'       => '2026-08-30 00:00 Asia/Dhaka',
+		'end'         => '2026-09-19 23:59 Asia/Dhaka',
+		'banner_src'  => $asset_url . 'dashboard_banner/wowrecommend_banner/preco_banner_early_bird.png',
+		'url'         => Xpo::generate_utm_link(
+			array(
+				'url'    => 'https://www.wpxpo.com/product/wowrecommend/',
+				'config' => array(
+					'source'   => $config['utm_source'],
+					'medium'   => 'early-bird',
+					'campaign' => $config['utm_campaign'],
+				),
+			)
+		),
+		'close_color' => '#ffffff',
+		'visibility'  => true,
 	),
 );
 

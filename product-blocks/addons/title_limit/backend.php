@@ -31,6 +31,7 @@ function wopb_title_limit_config( $config ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_title_limit_settings', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_title_limit_settings( $config ) {
 	$arr = array(
 		'wopb_title_limit' => array(

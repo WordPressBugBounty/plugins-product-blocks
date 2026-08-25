@@ -113,7 +113,7 @@ class Preorder {
 	public function autoconvert_product( $admin_product = null ) {
 		global $product;
 		if ( $admin_product ) {
-			$product = $admin_product;
+			$product = $admin_product; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 		}
 		$type = $product->get_type();
 		if ( $this->is_simple_preorder( $product ) && $type == 'simple' && $this->is_auto_convert_available( $product ) && wopb_function()->is_preorder_closed( $product ) ) {
@@ -164,7 +164,7 @@ class Preorder {
 			$html             .= '</div>';
 		$html                 .= '</div>';
 
-		echo $html;
+		echo wopb_function()->wp_kses_safe( $html ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -339,24 +339,29 @@ class Preorder {
 	public function pre_order_woocommerce_fields_save( $post_id ) {
 		$product = wc_get_product( $post_id );
 
-		if ( isset( $_POST['_wopb_preorder_simple'] ) ) {
+		// Nonce already verified by WC_Meta_Box_Product_Data::save() before this hook fires.
+		if ( isset( $_POST['_wopb_preorder_simple'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$product->update_meta_data( '_wopb_preorder_simple', 'yes' );
-			$product->update_meta_data( '_wopb_preorder_date', isset( $_POST['_wopb_preorder_date'] ) ? sanitize_text_field( $_POST['_wopb_preorder_date'] ) : '' );
-			$product->update_meta_data( '_wopb_max_preorder', isset( $_POST['_wopb_max_preorder'] ) ? sanitize_text_field( $_POST['_wopb_max_preorder'] ) : '' );
-			$product->update_meta_data( '_wopb_preorder_message', isset( $_POST['_wopb_preorder_message'] ) ? sanitize_text_field( $_POST['_wopb_preorder_message'] ) : '' );
-			$product->update_meta_data( '_wopb_preorder_coming_soon', isset( $_POST['_wopb_preorder_coming_soon'] ) ? sanitize_text_field( $_POST['_wopb_preorder_coming_soon'] ) : '' );
+			$product->update_meta_data( '_wopb_preorder_date', isset( $_POST['_wopb_preorder_date'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_date'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_max_preorder', isset( $_POST['_wopb_max_preorder'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_preorder'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_preorder_message', isset( $_POST['_wopb_preorder_message'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_message'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_preorder_coming_soon', isset( $_POST['_wopb_preorder_coming_soon'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_coming_soon'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
-			$product->update_meta_data( '_wopb_preorder_auto_convert', isset( $_POST['_wopb_preorder_auto_convert'] ) ? sanitize_text_field( $_POST['_wopb_preorder_auto_convert'] ) : '' );
-			$product->update_meta_data( '_wopb_preorder_price_manage', isset( $_POST['_wopb_preorder_price_manage'] ) ? sanitize_text_field( $_POST['_wopb_preorder_price_manage'] ) : '' );
+			$price_manage   = isset( $_POST['_wopb_preorder_price_manage'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_price_manage'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$price_type     = isset( $_POST['_wopb_preorder_price_type'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_price_type'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$preorder_price = isset( $_POST['_wopb_preorder_price'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_price'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
-			$product->update_meta_data( '_wopb_preorder_price_type', isset( $_POST['_wopb_preorder_price_type'] ) ? sanitize_text_field( $_POST['_wopb_preorder_price_type'] ) : '' );
-			$product->update_meta_data( '_wopb_preorder_price', isset( $_POST['_wopb_preorder_price'] ) ? sanitize_text_field( $_POST['_wopb_preorder_price'] ) : '' );
-			if ( $_POST['_wopb_preorder_price_manage'] && isset( $_POST['_wopb_preorder_price_type'] ) ) {
+			$product->update_meta_data( '_wopb_preorder_auto_convert', isset( $_POST['_wopb_preorder_auto_convert'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_auto_convert'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_preorder_price_manage', $price_manage );
+
+			$product->update_meta_data( '_wopb_preorder_price_type', $price_type );
+			$product->update_meta_data( '_wopb_preorder_price', $preorder_price );
+			if ( $price_manage && $price_type ) {
 				$regular_price = $product->get_regular_price();
-				if ( $_POST['_wopb_preorder_price_type'] == 'fixed' && $_POST['_wopb_preorder_price'] ) {
-					$product->set_sale_price( sanitize_text_field( $_POST['_wopb_preorder_price'] ) );
-				} elseif ( $_POST['_wopb_preorder_price_type'] == 'percentage' && $_POST['_wopb_preorder_price'] && $regular_price ) {
-					$product->set_sale_price( $regular_price - ( ( $regular_price * sanitize_text_field( $_POST['_wopb_preorder_price'] ) ) / 100 ) );
+				if ( 'fixed' === $price_type && $preorder_price ) {
+					$product->set_sale_price( $preorder_price );
+				} elseif ( 'percentage' === $price_type && $preorder_price && $regular_price ) {
+					$product->set_sale_price( $regular_price - ( ( $regular_price * $preorder_price ) / 100 ) );
 				}
 			}
 		} else {
@@ -377,7 +382,7 @@ class Preorder {
 			$is_variable_preorder = $variable_product->get_meta( '_wopb_preorder_variable' );
 			echo '<label>' . esc_html__( 'Pre-Order', 'product-blocks' );
 			echo '<input type="checkbox" id="_wopb_preorder_variable[' . esc_attr( $loop ) . ']" class="_wopb_preorder_variable" name="_wopb_preorder_variable[' . esc_attr( $loop ) . ']"' . ( $is_variable_preorder ? 'checked' : '' ) . '>';
-			echo wc_help_tip( esc_html__( 'Enable pre-order for giving pre-order information', 'product-blocks' ) );
+			echo wc_help_tip( esc_html__( 'Enable pre-order for giving pre-order information', 'product-blocks' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo '</label>';
 		}
 	}
@@ -484,7 +489,7 @@ class Preorder {
 					'label'       => __( 'Manage Discount', 'product-blocks' ),
 					'type'        => 'checkbox',
 					'value'       => $product->get_meta( '_wopb_preorder_price_manage' ),
-					'description' => __( 'Allow discounted prices for pre-order items' ),
+					'description' => __( 'Allow discounted prices for pre-order items', 'product-blocks' ),
 				)
 			);
 		} else {
@@ -542,7 +547,7 @@ class Preorder {
 			$html      = '<div class="wopb-woocommerce-variable-preorder-field-group">';
 				$html .= $this->generate_field( $variation->ID, $loop );
 			$html     .= '</div>';
-			echo $html;
+			echo wopb_function()->wp_kses_safe( $html ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 	}
 
@@ -556,23 +561,28 @@ class Preorder {
 	public function wopb_pre_order_save_variation_data( $variation_id, $a ) {
 		$product = wc_get_product( $variation_id );
 
-		if ( isset( $_POST['_wopb_preorder_variable'][ $a ] ) ) {
+		// Nonce already verified by WooCommerce before woocommerce_save_product_variation fires.
+		if ( isset( $_POST['_wopb_preorder_variable'][ $a ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$product->update_meta_data( '_wopb_preorder_variable', 'yes' );
-			$product->update_meta_data( '_wopb_max_preorder', isset( $_POST['_wopb_max_preorder'][ $a ] ) ? sanitize_text_field( $_POST['_wopb_max_preorder'][ $a ] ) : '' );
-			$product->update_meta_data( '_wopb_preorder_date', isset( $_POST['_wopb_preorder_date'][ $a ] ) ? sanitize_text_field( $_POST['_wopb_preorder_date'][ $a ] ) : '' );
-			$product->update_meta_data( '_wopb_preorder_message', isset( $_POST['_wopb_preorder_message'][ $a ] ) ? sanitize_text_field( $_POST['_wopb_preorder_message'][ $a ] ) : '' );
-			$product->update_meta_data( '_wopb_preorder_coming_soon', isset( $_POST['_wopb_preorder_coming_soon'][ $a ] ) ? sanitize_text_field( $_POST['_wopb_preorder_coming_soon'][ $a ] ) : '' );
+			$product->update_meta_data( '_wopb_max_preorder', isset( $_POST['_wopb_max_preorder'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_preorder'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_preorder_date', isset( $_POST['_wopb_preorder_date'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_date'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_preorder_message', isset( $_POST['_wopb_preorder_message'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_message'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_preorder_coming_soon', isset( $_POST['_wopb_preorder_coming_soon'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_coming_soon'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
-			$product->update_meta_data( '_wopb_preorder_auto_convert', isset( $_POST['_wopb_preorder_auto_convert'][ $a ] ) ? sanitize_text_field( $_POST['_wopb_preorder_auto_convert'][ $a ] ) : '' );
-			$product->update_meta_data( '_wopb_preorder_price_manage', isset( $_POST['_wopb_preorder_price_manage'][ $a ] ) ? sanitize_text_field( $_POST['_wopb_preorder_price_manage'][ $a ] ) : '' );
+			$price_manage   = isset( $_POST['_wopb_preorder_price_manage'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_price_manage'][ $a ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$price_type     = isset( $_POST['_wopb_preorder_price_type'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_price_type'][ $a ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$preorder_price = isset( $_POST['_wopb_preorder_price'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_price'][ $a ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
-			$product->update_meta_data( '_wopb_preorder_price_type', isset( $_POST['_wopb_preorder_price_type'][ $a ] ) ? sanitize_text_field( $_POST['_wopb_preorder_price_type'][ $a ] ) : '' );
-			$product->update_meta_data( '_wopb_preorder_price', isset( $_POST['_wopb_preorder_price'][ $a ] ) ? sanitize_text_field( $_POST['_wopb_preorder_price'][ $a ] ) : '' );
-			if ( $_POST['_wopb_preorder_price_manage'][ $a ] && isset( $_POST['_wopb_preorder_price_type'][ $a ] ) ) {
-				if ( $_POST['_wopb_preorder_price_type'][ $a ] == 'fixed' && $_POST['_wopb_preorder_price'][ $a ] ) {
-					$product->set_sale_price( sanitize_text_field( $_POST['_wopb_preorder_price'][ $a ] ) );
-				} elseif ( $_POST['_wopb_preorder_price_type'][ $a ] == 'percentage' && $_POST['_wopb_preorder_price'][ $a ] ) {
-					$product->set_sale_price( $product->get_regular_price() - ( ( $product->get_regular_price() * sanitize_text_field( $_POST['_wopb_preorder_price'][ $a ] ) ) / 100 ) );
+			$product->update_meta_data( '_wopb_preorder_auto_convert', isset( $_POST['_wopb_preorder_auto_convert'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_auto_convert'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_preorder_price_manage', $price_manage );
+
+			$product->update_meta_data( '_wopb_preorder_price_type', $price_type );
+			$product->update_meta_data( '_wopb_preorder_price', $preorder_price );
+			if ( $price_manage && $price_type ) {
+				if ( 'fixed' === $price_type && $preorder_price ) {
+					$product->set_sale_price( $preorder_price );
+				} elseif ( 'percentage' === $price_type && $preorder_price ) {
+					$product->set_sale_price( $product->get_regular_price() - ( ( $product->get_regular_price() * $preorder_price ) / 100 ) );
 				}
 			}
 		} else {
@@ -666,7 +676,7 @@ class Preorder {
 	private function preorder_message( $preorder_available_date, $product, $html ) {
 		$html                                   = '';
 		$preorder_message                       = $product->get_meta( '_wopb_preorder_message' ) . ': ';
-		$preorder_available_date_time_formatted = date( 'd M Y', strtotime( $preorder_available_date ) ) . ' at ' . date( 'h:i a', strtotime( $preorder_available_date ) );
+		$preorder_available_date_time_formatted = gmdate( 'd M Y', strtotime( $preorder_available_date ) ) . ' at ' . gmdate( 'h:i a', strtotime( $preorder_available_date ) );
 
 		if ( $preorder_message && $preorder_available_date ) {
 			$html     .= '<span class="wopb-singlepage-preorder-message">';
@@ -729,8 +739,8 @@ class Preorder {
 		if ( wopb_function()->get_setting( 'preorder_counter_disable' ) == 'yes' ) {
 			return $html;
 		}
-		$preorder_available_duration = date( 'Y-m-d H:i:s', strtotime( $preorder_available_date ) );
-		$current_date                = new \DateTime( date( 'Y-m-d H:i:s', current_time( 'timestamp' ) ) );
+		$preorder_available_duration = gmdate( 'Y-m-d H:i:s', strtotime( $preorder_available_date ) );
+		$current_date                = new \DateTime( gmdate( 'Y-m-d H:i:s', current_time( 'timestamp' ) ) );
 		$duration                    = $current_date->diff( new \DateTime( $preorder_available_duration ) );
 
 		$html             .= '<span class="wopb-singlepage-preorder-countdown" data-pre-order-date="' . $preorder_available_date . '">';
@@ -781,7 +791,7 @@ class Preorder {
 		if ( ( $this->is_variable_preorder( $product ) || $this->is_simple_preorder( $product ) ) && ! wopb_function()->is_preorder_closed( $product ) ) {
 			$preorder_available_date                = $product->get_meta( '_wopb_preorder_date' );
 			$preorder_message                       = $product->get_meta( '_wopb_preorder_message' ) . ': ';
-			$preorder_available_date_time_formatted = date( 'd M Y h:i a', strtotime( $preorder_available_date ) );
+			$preorder_available_date_time_formatted = gmdate( 'd M Y h:i a', strtotime( $preorder_available_date ) );
 
 			$pre_order_content = '<span class="wopb-cart-preorder-badge">' . wopb_function()->get_setting( 'preorder_button_text' ) . '</span>';
 			if ( $preorder_available_date ) {
@@ -879,19 +889,42 @@ class Preorder {
 	 */
 	public function get_total_product_order_by_meta( $product_id, $variation = null ) {
 		global $wpdb;
-		$variation_statement = $variation ? ' AND order_product.variation_id = ' . intval( $variation->get_Id() ) : '';
-		$result              = $wpdb->get_results(
-			"
-            SELECT sum(order_product.product_qty) as total_order
-            FROM {$wpdb->prefix}wc_order_product_lookup as order_product
-            INNER JOIN {$wpdb->prefix}wc_order_stats AS order_stat
-                ON order_product.order_id = order_stat.order_id
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta as order_item_meta
-                ON order_product.order_item_id = order_item_meta.order_item_id AND order_item_meta.meta_key = 'wopb_pre_order_item'
-            WHERE order_product.product_id = {intval($product_id)} {$variation_statement}
-                AND order_stat.status NOT IN ('wc-cancelled', 'wc-refunded')
-        "
-		);
+		$product_id = absint( $product_id );
+		// Live order totals used to enforce pre-order limits; not practical to cache.
+		if ( $variation ) {
+			$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->prepare(
+					"
+                    SELECT sum(order_product.product_qty) as total_order
+                    FROM {$wpdb->prefix}wc_order_product_lookup as order_product
+                    INNER JOIN {$wpdb->prefix}wc_order_stats AS order_stat
+                        ON order_product.order_id = order_stat.order_id
+                    INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta as order_item_meta
+                        ON order_product.order_item_id = order_item_meta.order_item_id AND order_item_meta.meta_key = 'wopb_pre_order_item'
+                    WHERE order_product.product_id = %d AND order_product.variation_id = %d
+                        AND order_stat.status NOT IN ('wc-cancelled', 'wc-refunded')
+                ",
+					$product_id,
+					absint( $variation->get_Id() )
+				)
+			);
+		} else {
+			$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->prepare(
+					"
+                    SELECT sum(order_product.product_qty) as total_order
+                    FROM {$wpdb->prefix}wc_order_product_lookup as order_product
+                    INNER JOIN {$wpdb->prefix}wc_order_stats AS order_stat
+                        ON order_product.order_id = order_stat.order_id
+                    INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta as order_item_meta
+                        ON order_product.order_item_id = order_item_meta.order_item_id AND order_item_meta.meta_key = 'wopb_pre_order_item'
+                    WHERE order_product.product_id = %d
+                        AND order_stat.status NOT IN ('wc-cancelled', 'wc-refunded')
+                ",
+					$product_id
+				)
+			);
+		}
 		return $result[0]->total_order;
 	}
 

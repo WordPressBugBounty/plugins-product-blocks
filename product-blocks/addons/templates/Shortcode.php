@@ -46,7 +46,7 @@ class Shortcode {
 				);
 
 				// Breakdance builder support for its shortcode render
-				$current_url            = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( $_SERVER['REQUEST_URI'] ) : '';
+				$current_url            = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
                 $_breakdance_doing_ajax = isset( $_GET['_breakdance_doing_ajax'] ) ? sanitize_text_field( $_GET['_breakdance_doing_ajax'] ) : ''; // phpcs:ignore
 				if ( ! empty( $_breakdance_doing_ajax ) ||
 					strpos( $current_url, 'bricks/v1/render_element' ) !== false

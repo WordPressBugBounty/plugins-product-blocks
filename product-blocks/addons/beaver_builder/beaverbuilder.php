@@ -1,6 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Beaver Builder module class name, must match Beaver Builder's own naming convention.
 class ProductXBeaverTemplate extends FLBuilderModule {
 
 	public function __construct() {

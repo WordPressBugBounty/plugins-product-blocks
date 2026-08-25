@@ -35,7 +35,7 @@ class Product_Cart {
 
 	public function content( $attr ) {
 		global $product;
-		$product       = wc_get_product();
+		$product       = wc_get_product(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 		$block_name    = 'product-cart';
 		$wraper_before = $wraper_after = $content = '';
 		$attr          = wp_parse_args( $attr, $this->get_attributes() );
@@ -71,12 +71,12 @@ class Product_Cart {
 				$methods = get_class_methods( wopb_pro_function() );
 				if ( in_array( 'is_simple_preorder', $methods ) ) {
 					if ( wopb_function()->is_simple_preorder() && wopb_function()->get_setting( 'preorder_add_to_cart_button_text' ) ) {
-						$productx_cart = wopb_function()->get_setting( 'preorder_add_to_cart_button_text' );
+						$productx_cart = wopb_function()->get_setting( 'preorder_add_to_cart_button_text' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 					}
 				}
 				if ( in_array( 'is_simple_backorder', $methods ) ) {
 					if ( wopb_function()->is_simple_backorder() && wopb_function()->get_setting( 'backorder_add_to_cart_button_text' ) ) {
-						$productx_cart = wopb_function()->get_setting( 'backorder_add_to_cart_button_text' );
+						$productx_cart = wopb_function()->get_setting( 'backorder_add_to_cart_button_text' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 					}
 				}
 			}
@@ -145,7 +145,7 @@ class Product_Cart {
 	 * @since v.4.1.4
 	 */
 	public function buy_now_submit() {
-		$sanitized_request = wopb_function()->rest_sanitize_params( $_REQUEST );
+		$sanitized_request = wopb_function()->rest_sanitize_params( wp_unslash( $_REQUEST ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- adds a product to the cart only, same trust level as WooCommerce's own add-to-cart form.
 		if ( ! empty( $sanitized_request['wopb-buy-now'] ) ) {
 			$product_id        = $sanitized_request['wopb-buy-now'];
 			$qty               = floatval( ! empty( $sanitized_request['quantity'] ) ? $sanitized_request['quantity'] : 1 );

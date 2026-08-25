@@ -284,12 +284,12 @@ class Wishlist {
 					$html         .= '<tbody>';
 				foreach ( $wishlist_data as $val ) {
 							$product = wc_get_product( $val );
-					if ( $product ) {
+					if ( $product && wopb_function()->can_view_product( $val ) ) {
 						$link      = get_permalink( $val );
 						$html     .= '<tr>';
 						$html     .= '<td><a class="wopb-wishlist-remove" data-action="remove" href="#" data-postid="' . esc_attr( $product->get_id() ) . '">×</a></td>';
 						$html     .= '<td class="wopb-wishlist-product-image">';
-						$thumbnail = apply_filters( 'single_product_archive_thumbnail_size', 'woocommerce_thumbnail' );
+						$thumbnail = apply_filters( 'single_product_archive_thumbnail_size', 'woocommerce_thumbnail' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 						if ( $thumbnail ) {
 								$html .= sprintf( '<a href="%s">%s</a>', esc_url( $link ), $product->get_image( 'thumbnail' ) );
 						}
@@ -509,13 +509,16 @@ class Wishlist {
 		$user_id        = get_current_user_id();
 		$simple_Product = isset( $_POST['simpleProduct'] ) ? sanitize_text_field( wp_unslash( $_POST['simpleProduct'] ) ) : '';
 		$type           = isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : '';
-		$post_id        = isset( $_POST['post_id'] ) ? sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) : '';
+		$post_id        = isset( $_POST['post_id'] ) ? absint( wp_unslash( $_POST['post_id'] ) ) : 0;
 		$product        = wc_get_product( $post_id );
 
 		$user_data = $this->get_wishlist_id();
 
 		if ( $post_id ) {
 			if ( $type == 'add' ) {
+				if ( ! wopb_function()->can_view_product( $post_id ) ) {
+					wp_send_json_error( __( 'Wishlist Not Added.', 'product-blocks' ) );
+				}
 				if ( ! in_array( $post_id, $user_data ) ) {
 					$user_data[] = $post_id;
 				}
@@ -542,10 +545,14 @@ class Wishlist {
 				if ( wopb_function()->get_setting( 'wishlist_empty' ) ) {
 					$this->remove_wishlist_product( $post_id, $simple_Product );
 				}
+				$product_redirect = '';
+				if ( $product ) {
+					$product_redirect = strpos( $product->add_to_cart_url(), 'add-to-cart=' ) === false ? $product->get_permalink() : '';
+				}
 				wp_send_json_success(
 					array(
 						'wishlist_count'   => count( $this->get_wishlist_id() ),
-						'product_redirect' => strpos( $product->add_to_cart_url(), 'add-to-cart=' ) === false ? $product->get_permalink() : '',
+						'product_redirect' => $product_redirect,
 						'message'          => __( 'Wishlist Item Added To Cart.', 'product-blocks' ),
 					)
 				);

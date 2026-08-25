@@ -84,8 +84,8 @@ class Backorder {
 		$settings     = wopb_function()->get_setting();
 		$initial_data = array(
 			'backorder_heading'                 => 'yes',
-			'backorder_button_text'             => __( 'Backorder', 'product-blocks-pro' ),
-			'backorder_add_to_cart_button_text' => __( 'Backorder Now', 'product-blocks-pro' ),
+			'backorder_button_text'             => __( 'Backorder', 'product-blocks' ),
+			'backorder_add_to_cart_button_text' => __( 'Backorder Now', 'product-blocks' ),
 			'backorder_message_text'            => 'Available On',
 			'backorder_available_typo'          => array(
 				'size'        => 16,
@@ -192,18 +192,18 @@ class Backorder {
 		$default_backorder_message = wopb_function()->get_setting( 'backorder_message_text' );
 
 		$html     .= '<div class="wopb-backorder-field-group">';
-			$html .= '<h4 class="wopb-backorder-title">' . __( 'WowStore Backorder Information', 'product-blocks-pro' ) . '</h4>';
+			$html .= '<h4 class="wopb-backorder-title">' . __( 'WowStore Backorder Information', 'product-blocks' ) . '</h4>';
 
 			ob_start();
 			woocommerce_wp_text_input(
 				array(
 					'id'          => '_wopb_max_backorder' . $loop,
 					'class'       => 'wopb-required w-60',
-					'label'       => __( 'Available Quantity', 'product-blocks-pro' ),
+					'label'       => __( 'Available Quantity', 'product-blocks' ),
 					'type'        => 'number',
 					'value'       => $product->get_meta( '_wopb_max_backorder' ),
 					'desc_tip'    => true,
-					'description' => __( 'Enter the maximum amount of products available for backorder', 'product-blocks-pro' ),
+					'description' => __( 'Enter the maximum amount of products available for backorder', 'product-blocks' ),
 				)
 			);
 
@@ -214,11 +214,11 @@ class Backorder {
 				array(
 					'id'          => '_wopb_backorder_date' . $loop,
 					'class'       => 'wopb-required w-60',
-					'label'       => __( 'Availability Date', 'product-blocks-pro' ),
+					'label'       => __( 'Availability Date', 'product-blocks' ),
 					'type'        => 'datetime-local',
 					'value'       => $product->get_meta( '_wopb_backorder_date' ),
 					'desc_tip'    => true,
-					'description' => __( 'Message indicating date and time of the backorder product availability', 'product-blocks-pro' ),
+					'description' => __( 'Message indicating date and time of the backorder product availability', 'product-blocks' ),
 				)
 			);
 		} else {
@@ -232,11 +232,11 @@ class Backorder {
 				array(
 					'id'          => '_wopb_backorder_message' . $loop,
 					'class'       => 'wopb-required w-60',
-					'label'       => __( 'Availability Message', 'product-blocks-pro' ),
+					'label'       => __( 'Availability Message', 'product-blocks' ),
 					'type'        => 'text',
 					'value'       => $backorder_message ? $backorder_message : $default_backorder_message,
 					'desc_tip'    => true,
-					'description' => __( 'Message indicating date and time of the backorder product availability', 'product-blocks-pro' ),
+					'description' => __( 'Message indicating date and time of the backorder product availability', 'product-blocks' ),
 				)
 			);
 			$html .= ob_get_clean();
@@ -255,9 +255,10 @@ class Backorder {
 	public function process_product_meta( $post_id ) {
 		$product = wc_get_product( $post_id );
 		if ( $product->is_on_backorder() || ( ( $product->managing_stock() && $product->get_backorders() === 'yes' ) ) ) {
-			$product->update_meta_data( '_wopb_max_backorder', isset( $_POST['_wopb_max_backorder'] ) ? sanitize_text_field( $_POST['_wopb_max_backorder'] ) : '' );
-			$product->update_meta_data( '_wopb_backorder_date', isset( $_POST['_wopb_backorder_date'] ) ? sanitize_text_field( $_POST['_wopb_backorder_date'] ) : '' );
-			$product->update_meta_data( '_wopb_backorder_message', isset( $_POST['_wopb_backorder_date'] ) ? sanitize_text_field( $_POST['_wopb_backorder_message'] ) : '' );
+			// Nonce already verified by WC_Meta_Box_Product_Data::save() before this hook fires.
+			$product->update_meta_data( '_wopb_max_backorder', isset( $_POST['_wopb_max_backorder'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_backorder'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_backorder_date', isset( $_POST['_wopb_backorder_date'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_backorder_date'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_backorder_message', isset( $_POST['_wopb_backorder_message'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_backorder_message'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$product->save();
 		}
 	}
@@ -271,9 +272,10 @@ class Backorder {
 	public function save_product_variation( $variation_id, $a ) {
 		$product = wc_get_product( $variation_id );
 		if ( $product->is_on_backorder() || ( ( $product->managing_stock() && $product->get_backorders() === 'yes' ) ) ) {
-			$product->update_meta_data( '_wopb_backorder_date', isset( $_POST['_wopb_backorder_date'][ $a ] ) ? sanitize_text_field( $_POST['_wopb_backorder_date'][ $a ] ) : '' );
-			$product->update_meta_data( '_wopb_max_backorder', isset( $_POST['_wopb_max_backorder'][ $a ] ) ? sanitize_text_field( $_POST['_wopb_max_backorder'][ $a ] ) : '' );
-			$product->update_meta_data( '_wopb_backorder_message', isset( $_POST['_wopb_backorder_message'][ $a ] ) ? sanitize_text_field( $_POST['_wopb_backorder_message'][ $a ] ) : '' );
+			// Nonce already verified by WooCommerce before woocommerce_save_product_variation fires.
+			$product->update_meta_data( '_wopb_backorder_date', isset( $_POST['_wopb_backorder_date'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_backorder_date'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_max_backorder', isset( $_POST['_wopb_max_backorder'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_backorder'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_backorder_message', isset( $_POST['_wopb_backorder_message'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_backorder_message'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$product->save();
 		}
 	}
@@ -312,7 +314,7 @@ class Backorder {
 			! wopb_function()->is_backorder_closed( $product ) &&
 			$product->is_purchasable()
 		) {
-			$available_date_time = date( 'd M Y', strtotime( $product->get_meta( '_wopb_backorder_date' ) ) ) . ' at ' . date( 'h:i a', strtotime( $product->get_meta( '_wopb_backorder_date' ) ) );
+			$available_date_time = gmdate( 'd M Y', strtotime( $product->get_meta( '_wopb_backorder_date' ) ) ) . ' at ' . gmdate( 'h:i a', strtotime( $product->get_meta( '_wopb_backorder_date' ) ) );
 			$remaining_items     = $this->remaining_item_count( $product );
 
 			$html = '<div class="wopb-backorder-wrapper">';
@@ -326,7 +328,7 @@ class Backorder {
 
 			if ( $remaining_items ) {
 				$html     .= '<div class="wopb-singlepage-backorder-remaining-item">';
-					$html .= '<span class="wopb-backorder-remaining-label">' . __( 'Remaining Item only: ', 'product-blocks-pro' ) . '</span>';
+					$html .= '<span class="wopb-backorder-remaining-label">' . __( 'Remaining Item only: ', 'product-blocks' ) . '</span>';
 					$html .= '<span class="wopb-backorder-remaining-count">' . $remaining_items . '</span>';
 				$html     .= '</div>';
 			}
@@ -349,7 +351,7 @@ class Backorder {
 		if ( ! $product->managing_stock() && $product->is_on_backorder() && ! wopb_function()->is_backorder_closed( $product ) ) {
 			$backorder_available_date                = $product->get_meta( '_wopb_backorder_date' );
 			$backorder_message                       = $product->get_meta( '_wopb_backorder_message' ) . ': ';
-			$backorder_available_date_time_formatted = date( 'd M Y h:i a', strtotime( $backorder_available_date ) );
+			$backorder_available_date_time_formatted = gmdate( 'd M Y h:i a', strtotime( $backorder_available_date ) );
 
 			$html = '<span class="wopb-cart-backorder-badge">' . wopb_function()->get_setting( 'backorder_button_text' ) . '</span>';
 			if ( $backorder_available_date ) {
@@ -406,7 +408,7 @@ class Backorder {
 		foreach ( $columns as $key => $column ) {
 			$reordered_columns[ $key ] = $column;
 			if ( $key == 'order_status' ) {
-				$reordered_columns['wopb_order_page_order_type'] = __( 'Order Type', 'product-blocks-pro' );
+				$reordered_columns['wopb_order_page_order_type'] = __( 'Order Type', 'product-blocks' );
 			}
 		}
 		return $reordered_columns;
@@ -443,13 +445,13 @@ class Backorder {
 	public function add_to_cart_validation( $cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data ) {
 		$cart_item = WC()->cart->get_cart()[ $cart_item_key ];
 		if ( ! $this->cart_quantity_validation( $cart_item['quantity'], $product_id, $variation_id ) ) {
-			throw new \Exception( esc_html__( 'Quantity Exceeded for Backorder Item.', 'product-blocks-pro' ) );
+			throw new \Exception( esc_html__( 'Quantity Exceeded for Backorder Item.', 'product-blocks' ) );
 		}
 	}
 
 	public function update_cart_validation( $passed, $cart_item_key, $values, $quantity ) {
 		if ( ! $this->cart_quantity_validation( $quantity, $values['product_id'], $values['variation_id'] ) ) {
-			wc_add_notice( __( 'Quantity Exceeded for Backorder Item.', 'product-blocks-pro' ), 'error' );
+			wc_add_notice( __( 'Quantity Exceeded for Backorder Item.', 'product-blocks' ), 'error' );
 			$passed = false;
 		}
 		return $passed;
@@ -497,19 +499,42 @@ class Backorder {
 	 */
 	public function get_total_backorder( $product_id, $variation_id = null ) {
 		global $wpdb;
-		$variation_statement = $variation_id ? ' AND order_product.variation_id = ' . $variation_id : '';
-		$result              = $wpdb->get_results(
-			"
-            SELECT sum(order_product.product_qty) as total_order
-            FROM {$wpdb->prefix}wc_order_product_lookup as order_product
-            INNER JOIN {$wpdb->prefix}wc_order_stats AS order_stat
-                ON order_product.order_id = order_stat.order_id
-            INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta as order_item_meta
-                ON order_product.order_item_id = order_item_meta.order_item_id AND order_item_meta.meta_key = 'wopb_backorder_item'
-            WHERE order_product.product_id = {intval($product_id)} {$variation_statement}
-                AND order_stat.status NOT IN ('wc-cancelled', 'wc-refunded')
-        "
-		);
+		$product_id = absint( $product_id );
+		// Live order totals used to enforce backorder limits; not practical to cache.
+		if ( $variation_id ) {
+			$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->prepare(
+					"
+                    SELECT sum(order_product.product_qty) as total_order
+                    FROM {$wpdb->prefix}wc_order_product_lookup as order_product
+                    INNER JOIN {$wpdb->prefix}wc_order_stats AS order_stat
+                        ON order_product.order_id = order_stat.order_id
+                    INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta as order_item_meta
+                        ON order_product.order_item_id = order_item_meta.order_item_id AND order_item_meta.meta_key = 'wopb_backorder_item'
+                    WHERE order_product.product_id = %d AND order_product.variation_id = %d
+                        AND order_stat.status NOT IN ('wc-cancelled', 'wc-refunded')
+                ",
+					$product_id,
+					absint( $variation_id )
+				)
+			);
+		} else {
+			$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+				$wpdb->prepare(
+					"
+                    SELECT sum(order_product.product_qty) as total_order
+                    FROM {$wpdb->prefix}wc_order_product_lookup as order_product
+                    INNER JOIN {$wpdb->prefix}wc_order_stats AS order_stat
+                        ON order_product.order_id = order_stat.order_id
+                    INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta as order_item_meta
+                        ON order_product.order_item_id = order_item_meta.order_item_id AND order_item_meta.meta_key = 'wopb_backorder_item'
+                    WHERE order_product.product_id = %d
+                        AND order_stat.status NOT IN ('wc-cancelled', 'wc-refunded')
+                ",
+					$product_id
+				)
+			);
+		}
 		return isset( $result[0] ) && isset( $result[0]->total_order ) ? $result[0]->total_order : 0;
 	}
 

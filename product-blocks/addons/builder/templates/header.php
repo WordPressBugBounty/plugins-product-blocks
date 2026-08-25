@@ -10,10 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?php if ( ! current_theme_supports( 'title-tag' ) ) : ?>
 		<title>
-			<?php
-				$title_safe = wopb_function()->wp_kses_safe( wp_get_document_title() );
-				echo $title_safe;
-			?>
+			<?php echo esc_html( wp_get_document_title() ); ?>
 		</title>
 	<?php endif; ?>
 	<?php wp_head(); ?>

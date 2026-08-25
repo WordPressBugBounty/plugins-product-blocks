@@ -33,6 +33,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 $wrapper_class = $prefix . '-notice-wrapper';
 $install_class = $prefix . '-plugin-install-notice';
 $inner_class   = $prefix . '-plugin-install-notice__wrapper';
@@ -203,3 +205,5 @@ $tags         = isset( $notice['tags'] ) && is_array( $notice['tags'] ) ? $notic
 	} );
 </script>
 <?php endif; ?>
+
+<?php // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals ?>

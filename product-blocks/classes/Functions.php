@@ -1108,7 +1108,7 @@ class Functions {
 				$backend = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				if ( $backend != 'edit' && isset( $post->ID ) ) {
 					if ( ! $product ) {
-						$product = wc_get_product( $post->ID );
+						$product = wc_get_product( $post->ID ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 					}
 					if ( $product ) {
 						$upsells                     = $product->get_upsell_ids();
@@ -1128,7 +1128,7 @@ class Functions {
 				$backend = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				if ( $backend != 'edit' && isset( $post->ID ) ) {
 					if ( ! $product ) {
-						$product = wc_get_product( $post->ID );
+						$product = wc_get_product( $post->ID ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 					}
 
 					if ( $this->is_builder() && is_cart() ) {
@@ -1202,12 +1202,13 @@ class Functions {
             WHERE post.post_type = 'product'
             AND post.post_status = 'publish'
             AND order_post.post_status IN ('wc-processing','wc-completed')
-            AND order_post.post_date >= '$date' 
+            AND order_post.post_date >= %s
             AND order_itemmeta.meta_key = '_product_id'
             AND order_itemmeta2.meta_key = '_qty'
             GROUP BY post.ID
             ORDER BY COUNT(order_itemmeta2.meta_value) + 0 DESC
-        "
+        ",
+				$date
 			)
 		);
 		return wp_list_pluck( $result, 'id' );
@@ -1380,7 +1381,7 @@ class Functions {
 			foreach ( $terms as $val ) {
 				$data[ urldecode_deep( $val->slug ) ] = $val->name;
 
-				// adding the undecoded slug as well, 
+				// adding the undecoded slug as well,
 				// because in case of when slug is encoded,
 				// it prints out the encoded slug instead of name.
 				// but it should print the name. - shihab
@@ -2900,7 +2901,7 @@ class Functions {
 	 * @return void
 	 */
 	public function front_common_script() {
-		$require_script = array( 'jquery', 'wopb-flexmenu-script', 'wp-api-fetch', 'wopb-slick-script' );
+		$require_script = array( 'jquery', 'wopb-flexmenu-script', 'wp-api-fetch', 'wopb-slick-script', 'wp-data' );
 		if ( wopb_function()->get_setting( 'wopb_variation_swatches' ) === 'true' && ! is_admin() ) {
 			$require_script[] = 'wopb-variation-swatches';
 		}
@@ -3307,6 +3308,35 @@ class Functions {
 			$is_passed   = (int) get_current_user_id() === $post_author;
 		}
 		return $is_passed || current_user_can( $cap );
+	}
+
+	/**
+	 * Whether the current visitor (including anonymous users) is allowed to view a product.
+	 *
+	 * Front-end AJAX endpoints (Quick View, Compare, Wishlist) accept an arbitrary product
+	 * ID from the request, so this gate keeps private, draft, and password protected
+	 * products from being exposed to visitors who shouldn't be able to see them.
+	 *
+	 * @param int $post_id
+	 * @return bool
+	 * @since v.4.5.3
+	 */
+	public function can_view_product( $post_id ) {
+		$post_id = absint( $post_id );
+		if ( ! $post_id ) {
+			return false;
+		}
+		$post = get_post( $post_id );
+		if ( ! $post || 'product' !== $post->post_type ) {
+			return false;
+		}
+		if ( 'publish' !== $post->post_status && ! current_user_can( 'edit_post', $post_id ) ) {
+			return false;
+		}
+		if ( post_password_required( $post ) ) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

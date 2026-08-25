@@ -481,15 +481,15 @@ class SizeChart {
 			return;
 		}
 		if ( isset( $_POST['wopb_sc_column_array'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$column_array = json_decode( str_replace( '\"', '"', $_POST['wopb_sc_column_array'] ) ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$column_array = json_decode( str_replace( '\"', '"', wp_unslash( $_POST['wopb_sc_column_array'] ) ) ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			update_post_meta( $post_id, 'wopb_sc_column', wopb_function()->rest_sanitize_params( $column_array ) ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
 		}
-		update_post_meta( $post_id, 'wopb_sc_heading_position', isset( $_POST['wopb_sc_heading_position'] ) ? wopb_function()->rest_sanitize_params( $_POST['wopb_sc_heading_position'] ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
-		update_post_meta( $post_id, 'wopb_sc_hide_title', isset( $_POST['wopb_sc_hide_title'] ) ? wopb_function()->rest_sanitize_params( $_POST['wopb_sc_hide_title'] ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
-		update_post_meta( $post_id, 'wopb_sc_all_product', isset( $_POST['wopb_sc_all_product'] ) ? wopb_function()->rest_sanitize_params( $_POST['wopb_sc_all_product'] ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
-		update_post_meta( $post_id, 'wopb_sc_category', isset( $_POST['wopb_sc_category'] ) ? wopb_function()->rest_sanitize_params( $_POST['wopb_sc_category'] ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
-		update_post_meta( $post_id, 'wopb_sc_include_products', isset( $_POST['wopb_sc_include_products'] ) ? wopb_function()->rest_sanitize_params( $_POST['wopb_sc_include_products'] ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
-		update_post_meta( $post_id, 'wopb_sc_exclude_products', isset( $_POST['wopb_sc_exclude_products'] ) ? wopb_function()->rest_sanitize_params( $_POST['wopb_sc_exclude_products'] ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
+		update_post_meta( $post_id, 'wopb_sc_heading_position', isset( $_POST['wopb_sc_heading_position'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_heading_position'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		update_post_meta( $post_id, 'wopb_sc_hide_title', isset( $_POST['wopb_sc_hide_title'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_hide_title'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		update_post_meta( $post_id, 'wopb_sc_all_product', isset( $_POST['wopb_sc_all_product'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_all_product'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		update_post_meta( $post_id, 'wopb_sc_category', isset( $_POST['wopb_sc_category'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_category'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		update_post_meta( $post_id, 'wopb_sc_include_products', isset( $_POST['wopb_sc_include_products'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_include_products'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		update_post_meta( $post_id, 'wopb_sc_exclude_products', isset( $_POST['wopb_sc_exclude_products'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_exclude_products'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	}
 
 	/**
@@ -579,12 +579,12 @@ class SizeChart {
 	 * @since v.1.0.4
 	 */
 	public function size_chart_admin_fields_save( $post_id ) {
-		$args      = array(
+		$args                = array(
 			'post_type'      => $this->size_chart,
 			'posts_per_page' => -1,
 			'orderby'        => 'ID',
 			'order'          => 'ASC',
-			'meta_query'     => array(
+			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- no taxonomy equivalent for the chart<->product relationship.
 				array(
 					'key'     => 'wopb_sc_include_products',
 					'value'   => $post_id,
@@ -592,8 +592,9 @@ class SizeChart {
 				),
 			),
 		);
-		$results   = new \WP_Query( $args );
-		$chart_ids = wopb_function()->rest_sanitize_params( $_POST['wopb_size_chart_ids'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$results             = new \WP_Query( $args );
+		$chart_ids           = isset( $_POST['wopb_size_chart_ids'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_size_chart_ids'] ) ) : array(); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$selected_chart_ids = $chart_ids;
 		if ( $results->posts ) {
 			foreach ( $results->posts as $chart ) {
 				$include_products = get_post_meta( $chart->ID, 'wopb_sc_include_products', true );
@@ -625,7 +626,7 @@ class SizeChart {
 				update_post_meta( $chart_id, 'wopb_sc_include_products', $include_products );
 			}
 		}
-		update_post_meta( $post_id, 'wopb_size_chart_ids', $_POST['wopb_size_chart_ids'] ); //phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		update_post_meta( $post_id, 'wopb_size_chart_ids', $selected_chart_ids );
 	}
 
 	/**
@@ -681,7 +682,7 @@ class SizeChart {
 	 * @since v.3.2.0
 	 */
 	public function size_chart_meta_position() {
-		echo $this->size_chart_position();
+		echo $this->size_chart_position(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_attr()/esc_html()-escaped pieces; contains inline SVG that wp_kses_post would strip.
 	}
 
 	/**
@@ -697,7 +698,7 @@ class SizeChart {
 			$tabs['wopb_size_chart_tab'] = array(
 				'title'    => esc_html( wopb_function()->get_setting( 'size_chart_tab_text' ) ),
 				'callback' => function () use ( $table_content ) {
-					echo $table_content;
+					echo $table_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_attr()/esc_html()-escaped pieces; contains inline SVG that wp_kses_post would strip.
 				},
 				'priority' => 60,
 			);
@@ -745,7 +746,7 @@ class SizeChart {
 			'posts_per_page' => -1,
 			'orderby'        => 'ID',
 			'order'          => 'desc',
-			'meta_query'     => array(
+			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- no taxonomy equivalent for the chart<->product relationship.
 				'relation' => 'OR',
 				array(
 					'key'     => 'wopb_sc_all_product',
@@ -835,7 +836,7 @@ class SizeChart {
 							$table_class  = ' wopb-scrollbar';
 							$table_class .= $heading_position != '' ? ' wopb-heading-row' : ' wopb-heading-col';
 							?>
-							<div class="wopb-sc-table<?php echo $table_class; ?>">
+							<div class="wopb-sc-table<?php echo esc_attr( $table_class ); ?>">
 								<table >
 								<?php
 								foreach ( $table_rows as $key => $columns ) {

@@ -242,9 +242,12 @@ class Quickview {
 			return;
 		}
 		$params            = array(
-            'post_id'   => isset( $_POST['postid'] ) ? sanitize_text_field( $_POST['postid'] ) : '', // phpcs:ignore
-            'post_list' => isset( $_POST['postList'] ) ? sanitize_text_field( $_POST['postList'] ) : '' // phpcs:ignore
+            'post_id'   => isset( $_POST['postid'] ) ? absint( wp_unslash( $_POST['postid'] ) ) : 0, // phpcs:ignore
+            'post_list' => isset( $_POST['postList'] ) ? sanitize_text_field( wp_unslash( $_POST['postList'] ) ) : '' // phpcs:ignore
 		);
+		if ( ! wopb_function()->can_view_product( $params['post_id'] ) ) {
+			return;
+		}
 		$image_effect      = wopb_function()->get_setting( 'quick_view_image_effect' );
 		$image_effect_type = wopb_function()->get_setting( 'quick_view_image_effect_type' );
 		?>
@@ -295,7 +298,7 @@ class Quickview {
 
 			foreach ( array( 'previous', 'next' ) as $key => $type ) {
 				$thumbnail = get_post_thumbnail_id( ${$type} );
-				if ( ${$type} ) {
+				if ( ${$type} && wopb_function()->can_view_product( ${$type} ) ) {
 					?>
 					<div
 						class="wopb-nav-arrow wopb-quick-view-<?php echo esc_attr( $type ); ?>"

@@ -37,6 +37,7 @@ if ( ! function_exists( 'wopb_partial_payment_init' ) ) {
  * @since v.1.0.8
  */
 add_filter( 'wopb_settings', 'get_partial_payment_opt', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_partial_payment_opt( $config ) {
 	$is_active = wopb_function()->get_setting( 'is_lc_active' );
 	$arr       = array(

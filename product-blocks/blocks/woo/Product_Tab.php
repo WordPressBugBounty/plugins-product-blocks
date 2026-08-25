@@ -3,6 +3,8 @@ namespace WOPB\blocks;
 
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 class Product_Tab {
 
 	public function __construct() {
@@ -90,6 +92,20 @@ class Product_Tab {
 			add_filter( 'woocommerce_product_additional_information_heading', $hide_heading );
 			add_filter( 'woocommerce_product_description_heading', $hide_heading );
 
+			// WooCommerce's own tabs/upsell/related-products callbacks are removed because the
+			// tabs are already rendered manually below; only third-party callbacks registered on
+			// this hook (e.g. extensions injecting content around the tabs) should fire here.
+			remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10 );
+			remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15 );
+			remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
+
+			// woocommerce_after_single_product_summary is a single WordPress action - WooCommerce
+			// itself distinguishes "before tabs" from "after tabs" only by priority (tabs render
+			// at priority 10). Since tabs are drawn manually here rather than via that hook, the
+			// action is split into two firings so priority <10 callbacks land before the tabs and
+			// priority >=10 callbacks land after, instead of all firing together in one spot.
+			$content .= $this->fire_hook_by_priority( 'woocommerce_after_single_product_summary', true );
+
 			if ( ! empty( $product_tabs ) ) {
 				$content .= '<div class="woocommerce-tabs wc-tabs-wrapper">';
 				$content .= '<ul class="tabs wc-tabs" role="tablist">';
@@ -137,6 +153,8 @@ class Product_Tab {
 				$content .= '</div>';
 			}
 
+			$content .= $this->fire_hook_by_priority( 'woocommerce_after_single_product_summary', false );
+
 			remove_filter( 'woocommerce_product_tabs', $hide_description );
 
 			remove_filter( 'woocommerce_product_additional_information_heading', $hide_heading );
@@ -149,4 +167,50 @@ class Product_Tab {
 
 		return $wraper_before . $content . $wraper_after;
 	}
+
+	/**
+	 * Fire a WordPress hook but only run the callbacks on one side of priority 10,
+	 * so a single hook (e.g. woocommerce_after_single_product_summary) can be split
+	 * into a "before" and an "after" insertion point around content rendered manually
+	 * in between, without any callback firing twice.
+	 *
+	 * @param string $hook       Hook name.
+	 * @param bool   $before_ten True to run only priority < 10 callbacks, false for >= 10.
+	 * @return string Captured output.
+	 */
+	private function fire_hook_by_priority( $hook, $before_ten ) {
+		global $wp_filter;
+
+		// Callbacks are hidden/restored through remove_filter()/add_filter() rather than by
+		// mutating $wp_filter[$hook]->callbacks directly, because WP_Hook keeps a separate
+		// internal priorities cache that only stays in sync when going through that API.
+		$hidden = array();
+		if ( ! empty( $wp_filter[ $hook ] ) ) {
+			foreach ( $wp_filter[ $hook ]->callbacks as $priority => $callbacks ) {
+				$keep = $before_ten ? ( $priority < 10 ) : ( $priority >= 10 );
+				if ( $keep ) {
+					continue;
+				}
+				foreach ( $callbacks as $registered ) {
+					$hidden[] = array(
+						'priority'      => $priority,
+						'function'      => $registered['function'],
+						'accepted_args' => $registered['accepted_args'],
+					);
+					remove_filter( $hook, $registered['function'], $priority );
+				}
+			}
+		}
+
+		ob_start();
+		do_action( $hook );
+		$output = ob_get_clean();
+
+		foreach ( $hidden as $registered ) {
+			add_filter( $hook, $registered['function'], $registered['priority'], $registered['accepted_args'] );
+		}
+
+		return $output;
+	}
 }
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

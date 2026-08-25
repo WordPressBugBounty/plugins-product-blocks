@@ -82,7 +82,7 @@ class Compare {
 				'woocommerce_account_' . $this->my_account_compare_end_point . '_endpoint',
 				function () {
 					$compare_wrapper_safe = wopb_function()->wp_kses_safe( $this->compare_wrapper() );
-					echo $compare_wrapper_safe;
+					echo $compare_wrapper_safe; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				}
 			);
 		}
@@ -260,7 +260,7 @@ class Compare {
 		$clear_cookie = false;
 		if ( isset( $_COOKIE['wopb_compare'] ) ) {
 			$cookie_data = wopb_function()->rest_sanitize_params(
-				json_decode( wp_unslash( $_COOKIE['wopb_compare'] ?? '' ) )
+				json_decode( wp_unslash( $_COOKIE['wopb_compare'] ?? '' ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized after decoding via rest_sanitize_params(); sanitizing the raw string first would corrupt the JSON.
 			);
 			if ( is_object( $cookie_data ) ) {
 				$cookie_data = (array) $cookie_data;
@@ -538,8 +538,12 @@ class Compare {
 			return;
 		}
 
-		$postId      = isset( $_POST['postid'] ) ? sanitize_text_field( wp_unslash( $_POST['postid'] ) ) : '';
+		$postId      = isset( $_POST['postid'] ) ? absint( wp_unslash( $_POST['postid'] ) ) : 0;
 		$action_type = isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : '';
+
+		if ( $postId && ! wopb_function()->can_view_product( $postId ) ) {
+			$postId = 0;
+		}
 
 		$params = array(
 			'source'       => 'ajax',
@@ -850,7 +854,7 @@ class Compare {
 							<?php
 							foreach ( $compare_data as $key => $val ) {
 								$product = wc_get_product( $val );
-								if ( $product ) {
+								if ( $product && wopb_function()->can_view_product( $val ) ) {
 									?>
 										<td class="wopb-compare-item wopb-compare-item-<?php echo esc_attr( $product->get_id() ); ?>">
 											<a class="wopb-compare-remove" data-action="remove" data-added-action="popup" data-postid="<?php echo esc_attr( $product->get_id() ); ?>">
@@ -894,7 +898,7 @@ class Compare {
 							<?php
 							foreach ( $compare_data as $key => $val ) {
 								$product = wc_get_product( $val );
-								if ( $product ) {
+								if ( $product && wopb_function()->can_view_product( $val ) ) {
 									?>
 										<td class="wopb-compare-item-<?php echo esc_attr( $product->get_id() ); ?>">
 									<?php
@@ -1081,7 +1085,7 @@ class Compare {
 			$output .= '<div class="wopb-product-list">';
 			foreach ( $compare_data as $key => $val ) {
 				$product = wc_get_product( $val );
-				if ( $product ) {
+				if ( $product && wopb_function()->can_view_product( $val ) ) {
 					$output             .= '<div class="wopb-compare-item wopb-compare-item-' . esc_attr( $product->get_id() ) . '">';
 						$output         .= '<div class="wopb-compare-product-details">';
 							$output     .= '<a href="' . esc_url( $product->get_permalink() ) . '" class="wopb-product-image">';
@@ -1148,7 +1152,7 @@ class Compare {
 
 		if ( $post_id ) {
 			$product = wc_get_product( $post_id );
-			if ( $product ) {
+			if ( $product && wopb_function()->can_view_product( $post_id ) ) {
 				$output         .= '<div class="wopb-compare-item wopb-compare-item-' . esc_attr( $product->get_id() ) . '">';
 					$output     .= '<span class="wopb-compare-image">';
 						$output .= $product->get_image( 'shop_thumbnail' );

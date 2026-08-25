@@ -29,6 +29,7 @@ function wopb_product_video_init( $config ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_product_video_opt', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_product_video_opt( $config ) {
 	$is_active = wopb_function()->get_setting( 'is_lc_active' );
 	$arr       = array(

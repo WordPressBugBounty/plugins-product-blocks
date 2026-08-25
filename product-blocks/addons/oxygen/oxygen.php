@@ -1,6 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Oxygen Builder element class name, must match Oxygen's own naming convention.
 class ProductXElement extends OxyEl {
 
 	function init() {
@@ -50,7 +51,7 @@ class ProductXElement extends OxyEl {
 				}
 				wp_reset_postdata();
 			}
-		} elseif ( isset( $_GET['action'] ) && strpos( sanitize_text_field( $_GET['action'] ), 'oxy_render_oxy' ) !== false ) {
+		} elseif ( isset( $_GET['action'] ) && strpos( sanitize_text_field( wp_unslash( $_GET['action'] ) ), 'oxy_render_oxy' ) !== false ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			// phpcs:ignore
 				/* translators: %s: is no of template */
 				echo '<p style="text-align:center;">' . sprintf( esc_html__( 'Pick a Template from your saved ones. Or create a template from: %s.', 'product-blocks' ) . ' ', '<strong><i>' . esc_html( 'Dashboard > WowStore > Saved Templates' ) . '</i></strong>' ) . '</p>';

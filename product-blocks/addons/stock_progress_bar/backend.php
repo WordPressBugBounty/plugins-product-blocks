@@ -38,6 +38,7 @@ if ( ! function_exists( 'wopb_stock_progress_bar_init' ) ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_stock_progress_opt', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_stock_progress_opt( $config ) {
 	$is_active = wopb_function()->get_setting( 'is_lc_active' );
 	$arr       = array(

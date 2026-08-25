@@ -99,7 +99,7 @@ class Condition {
 				<header id="wopb-header-template">
 					<?php
 						$header_safe = wopb_function()->wp_kses_safe( wopb_function()->content( $this->header_id ) );
-						echo $header_safe;
+						echo $header_safe; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					?>
 				</header> 
 			<?php
@@ -128,7 +128,7 @@ class Condition {
 							<footer id="wopb-footer-template" class="<?php echo esc_attr( 'wopb-builderid-' . $this->footer_id ); ?>" role="contentinfo">
 					<?php
 						$footer_safe = wopb_function()->wp_kses_safe( wopb_function()->content( $this->footer_id ) );
-						echo $footer_safe;
+						echo $footer_safe; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					?>
 				</footer> 
 			<?php

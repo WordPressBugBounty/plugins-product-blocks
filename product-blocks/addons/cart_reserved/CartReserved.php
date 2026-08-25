@@ -42,7 +42,7 @@ class CartReserved {
 		if ( ! headers_sent() ) {
 			setcookie( 'wopb_cart_reserved_timer', round( microtime( true ) * 1000 ), time() + ( (int) ( wopb_function()->get_setting( 'cart_reserved_time' ) ) * 60 ), '/' );
 		} else {
-			trigger_error( 'Reserved Timer Cookies not set for headers request sending issue', E_USER_WARNING );
+			trigger_error( 'Reserved Timer Cookies not set for headers request sending issue', E_USER_WARNING ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error -- intentional production diagnostic for a genuinely broken cookie-set attempt, not leftover debug code.
 		}
 	}
 
@@ -94,7 +94,7 @@ class CartReserved {
 	public function custom_clear_cart() {
 		if ( is_cart() && isset( $_GET['wopb-cart-clear'] ) ) {  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			WC()->cart->empty_cart();
-			wp_redirect( get_permalink() );
+			wp_safe_redirect( get_permalink() );
 			exit;
 		}
 	}
@@ -116,7 +116,7 @@ class CartReserved {
 			return $content;
 		}
 		if ( $reserved_time ) {
-			$countTime = ( isset( $_COOKIE['wopb_cart_reserved_timer'] ) ? (int) sanitize_text_field( $_COOKIE['wopb_cart_reserved_timer'] ) : 0 ) + ( $reserved_time * 60000 );
+			$countTime = ( isset( $_COOKIE['wopb_cart_reserved_timer'] ) ? (int) sanitize_text_field( wp_unslash( $_COOKIE['wopb_cart_reserved_timer'] ) ) : 0 ) + ( $reserved_time * 60000 );
 			$distance  = $countTime - ( time() * 1000 );
 			$hours     = floor( ( $distance % ( 1000 * 60 * 60 * 24 ) ) / ( 1000 * 60 * 60 ) );
 			$minutes   = floor( ( $distance % ( 1000 * 60 * 60 ) ) / ( 1000 * 60 ) );

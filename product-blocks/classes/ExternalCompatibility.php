@@ -36,6 +36,7 @@ class ExternalCompatibility {
 		$this->init_wopb_wp_rocket_js_exclusion();
 		$this->init_wopb_wp_rocket_style_compatibility();
 		add_action( 'wopb_save_settings', array( $this, 'purge_wp_rocket_cache_on_settings_save' ) );
+		add_action( 'admin_init', array( $this, 'purge_wp_rocket_cache_on_compatibility_change' ) );
 	}
 
 	// ========================================
@@ -139,7 +140,7 @@ class ExternalCompatibility {
 				}
 			}
 		} catch ( \Exception $e ) {
-			error_log( 'Spectra CSS generation error: ' . $e->getMessage() );
+			error_log( 'Spectra CSS generation error: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- genuine error-path logging, not debug code.
 		}
 	}
 
@@ -172,7 +173,7 @@ class ExternalCompatibility {
 				wp_delete_file( $spectra_css_path );
 				// error_log( 'Deleted Spectra CSS file: ' . $spectra_css_path . ' for post ID: ' . $post_id );
 			} else {
-				error_log( 'Spectra CSS file does not exist: ' . $spectra_css_path );
+				error_log( 'Spectra CSS file does not exist: ' . $spectra_css_path ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- genuine error-path logging, not debug code.
 			}
 		}
 	}
@@ -250,6 +251,8 @@ class ExternalCompatibility {
 				$selectors[] = '.productx-global-style';
 				$selectors[] = '.wopb-(.*)';
 				$selectors[] = '[class^="wopb-"]';
+				$selectors[] = '.wp-block-navigation(.*)';
+				$selectors[] = '[class^="wp-block-navigation"]';
 				return $selectors;
 			}
 		);
@@ -261,6 +264,9 @@ class ExternalCompatibility {
 				$selectors[] = '.productx-global-style';
 				$selectors[] = '.wopb-(.*)';
 				$selectors[] = '[class^="wopb-"]';
+				$selectors[] = '.wp-block-navigation(.*)';
+				$selectors[] = '[class^="wp-block-navigation"]';
+				$selectors[] = '[class*=" wp-block-navigation"]';
 				$selectors[] = '.wp-block-navigation__responsive-container';
 				$selectors[] = '.wp-block-navigation__responsive-container.is-menu-open';
 				$selectors[] = '.wp-block-navigation__responsive-close';
@@ -285,6 +291,7 @@ class ExternalCompatibility {
 				$excluded_inline[] = 'productx-global-style';
 				$excluded_inline[] = 'wopb-(.*)';
 				$excluded_inline[] = 'wp-block-navigation__responsive-container';
+				$excluded_inline[] = 'wp-block-navigation';
 				return $excluded_inline;
 			}
 		);
@@ -416,6 +423,46 @@ class ExternalCompatibility {
 			return;
 		}
 
+		$this->purge_wp_rocket_cache();
+		update_option( 'wopb_wp_rocket_compatibility_version', '2026-08-12-navigation-rucss-fallback' );
+	}
+
+	/**
+	 * Purge WP Rocket cache once when compatibility rules change.
+	 *
+	 * @since v.1.0.0
+	 * @return void
+	 */
+	public function purge_wp_rocket_cache_on_compatibility_change() {
+		$compatibility_version = '2026-08-12-navigation-rucss-fallback';
+
+		if ( $compatibility_version === get_option( 'wopb_wp_rocket_compatibility_version' ) ) {
+			return;
+		}
+
+		if ( 'yes' !== wopb_function()->get_setting( 'wprocket_cache_exclusion' ) ) {
+			return;
+		}
+
+		if ( ! $this->is_wp_rocket_active() ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'rocket_remove_unused_css' ) && ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$this->purge_wp_rocket_cache();
+		update_option( 'wopb_wp_rocket_compatibility_version', $compatibility_version );
+	}
+
+	/**
+	 * Purge WP Rocket page, minify, and Used CSS caches.
+	 *
+	 * @since v.1.0.0
+	 * @return void
+	 */
+	private function purge_wp_rocket_cache() {
 		if ( function_exists( 'rocket_clean_domain' ) ) {
 			rocket_clean_domain();
 		}
@@ -423,5 +470,26 @@ class ExternalCompatibility {
 		if ( function_exists( 'rocket_clean_minify' ) ) {
 			rocket_clean_minify();
 		}
+
+		$this->purge_wp_rocket_used_css_cache();
+	}
+
+	/**
+	 * Purge WP Rocket Remove Unused CSS cache.
+	 *
+	 * @since v.1.0.0
+	 * @return void
+	 */
+	private function purge_wp_rocket_used_css_cache() {
+		if ( ! current_user_can( 'rocket_remove_unused_css' ) && ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		if ( function_exists( 'wpm_apply_filters_typed' ) ) {
+			wpm_apply_filters_typed( 'array', 'rocket_saas_clean_all', array() );
+			return;
+		}
+
+		apply_filters( 'rocket_saas_clean_all', array() ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WP Rocket's own filter hook name, must match exactly to integrate with it.
 	}
 }

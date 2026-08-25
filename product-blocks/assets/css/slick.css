@@ -122,3 +122,7 @@
 .slick-arrow.slick-hidden {
     display: none;
 }
+/* A weird issue from wordpress version 7.1 */
+.editor-styles-wrapper { 
+    color: inherit;
+}

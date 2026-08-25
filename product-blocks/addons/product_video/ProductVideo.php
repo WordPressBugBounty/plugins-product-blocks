@@ -77,7 +77,7 @@ class ProductVideo {
 	 */
 	public function video_in_thumbnails() {
 		global $product;
-		echo $this->product_video_thumbnail( '', $product, '' );
+		echo $this->product_video_thumbnail( '', $product, '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_url()/esc_attr()-escaped pieces; contains <video>/<iframe> markup that wp_kses_post would strip.
 	}
 
 	/**
@@ -124,7 +124,7 @@ class ProductVideo {
 	 * @since v.4.0.0
 	 */
 	public function loop_item_html_add_callback() {
-		echo $this->product_video_thumbnail( '', '', '' );
+		echo $this->product_video_thumbnail( '', '', '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_url()/esc_attr()-escaped pieces; contains <video>/<iframe> markup that wp_kses_post would strip.
 	}
 
 	/**
@@ -183,7 +183,7 @@ class ProductVideo {
 					$param        .= $data_value['auto'] == 'yes' ? ' autoplay muted ' : '';
 					$param        .= $data_value['repeat'] ? ' loop' : '';
 					$video_render  = '<video class="wopb-custom-video"' . $param . ' controls>';
-					$video_render .= '<source src="' . $video_url . '" type="video/mp4">';
+					$video_render .= '<source src="' . esc_url( $video_url ) . '" type="video/mp4">';
 					$video_render .= '</video>';
 					$item_attr    .= $data_value['hover'] ? 'data-hover="true"' : '';
 				}
@@ -331,7 +331,7 @@ class ProductVideo {
 			</p>
 			<p class="form-field">
 				<label for="wopb_video_single_position">
-					<?php echo __( 'Position in Single Product Gallery', 'product-blocks' ); ?>
+					<?php echo esc_html__( 'Position in Single Product Gallery', 'product-blocks' ); ?>
 				</label>
 				<select name="wopb_video_single_position" class="wopb-video-single-position" id="wopb_video_single_position">
 					<?php
@@ -357,18 +357,18 @@ class ProductVideo {
 			?>
 			<p class="form-field wopb_video_autoplay_field">
 				<input type="checkbox"  name="wopb_video_autoplay" value="yes" class="checkbox" <?php echo $is_active ? '' : 'disabled'; ?> <?php echo checked( $data_value['auto'], 'yes', false ); ?>>
-				<label for="wopb_video_autoplay"><?php echo __( 'Video Autoplay', 'product-blocks' ); ?></label>
+				<label for="wopb_video_autoplay"><?php echo esc_html__( 'Video Autoplay', 'product-blocks' ); ?></label>
 				<?php if ( ! $is_active ) { ?>
 					<a target="_blank" href="<?php echo esc_url( $pro_url ); ?>" class="wopb-pro-feature-note"><?php echo esc_html( $pro_text ); ?></a>
 				<?php } ?>
-			<p class="form-field wopb_video_repeat_field<?php echo $type_depend_class; ?>">
+			<p class="form-field wopb_video_repeat_field<?php echo esc_attr( $type_depend_class ); ?>">
 				<input type="checkbox" name="wopb_video_repeat" value="yes" class="checkbox" <?php echo checked( $data_value['repeat'], 'yes', false ); ?> <?php echo $is_active ? '' : 'disabled'; ?>>
 				<label for="wopb_video_repeat"><?php echo esc_html__( 'Video Repeat', 'product-blocks' ); ?></label>
 				<?php if ( ! $is_active ) { ?>
 					<a target="_blank" href="<?php echo esc_url( $pro_url ); ?>" class="wopb-pro-feature-note"><?php echo esc_html( $pro_text ); ?></a>
 				<?php } ?>
 			</p>
-			<p class="form-field  wopb_video_hover_field <?php echo ( $data_value['auto'] == 'yes' || isset( $_POST['wopb_video_autoplay'] ) ? ' wopb-d-none ' . ( isset( $_POST['wopb_video_type'] ) ? $_POST['wopb_video_type'] : ' x ' ) : $type_depend_class ); ?>">
+			<p class="form-field  wopb_video_hover_field <?php echo esc_attr( $data_value['auto'] == 'yes' || isset( $_POST['wopb_video_autoplay'] ) ? ' wopb-d-none ' . ( isset( $_POST['wopb_video_type'] ) ? sanitize_text_field( wp_unslash( $_POST['wopb_video_type'] ) ) : ' x ' ) : $type_depend_class ); // phpcs:ignore WordPress.Security.NonceVerification.Missing ?>">
 				<input type="checkbox" name="wopb_video_hover" value="yes" class="checkbox" <?php echo checked( $data_value['hover'], 'yes', false ); ?> <?php echo $is_active ? '' : 'disabled'; ?>>
 				<label for="wopb_video_hover"><?php echo esc_html__( 'Play On Hover', 'product-blocks' ); ?></label>
 				<?php if ( ! $is_active ) { ?>
@@ -387,33 +387,34 @@ class ProductVideo {
 	 * @since v.3.2.0
 	 */
 	public function product_meta_save( $post_id ) {
+		// Nonce already verified by WC_Meta_Box_Product_Data::save() before this hook fires.
 		if ( $post_id ) {
 			$data = $this->get_data( $post_id );
-			if ( isset( $_POST['wopb_video_type'] ) ) {
-				$data['type'] = sanitize_text_field( $_POST['wopb_video_type'] );
+			if ( isset( $_POST['wopb_video_type'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
+				$data['type'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_type'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			}
-			if ( isset( $_POST['wopb_video_url'] ) ) {
-				$data['url'] = sanitize_text_field( $_POST['wopb_video_url'] );
+			if ( isset( $_POST['wopb_video_url'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
+				$data['url'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_url'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			}
-			if ( isset( $_POST['wopb_video_image'] ) ) {
-				$data['img'] = sanitize_text_field( $_POST['wopb_video_image'] );
+			if ( isset( $_POST['wopb_video_image'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
+				$data['img'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_image'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			}
-			if ( isset( $_POST['wopb_video_image_id'] ) ) {
-				$data['img_id'] = sanitize_text_field( $_POST['wopb_video_image_id'] );
+			if ( isset( $_POST['wopb_video_image_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
+				$data['img_id'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_image_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			}
-			if ( isset( $_POST['wopb_video_autoplay'] ) ) {
-				$data['auto'] = sanitize_text_field( $_POST['wopb_video_autoplay'] );
+			if ( isset( $_POST['wopb_video_autoplay'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
+				$data['auto'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_autoplay'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			} else {
 				$data['auto'] = 'no';
 			}
-			if ( isset( $_POST['wopb_video_single_position'] ) ) {
-				$data['single_position'] = sanitize_text_field( $_POST['wopb_video_single_position'] );
+			if ( isset( $_POST['wopb_video_single_position'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
+				$data['single_position'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_single_position'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			}
-			if ( isset( $_POST['wopb_video_repeat'] ) ) {
-				$data['repeat'] = sanitize_text_field( $_POST['wopb_video_repeat'] );
+			if ( isset( $_POST['wopb_video_repeat'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
+				$data['repeat'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_repeat'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			}
-			if ( isset( $_POST['wopb_video_hover'] ) ) {
-				$data['hover'] = sanitize_text_field( $_POST['wopb_video_hover'] );
+			if ( isset( $_POST['wopb_video_hover'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
+				$data['hover'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_hover'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			}
 			update_post_meta( $post_id, '__wopb_product_video', $data );
 		}

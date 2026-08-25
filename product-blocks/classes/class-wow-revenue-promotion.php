@@ -46,11 +46,11 @@ class WowRevenuePromotion {
 			return;
 		}
 
-		$GLOBALS['revx_promo_promotion'] = array(
+		$GLOBALS['revx_promo_promotion'] = array( // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- shared cross-plugin coordination key used by other WPXPO plugins bundling this same module.
 			'init' => true,
 		);
 
-		$hooks = apply_filters( 'revx_promo_promotion_hooks', array() );
+		$hooks = apply_filters( 'revx_promo_promotion_hooks', array() ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- shared hook name used across WPXPO plugins bundling this same module.
 
 		if ( ! is_array( $hooks ) ) {
 			return;
@@ -855,7 +855,7 @@ class WowRevenuePromotion {
 	 * @return void
 	 */
 	private function render_promotion_notice( $id, $type, $message, $style = '', $inline = true, $button_labels = array(), $container_cls = '' ) {
-		$GLOBALS['revx_promo_promotion'][ $type ] = true;
+		$GLOBALS['revx_promo_promotion'][ $type ] = true; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- shared cross-plugin coordination key used by other WPXPO plugins bundling this same module.
 
 		$button_labels = wp_parse_args(
 			is_array( $button_labels ) ? $button_labels : array(),

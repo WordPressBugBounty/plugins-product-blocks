@@ -1,6 +1,8 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 if ( $attr['headingShow'] ) {
 	$allowed_html_tags      = wopb_function()->allowed_html_tags();
 	$attr['headingTag']     = in_array( $attr['headingTag'], wopb_function()->allowed_block_tags() ) ? $attr['headingTag'] : 'h2';
@@ -21,3 +23,4 @@ if ( $attr['headingShow'] ) {
 	}
 	$wraper_before .= '</div>';
 }
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

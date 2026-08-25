@@ -94,7 +94,7 @@ class CallForPrices {
 		) {
 			$html = $this->product_price_html( $product );
 			if ( is_product() ) {
-				echo $html;
+				echo wopb_function()->wp_kses_safe( $html ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			} else {
 				return $html;
 			}
@@ -250,7 +250,7 @@ class CallForPrices {
 			} else {
 				$button_class .= ' wopb-call-price-shop-btn';
 			}
-			$html = '<a target="' . $target . '" class="' . $button_class . '" href="' . $link . '">';
+			$html = '<a target="' . esc_attr( $target ) . '" class="' . esc_attr( $button_class ) . '" href="' . esc_url( $link ) . '">';
 			if ( wopb_function()->get_setting( 'call_icon_position' ) == 'before' ) {
 				$html .= $icon;
 			}
@@ -274,7 +274,7 @@ class CallForPrices {
 	 */
 	public function add_to_cart_button( $add_to_cart_html, $product, $args ) {
 		ob_start();
-		echo $this->price_condition_callback( '', $product );
+		echo wopb_function()->wp_kses_safe( $this->price_condition_callback( '', $product ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		$call_html = ob_get_clean();
 		return $call_html ? $call_html : $add_to_cart_html;
 	}

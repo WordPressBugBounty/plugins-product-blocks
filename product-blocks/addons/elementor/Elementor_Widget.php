@@ -1,6 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Elementor widget class name, must match Elementor's own naming convention.
 class ProductX_Widget extends \Elementor\Widget_Base {
 
 	public function get_name() {
@@ -76,8 +77,7 @@ class ProductX_Widget extends \Elementor\Widget_Base {
 					wp_reset_postdata();
 				}
 				echo '</div>';
-		} elseif ( isset( $_GET['action'] ) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) == 'elementor' ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		} elseif ( isset( $_GET['action'] ) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) == 'elementor' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				/* translators: %s: is no of template */
 				echo '<p style="text-align:center;">' . sprintf( esc_html__( 'Pick a Template from your saved ones. Or create a template from: %s.', 'product-blocks' ) . ' ', '<strong><i>' . esc_html( 'Dashboard > WowStore > Saved Templates' ) . '</i></strong>' ) . '</p>';
 		}

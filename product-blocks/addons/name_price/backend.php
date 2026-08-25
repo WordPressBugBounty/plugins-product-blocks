@@ -29,6 +29,7 @@ function wopb_name_price_config( $config ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_name_price_settings', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_name_price_settings( $config ) {
 	$arr = array(
 		'wopb_name_price' => array(

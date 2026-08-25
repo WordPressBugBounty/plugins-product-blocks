@@ -1088,6 +1088,12 @@ Size Chart Addon [STOP]
     clear: both;
     width: 100%;
 }
+.wp-theme-kadence.woocommerce ul.products.woo-archive-action-on-hover li.product:hover > .product-details:has(.wopb-cart-bottom) {
+    transform: translateY(-80px);
+}
+.wp-theme-kadence.woocommerce ul.products.woo-archive-action-on-hover li.product:hover > .product-details:has(.wopb-cart-bottom) > .product-action-wrap {
+    top: calc(100% - 28px);
+}
 .wopb-cart-top .wopb-wishlist-btn-wrap,
 .wopb-cart-bottom .wopb-wishlist-btn-wrap,
 .wopb-cart-top .wopb-compare-btn-wrap,

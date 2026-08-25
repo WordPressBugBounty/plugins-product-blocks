@@ -3,6 +3,8 @@ namespace WOPB\blocks;
 
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 class Product_Image {
 
 	public function __construct() {
@@ -228,3 +230,4 @@ class Product_Image {
 		return $wraper_before . $content . $wraper_after;
 	}
 }
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

@@ -1,6 +1,8 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 $checkout = WC()->checkout();
 
 ?>
@@ -21,3 +23,5 @@ $checkout = WC()->checkout();
 
 	<?php do_action( 'woocommerce_after_order_notes', $checkout ); ?>
 </div>
+
+<?php // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals ?>

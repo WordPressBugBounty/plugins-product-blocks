@@ -4,6 +4,8 @@ use function Clue\StreamFilter\remove;
 
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 	do_action( 'woocommerce_before_cart' );
 	WC()->cart->calculate_totals();
 	WC()->cart->calculate_shipping();
@@ -11,7 +13,8 @@ defined( 'ABSPATH' ) || exit;
 
 function product_remove( $args ) {
 	echo '<div class="product-remove">';
-		echo apply_filters( //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo apply_filters(
 			'woocommerce_cart_item_remove_link',
 			sprintf(
 				'<a href="%s" class="remove wopb-cart-product-remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
@@ -258,3 +261,5 @@ if ( ! in_array( $current_theme->get( 'Name' ), array( 'Botiga' ) ) ) {
 ?>
 
 <?php do_action( 'woocommerce_after_cart' ); ?>
+
+<?php // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals ?>

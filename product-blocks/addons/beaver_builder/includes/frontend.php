@@ -1,6 +1,8 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template partial included directly into a method scope; these are local render-time variables, not plugin globals.
+
 $id = $settings->template;
 ?>
 <div class="wopb-shortcode" data-postid="<?php echo esc_attr( $id ); ?>">
@@ -18,8 +20,7 @@ $id = $settings->template;
 			}
 			wp_reset_postdata();
 		}
-	} elseif ( isset( $_GET['fl_builder'] ) ) {
-		// phpcs:ignore
+	} elseif ( isset( $_GET['fl_builder'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			echo '<p style="text-align:center;">' . sprintf(
 					/* translators: %s: is no of template */
 				esc_html__(
@@ -31,3 +32,4 @@ $id = $settings->template;
 	}
 	?>
 </div>
+<?php // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound ?>

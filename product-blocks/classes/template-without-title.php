@@ -1,6 +1,8 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template partial included directly into a method scope; these are local render-time variables, not plugin globals.
+
 $is_block_theme = wp_is_block_theme();
 
 if ( $is_block_theme ) {
@@ -60,7 +62,7 @@ if ( $is_block_theme ) {
 		ob_start();
 		block_template_part( 'footer' );
 		$footer_safe = wopb_function()->core_esc_wp( ob_get_clean() );
-		echo '<footer class="wp-block-template-part">' . $footer_safe . '</footer>';
+		echo '<footer class="wp-block-template-part">' . $footer_safe . '</footer>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 	wp_head();
 	wp_footer();
@@ -71,3 +73,4 @@ if ( $is_block_theme ) {
 } else {
 	get_footer();
 }
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound

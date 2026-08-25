@@ -19,6 +19,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 $border_color = $notice['border_color'];
 $url          = $notice['url'];
 
@@ -178,3 +180,5 @@ $close_icon_class    = $prefix . '-content-notice-close-icon';
 		?>
 	class="<?php echo esc_attr( $close_class ); ?>"><span class="<?php echo esc_attr( $close_icon_class ); ?> dashicons dashicons-dismiss"> </span></a>
 </div>
+
+<?php // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals ?>

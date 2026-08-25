@@ -29,6 +29,7 @@ function wopb_variation_swatches_config( $config ) {
  * @since v.2.2.7
  */
 add_filter( 'wopb_settings', 'get_variation_swatches_settings', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_variation_swatches_settings( $config ) {
 	$arr = array(
 		'wopb_variation_swatches' => array(

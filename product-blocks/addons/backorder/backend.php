@@ -29,6 +29,7 @@ function wopb_backorder_setup( $config ) {
  * @since v.1.0.7
  */
 add_filter( 'wopb_settings', 'get_backorder_opt', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_backorder_opt( $config ) {
 	$arr = array(
 		'wopb_backorder' => array(

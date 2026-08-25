@@ -37,6 +37,7 @@ if ( ! function_exists( 'wopb_currency_switcher_init' ) ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_currency_switcher_opt', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_currency_switcher_opt( $config ) {
 	$wc_default_currency   = get_woocommerce_currency();
 	$wopb_default_currency = wopb_function()->get_setting( 'wopb_default_currency' ) ? wopb_function()->get_setting( 'wopb_default_currency' ) : $wc_default_currency;

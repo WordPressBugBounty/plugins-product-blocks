@@ -29,6 +29,7 @@ function wopb_social_share_init( $config ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_social_share_opt', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_social_share_opt( $config ) {
 	$is_active = wopb_function()->get_setting( 'is_lc_active' );
 	$arr       = array(

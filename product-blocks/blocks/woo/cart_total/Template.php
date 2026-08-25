@@ -1,7 +1,9 @@
 <?php
 	defined( 'ABSPATH' ) || exit;
 
-if ( isset( $_POST['calc_shipping_country'] ) ) { //phpcs:disable WordPress.Security.NonceVerification.Missing
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
+if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- read-only shipping recalculation, mirrors WC_Shortcode_Cart::calculate_shipping() in WooCommerce core, which handles the same $_POST key without a nonce check.
 	if ( class_exists( 'WC_Shortcode_Cart' ) ) {
 		WC_Shortcode_Cart::calculate_shipping();
 	}
@@ -106,7 +108,8 @@ if ( isset( $_POST['calc_shipping_country'] ) ) { //phpcs:disable WordPress.Secu
 			<?php do_action( 'woocommerce_proceed_to_checkout' ); ?>
 		</div>
 	</div>
-	<?php do_action( 'woocommerce_after_cart_totals' ); ?>
 
 </div>
 
+
+<?php // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals ?>

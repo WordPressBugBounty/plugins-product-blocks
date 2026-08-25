@@ -30,6 +30,7 @@ function wopb_add_to_cart_text_config( $config ) {
  * @return ARRAY
  */
 add_filter( 'wopb_settings', 'get_add_to_cart_text_settings', 10, 1 );
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 function get_add_to_cart_text_settings( $config ) {
 	$arr = array(
 		'wopb_cart_text' => array(

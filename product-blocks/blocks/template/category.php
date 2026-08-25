@@ -1,6 +1,8 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 $category = '';
 if ( $attr['catShow'] ) {
 	$category .= '<div class="wopb-category-grid ' . 'wopb-cat-' . esc_attr( $attr['catPosition'] ) . '" >';
@@ -16,3 +18,4 @@ if ( $attr['catShow'] ) {
 	}
 	$category .= '</div>';
 }
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

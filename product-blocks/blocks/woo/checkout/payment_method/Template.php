@@ -1,6 +1,8 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 if ( ! wp_doing_ajax() ) {
 	do_action( 'woocommerce_review_order_before_payment' );
 }
@@ -18,7 +20,7 @@ $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 						wc_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway ) );
 					}
 				} else {
-					echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . apply_filters( 'woocommerce_no_available_payment_methods_message', WC()->customer->get_billing_country() ? esc_html__( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'product-blocks' ) : esc_html__( 'Please fill in your details above to see available payment methods.', 'product-blocks' ) ) . '</li>'; // @codingStandardsIgnoreLine
+					echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . apply_filters( 'woocommerce_no_available_payment_methods_message', WC()->customer->get_billing_country() ? esc_html__( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'product-blocks' ) : esc_html__( 'Please fill in your details above to see available payment methods.', 'product-blocks' ) ) . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				}
 				?>
 			</ul>
@@ -39,7 +41,7 @@ $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
 			<?php do_action( 'woocommerce_review_order_before_submit' ); ?>
 
-			<?php echo apply_filters( 'woocommerce_order_button_html', '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Place order" data-value="Place order">' . esc_html__( 'Place order', 'product-blocks' ) . '</button>' ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo apply_filters( 'woocommerce_order_button_html', '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Place order" data-value="Place order">' . esc_html__( 'Place order', 'product-blocks' ) . '</button>' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
 			<?php do_action( 'woocommerce_review_order_after_submit' ); ?>
 
@@ -51,3 +53,4 @@ $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 if ( ! wp_doing_ajax() ) {
 	do_action( 'woocommerce_review_order_after_payment' );
 }
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

@@ -50,7 +50,7 @@ class Builder {
 		$p_type  = get_post_meta( $post->ID, '_wopb_builder_type', true );
 		$p_type  = $p_type ? $p_type : 'archive';
 
-		$widget_area = wp_get_sidebars_widgets();
+		$widget_area = wp_get_sidebars_widgets(); //phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- used only in admin metabox to list widget areas, not on the frontend.
 		if ( isset( $widget_area['wp_inactive_widgets'] ) ) {
 			unset( $widget_area['wp_inactive_widgets'] ); }
 		if ( isset( $widget_area['array_version'] ) ) {

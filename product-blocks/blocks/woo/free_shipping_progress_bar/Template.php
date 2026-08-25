@@ -1,6 +1,8 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 WC()->cart->calculate_totals();
 WC()->cart->calculate_shipping();
 
@@ -35,7 +37,8 @@ function progressBar( $free_shipping_progress, $attr ) {
 <div class="wopb-progress-bar wopb-free-progress-bar-section">
 	<?php
 	if ( $attr['progressTop'] ) {
-		echo progressBar( $free_shipping_progress, $attr ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo progressBar( $free_shipping_progress, $attr );
 	}
 	?>
 	<div class="wopb-progress-msg">
@@ -59,3 +62,5 @@ function progressBar( $free_shipping_progress, $attr ) {
 	}
 	?>
 </div>
+
+<?php // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals ?>

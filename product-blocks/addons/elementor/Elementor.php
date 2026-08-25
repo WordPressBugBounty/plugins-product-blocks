@@ -1,6 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Elementor extension class name, must match Elementor's own naming convention.
 final class Elementor_WOPB_Extension {
 
 	private static $_instance = null;
@@ -44,7 +45,7 @@ final class Elementor_WOPB_Extension {
 		if ( has_block( 'product-blocks/checkout-order-review', $post ) ) {
 			wp_enqueue_script( 'wc-checkout' );
 		}
-		wp_enqueue_script( 'wopb-script', WOPB_URL . 'assets/js/wopb.js', array( 'jquery', 'wopb-flexmenu-script', 'wp-api-fetch' ), WOPB_VER, true );
+		wp_enqueue_script( 'wopb-script', WOPB_URL . 'assets/js/wopb.js', array( 'jquery', 'wopb-flexmenu-script', 'wp-api-fetch', 'wp-data' ), WOPB_VER, true );
 		$wopb_core_localize = array(
 			'url'               => WOPB_URL,
 			'ajax'              => admin_url( 'admin-ajax.php' ),

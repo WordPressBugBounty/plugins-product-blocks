@@ -246,7 +246,7 @@ class Custom_Font {
 		}
 
 		$arr         = array();
-		$font_weight = isset( $_POST['weight'] ) ? wopb_function()->rest_sanitize_params( $_POST['weight'] ) : array();
+		$font_weight = isset( $_POST['weight'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['weight'] ) ) : array(); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		if ( ! empty( $font_weight ) ) {
 			foreach ( $font_weight as $i => $value ) {
 				if ( isset( $font_weight[ $i ] ) &&

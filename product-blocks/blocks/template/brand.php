@@ -1,6 +1,8 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+
 $brand = '';
 if ( ! empty( $attr['brandShow'] ) && taxonomy_exists( 'product_brand' ) ) {
 	$brand_terms = get_the_terms( $post_id, 'product_brand' );
@@ -16,3 +18,4 @@ if ( ! empty( $attr['brandShow'] ) && taxonomy_exists( 'product_brand' ) ) {
 		$brand .= '</div>';
 	}
 }
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

@@ -8,6 +8,7 @@ function wopb_productx_template_divi_modules() {
 	if ( ! class_exists( 'ET_Builder_Module' ) ) {
 		return; }
 
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Divi Builder module class name, must match Divi's own naming convention.
 	class ProductX_Template_Module extends ET_Builder_Module {
 
 		public $slug       = 'wopb_productx_template';
@@ -56,8 +57,8 @@ function wopb_productx_template_divi_modules() {
 				}
 			} elseif ( in_array( 'et-fb', $body_class ) ) {
 					$content = '<p style="text-align:center;">' .
-						/* translators: %s: is no of template */
 						sprintf(
+							/* translators: %s: link/path to the saved templates screen */
 							esc_html__( 'Pick a Template from your saved ones. Or create a template from: %s.', 'product-blocks' ) . ' ',
 							'<strong><i>' . esc_html( 'Dashboard > WowStore > Saved Templates' ) . '</i></strong>'
 						) . '</p>';
