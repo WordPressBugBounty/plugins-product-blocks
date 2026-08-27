@@ -3270,18 +3270,26 @@ class Functions {
 	 * @since v.2.6.8
 	 */
 	public function highlightSearchKey( $content, $search ) {
+		if ( trim( (string) $search ) === '' ) {
+			return $content;
+		}
+
 		// Create a new DOMDocument object and load the HTML
-		$doc = new \DOMDocument();
+		$useErrors = libxml_use_internal_errors( true );
+		$doc       = new \DOMDocument();
 		$doc->loadHTML( '<?xml encoding="UTF-8">' . $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
 
 		// Use DOMXPath to select all text nodes
 		$xpath     = new \DOMXPath( $doc );
 		$textNodes = $xpath->query( '//text()' );
 
+		$escapedSearch = preg_quote( htmlspecialchars( $search, ENT_QUOTES, 'UTF-8' ), '/' );
+
 		foreach ( $textNodes as $node ) {
 			$text            = $node->nodeValue;
-			$highlightedText = preg_replace( '/(' . $search . ')/i', '<strong class="wopb-highlight">$1</strong>', $text );
-			if ( $highlightedText !== $text ) {
+			$escapedText     = htmlspecialchars( $text, ENT_QUOTES, 'UTF-8' );
+			$highlightedText = preg_replace( '/(' . $escapedSearch . ')/iu', '<strong class="wopb-highlight">$1</strong>', $escapedText );
+			if ( $highlightedText !== null && $highlightedText !== $escapedText ) {
 				$newNode = $doc->createDocumentFragment();
 				$newNode->appendXML( $highlightedText );
 				$node->parentNode->replaceChild( $newNode, $node );
@@ -3289,7 +3297,11 @@ class Functions {
 		}
 
 		// Output the modified HTML
-		return $doc->saveHTML();
+		$html = $doc->saveHTML();
+		libxml_clear_errors();
+		libxml_use_internal_errors( $useErrors );
+
+		return $html;
 	}
 
 	/**

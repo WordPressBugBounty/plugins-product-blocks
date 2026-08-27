@@ -129,9 +129,10 @@ class SetupWizard {
 
 		$action = sanitize_text_field( $params['action'] );
 
-		$woocommerce_required = isset( $params['install_woocommerce'] ) && 'yes' === $params['install_woocommerce'];
-		$revenue__required    = isset( $params['install_revenue'] ) && 'yes' === $params['install_revenue'];
-		$wowshipping_required = isset( $params['install_wowshipping'] ) && 'yes' === $params['install_wowshipping'];
+		$woocommerce_required  = isset( $params['install_woocommerce'] ) && 'yes' === $params['install_woocommerce'];
+		$revenue__required     = isset( $params['install_revenue'] ) && 'yes' === $params['install_revenue'];
+		$wowshipping_required  = isset( $params['install_wowshipping'] ) && 'yes' === $params['install_wowshipping'];
+		$wowrecommend_required = isset( $params['install_wowrecommend'] ) && 'yes' === $params['install_wowrecommend'];
 
 		if ( isset( $params['siteType'] ) ) {
 			$site_type = sanitize_text_field( $params['siteType'] );
@@ -147,6 +148,9 @@ class SetupWizard {
 			}
 			if ( $wowshipping_required ) {
 				$this->handle_plugin_activation( 'wowshipping' );
+			}
+			if ( $wowrecommend_required ) {
+				$this->handle_plugin_activation( 'wowrecommend' );
 			}
 
 			return rest_ensure_response( array( 'success' => true ) );
@@ -204,6 +208,9 @@ class SetupWizard {
 				break;
 			case 'wowshipping':
 				Xpo::install_and_active_plugin( 'wow-table-rate-shipping' );
+				break;
+			case 'wowrecommend':
+				Xpo::install_and_active_plugin( 'wow-ai-product-recommendations' );
 				break;
 			default:
 				break;

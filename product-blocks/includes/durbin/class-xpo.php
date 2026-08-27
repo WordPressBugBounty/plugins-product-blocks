@@ -37,7 +37,7 @@ class Xpo {
 	 */
 	public static function is_lc_expired() {
 		$license_data = get_option( 'edd_wopb_license_data', array() );
-		// returned true while testing renew-upgrade scenario. 
+		// returned true while testing renew-upgrade scenario.
 		// return true;
 		return isset( $license_data['license'] ) && 'expired' === $license_data['license'];
 	}
@@ -263,7 +263,7 @@ class Xpo {
 			),
 			// -----------------------------------------
 			// 2026 Summer sale utms
-			'summer_db'                 => array(
+			'summer_db'                   => array(
 				'source'   => 'db-wowstore-notice',
 				'medium'   => 'summer-sale',
 				'campaign' => 'wowstore-dashboard',
