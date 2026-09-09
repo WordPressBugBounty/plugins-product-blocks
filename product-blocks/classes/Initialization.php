@@ -37,6 +37,15 @@ class Initialization {
 		add_action( 'wp_enqueue_scripts', array( $this, 're_enqueue_wc_scripts' ), 99999 );
 
 		$this->include_promotions();
+
+		add_filter(
+			'body_class',
+			function ( $classes ) {
+				$classes[] = 'wopb-front-page';
+
+				return $classes;
+			}
+		);
 	}
 
 	/**
