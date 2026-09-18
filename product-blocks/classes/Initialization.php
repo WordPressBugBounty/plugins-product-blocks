@@ -111,12 +111,12 @@ class Initialization {
 			if ( wp_doing_ajax() || is_network_admin() || isset( $_GET['activate-multi'] ) ) { //phpcs:ignore
 				return;
 			}
-			if ( get_option( 'wopb_setup_wizard_data', '' ) != 'yes' ) {
-				update_option( 'wopb_setup_wizard_data', 'yes' );
-                exit( wp_safe_redirect( admin_url( 'admin.php?page=wopb-initial-setup-wizard' ) ) ); //phpcs:ignore
-			} else {
-                exit( wp_safe_redirect( admin_url( 'admin.php?page=wopb-settings#home' ) ) ); //phpcs:ignore
-			}
+			// if ( get_option( 'wopb_setup_wizard_data', '' ) != 'yes' ) {
+			// 	update_option( 'wopb_setup_wizard_data', 'yes' );
+            //     exit( wp_safe_redirect( admin_url( 'admin.php?page=wopb-initial-setup-wizard' ) ) ); //phpcs:ignore
+			// } else {
+			// }
+            exit( wp_safe_redirect( admin_url( 'admin.php?page=wopb-settings#home' ) ) ); //phpcs:ignore
 		}
 	}
 
