@@ -147,6 +147,30 @@ return array(
 		'is_discount_logo'   => true,
 	),
 
+	array(
+		'type'               => 'icon-message',
+		'key'                => $prefix . '_dashboard_content_notice_flash_sale_2026_1',
+		'start'              => '2026-10-06 00:00 Asia/Dhaka',
+		'end'                => '2026-10-16 23:59 Asia/Dhaka',
+		'url'                => Xpo::generate_utm_link(
+			array(
+				'config' => array(
+					'source'   => $config['utm_source'],
+					'medium'   => 'flash-sale',
+					'campaign' => $config['utm_campaign'],
+				),
+			)
+		),
+		'visibility'         => ! Xpo::is_lc_active(),
+		// translators: %s is the discount_content value (e.g. "up to 60% OFF") substituted into this string.
+		'content_subheading' => __( 'Flash Sale: Enjoy %s on ', 'product-blocks' ) . $brand_name . __( ' Pro.', 'product-blocks' ),
+		'discount_content'   => 'up to 60% OFF',
+		'border_color'       => $brand_color,
+		'icon'               => $asset_url . 'dashboard_banner/discount.svg',
+		'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
+		'is_discount_logo'   => true,
+	),
+
 	// -- image-only ------------------------------------------------------
 	array(
 		'type'        => 'image-only',

@@ -326,6 +326,7 @@ class Notice {
 			'brandColor'        => $config['brand_color'],
 			'text'              => isset( $promo['text'] ) ? $promo['text'] : '',
 			'highlight'         => isset( $promo['highlight'] ) ? $promo['highlight'] : '',
+			'buttonText'        => isset( $promo['button_text'] ) ? $promo['button_text'] : '',
 			'url'               => isset( $promo['url'] ) ? $promo['url'] : '',
 			'countdownDuration' => isset( $promo['countdown_duration'] ) ? (int) $promo['countdown_duration'] : 0,
 		);

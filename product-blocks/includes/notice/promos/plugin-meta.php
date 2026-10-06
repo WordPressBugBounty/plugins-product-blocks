@@ -44,7 +44,7 @@ return array(
 	array(
 		'key'        => $prefix . '_plugin_meta_pro_price_push_2026',
 		'start'      => '2026-09-09 00:00 Asia/Dhaka',
-		'end'        => '2026-10-10 23:59 Asia/Dhaka',
+		'end'        => '2026-10-05 23:59 Asia/Dhaka',
 		'text'       => sprintf(
 			/* translators: %s: pro price, e.g. $39. */
 			__( 'Get Pro - %s', 'product-blocks' ),
@@ -55,6 +55,24 @@ return array(
 				'config' => array(
 					'source'   => $config['utm_source_plugin_meta'],
 					'medium'   => 'base-price',
+					'campaign' => $config['utm_campaign'],
+				),
+			)
+		),
+		'visibility' => ! Xpo::is_lc_active(),
+	),
+
+	// Flash Sale 2026 — takes over from the pro price push.
+	array(
+		'key'        => $prefix . '_plugin_meta_flash_sale_2026',
+		'start'      => '2026-10-06 00:00 Asia/Dhaka',
+		'end'        => '2026-10-16 23:59 Asia/Dhaka',
+		'text'       => __( 'Up to 60% Off', 'product-blocks' ),
+		'url'        => Xpo::generate_utm_link(
+			array(
+				'config' => array(
+					'source'   => $config['utm_source_plugin_meta'],
+					'medium'   => 'flash-sale',
 					'campaign' => $config['utm_campaign'],
 				),
 			)
