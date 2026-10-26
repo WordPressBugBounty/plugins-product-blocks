@@ -8,8 +8,7 @@
 
 namespace WOPB;
 
-use WOPB\Includes\Durbin\Xpo;
-use WOPB_PRO\Currency_Switcher_Action;
+use WOPB\Includes\Xpo;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -20,7 +19,6 @@ class Functions {
 	private $PLUGIN_NAME     = 'WowStore';
 	private $PLUGIN_SLUG     = 'product-blocks';
 	private $PLUGIN_VERSION  = WOPB_VER;
-	private $API_ENDPOINT    = 'https://inside.wpxpo.com';
 	private static $instance = null;
 	/**
 	 * Setup class.
@@ -31,16 +29,7 @@ class Functions {
 		if ( ! isset( $GLOBALS['wopb_settings'] ) || ! is_array( $GLOBALS['wopb_settings'] ) ) { // Deprecated: Automatic conversion of false to array is deprecated.
 			$GLOBALS['wopb_settings'] = array();
 		}
-		$GLOBALS['wopb_settings']['is_wc_ready']  = $this->is_wc_ready();
-		$GLOBALS['wopb_settings']['is_lc_active'] = $this->global_is_lc_active();
-	}
-
-	public function global_is_lc_active() {
-		if ( defined( 'WOPB_PRO_VER' ) ) {
-			$license_data = get_option( 'edd_wopb_license_data', array() );
-			return isset( $license_data['license'] ) && 'valid' === $license_data['license'];
-		}
-		return false;
+		$GLOBALS['wopb_settings']['is_wc_ready'] = $this->is_wc_ready();
 	}
 
 	/**
@@ -138,13 +127,34 @@ class Functions {
 	}
 
 	/**
-	 * Free Pro Check via Function
+	 * Whether to show Pro upsells (notices, badges, "Upgrade to Pro" links).
 	 *
-	 * @since v.1.1.0
-	 * @return BOOLEAN
+	 * Pro returns false while its license is valid. Free doesn't read the license itself.
+	 *
+	 * @since v.4.6.0
+	 * @return bool
 	 */
-	public function isPro() {
-		return function_exists( 'wopb_pro_function' );
+	public function show_upsell() {
+		return (bool) apply_filters( 'wopb_show_upsell', true );
+	}
+
+	/**
+	 * Whether the template library lets the site insert the designs the catalog marks as Pro.
+	 *
+	 * Defaults to the upsell flag, which is what older Pro versions drive. The Pro plugin answers the
+	 * filter itself, from its license, so the library doesn't depend on a display flag.
+	 *
+	 * @since v.4.6.0
+	 * @return bool
+	 */
+	public function templates_unlocked() {
+		/**
+		 * Filters whether Pro-marked designs in the template library can be inserted.
+		 *
+		 * @since 4.6.0
+		 * @param bool $unlocked Whether they can; true when upsells are hidden.
+		 */
+		return (bool) apply_filters( 'wopb_template_library_unlocked', ! $this->show_upsell() );
 	}
 
 	/**
@@ -162,43 +172,6 @@ class Functions {
 	}
 
 	/**
-	 * Get Image HTML
-	 *
-	 * @since v.1.0.0
-	 * @param MIXED | Attachment ID (INTEGER), Size (STRING), Class (STRING), Alt Image Text (STRING), Type (STRING), Post ID(INTEGER)
-	 * @return MIXED
-	 */
-	public function get_image( $attach_id, $size = 'full', $class = '', $alt = '', $type = '', $post_id = 0 ) {
-		$alt   = $alt ? ' alt="' . esc_attr( $alt ) . '" ' : '';
-		$class = $class ? ' class="' . esc_attr( $class ) . '" ' : '';
-		if ( $this->isPro() ) {
-			if ( ( $type == 'flip' || $type == 'gallery' ) ) {
-				$html           = '';
-				$product        = new \WC_product( $post_id );
-				$attachment_ids = $product->get_gallery_image_ids();
-				if ( count( $attachment_ids ) > 0 ) {
-					if ( $type == 'flip' ) {
-						$html  = '<img ' . $class . $alt . ' src="' . esc_url( wp_get_attachment_image_url( $attach_id, $size ) ) . '"/>';
-						$html .= '<span class="image-flip"><img ' . $class . $alt . ' src="' . esc_url( wp_get_attachment_image_url( $attachment_ids[0], $size ) ) . '"/></span>';
-						return $html;
-					} else {
-						$html  = '<img ' . $class . $alt . ' src="' . esc_url( wp_get_attachment_image_url( $attach_id, $size ) ) . '"/>';
-						$html .= '<span class="image-gallery">';
-						foreach ( $attachment_ids as $attachment ) {
-							$html .= '<img ' . $class . $alt . ' src="' . esc_url( wp_get_attachment_image_url( $attachment, $size ) ) . '"/>';
-						}
-						$html .= '</span>';
-						return $html;
-					}
-				}
-			}
-		} else {
-			return '<img ' . $class . $alt . ' src="' . esc_url( wp_get_attachment_image_url( $attach_id, $size ) ) . '" />';
-		}
-	}
-
-
-	/**
 	 * Get Option Settings
 	 *
 	 * @since v.1.0.0
@@ -207,7 +180,7 @@ class Functions {
 	 */
 	public function get_setting( $key = '' ) {
 		$data = $GLOBALS['wopb_settings'];
-		if ( $key != '' ) {
+		if ( '' != $key ) {
 			if ( isset( $data[ $key ] ) ) {
 				return $data[ $key ];
 			} else {
@@ -219,6 +192,83 @@ class Functions {
 	}
 
 	/**
+	 * Resolve a thank-you order only after WooCommerce's key and shopper checks.
+	 *
+	 * @return \WC_Order|false Authorized order, or false without private details.
+	 */
+	public function get_thankyou_order() {
+		$order_id = get_query_var( 'order-received' );
+		if ( ! is_scalar( $order_id ) || ! ctype_digit( (string) $order_id ) ) {
+			return false;
+		}
+		$order_id = apply_filters( 'woocommerce_thankyou_order_id', absint( $order_id ) );
+		// Order keys authorize emailed links; a WordPress nonce cannot replace them.
+		$order_key = isset( $_GET['key'] ) && is_string( $_GET['key'] ) ? sanitize_text_field( wp_unslash( $_GET['key'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$order_key = apply_filters( 'woocommerce_thankyou_order_key', $order_key );
+		$order     = $order_id > 0 ? wc_get_order( $order_id ) : false;
+		if ( ! $order instanceof \WC_Order || ! is_string( $order_key ) || '' === $order_key || ! hash_equals( $order->get_order_key(), $order_key ) ) {
+			return false;
+		}
+
+		$customer_id = (int) $order->get_customer_id();
+		if ( $customer_id && apply_filters( 'woocommerce_order_received_verify_known_shoppers', true ) && get_current_user_id() !== $customer_id ) {
+			return false;
+		}
+
+		$supplied_email = null;
+		if ( isset( $_POST['check_submission'], $_POST['email'] ) && is_string( $_POST['check_submission'] ) && is_string( $_POST['email'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['check_submission'] ) ), 'wc_verify_email' ) ) {
+			$supplied_email = sanitize_email( wp_unslash( $_POST['email'] ) );
+		}
+		if ( is_callable( array( '\Automattic\WooCommerce\Internal\Utilities\Users', 'should_user_verify_order_email' ) ) ) {
+			return \Automattic\WooCommerce\Internal\Utilities\Users::should_user_verify_order_email( $order->get_id(), $supplied_email, 'order-received' ) ? false : $order;
+		}
+
+		// Preserve WooCommerce's policy where email verification is still private to its shortcode.
+		$billing_email = $order->get_billing_email();
+		if ( '' === $billing_email || ( $customer_id && get_current_user_id() === $customer_id ) ) {
+			return $order;
+		}
+		$grace_period = (int) apply_filters( 'woocommerce_order_email_verification_grace_period', 10 * MINUTE_IN_SECONDS, $order, 'order-received' );
+		$date_created = $order->get_date_created();
+		if ( $date_created instanceof \WC_DateTime && time() - $date_created->getTimestamp() <= $grace_period ) {
+			return $order;
+		}
+		$session       = WC()->session;
+		$customer      = $session instanceof \WC_Session ? $session->get( 'customer' ) : array();
+		$session_email = is_array( $customer ) && isset( $customer['email'] ) && is_string( $customer['email'] ) ? $customer['email'] : '';
+		$session_match = '' !== $session_email && 0 === strcasecmp( $session_email, $billing_email );
+		$email_match   = is_string( $supplied_email ) && '' !== $supplied_email && 0 === strcasecmp( $supplied_email, $billing_email );
+		$verify_email  = ! $session_match && ! $email_match && ! current_user_can( 'read_private_shop_orders' ); // phpcs:ignore WordPress.WP.Capabilities.Unknown -- WooCommerce registers this shop-order capability.
+		return apply_filters( 'woocommerce_order_email_verification_required', $verify_email, $order, 'order-received' ) ? false : $order;
+	}
+
+	/**
+	 * Validate the bounded, scalar-leaf arrays accepted by plugin settings.
+	 *
+	 * @param mixed $settings Settings input.
+	 * @param int   $depth    Current nesting depth.
+	 * @return bool
+	 */
+	public function is_valid_settings_input( $settings, $depth = 0 ) {
+		if ( ! is_array( $settings ) || $depth > 10 || count( $settings ) > 1000 ) {
+			return false;
+		}
+		foreach ( $settings as $key => $value ) {
+			if ( is_string( $key ) && ( '' === $key || strlen( $key ) > 100 || ! preg_match( '/^[a-zA-Z0-9_-]+$/D', $key ) ) ) {
+				return false;
+			}
+			if ( is_array( $value ) ) {
+				if ( ! $this->is_valid_settings_input( $value, $depth + 1 ) ) {
+					return false;
+				}
+			} elseif ( ! is_scalar( $value ) || ( is_string( $value ) && strlen( $value ) > 10000 ) || ( is_float( $value ) && ! is_finite( $value ) ) ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Set Option Settings
 	 *
 	 * @since v.1.0.0
@@ -226,7 +276,7 @@ class Functions {
 	 * @return NULL
 	 */
 	public function set_setting( $key = '', $val = '' ) {
-		if ( $key != '' ) {
+		if ( '' != $key ) {
 			$data         = ! $GLOBALS['wopb_settings'] ? array() : $GLOBALS['wopb_settings'];
 			$data[ $key ] = $val;
 			update_option( 'wopb_options', $data );
@@ -243,7 +293,8 @@ class Functions {
 	 * @return BOOLEAN | Excerpt with Limit
 	 */
 	public function is_wc_ready() {
-		return true;
+		// WooCommerce loads after this plugin, so it can't be told apart before `plugins_loaded`.
+		return class_exists( 'WooCommerce' ) || ! did_action( 'plugins_loaded' );
 	}
 
 
@@ -337,13 +388,16 @@ class Functions {
 	public function get_category_data( $catSlug, $number = 40, $type = '' ) {
 		$data = array();
 
-		if ( $type == 'child' ) {
+		if ( 'child' === $type ) {
 			$image = '';
 			if ( ! empty( $catSlug ) ) {
 				foreach ( $catSlug as $cat ) {
 					$category_slug = isset( $cat->value ) ? $cat->value : $cat;
 					$parent_term   = get_term_by( 'slug', $category_slug, 'product_cat' );
-					$term_data     = get_terms(
+					if ( ! $parent_term ) {
+						continue;
+					}
+					$term_data = get_terms(
 						array(
 							'taxonomy'   => 'product_cat',
 							'hide_empty' => true,
@@ -373,8 +427,8 @@ class Functions {
 			foreach ( $catSlug as $cat ) {
 					$category_slug = isset( $cat->value ) ? $cat->value : $cat;
 				$terms             = get_term_by( 'slug', $category_slug, 'product_cat' );
-				$image             = $this->get_cat_image( $terms );
 				if ( ! empty( $terms ) ) {
+					$image           = $this->get_cat_image( $terms );
 					$temp['url']     = get_term_link( $terms );
 					$temp['term_id'] = $terms->term_id;
 					$temp['name']    = $terms->name;
@@ -392,7 +446,7 @@ class Functions {
 				'hide_empty' => true,
 				'number'     => $number,
 			);
-			if ( $type == 'parent' ) {
+			if ( 'parent' === $type ) {
 				$query['parent'] = 0;
 			}
 			$term_data = get_terms( $query );
@@ -487,7 +541,7 @@ class Functions {
 			if ( $builder ) {
 				$str = explode( '###', $builder );
 				if ( isset( $str[0] ) ) {
-					if ( $str[0] == 'taxonomy' ) {
+					if ( 'taxonomy' === $str[0] ) {
 						if ( isset( $str[1] ) && isset( $str[2] ) ) {
                             // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 							$query_args['tax_query'] = array(
@@ -498,7 +552,7 @@ class Functions {
 								),
 							);
 						}
-					} elseif ( $str[0] == 'search' ) {
+					} elseif ( 'search' === $str[0] ) {
 						if ( isset( $str[1] ) ) {
 							$query_args['s'] = $str[1];
 						}
@@ -533,16 +587,6 @@ class Functions {
 					$query_args['orderby']  = 'meta_value_num';
 					break;
 
-				case 'popular':
-					$query_args['meta_key'] = 'total_sales'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-					$query_args['orderby']  = 'meta_value_num';
-					break;
-
-				case 'popular_view':
-					$query_args['meta_key'] = '__product_views_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-					$query_args['orderby']  = 'meta_value_num';
-					break;
-
 				case 'date':
 					unset( $query_args['orderby'] );
 					break;
@@ -554,11 +598,6 @@ class Functions {
 
 				case 'sku':
 					$query_args['meta_key'] = '_sku'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-					break;
-
-				case 'top_rated':
-					$query_args['meta_key'] = '_wc_average_rating'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-					$query_args['orderby']  = 'meta_value  meta_value_num';
 					break;
 
 				case 'stock_status':
@@ -611,40 +650,13 @@ class Functions {
 			}
 		}
 
-		if ( isset( $attr['queryProductSort'] ) && $attr['queryProductSort'] != 'null' ) {
+		if ( isset( $attr['queryProductSort'] ) && 'null' !== $attr['queryProductSort'] ) {
 			$query_args = $this->get_quick_query( $attr, $query_args, $attr['queryProductSort'] );
-		} elseif ( isset( $attr['queryAdvanceProductSort'] ) && $attr['queryAdvanceProductSort'] != 'null' ) {
+		} elseif ( isset( $attr['queryAdvanceProductSort'] ) && 'null' !== $attr['queryAdvanceProductSort'] ) {
 			$query_args = $this->get_quick_query( $attr, $query_args, $attr['queryAdvanceProductSort'] );
-		} elseif ( isset( $attr['queryQuick'] ) && $attr['queryQuick'] != '' ) {
+		} elseif ( isset( $attr['queryQuick'] ) && '' != $attr['queryQuick'] ) {
 			$query_args = $this->get_quick_query( $attr, $query_args );
 		}
-		if ( isset( $attr['queryProductSort'] ) && $attr['queryProductSort'] == 'choose_specific' ) {
-			if ( isset( $attr['querySpecificProduct'] ) && $attr['querySpecificProduct'] ) {
-				$data  = json_decode( isset( $attr['querySpecificProduct'] ) ? $attr['querySpecificProduct'] : '[]' );
-				$final = $this->get_value( $data );
-				if ( count( $final ) > 0 ) {
-					$query_args['post__in'] = $final;
-					$query_args['orderby']  = 'post__in';
-				}
-				return $query_args;
-			}
-		}
-
-		if ( isset( $attr['queryIncludeAuthor'] ) && $attr['queryIncludeAuthor'] ) {
-			$_include = ( substr( $attr['queryIncludeAuthor'], 0, 1 ) === '[' ) ? $this->get_value( json_decode( $attr['queryIncludeAuthor'] ) ) : explode( ',', $attr['queryIncludeAuthor'] );
-			if ( is_array( $_include ) && count( $_include ) ) {
-				$query_args['author__in'] = $_include;
-			}
-		}
-
-		if ( isset( $attr['queryExcludeAuthor'] ) && $attr['queryExcludeAuthor'] ) {
-			$data  = json_decode( isset( $attr['queryExcludeAuthor'] ) ? $attr['queryExcludeAuthor'] : '[]' );
-			$final = $this->get_value( $data );
-			if ( count( $final ) > 0 ) {
-				$query_args['author__not_in'] = $final;
-			}
-		}
-
 		if ( isset( $attr['productTaxonomy'] ) ) {
 			$query_args['tax_query'][] = array(
 				'taxonomy' => $attr['productTaxonomy']['taxonomy'],
@@ -665,18 +677,8 @@ class Functions {
 					$relation = isset( $attr['queryRelation'] ) ? $attr['queryRelation'] : 'OR';
 					$var      = array( 'relation' => $relation );
 					foreach ( $tax_value as $val ) {
-						$tax_name = $attr['queryTax'];
-						// For Custom Terms
-						if ( $attr['queryTax'] == 'multiTaxonomy' ) {
-							$temp = explode( '###', $val );
-							if ( isset( $temp[1] ) ) {
-								$val      = $temp[1];
-								$tax_name = $temp[0];
-							}
-						}
-
 						$var[] = array(
-							'taxonomy' => $tax_name,
+							'taxonomy' => $attr['queryTax'],
 							'field'    => 'slug',
 							'terms'    => $val,
 						);
@@ -686,6 +688,7 @@ class Functions {
 					}
 				} else {
 					$queryCats = ! empty( $attr['queryCat'] ) ? json_decode( $attr['queryCat'] ) : '';
+					$queryCats = isset( $queryCats[0] ) && is_object( $queryCats[0] ) ? $this->get_value( $queryCats ) : $queryCats;
 					if ( ! empty( $queryCats ) ) {
 						if ( ! isset( $query_args['tax_query']['relation'] ) ) {
 							$query_args['tax_query']['relation'] = 'OR';
@@ -702,28 +705,20 @@ class Functions {
 			}
 		}
 
-		if ( isset( $attr['queryStockStatus'] ) && $attr['queryStockStatus'] != '[]' ) {
-			$query_args['meta_query'][] = array(
-				'key'      => '_stock_status',
-				'value'    => json_decode( $attr['queryStockStatus'] ),
-				'operator' => 'IN',
-			);
-		}
-
 		// Filter Action Taxonomy
 		if ( isset( $attr['custom_action'] ) ) {
 			$query_args = $this->get_filter_query( $attr, $query_args );
-		} elseif ( isset( $attr['filterShow'] ) && $attr['filterShow'] && $attr['productView'] == 'grid' ) {
+		} elseif ( isset( $attr['filterShow'] ) && $attr['filterShow'] && 'grid' === $attr['productView'] ) {
 				$showCat = json_decode( $attr['filterCat'] );
 				$showTag = json_decode( $attr['filterTag'] );
 
-				$flag = $attr['filterType'] == 'product_cat' ? ( empty( $showCat ) ? false : true ) : ( empty( $showTag ) ? false : true );
+				$flag = 'product_cat' === $attr['filterType'] ? ( empty( $showCat ) ? false : true ) : ( empty( $showTag ) ? false : true );
 
-			if ( strlen( $attr['filterAction'] ) > 2 && $flag == false ) {
-				$arr                   = json_decode( $attr['filterAction'] );
+			$arr = json_decode( $attr['filterAction'] );
+			if ( is_array( $arr ) && ! empty( $arr ) && false == $flag ) {
 				$attr['custom_action'] = 'custom_action#' . $arr[0];
 				$query_args            = $this->get_filter_query( $attr, $query_args );
-			} elseif ( $attr['filterType'] == 'product_cat' ) {
+			} elseif ( 'product_cat' === $attr['filterType'] ) {
 					$var     = array( 'relation' => 'OR' );
 					$showCat = isset( $attr['queryCatAction'] ) ? $attr['queryCatAction'] : $showCat;
 				if ( count( $showCat ) ) {
@@ -737,7 +732,7 @@ class Functions {
 					}
 				}
 					$query_args['tax_query'] = $var; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-			} elseif ( $attr['filterType'] == 'product_tag' ) {
+			} elseif ( 'product_tag' === $attr['filterType'] ) {
 					$var     = array( 'relation' => 'OR' );
 					$showTag = isset( $attr['queryTagAction'] ) ? $attr['queryTagAction'] : $showTag;
 				if ( count( $showTag ) ) {
@@ -755,133 +750,13 @@ class Functions {
 			}
 		}
 
-		if ( isset( $attr['product_filters'] ) ) { // Product Filter Query(Feature)
-			$product_filters = $attr['product_filters'];
-			if ( ! empty( $product_filters['search'] ) ) {
-				$query_args['filter_search_key'] = sanitize_text_field( $product_filters['search'] );
-			}
-			if ( ! empty( $product_filters['price'] ) ) {
-				$min_price = sanitize_text_field( $product_filters['price']['minPrice'] );
-				$max_price = sanitize_text_field( $product_filters['price']['maxPrice'] );
-				if ( $this->currency_switcher_data() ) {
-					$min_price = $this->currency_switcher_data( $min_price, 'default' )['value'];
-					$max_price = $this->currency_switcher_data( $max_price, 'default' )['value'];
-				}
-				$price_meta_query = array(
-					'relation' => 'OR',
-				);
-				if ( $this->active_plugin( 'wholesalex' ) ) {
-					$role_price_key = wholesalex()->get_current_user_role() . '_price';
-					if ( metadata_exists( 'post', $post_id, $role_price_key ) ) {
-						$price_meta_query[] = array(
-							'key'     => wholesalex()->get_current_user_role() . '_price',
-							'value'   => array( $min_price, $max_price ),
-							'compare' => 'BETWEEN',
-							'type'    => 'NUMERIC',
-						);
-						$price_meta_query[] = array(
-							'relation' => 'AND',
-							array(
-								'relation' => 'OR',
-								array(
-									'key'     => wholesalex()->get_current_user_role() . '_price',
-									'compare' => 'NOT EXISTS',
-								),
-								array(
-									'key'     => wholesalex()->get_current_user_role() . '_price',
-									'value'   => '',
-									'compare' => '==',
-								),
-							),
-						);
-					}
-				}
-				$price_meta_query[] = array(
-					'key'     => '_price',
-					'value'   => array( $min_price, $max_price ),
-					'compare' => 'BETWEEN',
-					'type'    => 'NUMERIC',
-				);
-
-				$query_args['meta_query'][] = $price_meta_query;
-			}
-			if ( ! empty( $product_filters['status'] ) ) {
-				$query_args['meta_query'][] = array(
-					'key'      => '_stock_status',
-					'value'    => $product_filters['status'],
-					'operator' => 'IN',
-				);
-			}
-			if ( ! empty( $product_filters['rating'] ) ) {
-				$query_args['meta_query'][] = array(
-					'key'     => '_wc_average_rating',
-					'value'   => $product_filters['rating'],
-					'type'    => 'numeric',
-					'compare' => 'IN',
-				);
-			}
-			if ( ! empty( $product_filters['product_taxonomy'] ) ) {
-				$taxonomies = $product_filters['product_taxonomy'];
-				$filter_tax = array(
-					'relation' => isset( $product_filters['tax_relation'] ) && $product_filters['tax_relation'] ? $product_filters['tax_relation'] : 'AND',
-				);
-				foreach ( $taxonomies as $taxonomy ) {
-						$filter_tax[] = array(
-							'taxonomy' => $taxonomy['taxonomy'],
-							'field'    => 'id',
-							'terms'    => $taxonomy['term_ids'],
-							'operator' => 'IN',
-						);
-				}
-				$query_args['tax_query'][] = $filter_tax;
-			}
-			$query_args['orderby'] = 'title';
-			$query_args['order']   = 'ASC';
-			if ( isset( $product_filters['sorting'] ) && $product_filters['sorting'] ) {
-				switch ( $product_filters['sorting'] ) {
-					case 'default':
-						$query_args['orderby'] = 'title'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-						$query_args['order']   = 'ASC';
-						break;
-					case 'popular':
-						$query_args['meta_key'] = 'total_sales'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-						$query_args['orderby']  = 'meta_value_num';
-						$query_args['order']    = 'DESC';
-						break;
-
-					case 'latest':
-						$query_args['orderby'] = 'date ID';
-						$query_args['order']   = 'DESC';
-						break;
-
-					case 'rating':
-						$query_args['meta_key'] = '_wc_average_rating'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-						$query_args['orderby']  = 'meta_value meta_value_num';
-						$query_args['order']    = 'DESC';
-						break;
-
-					case 'price_low':
-						$query_args['meta_key'] = '_price'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-						$query_args['orderby']  = 'meta_value_num';
-						$query_args['order']    = 'ASC';
-						break;
-
-					case 'price_high':
-						$query_args['meta_key'] = '_price'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-						$query_args['orderby']  = 'meta_value_num';
-						$query_args['order']    = 'DESC';
-						break;
-
-					default:
-						break;
-				}
-			}
-			add_filter( 'posts_join', array( $this, 'custom_post_join' ), 100, 2 );
-			add_filter( 'posts_where', array( $this, 'custom_post_query' ), 1000, 2 );
-		}
-
 		if ( isset( $query_args['post__in'] ) && isset( $query_args['post__not_in'] ) ) {
-			$query_args['post__in'] = array_diff( $query_args['post__in'], $query_args['post__not_in'] ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+			$had_ids                = ! empty( $query_args['post__in'] );
+			$query_args['post__in'] = array_values( array_diff( $query_args['post__in'], $query_args['post__not_in'] ) ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+			if ( $had_ids && empty( $query_args['post__in'] ) ) {
+				// Every listed product is excluded; an empty post__in would list them all instead.
+				$query_args['post__in'] = array( 0 );
+			}
 		}
 		if ( isset( $attr['post__not_in'] ) && $attr['post__not_in'] ) {
 			// phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
@@ -890,32 +765,30 @@ class Functions {
 
 		// Search Page Product Grid, List Result issue
 		$search_query_val = get_search_query();
-		if ( ( is_search() || $wopb_search_builder ) && isset( $attr['queryProductSort'] ) && $attr['queryProductSort'] == 'product_search' && $search_query_val ) {
+		if ( ( is_search() || $wopb_search_builder ) && isset( $attr['queryProductSort'] ) && 'product_search' === $attr['queryProductSort'] && $search_query_val ) {
 			$query_args['filter_search_key'] = $search_query_val;
 
 			add_filter( 'posts_join', array( wopb_function(), 'custom_post_join' ), 100, 2 );
 			add_filter( 'posts_where', array( wopb_function(), 'custom_post_query' ), 1000, 2 );
 			add_filter(
 				'posts_distinct',
-				function () {
-					return 'DISTINCT'; // duplicate data remove
-				}
+				array( $this, 'distinct_product_posts' )
 			);
 		}
 
-		if ( ( is_search() || $wopb_search_builder ) && isset( $attr['queryProductSort'] ) && $attr['queryProductSort'] == 'product_search' ) {
+		if ( ( is_search() || $wopb_search_builder ) && isset( $attr['queryProductSort'] ) && 'product_search' === $attr['queryProductSort'] ) {
 			$query_args['search_columns'] = array( 'post_title' );
 		}
 
 		$query_args['wpnonce'] = wp_create_nonce( 'wopb-nonce' );
 
-		return apply_filters( 'wopb_query_args', $query_args );
+		return apply_filters( 'wopb_query_args', $query_args, $attr );
 	}
 
 	public function is_specific_archive_product( $attr ) {
 		if (
 			isset( $attr['queryProductSort'] ) &&
-			$attr['queryProductSort'] == 'choose_specific' &&
+			'choose_specific' === $attr['queryProductSort'] &&
 			isset( $attr['querySpecificProduct'] ) &&
 			$attr['querySpecificProduct'] &&
 			( is_archive() || ( ! is_archive() && ( is_product_taxonomy() || is_product_tag() ) ) )
@@ -939,16 +812,6 @@ class Functions {
 		unset( $args['post__in'] );
 
 		switch ( $value ) {
-			case 'top_sale':
-				$args['meta_key'] = 'total_sales'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				$args['orderby']  = 'meta_value_num';
-				$args['order']    = 'DESC';
-				break;
-			case 'popular':
-				$args['meta_key'] = '__product_views_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				$args['orderby']  = 'meta_value meta_value_num';
-				$args['order']    = 'DESC';
-				break;
 			case 'on_sale':
 				unset( $args['meta_key'] );
 				$args['orderby']  = 'date';
@@ -957,11 +820,6 @@ class Functions {
 				break;
 			case 'most_rated':
 				$args['meta_key'] = '_wc_review_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				$args['orderby']  = 'meta_value meta_value_num';
-				$args['order']    = 'DESC';
-				break;
-			case 'top_rated':
-				$args['meta_key'] = '_wc_average_rating'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				$args['orderby']  = 'meta_value meta_value_num';
 				$args['order']    = 'DESC';
 				break;
@@ -992,39 +850,20 @@ class Functions {
 	public function get_quick_query( $prams, $args, $sort_query = null ) {
 		switch ( $sort_query ) {
 			case 'sales_day_1':
-				$args['post__in'] = $this->get_best_selling_products( gmdate( 'Y-m-d H:i:s', strtotime( '-1 days' ) ) );
+				$args = $this->best_selling_query_args( $args, '-1 days' );
 				break;
 			case 'sales_day_7':
-				$args['post__in'] = $this->get_best_selling_products( gmdate( 'Y-m-d H:i:s', strtotime( '-7 days' ) ) );
+				$args = $this->best_selling_query_args( $args, '-7 days' );
 				break;
 			case 'sales_day_30':
-				$args['post__in'] = $this->get_best_selling_products( gmdate( 'Y-m-d H:i:s', strtotime( '-30 days' ) ) );
+				$args = $this->best_selling_query_args( $args, '-30 days' );
 				break;
 			case 'sales_day_90':
-				$args['post__in'] = $this->get_best_selling_products( gmdate( 'Y-m-d H:i:s', strtotime( '-90 days' ) ) );
+				$args = $this->best_selling_query_args( $args, '-90 days' );
 				break;
 			case 'sales_day_all':
 				$args['meta_key'] = 'total_sales'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				$args['orderby']  = 'meta_value_num';
-				break;
-			case 'view_day_1':
-				$args['meta_key']   = '__product_views_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				$args['orderby']    = 'meta_value meta_value_num';
-				$args['date_query'] = array( array( 'after' => '-24 hour' ) );
-				break;
-			case 'view_day_7':
-				$args['meta_key']   = '__product_views_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				$args['orderby']    = 'meta_value meta_value_num';
-				$args['date_query'] = array( array( 'after' => '-1 week' ) );
-				break;
-			case 'view_day_30':
-				$args['meta_key']   = '__product_views_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				$args['orderby']    = 'meta_value meta_value_num';
-				$args['date_query'] = array( array( 'after' => '-1 month' ) );
-			case 'view_day_90':
-				$args['meta_key']   = '__product_views_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-				$args['orderby']    = 'meta_value meta_value_num';
-				$args['date_query'] = array( array( 'after' => '-3 month' ) );
 				break;
 			case 'view_day_all':
 				$args['meta_key'] = '__product_views_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
@@ -1050,10 +889,6 @@ class Functions {
 				$args['orderby']    = 'rand';
 				$args['order']      = 'ASC';
 				$args['date_query'] = array( array( 'after' => '1 month ago' ) );
-			case 'random_post_90_days':
-				$args['orderby']    = 'rand';
-				$args['order']      = 'ASC';
-				$args['date_query'] = array( array( 'after' => '3 month ago' ) );
 				break;
 			case 'related_tag':
 				global $post;
@@ -1106,7 +941,7 @@ class Functions {
 				global $post;
 				global $product;
 				$backend = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				if ( $backend != 'edit' && isset( $post->ID ) ) {
+				if ( 'edit' !== $backend && isset( $post->ID ) ) {
 					if ( ! $product ) {
 						$product = wc_get_product( $post->ID ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 					}
@@ -1126,7 +961,7 @@ class Functions {
 				global $post;
 				global $product;
 				$backend = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				if ( $backend != 'edit' && isset( $post->ID ) ) {
+				if ( 'edit' !== $backend && isset( $post->ID ) ) {
 					if ( ! $product ) {
 						$product = wc_get_product( $post->ID ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 					}
@@ -1177,37 +1012,77 @@ class Functions {
 
 
 	/**
-	 * Best Selling Product Raw Query
+	 * Limit a product query to the best sellers of a period, in sales order.
+	 *
+	 * @since v.4.6.0
+	 * @param array  $args   WP_Query arguments.
+	 * @param string $period strtotime() offset, e.g. '-7 days'.
+	 * @return array
+	 */
+	public function best_selling_query_args( $args, $period ) {
+		$ids = $this->get_best_selling_products( gmdate( 'Y-m-d H:i:s', strtotime( $period ) ) );
+
+		// [0] matches nothing: with no sales in the period the block shows no products, not the whole catalog.
+		$args['post__in'] = $ids ? array_map( 'absint', $ids ) : array( 0 );
+		$args['orderby']  = 'post__in';
+		return $args;
+	}
+
+	/**
+	 * IDs of the products sold since a date, most units sold first.
 	 *
 	 * @since v.1.1.0
+	 * @param string $date Inclusive cutoff in the site's local time.
 	 * @return ARRAY | Return Best Selling Products
 	 */
 	public function get_best_selling_products( $date ) {
 		global $wpdb;
-        //phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+
+		$order_table         = $wpdb->posts;
+		$order_id_column     = 'ID';
+		$order_status_column = 'post_status';
+		$order_date_column   = 'post_date';
+		$order_type_column   = 'post_type';
+
+		if ( class_exists( '\Automattic\WooCommerce\Utilities\OrderUtil' ) && \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled() ) {
+			$order_table         = $wpdb->prefix . 'wc_orders';
+			$order_id_column     = 'id';
+			$order_status_column = 'status';
+			$order_date_column   = 'date_created_gmt';
+			$order_type_column   = 'type';
+			// Preserve the legacy local-time cutoff when reading HPOS UTC dates.
+			$date = get_gmt_from_date( $date );
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$result = (array) $wpdb->get_results(
 			$wpdb->prepare(
 				"
-            SELECT post.ID as id, COUNT(order_itemmeta2.meta_value) as count
-            FROM {$wpdb->prefix}posts post
+            SELECT post.ID as id, SUM(order_itemmeta2.meta_value + 0) as count
+            FROM {$wpdb->posts} post
             INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta order_itemmeta
                 ON post.ID = order_itemmeta.meta_value
             INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta order_itemmeta2
                 ON order_itemmeta.order_item_id = order_itemmeta2.order_item_id
             INNER JOIN {$wpdb->prefix}woocommerce_order_items order_items
                 ON order_itemmeta.order_item_id = order_items.order_item_id
-            INNER JOIN {$wpdb->prefix}posts as order_post
-                ON order_post.ID = order_items.order_id
+            INNER JOIN %i as order_post
+                ON order_post.%i = order_items.order_id
             WHERE post.post_type = 'product'
             AND post.post_status = 'publish'
-            AND order_post.post_status IN ('wc-processing','wc-completed')
-            AND order_post.post_date >= %s
+            AND order_post.%i = 'shop_order'
+            AND order_post.%i IN ('wc-processing','wc-completed')
+            AND order_post.%i >= %s
             AND order_itemmeta.meta_key = '_product_id'
             AND order_itemmeta2.meta_key = '_qty'
             GROUP BY post.ID
-            ORDER BY COUNT(order_itemmeta2.meta_value) + 0 DESC
+            ORDER BY count DESC, post.ID DESC
         ",
+				$order_table,
+				$order_id_column,
+				$order_type_column,
+				$order_status_column,
+				$order_date_column,
 				$date
 			)
 		);
@@ -1261,7 +1136,7 @@ class Functions {
 		$showitems = 3;
 		$paged     = is_front_page() ? get_query_var( 'page' ) : get_query_var( 'paged' );
 		$paged     = $paged ? $paged : 1;
-		if ( $pages == '' ) {
+		if ( '' == $pages ) {
 			global $wp_query;
 			$pages = $wp_query->max_num_pages;
 			if ( ! $pages ) {
@@ -1281,10 +1156,10 @@ class Functions {
 			$display_none = 'style="display:none"';
 			// Previous Button
 			if ( $pages > 2 ) {
-				$html .= '<li class="wopb-prev-page-numbers" ' . ( $paged == 1 ? $display_none : '' ) . '>
+				$html .= '<li class="wopb-prev-page-numbers" ' . ( 1 == $paged ? $display_none : '' ) . '>
                             <a href="' . esc_url( $this->get_pagenum_link( $paged - 1, $attr ) ) . '">' .
 							$this->svg_icon( 'leftAngle2' ) .
-							( $paginationNav == 'textArrow' ? esc_html( $prev_text ) : '' ) .
+							( 'textArrow' === $paginationNav ? esc_html( $prev_text ) : '' ) .
 							'</a>
                         </li>';
 			}
@@ -1296,7 +1171,7 @@ class Functions {
 			}
 
 			if ( $paged > 3 || ( $is_ajax && $pages > 4 ) ) {
-				$html .= '<li class="wopb-first-dot" ' . ( $paged == 1 ? $display_none : '' ) . '><a href="#">...</a></li>';
+				$html .= '<li class="wopb-first-dot" ' . ( 1 == $paged ? $display_none : '' ) . '><a href="#">...</a></li>';
 			}
 
 			// Page Numbers
@@ -1325,7 +1200,7 @@ class Functions {
 			if ( $paged != $pages ) {
 				$html .= '<li class="wopb-next-page-numbers">
                             <a href="' . esc_url( $this->get_pagenum_link( $paged + 1, $attr ) ) . '">
-                                ' . ( $paginationNav == 'textArrow' ? esc_html( $next_text ) : '' ) . $this->svg_icon( 'rightAngle2' ) . '
+                                ' . ( $paginationNav === 'textArrow' ? esc_html( $next_text ) : '' ) . $this->svg_icon( 'rightAngle2' ) . '
                             </a>
                         </li>';
 			}
@@ -1391,203 +1266,6 @@ class Functions {
 		return $data;
 	}
 
-	/**
-	 * Generate calculate query by stock status.
-	 *
-	 * @param $status
-	 * @param array $params
-	 * @return NUMBER
-	 */
-	public function generate_stock_status_count_query( $status, $params = array() ) {
-		$query_args = array(
-			'posts_per_page' => -1,
-			'post_type'      => 'product',
-			'post_status'    => 'publish',
-			'fields'         => 'ids',
-		);
-		if ( is_search() ) {
-			$query_args['s'] = get_search_query();
-		}
-		$query_args['meta_query'][] = array(
-			'key'      => '_stock_status',
-			'value'    => $status,
-			'operator' => 'IN',
-		);
-		$query_args['tax_query'][]  = array(
-			'taxonomy' => 'product_visibility',
-			'field'    => 'name',
-			'terms'    => 'exclude-from-catalog',
-			'operator' => 'NOT IN',
-		);
-		if ( ! empty( $params['query_tax'] ) ) {
-			if ( ! empty( $params['query_term'] ) ) {
-				$query_args['tax_query'][] = array(
-					'taxonomy' => $params['query_tax'],
-					'field'    => 'slug',
-					'terms'    => $params['query_term'],
-					'operator' => 'IN',
-				);
-			}
-			if ( ! empty( $params['queryTaxValue'] ) && is_array( $params['queryTaxValue'] ) ) {
-				$tax_query = array( 'relation' => 'or' );
-				foreach ( $params['queryTaxValue'] as $tax ) {
-					if ( isset( $tax->value ) ) {
-						$tax_query[] = array(
-							'taxonomy' => $params['query_tax'],
-							'field'    => 'slug',
-							'terms'    => $tax->value,
-						);
-					}
-				}
-				$query_args['tax_query'][] = $tax_query;
-			}
-		}
-		$query = new \WP_Query( $query_args );
-		return $query->found_posts;
-	}
-	/**
-	 * Convert WP_Term objects + custom child_terms into clean minimal arrays
-	 * Manually mapped = fastest + lowest memory usage
-	 *
-	 * @param array|object $terms Tree of terms (with possible child_terms)
-	 * @return array Clean term tree
-	 */
-	private function convert_to_minimal_terms( $terms ) {
-		if ( empty( $terms ) ) {
-			return array();
-		}
-
-		$result = array();
-
-		foreach ( $terms as $term ) {
-			// Handle both WP_Term objects and already-converted arrays
-			if ( is_object( $term ) ) {
-				$term_data = array(
-					'term_id' => (int) $term->term_id,
-					'name'    => trim( $term->name ),
-					'slug'    => $term->slug,
-					'parent'  => (int) $term->parent,
-					'count'   => (int) ( $term->count ?? 0 ),
-					// Add more only if you really need them:
-					// 'description' => $term->description ?? '',
-				);
-			} else {
-				// Already an array (safety fallback)
-				$term_data = array(
-					'term_id' => (int) ( $term['term_id'] ?? 0 ),
-					'name'    => $term['name'] ?? '',
-					'slug'    => $term['slug'] ?? '',
-					'parent'  => (int) ( $term['parent'] ?? 0 ),
-					'count'   => (int) ( $term['count'] ?? 0 ),
-				);
-			}
-
-			// Recursively process child terms if exist
-			if ( ! empty( $term->child_terms ) ) {
-				$term_data['child_terms'] = $this->convert_to_minimal_terms( $term->child_terms );
-			} elseif ( is_array( $term ) && isset( $term['child_terms'] ) ) {
-				$term_data['child_terms'] = array();
-			}
-
-			$result[] = $term_data;
-		}
-
-		return $result;
-	}
-	/**
-	 * Product Taxonomy Data List. [ Those code cause of memory issue with jetpack plugin ]
-	 *
-	 * @since v.1.0.0
-	 * @param STRING | Taxonomy Name
-	 * @return ARRAY | Taxonomy Slug and Name as a ARRAY
-	 */
-	// public function get_product_taxonomies($args = []) {
-	// $product_taxonomies = array();
-	// $object_taxonomies =  array_diff(get_object_taxonomies('product'), ['product_type', 'product_visibility', 'product_shipping_class']);
-	// foreach ( $object_taxonomies as $key ) {
-	// $params = [
-	// 'taxonomy' => $key,
-	// 'product_visibility' => true,
-	// ];
-	// if(isset($args['term_limit'])) {
-	// $params['term_limit'] = $args['term_limit'];
-	// }
-	// $taxonomy = get_taxonomy($key);
-	// $taxonomy->terms = $this->taxonomy_terms_tree($params);
-	// if($this->get_attribute_by_taxonomy($key)) {
-	// $taxonomy->attribute = $this->get_attribute_by_taxonomy($key);
-	// }
-	// $product_taxonomies[] = $taxonomy;
-	// }
-	// return $product_taxonomies;
-	// }
-
-
-	public function taxonomy_terms_tree( $params ) {
-		$taxonomy_terms = array();
-		$term_query     = array(
-			'taxonomy'   => $params['taxonomy'],
-			'hide_empty' => true,
-			'parent'     => isset( $params['parent_id'] ) ? $params['parent_id'] : 0,
-			'orderby'    => 'name',
-		);
-		if ( isset( $params['term_limit'] ) ) {
-			$term_query['number'] = $params['term_limit'];
-		}
-		$terms          = get_terms( $term_query );
-		$queried_object = get_queried_object();
-		if ( count( $terms ) > 0 ) {
-			foreach ( $terms as $term ) {
-				$query_args                = array(
-					'posts_per_page' => is_admin() ? 10 : -1,
-					'post_type'      => 'product',
-					'post_status'    => 'publish',
-				);
-				$query_args['tax_query'][] = array(
-					'taxonomy' => $params['taxonomy'],
-					'field'    => 'term_id',
-					'terms'    => $term->term_id,
-				);
-				if ( isset( $params['product_visibility'] ) && $params['product_visibility'] == true ) {
-					$query_args['tax_query'][] = array(
-						'taxonomy' => 'product_visibility',
-						'field'    => 'name',
-						'terms'    => 'exclude-from-catalog',
-						'operator' => 'NOT IN',
-					);
-				}
-				if ( is_product_category() ) {
-					$query_args['tax_query'][] = array(
-						'taxonomy' => 'product_cat',
-						'field'    => 'id',
-						'terms'    => $queried_object->term_id,
-						'operator' => 'IN',
-					);
-				}
-				$term->count = count( wc_get_products( $query_args ) );
-				if ( isset( $params['product_visibility'] ) && $params['product_visibility'] == true && $term->count == 0 ) {
-					continue;
-				}
-
-				$params['parent_id'] = $term->term_id;
-				if ( $this->taxonomy_terms_tree( $params ) ) {
-					$term->child_terms = $this->taxonomy_terms_tree( $params );
-				}
-				$taxonomy_terms[] = $term;
-			}
-		}
-		return $taxonomy_terms;
-	}
-
-	public function get_attribute_by_taxonomy( $taxonomy ) {
-		if ( strpos( $taxonomy, 'pa_' ) === 0 ) {
-			foreach ( wc_get_attribute_taxonomies() as $attribute ) {
-				if ( 'pa_' . $attribute->attribute_name === $taxonomy ) {
-					return $attribute;
-				}
-			}
-		}
-	}
 	// phpcs:disable
 
 	/**
@@ -1635,7 +1313,7 @@ class Functions {
 		$html .= ' data-name="' . ( $filterMobileText ? esc_attr( $filterMobileText ) : '&nbsp;' ) . '">';
 		if ( $filterText && ! $actions ) {
 			$class = '';
-			if ( $count == 0 ) {
+			if ( 0 == $count ) {
 				$count = 1;
 				$class = 'class="filter-active"';
 			}
@@ -1644,16 +1322,16 @@ class Functions {
 			$html .= esc_html( $filterText );
 			$html .= '</a></li>';
 		}
-		if ( $filterType == 'product_cat' ) {
+		if ( 'product_cat' === $filterType ) {
 			$cat = $this->taxonomy( 'product_cat' );
 			foreach ( $this->filter_item_values( $filterCat ) as $val ) {
 				$class = '';
-				if ( $count == 0 ) {
+				if ( 0 == $count ) {
 					$count = 1;
 					$class = 'class="filter-active"';
 				}
 				$html .= '<li class="filter-item">';
-				$html .= '<a ' . $class . ' data-taxonomy="' . esc_attr( $val == 'all' ? '' : $val ) . '" href="#">';
+				$html .= '<a ' . $class . ' data-taxonomy="' . esc_attr( $val === 'all' ? '' : $val ) . '" href="#">';
 				$html .= esc_html( isset( $cat[ $val ] ) ? $cat[ $val ] : $val );
 				$html .= '</a></li>';
 			}
@@ -1661,12 +1339,12 @@ class Functions {
 			$tag = $this->taxonomy( 'product_tag' );
 			foreach ( $this->filter_item_values( $filterTag ) as $val ) {
 				$class = '';
-				if ( $count == 0 ) {
+				if ( 0 == $count ) {
 					$count = 1;
 					$class = 'class="filter-active"';
 				}
 				$html .= '<li class="filter-item">';
-				$html .= '<a ' . $class . ' data-taxonomy="' . esc_attr( $val == 'all' ? '' : $val ) . '" href="#">';
+				$html .= '<a ' . $class . ' data-taxonomy="' . esc_attr( $val === 'all' ? '' : $val ) . '" href="#">';
 				$html .= esc_html( isset( $tag[ $val ] ) ? $tag[ $val ] : $val );
 				$html .= '</a></li>';
 			}
@@ -1674,7 +1352,7 @@ class Functions {
 
 		foreach ( $actions as $val ) {
 			$class = '';
-			if ( $count == 0 ) {
+			if ( 0 == $count ) {
 				$count = 1;
 				$class = 'class="filter-active"';
 			}
@@ -1749,72 +1427,7 @@ class Functions {
 		}
 
 		$icon = $wp_filesystem->get_contents( $icon_path );
-		return $icon !== false ? $icon : '';
-	}
-
-	/**
-	 * Check License Status
-	 *
-	 * @since v.2.0.7
-	 * @return bool Is pro license active or not.
-	 */
-	public function is_lc_active() {
-		$is_lc_active = $this->get_setting( 'is_lc_active' );
-		if ( '' !== $is_lc_active || ! ( $is_lc_active ) ) {  // compatibility for - get setting return cahcing data , some times provide invalid data.
-			return $is_lc_active;
-		}
-		return Xpo::is_lc_active();
-	}
-
-	/**
-	 * Check if the pro license is expired.
-	 *
-	 * @since v.4.0.0
-	 * @return bool Is pro license expired or not.
-	 */
-	public function is_lc_expired() {
-		return Xpo::is_lc_expired();
-	}
-
-	/**
-	 * Build the "renew license" checkout URL.
-	 *
-	 * @since v.4.0.0
-	 * @return string Renew checkout URL for the stored license key.
-	 */
-	public function get_renew_link() {
-		return 'https://account.wpxpo.com/checkout/?edd_license_key=' . Xpo::get_lc_key();
-	}
-
-	/**
-	 * Pro-gated field notice for admin product panels.
-	 *
-	 * Renders a "renew license" notice for expired users, otherwise the
-	 * standard "upgrade to pro" upsell. Used by the Preorder & Backorder
-	 * addons where a Pro-only field is replaced by this notice.
-	 *
-	 * @since v.4.0.0
-	 * @param string $tag UTM tag used for the upgrade link.
-	 * @return string Field notice markup.
-	 */
-	public function pro_or_renew_field_notice( $tag ) {
-		// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
-		if ( $this->is_lc_expired() ) {
-			$message = __( 'Your license has expired. Renew to keep using this feature.', 'product-blocks' );
-			$url     = $this->get_renew_link();
-			$text    = __( 'Renew License', 'product-blocks' );
-		} else {
-			$message = __( 'This feature is available in the Pro version.', 'product-blocks' );
-			$url     = $this->get_premium_link( 'https://www.wpxpo.com/wowstore', $tag );
-			$text    = __( 'Upgrade to Pro', 'product-blocks' );
-		}
-
-		$html  = '<span class="description" style="display:block;">';
-		$html .= esc_html( $message );
-		$html .= ' <a href="' . esc_url( $url ) . '" target="_blank">' . esc_html( $text ) . '</a>';
-		$html .= '</span>';
-
-		return $html;
+		return false !== $icon ? $icon : '';
 	}
 
 	/**
@@ -1877,7 +1490,7 @@ class Functions {
 		$page_id           = '';
 		$conditions        = $condition ? $condition : get_option( 'wopb_builder_conditions', array() );
 		$post_type         = isset( $_GET['post_type'] ) ? sanitize_key( $_GET['post_type'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$not_header_footer = $type != 'header' && $type != 'footer';
+		$not_header_footer = 'header' !== $type && 'footer' !== $type;
 		$is_shop           = is_shop();
 
 		/*
@@ -1887,54 +1500,54 @@ class Functions {
 			if ( ! empty( $conditions['archive'] ) ) {
 				foreach ( $conditions['archive'] as $key => $val ) {
 					if (
-						! $is_shop && ! is_category() && get_post_type( $key ) == 'wopb_builder' &&
+						! $is_shop && ! is_category() && get_post_type( $key ) === 'wopb_builder' &&
 						( is_archive() || ( ! is_archive() && ( is_product_taxonomy() || is_product_tag() ) ) )
 					) {
 						if ( in_array( 'include/archive', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
 						if ( in_array( 'exclude/archive', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = '';
 							}
 						}
 						if ( is_product_category() ) {
 							$taxonomy = get_queried_object();
 							if ( in_array( 'include/archive/product_cat', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = $key;
 								}
 							}
 							if ( in_array( 'exclude/archive/product_cat', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = '';
 								}
 							}
 							if ( isset( $taxonomy->term_id ) && $this->in_string_part( 'include/archive/product_cat/' . $taxonomy->term_id, $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = $key;
 								}
 							}
 							if ( isset( $taxonomy->term_id ) && in_array( 'include/archive/product_cat/' . $taxonomy->term_id, $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = $key;
 								}
 							}
 							if ( isset( $taxonomy->term_id ) && in_array( 'exclude/archive/product_cat/' . $taxonomy->term_id, $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = '';
 								}
 							}
 							if ( $this->in_string_part( 'any_child_of', $val ) ) {
 								if ( in_array( 'include/archive/any_child_of_product_cat', $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = $key;
 									}
 								}
 								if ( in_array( 'exclude/archive/any_child_of_product_cat', $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = '';
 									}
 								}
@@ -1943,53 +1556,53 @@ class Functions {
 									$data = explode( '/', $data );
 									if ( isset( $data[3] ) && $data[3] ) {
 										if ( isset( $taxonomy->term_id ) && term_is_ancestor_of( $data[3], $taxonomy->term_id, 'product_cat' ) ) {
-											if ( 'publish' == get_post_status( $key ) ) {
-												$page_id = $data[0] == 'exclude' ? '' : $key;
+											if ( 'publish' === get_post_status( $key ) ) {
+												$page_id = 'exclude' === $data[0] ? '' : $key;
 											}
 										}
 									}
 								}
 							} elseif ( $this->in_string_part( 'child_of', $val ) ) {
 								if ( in_array( 'include/archive/child_of_product_cat', $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = $key;
 									}
 								}
 								if ( in_array( 'exclude/archive/child_of_product_cat', $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = '';
 									}
 								}
 								if ( in_array( 'include/archive/child_of_product_cat/' . $taxonomy->parent, $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = $key;
 									}
 								}
 								if ( in_array( 'exclude/archive/child_of_product_cat/' . $taxonomy->parent, $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = '';
 									}
 								}
 							}
 						} elseif ( is_product_tag() ) {
 							if ( in_array( 'include/archive/product_tag', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = $key;
 								}
 							}
 							if ( in_array( 'exclude/archive/product_tag', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = '';
 								}
 							}
 							$taxonomy = get_queried_object();
 							if ( isset( $taxonomy->term_id ) && $this->in_string_part( 'include/archive/product_tag/' . $taxonomy->term_id, $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = $key;
 								}
 							}
 							if ( isset( $taxonomy->term_id ) && in_array( 'exclude/archive/product_tag/' . $taxonomy->term_id, $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = '';
 								}
 							}
@@ -1997,13 +1610,13 @@ class Functions {
 							$taxonomy_list = $this->get_taxonomy_list( true );
 							foreach ( $taxonomy_list as $value ) {
 								if ( in_array( 'include/archive/' . $value, $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = $key;
 									}
 								}
 								$taxonomy = get_queried_object();
 								if ( isset( $taxonomy->term_id ) && $this->in_string_part( 'include/archive/' . $value . '/' . $taxonomy->term_id, $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = $key;
 									}
 								}
@@ -2011,53 +1624,53 @@ class Functions {
 						}
 					} elseif ( is_cart() ) {
 						if ( in_array( 'filter/cart', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
 					} elseif ( is_checkout() && is_wc_endpoint_url( 'order-received' ) ) {
 						if ( in_array( 'filter/thankyou', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
 					} elseif ( $is_shop && ! is_search() ) {
 						if ( in_array( 'filter/shop', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
-					} elseif ( $post_type == 'product' && is_search() ) {
+					} elseif ( 'product' === $post_type && is_search() ) {
 						if ( in_array( 'include/archive/search', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
 					} elseif ( is_product() ) {
 						if ( in_array( 'include/allsingle', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						} else {
 							foreach ( $val as $value ) {
 								$list = explode( '/', $value );
-								if ( isset( $list[1] ) && $list[1] == 'single' ) {
+								if ( isset( $list[1] ) && 'single' === $list[1] ) {
 									if ( isset( $list[3] ) ) {
-										if ( $list[2] == 'product_cat' ) {
+										if ( 'product_cat' === $list[2] ) {
 											if ( has_term( $list[3], 'product_cat' ) ) {
-												if ( 'publish' == get_post_status( $key ) ) {
+												if ( 'publish' === get_post_status( $key ) ) {
 													$page_id = $key;
 												}
 											}
-										} elseif ( $list[2] == 'product_tag' ) {
+										} elseif ( 'product_tag' === $list[2] ) {
 											if ( has_term( $list[3], 'product_tag' ) ) {
-												if ( 'publish' == get_post_status( $key ) ) {
+												if ( 'publish' === get_post_status( $key ) ) {
 													$page_id = $key;
 												}
 											}
-										} elseif ( $list[1] == 'single' && $list[2] == 'product' ) {
+										} elseif ( 'single' === $list[1] && 'product' === $list[2] ) {
 											if ( get_the_ID() == $list[3] ) {
-												if ( 'publish' == get_post_status( $key ) ) {
+												if ( 'publish' === get_post_status( $key ) ) {
 													$page_id = $key;
 												}
 											}
@@ -2079,7 +1692,7 @@ class Functions {
 				foreach ( $conditions['home_page'] as $key => $val ) {
 					if ( ( is_front_page() || is_home() ) && ! is_search() ) {
 						if ( is_array( $val ) && in_array( 'filter/home_page', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
@@ -2102,12 +1715,12 @@ class Functions {
 							if ( $this->in_string_part( 'single_product/in_' . $tax . '_children', $val ) ) {
 								// In Taxonomy Children
 								if ( in_array( 'include/single_product/in_' . $tax . '_children', $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = $key;
 									}
 								}
 								if ( in_array( 'exclude/single_product/in_' . $tax . '_children', $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = '';
 									}
 								}
@@ -2118,8 +1731,8 @@ class Functions {
 										$term_children  = get_term_children( $data[3], $tax );
 										$terms_to_check = array_merge( $term_children, array( $data[3] ) );
 										if ( is_object_in_term( $obj->ID, $tax, $terms_to_check ) ) {
-											if ( 'publish' == get_post_status( $key ) ) {
-												$page_id = $data[0] == 'exclude' ? '' : $key;
+											if ( 'publish' === get_post_status( $key ) ) {
+												$page_id = 'exclude' === $data[0] ? '' : $key;
 											}
 										}
 									}
@@ -2127,12 +1740,12 @@ class Functions {
 							} else {
 								// IN Taxonomy
 								if ( in_array( 'include/single_product/in_' . $tax, $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = $key;
 									}
 								}
 								if ( in_array( 'exclude/single_product/in_' . $tax, $val ) ) {
-									if ( 'publish' == get_post_status( $key ) ) {
+									if ( 'publish' === get_post_status( $key ) ) {
 										$page_id = '';
 									}
 								}
@@ -2142,8 +1755,8 @@ class Functions {
 											$data = explode( '/', $v );
 											if ( isset( $data[3] ) && $data[3] ) {
 												if ( is_object_in_term( $obj->ID, $tax, $data[3] ) ) {
-													if ( 'publish' == get_post_status( $key ) ) {
-														$page_id = $data[0] == 'exclude' ? '' : $key;
+													if ( 'publish' === get_post_status( $key ) ) {
+														$page_id = 'exclude' === $data[0] ? '' : $key;
 													}
 												}
 											}
@@ -2156,29 +1769,29 @@ class Functions {
 
 					// All Post Type
 					if ( in_array( 'include/single_product/' . $obj->post_type, $val ) ) {
-						if ( 'publish' == get_post_status( $key ) ) {
+						if ( 'publish' === get_post_status( $key ) ) {
 							$page_id = $key;
 						}
 					}
 					if ( in_array( 'exclude/single_product/' . $obj->post_type, $val ) ) {
-						if ( 'publish' == get_post_status( $key ) ) {
+						if ( 'publish' === get_post_status( $key ) ) {
 							$page_id = '';
 						}
 					}
 					if ( $this->in_string_part( 'include/single_product/' . $obj->post_type . '/' . $obj->ID, $val ) ) {
-						if ( 'publish' == get_post_status( $key ) ) {
+						if ( 'publish' === get_post_status( $key ) ) {
 							$page_id = $key;
 						}
 					}
 					if ( $this->in_string_part( 'exclude/single_product/' . $obj->post_type . '/' . $obj->ID, $val ) ) {
-						if ( 'publish' == get_post_status( $key ) ) {
+						if ( 'publish' === get_post_status( $key ) ) {
 							$page_id = '';
 						}
 					}
 				}
 
 				$builder_type = get_post_meta( $page_id, '_wopb_builder_type', true );
-				if ( $builder_type && $builder_type == 'single_product' ) {
+				if ( $builder_type && 'single_product' === $builder_type ) {
 					add_theme_support( 'wc-product-gallery-zoom' );
 					add_theme_support( 'wc-product-gallery-lightbox' );
 				}
@@ -2193,7 +1806,7 @@ class Functions {
 				foreach ( $conditions['shop'] as $key => $val ) {
 					if ( $is_shop && ! is_search() ) {
 						if ( is_array( $val ) && in_array( 'filter/shop', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) && get_post_type( $key ) == 'wopb_builder' ) {
+							if ( 'publish' === get_post_status( $key ) && get_post_type( $key ) === 'wopb_builder' ) {
 								$page_id = $key;
 							}
 						}
@@ -2210,7 +1823,7 @@ class Functions {
 				foreach ( $conditions['cart'] as $key => $val ) {
 					if ( is_cart() && ! is_search() ) {
 						if ( is_array( $val ) && in_array( 'filter/cart', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
@@ -2227,7 +1840,7 @@ class Functions {
 				foreach ( $conditions['checkout'] as $key => $val ) {
 					if ( is_checkout() && ! ( is_wc_endpoint_url() || is_wc_endpoint_url( 'order-pay' ) || is_wc_endpoint_url( 'order-received' ) ) ) {
 						if ( is_array( $val ) && in_array( 'filter/checkout', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
@@ -2243,7 +1856,7 @@ class Functions {
 			if ( ! empty( $conditions['my_account'] ) ) {
 				foreach ( $conditions['my_account'] as $key => $val ) {
 					if ( is_account_page() && is_array( $val ) && in_array( 'filter/my_account', $val ) ) {
-						if ( 'publish' == get_post_status( $key ) ) {
+						if ( 'publish' === get_post_status( $key ) ) {
 							$page_id = $key;
 						}
 					}
@@ -2259,7 +1872,7 @@ class Functions {
 				foreach ( $conditions['thank_you'] as $key => $val ) {
 					if ( is_checkout() && is_wc_endpoint_url( 'order-received' ) ) {
 						if ( is_array( $val ) && in_array( 'filter/thank_you', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
@@ -2276,7 +1889,7 @@ class Functions {
 				foreach ( $conditions['product_search'] as $key => $val ) {
 					if ( is_search() ) {
 						if ( is_array( $val ) && in_array( 'filter/product_search', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
@@ -2293,7 +1906,7 @@ class Functions {
 			if ( ! empty( $conditions['404'] ) && is_404() ) {
 				foreach ( $conditions['404'] as $key => $val ) {
 					if ( is_array( $val ) && in_array( 'filter/404', $val ) ) {
-						if ( 'publish' == get_post_status( $key ) ) {
+						if ( 'publish' === get_post_status( $key ) ) {
 							$page_id = $key;
 						}
 					}
@@ -2319,12 +1932,12 @@ class Functions {
 					if ( get_post_status( $key ) ) {
 						// All Post Type
 						if ( in_array( 'include/single_product/' . $post_type, $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
 						if ( $this->in_string_part( 'include/single_product/' . $post_type . '/' . $post_id, $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
+							if ( 'publish' === get_post_status( $key ) ) {
 								$page_id = $key;
 							}
 						}
@@ -2337,23 +1950,23 @@ class Functions {
 		 * Header
 		 * since v.3.0.0
 		 */
-		if ( $type == 'header' ) {
+		if ( 'header' === $type ) {
 			if ( isset( $conditions['header'] ) ) {
 				if ( ! empty( $conditions['header'] ) ) {
 					foreach ( $conditions['header'] as $key => $val ) {
 						if ( ! empty( $val ) ) {
 							if ( in_array( 'include/header/entire_site', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = $key;
 								}
 							}
 							if ( in_array( 'exclude/header/entire_site', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = '';
 								}
 							}
 							if ( $this->in_string_part( 'header/single_product', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									foreach ( $val as $k => $v ) {
 										$tempKey = strpos( $v, 'header/single_product/page' ) !== false ? 'singular_page' : 'single_product';
 										if ( $key && strpos( $v, 'include/header/single_product' ) !== false ) {
@@ -2368,7 +1981,7 @@ class Functions {
 								}
 							}
 							if ( $this->in_string_part( 'header/archive', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									foreach ( $val as $k => $v ) {
 										if ( $key && strpos( $v, 'include/header/archive' ) !== false ) {
 											$temp    = $this->conditions( 'return', array( 'archive' => array( $key => array( str_replace( 'header/', '', $v ) ) ) ) );
@@ -2392,23 +2005,23 @@ class Functions {
 		 * Footer
 		 * since v.3.0.0
 		 */
-		if ( $type == 'footer' ) {
+		if ( 'footer' === $type ) {
 			if ( isset( $conditions['footer'] ) ) {
 				if ( ! empty( $conditions['footer'] ) ) {
 					foreach ( $conditions['footer'] as $key => $val ) {
 						if ( ! empty( $val ) ) {
 							if ( in_array( 'include/footer/entire_site', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = $key;
 								}
 							}
 							if ( in_array( 'exclude/footer/entire_site', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									$page_id = '';
 								}
 							}
 							if ( $this->in_string_part( 'footer/single_product', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									foreach ( $val as $k => $v ) {
 										$tempKey = strpos( $v, 'footer/single_product/page' ) !== false ? 'singular_page' : 'single_product';
 										if ( $key && strpos( $v, 'include/footer/single_product' ) !== false ) {
@@ -2423,7 +2036,7 @@ class Functions {
 								}
 							}
 							if ( $this->in_string_part( 'footer/archive', $val ) ) {
-								if ( 'publish' == get_post_status( $key ) ) {
+								if ( 'publish' === get_post_status( $key ) ) {
 									foreach ( $val as $k => $v ) {
 										if ( $key && strpos( $v, 'include/footer/archive' ) !== false ) {
 											$temp    = $this->conditions( 'return', array( 'archive' => array( $key => array( str_replace( 'footer/', '', $v ) ) ) ) );
@@ -2443,10 +2056,10 @@ class Functions {
 			}
 		}
 
-		if ( $type == 'return' ) {
+		if ( 'return' === $type ) {
 			return $page_id;
 		}
-		if ( $type == 'includes' ) {
+		if ( 'includes' === $type ) {
 			return $page_id ? WOPB_PATH . 'addons/builder/templates/page.php' : '';
 		}
 	}
@@ -2468,7 +2081,7 @@ class Functions {
 			return true;
 		}
 		$page_id = $this->conditions( 'return' );
-		if ( $page_id && $this->get_setting( 'wopb_builder' ) == 'true' ) {
+		if ( $page_id && $this->get_setting( 'wopb_builder' ) === 'true' ) {
 			$id = $page_id;
 		}
 		return $id;
@@ -2483,17 +2096,6 @@ class Functions {
 	 */
 	public function esc_inline( $css ) {
 		return '<style type="text/css">' . wp_strip_all_tags( $css ) . '</style>';
-	}
-
-	/**
-	 * Escaping String Core File
-	 *
-	 * @since v.4.3.2
-	 * @param STRING | Content
-	 * @return STRING | Content
-	 */
-	public function core_esc_wp( $content ) {
-		return $content;
 	}
 
 	/**
@@ -2731,11 +2333,6 @@ class Functions {
 		return $where;
 	}
 
-	public function custom_join_product_filter( $join, &$query ) {
-		global $wpdb;
-		return $join;
-	}
-
 	public function get_pagenum_link( $page_num, $attr ) {
 		global $wp_rewrite;
 		if ( isset( $attr['current_url'] ) ) {
@@ -2787,87 +2384,24 @@ class Functions {
 	}
 
 	/**
-	 * Shop Builder Active Checking
-	 */
-	public function wopb_shop_builder_check() {
-		$shop_builder_active = false;
-
-		$conditions = get_option( 'wopb_builder_conditions', array() );
-		if ( isset( $conditions['shop'] ) ) {
-			if ( ! empty( $conditions['shop'] ) ) {
-				foreach ( $conditions['shop'] as $key => $val ) {
-					if ( is_shop() && ! is_search() ) {
-						if ( is_array( $val ) && in_array( 'filter/shop', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) && get_post_type( $key ) == 'wopb_builder' ) {
-								$shop_builder_active = true;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		if ( isset( $conditions['archive'] ) ) {
-			if ( ! empty( $conditions['archive'] ) ) {
-				foreach ( $conditions['archive'] as $key => $val ) {
-					if ( is_shop() && ! is_search() ) {
-						if ( in_array( 'filter/shop', $val ) ) {
-							if ( 'publish' == get_post_status( $key ) ) {
-								$shop_builder_active = true;
-							}
-						}
-					}
-				}
-			}
-		}
-		return $shop_builder_active;
-	}
-
-	/**
-	 * Payment Gateway List
+	 * A price as the shopper sees it
 	 *
-	 * @return array
-	 */
-	function payment_gateway_list() {
-		$active_gateways = array();
-		$gateways        = WC()->payment_gateways->payment_gateways();
-		foreach ( $gateways as $id => $gateway ) {
-			if ( $gateway->enabled == 'yes' ) {
-				$active_gateways[ $id ] = $gateway->title;
-			}
-		}
-		return $active_gateways;
-	}
-
-	/**
-	 * Currency Switcher data
-	 *
-	 * @param float  $value
-	 * @param string $type
-	 * @return array
+	 * @param float  $value Price in the store's currency, or the shopper's price when `$type` is 'default'.
+	 * @param string $type  'default' turns a shopper's price back into the store's currency.
+	 * @return array `value`, and `rate` when the price was multiplied by one.
 	 * @since v.2.4.8
 	 */
-	public function currency_switcher_data( $value = 0, $type = '' ) {
-		if ( $this->get_setting( 'wopb_currency_switcher' ) == 'true' &&
-			$this->get_setting( 'is_lc_active' ) &&
-			$this->get_setting( 'wopb_current_currency' ) != $this->get_setting( 'wopb_default_currency' )
-		) {
-			$current_currency = Currency_Switcher_Action::get_currency( $this->get_setting( 'wopb_current_currency' ) );
-			$data             = array(
-				'current_currency'              => $this->get_setting( 'wopb_current_currency' ),
-				'current_currency_rate'         => isset( $current_currency['wopb_currency_rate'] ) ? $current_currency['wopb_currency_rate'] : 1,
-				'current_currency_exchange_fee' => isset( $current_currency['wopb_currency_exchange_fee'] ) && $current_currency['wopb_currency_exchange_fee'] > 0 ? $current_currency['wopb_currency_exchange_fee'] : 0,
-				'value'                         => $value,
-			);
-
-			if ( $value > 0 && $type == 'default' ) {
-				$data['value'] = (float) $value / ( $data['current_currency_rate'] + $data['current_currency_exchange_fee'] );
-			} elseif ( $value > 0 ) {
-				$data['value'] = ( $data['current_currency_rate'] + $data['current_currency_exchange_fee'] ) * (float) $value;
-			}
-			return $data;
-		}
-		return array( 'value' => $value );
+	public function get_price_data( $value = 0, $type = '' ) {
+		/**
+		 * Filters a price before the plugin shows or compares it, for add-ons that change the shop's prices.
+		 *
+		 * @since 4.6.0
+		 * @param array  $data  `value` (the price, unchanged by default) and optionally `rate`, the number the price was multiplied by.
+		 * @param float  $value The price.
+		 * @param string $type  'default' asks for the store's own price of a shopper's price.
+		 */
+		$data = apply_filters( 'wopb_price_data', array( 'value' => $value ), $value, $type );
+		return is_array( $data ) && isset( $data['value'] ) ? $data : array( 'value' => $value );
 	}
 
 
@@ -2916,7 +2450,7 @@ class Functions {
 		if ( wopb_function()->get_setting( 'wopb_variation_swatches' ) === 'true' && ! is_admin() ) {
 			$require_script[] = 'wopb-variation-swatches';
 		}
-		
+
 		wp_enqueue_style( 'wopb-css', WOPB_URL . 'assets/css/wopb.css', array(), WOPB_VER );
 		wp_enqueue_script( 'wopb-slick-script', WOPB_URL . 'assets/js/slick.min.js', array( 'jquery' ), WOPB_VER, true );
 		wp_enqueue_script( 'wopb-flexmenu-script', WOPB_URL . 'assets/js/flexmenu.min.js', array( 'jquery' ), WOPB_VER, true );
@@ -2929,13 +2463,12 @@ class Functions {
 			'url'               => WOPB_URL,
 			'ajax'              => admin_url( 'admin-ajax.php' ),
 			'security'          => wp_create_nonce( 'wopb-nonce' ),
-			'currency_symbol'   => get_woocommerce_currency_symbol(),
+			'currency_symbol'   => function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '',
 			'currency_position' => get_option( 'woocommerce_currency_pos' ),
 			'errorElementGroup' => array(
 				'errorElement' => '<div class="wopb-error-element"></div>',
 			),
 			'rest'              => get_rest_url(),
-			'taxonomyCatUrl'    => admin_url( 'edit-tags.php?taxonomy=category' ),
 			'page_id'           => $this->get_the_current_page(),
 		);
 		$wopb_core_localize = array_merge( $wopb_core_localize, $this->get_endpoint_urls() );
@@ -2981,16 +2514,12 @@ class Functions {
 	 * @return BOOLEAN
 	 */
 	public function active_plugin( $plugin_name ) {
-		$active_plugins = get_option( 'active_plugins', array() );
-		if ( $plugin_name == 'wholesalex' && file_exists( WP_PLUGIN_DIR . '/wholesalex/wholesalex.php' ) && in_array( 'wholesalex/wholesalex.php', $active_plugins, true ) ) {
-			return true;
-		} elseif (
-			file_exists( WP_PLUGIN_DIR . '/' . $plugin_name . '/' . $plugin_name . '.php' ) &&
-			in_array( $plugin_name . '/' . $plugin_name . '.php', $active_plugins, true )
-		) {
-			return true;
+		if ( ! function_exists( 'get_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
-		return false;
+		$plugin_file = $plugin_name . '/' . $plugin_name . '.php';
+		$plugins = get_plugins();
+		return isset( $plugins[ $plugin_file ] ) && in_array( $plugin_file, get_option( 'active_plugins', array() ), true );
 	}
 
 	/**
@@ -3023,7 +2552,6 @@ class Functions {
 				'ajax_pagination'              => \WC_AJAX::get_endpoint( 'wopb_pagination' ),
 				'ajax_load_more'               => \WC_AJAX::get_endpoint( 'wopb_load_more' ),
 				'ajax_filter'                  => \WC_AJAX::get_endpoint( 'wopb_filter' ),
-				'ajax_show_more_filter_item'   => \WC_AJAX::get_endpoint( 'wopb_show_more_filter_item' ),
 				'ajax_product_list'            => \WC_AJAX::get_endpoint( 'wopb_product_list' ),
 				'ajax_variation_loop_add_cart' => \WC_AJAX::get_endpoint( 'wopb_variation_loop_add_cart' ),
 				'ajax_quick_view'              => \WC_AJAX::get_endpoint( 'wopb_quickview' ),
@@ -3053,82 +2581,30 @@ class Functions {
 	}
 
 	/**
-	 * Get Option Value bypassing cache
-	 * Inspired By WordPress Core get_option
+	 * Retrieve an option using the shared WordPress-backed helper.
 	 *
 	 * @since v.3.1.0
-	 * @param string  $option Option Name.
-	 * @param boolean $default_value option default value.
+	 * @param string $option        Option name.
+	 * @param mixed  $default_value Default when the option does not exist.
 	 * @return mixed
 	 */
 	public function get_option_without_cache( $option, $default_value = false ) {
-		global $wpdb;
-
-		if ( is_scalar( $option ) ) {
-			$option = trim( $option );
-		}
-
-		if ( empty( $option ) ) {
-			return false;
-		}
-
-		$row = $wpdb->get_row( $wpdb->prepare( "SELECT option_value FROM $wpdb->options WHERE option_name = %s LIMIT 1", $option ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-
-		if ( is_object( $row ) ) {
-			$value = $row->option_value;
-		} else {
-			return apply_filters( "wopb_default_option_{$option}", $default_value, $option );
-		}
-
-		return apply_filters( "wopb_option_{$option}", maybe_unserialize( $value ), $option );
+		require_once WOPB_PATH . 'includes/class-xpo.php';
+		return Xpo::get_option_without_cache( $option, $default_value );
 	}
 
 	/**
-	 * Add option without adding to the cache
-	 * Inspired By WordPress Core set_transient
+	 * Add an option using the shared WordPress-backed helper.
 	 *
 	 * @since v.3.1.0
-	 * @param string $option option name.
-	 * @param string $value option value.
-	 * @param string $autoload whether to load WordPress startup.
+	 * @param string      $option   Option name.
+	 * @param mixed       $value    Option value.
+	 * @param string|bool $autoload Whether WordPress should autoload the option.
 	 * @return bool
 	 */
 	public function add_option_without_cache( $option, $value = '', $autoload = 'yes' ) {
-		global $wpdb;
-
-		if ( is_scalar( $option ) ) {
-			$option = trim( $option );
-		}
-
-		if ( empty( $option ) ) {
-			return false;
-		}
-
-		wp_protect_special_option( $option );
-
-		if ( is_object( $value ) ) {
-			$value = clone $value;
-		}
-
-		$value = sanitize_option( $option, $value );
-
-		/*
-		 * Make sure the option doesn't already exist.
-		 */
-
-		if ( apply_filters( "wopb_default_option_{$option}", false, $option, false ) !== $this->get_option_without_cache( $option ) ) {
-			return false;
-		}
-
-		$serialized_value = maybe_serialize( $value );
-		$autoload         = ( 'no' === $autoload || false === $autoload ) ? 'no' : 'yes';
-
-		$result = $wpdb->query( $wpdb->prepare( "INSERT INTO `$wpdb->options` (`option_name`, `option_value`, `autoload`) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE `option_name` = VALUES(`option_name`), `option_value` = VALUES(`option_value`), `autoload` = VALUES(`autoload`)", $option, $serialized_value, $autoload ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		if ( ! $result ) {
-			return false;
-		}
-
-		return true;
+		require_once WOPB_PATH . 'includes/class-xpo.php';
+		return Xpo::add_option_without_cache( $option, $value, $autoload );
 	}
 
 	public function product_format( $params ) {
@@ -3143,9 +2619,18 @@ class Functions {
 				$weight       = $product->get_weight();
 				$weight       = $weight ? ( wc_format_localized_decimal( $weight ) . ' ' . get_option( 'woocommerce_weight_unit' ) ) : 'N/A';
 				$stock_status = $product->is_purchasable() && $product->is_in_stock() ? 'in stock' : '';
+				$wopb_buffer_level_1 = ob_get_level();
 				ob_start();
+				try {
 					wc_display_product_attributes( $product );
 				$additional               = ob_get_clean();
+				} finally {
+					while ( ob_get_level() > $wopb_buffer_level_1 ) {
+						if ( ! ob_end_clean() ) {
+							break;
+						}
+					}
+				}
 				$var['title']             = isset( $params['search'] ) ? $this->highlightSearchKey( get_the_title(), $params['search'] ) : $product->get_title();
 				$var['type']              = $product->get_type();
 				$var['permalink']         = $product->get_permalink();
@@ -3237,42 +2722,6 @@ class Functions {
 	}
 
 	/**
-	 * Modal Loading Content
-	 *
-	 * @since v.3.1.1
-	 * @param $loader
-	 * @return null
-	 */
-	public function modal_loading( $loader ) {
-		?>
-		<div class="wopb-modal-loading">
-			<div class="wopb-loading">
-				<span class="wopb-loader <?php echo esc_attr( $loader ); ?>">
-					<?php
-					if ( ( $loader == 'loader_2' ) || ( $loader == 'loader_3' ) ) {
-						for ( $i = 0;$i <= 11;$i++ ) {
-							echo '<div></div>';
-						}
-					} elseif ( $loader == 'loader_4' ) {
-						?>
-						<span class="dot_line"></span>
-						<svg width="100" height="100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<path d="M6 7V5.5C6 4.67157 6.67157 4 7.5 4H16.5C17.3284 4 18 4.67157 18 5.5V8.15071C18 8.67761 17.7236 9.16587 17.2717 9.43695L13.7146 11.5713C13.3909 11.7655 13.3909 12.2345 13.7146 12.4287L17.2717 14.563C17.7236 14.8341 18 15.3224 18 15.8493V18.5C18 19.3284 17.3284 20 16.5 20H7.5C6.67157 20 6 19.3284 6 18.5V15.8493C6 15.3224 6.27645 14.8341 6.72826 14.563L10.2854 12.4287C10.6091 12.2345 10.6091 11.7655 10.2854 11.5713L6.72826 9.43695C6.27645 9.16587 6 8.67761 6 8.15071V8" stroke="white" />
-						</svg>
-						<?php
-					} elseif ( $loader == 'loader_5' ) {
-						for ( $i = 0;$i <= 14;$i++ ) {
-							echo '<div style="--index:' . esc_attr( $i ) . '"></div>';
-						}
-					}
-					?>
-				</span>
-			</div>
-		</div>
-		<?php
-	}
-
-	/**
 	 * Return content after highlight search key
 	 *
 	 * @param $content
@@ -3300,7 +2749,7 @@ class Functions {
 			$text            = $node->nodeValue;
 			$escapedText     = htmlspecialchars( $text, ENT_QUOTES, 'UTF-8' );
 			$highlightedText = preg_replace( '/(' . $escapedSearch . ')/iu', '<strong class="wopb-highlight">$1</strong>', $escapedText );
-			if ( $highlightedText !== null && $highlightedText !== $escapedText ) {
+			if ( null !== $highlightedText && $highlightedText !== $escapedText ) {
 				$newNode = $doc->createDocumentFragment();
 				$newNode->appendXML( $highlightedText );
 				$node->parentNode->replaceChild( $newNode, $node );
@@ -3313,24 +2762,6 @@ class Functions {
 		libxml_use_internal_errors( $useErrors );
 
 		return $html;
-	}
-
-	/**
-	 * Permission Check for Restapi
-	 *
-	 * @param bool   $post_id string/bool
-	 * @param string $cap
-	 * @return bool
-	 * @since v.3.1.11
-	 */
-	public function permission_check_for_restapi( $post_id = false, $cap = '' ) {
-		$cap       = $cap ? $cap : 'edit_others_posts';
-		$is_passed = false;
-		if ( $post_id ) {
-			$post_author = (int) get_post_field( 'post_author', $post_id );
-			$is_passed   = (int) get_current_user_id() === $post_author;
-		}
-		return $is_passed || current_user_can( $cap );
 	}
 
 	/**
@@ -3370,7 +2801,7 @@ class Functions {
 	 */
 	public function allowed_block_tags( $search = '' ) {
 		$array_lists = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'p', 'div', 'section', 'article' );
-		return $search ? in_array( $search, $array_lists ) : $array_lists;
+		return $search ? in_array( $search, $array_lists, true ) : $array_lists;
 	}
 
 	/**
@@ -3383,9 +2814,9 @@ class Functions {
 		$final_change = "/*{$key}_start*/" . $css_change . "/*{$key}_stop*/";
 		if ( strpos( $css, $key . '_start' ) !== false ) {
 			$reg  = "/(\/\*{$key}_start\*\/)(.*?)(\/\*{$key}_stop\*\/)/s";
-			$data = preg_replace( $reg, ( $action == 'delete' ? '' : $final_change ), $css );
+			$data = preg_replace( $reg, ( 'delete' === $action ? '' : $final_change ), $css );
 			update_option( 'wopb_generated_css', $data );
-		} elseif ( $action != 'delete' ) {
+		} elseif ( 'delete' !== $action ) {
 			update_option( 'wopb_generated_css', $css . $final_change );
 		}
 	}
@@ -3409,23 +2840,16 @@ class Functions {
 		$no_follow        = ! empty( $params['cartNoFollow'] ) ? $params['cartNoFollow'] : '';
 		$is_purchasable   = $product->is_purchasable();
 
-		if ( $this->isPro() && $is_purchasable ) {
-			$methods = get_class_methods( wopb_pro_function() );
-			if ( in_array( 'is_simple_preorder', $methods ) ) {
-				if ( wopb_pro_function()->is_simple_preorder() ) {
-					$cart_text = $this->get_setting( 'preorder_add_to_cart_button_text' );
-				}
-			}
-			if ( in_array( 'is_simple_backorder', $methods ) ) {
-				if ( $this->is_simple_backorder() ) {
-					$cart_text = $this->get_setting( 'backorder_add_to_cart_button_text' );
-				}
-			}
-			if ( in_array( 'is_partial_payment', $methods ) ) {
-				if ( wopb_pro_function()->is_partial_payment( $product ) ) {
-					$cart_text = $this->get_setting( 'partial_payment_label_text' );
-				}
-			}
+		if ( $is_purchasable ) {
+			/**
+			 * Filters the add-to-cart text set in a grid block for a product that can be bought.
+			 *
+			 * @since 4.6.0
+			 * @param string      $cart_text Text set in the block, '' for WooCommerce's own text.
+			 * @param \WC_Product $product   Product.
+			 * @param array       $params    The block's add-to-cart parameters.
+			 */
+			$cart_text = apply_filters( 'wopb_add_to_cart_text', $cart_text, $product, $params );
 		}
 
 		$attributes = array(
@@ -3460,7 +2884,7 @@ class Functions {
 
 		$args = apply_filters( 'woocommerce_loop_add_to_cart_args', wp_parse_args( array(), $args ), $product );
 
-		if ( $product->get_stock_status() == 'outofstock' || ! $is_purchasable ) {
+		if ( $product->get_stock_status() === 'outofstock' || ! $is_purchasable ) {
 			$cart_text = '';
 		}
 
@@ -3492,10 +2916,19 @@ class Functions {
 
 			if ( ! $is_icon && wopb_function()->active_plugin( 'woo-variation-swatches' ) ) {
 				$swatch_position = woo_variation_swatches()->get_option( 'archive_swatches_position' );
+				$wopb_buffer_level_2 = ob_get_level();
 				ob_start();
+				try {
 					do_shortcode( '[wvs_show_archive_variation product_id="' . $product->get_id() . '"]' );
 				$woo_swatch = ob_get_clean();
-				if ( $swatch_position == 'after' ) {
+				} finally {
+					while ( ob_get_level() > $wopb_buffer_level_2 ) {
+						if ( ! ob_end_clean() ) {
+							break;
+						}
+					}
+				}
+				if ( 'after' === $swatch_position ) {
 					$after .= $woo_swatch;
 				} else {
 					$before .= $woo_swatch;
@@ -3547,7 +2980,7 @@ class Functions {
 					$css .= ! empty( $value['size'] ) ? 'font-size: ' . $value['size'] . 'px;' : '';
 					$css .= 'font-weight: ' .
 						( ! empty( $value['bold'] )
-							? ( $value['bold'] == 1 ? 'bold' : $value['bold'] )
+							? ( 1 == $value['bold'] ? 'bold' : $value['bold'] )
 							: 'normal'
 						) . ' !important;';
 					$css .= ! empty( $value['italic'] ) ? 'font-style: ' . 'italic;' : '';
@@ -3713,7 +3146,7 @@ class Functions {
 					if ( file_exists( $reusable_dir_path ) ) {
 						$reusable_css .= $this->get_path_file_contents( $reusable_dir_path );
 					} else {
-						$reusable_css .= get_post_meta( $reusable_id, '_wopb_css', true );
+						$reusable_css .= get_post_meta( $id, '_wopb_css', true );
 					}
 				}
 			}
@@ -3729,7 +3162,7 @@ class Functions {
 				if ( $call_common ) {
 					$this->register_scripts_common();
 				}
-				return '<style id="wopb-post-' . $post_id . '" type="text/css">' . wp_strip_all_tags( $reusable_css . $css ) . '</style>';
+				return '<style id="wopb-post-' . esc_attr( $post_id ) . '" type="text/css">' . wp_strip_all_tags( $reusable_css . $css ) . '</style>';
 			}
 		}
 		return '';
@@ -3759,58 +3192,6 @@ class Functions {
 
 		return wp_kses( $content, $allowed );
 	}
-	public function is_simple_preorder() {
-		if ( wopb_function()->get_setting( 'wopb_preorder' ) == 'true' ) {
-			global $product;
-			$type = $product->get_type();
-			if ( $type == 'simple' && ! $this->is_preorder_closed( $product ) && $product->get_meta( '_wopb_preorder_simple' ) ) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public function is_simple_backorder() {
-		if ( wopb_function()->get_setting( 'wopb_backorder' ) == 'true' ) {
-			global $product;
-			$type = $product->get_type();
-			if ( $type == 'simple' && ! $product->managing_stock() && $product->is_on_backorder() && ! $this->is_backorder_closed( $product ) ) {
-				return true;
-			}
-		}
-		return false;
-	}
-	/**
-	 * Preorder Close Check
-	 *
-	 * @return BOOLEAN
-	 * @since Pro - v.2.1.9 || free - 4.3.7
-	 */
-	public function is_preorder_closed( $product ) {
-		$pre_order_date = $product->get_meta( '_wopb_preorder_date' );
-		$duration       = new \Datetime( date( 'Y-m-d h:i a', strtotime( $pre_order_date ) ) );
-		$current        = new \Datetime( current_time( 'Y-m-d h:i a' ) );
-		if ( $pre_order_date && $current > $duration ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Backorder Close Check
-	 *
-	 * @return BOOLEAN
-	 * @since v.2.1.9
-	 */
-	public function is_backorder_closed( $product ) {
-		$backorder_available_duration = date( 'Y-m-d h:i a', strtotime( $product->get_meta( '_wopb_backorder_date' ) ) );
-		if ( $product->get_meta( '_wopb_backorder_date' ) && current_time( 'Y-m-d h:i' ) > $backorder_available_duration ) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 	public function get_the_current_page() {
 		// Prefer explicit homepage/posts page IDs when configured
 		$front_id = (int) get_option( 'page_on_front' );
@@ -3818,7 +3199,7 @@ class Functions {
 			return $front_id;
 		}
 		// If front page but no static page set, return 'home' string key
-		if ( is_front_page() && $front_id === 0 ) {
+		if ( is_front_page() && 0 === $front_id ) {
 			return 'home';
 		}
 
@@ -3828,7 +3209,7 @@ class Functions {
 		}
 
 		// If blog page but no static page set, return 'blog' string key
-		if ( is_home() && $posts_page_id === 0 ) {
+		if ( is_home() && 0 === $posts_page_id ) {
 			return 'blog';
 		}
 
@@ -3875,5 +3256,10 @@ class Functions {
 			return 'thank_you';
 		}
 		return $page_id;
+	}
+
+	/** Named WordPress hook callback. */
+	public function distinct_product_posts() {
+		return 'DISTINCT'; // duplicate data remove
 	}
 }

@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
  */
 add_action( 'wp_loaded', 'wopb_name_price_init' );
 function wopb_name_price_init() {
-	if ( wopb_function()->get_setting( 'wopb_name_price' ) == 'true' ) {
+	if ( wopb_function()->get_setting( 'wopb_name_price' ) === 'true' ) {
 		require_once WOPB_PATH . '/addons/name_price/NamePrice.php';
 		new \WOPB\NamePrice();
 	}

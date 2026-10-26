@@ -37,15 +37,25 @@ class Custom_Font {
 	}
 
 
+	/**
+	 * Let administrators upload font files.
+	 *
+	 * Other users keep WordPress's own upload list, and SVG is never added: an SVG file can carry
+	 * a script, and SVG fonts are no longer supported by browsers.
+	 *
+	 * @param array $file_types Allowed upload types, extension pattern => MIME type.
+	 * @return array
+	 */
 	public function add_file_types_to_uploads( $file_types ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return $file_types;
+		}
 		$new_filetypes          = array();
 		$new_filetypes['woff']  = 'font/woff';
 		$new_filetypes['woff2'] = 'font/woff2';
 		$new_filetypes['ttf']   = 'font/ttf';
-		$new_filetypes['svg']   = 'image/svg+xml';
-		$new_filetypes['eot']   = 'font/ttf';
-		$file_types             = array_merge( $file_types, $new_filetypes );
-		return $file_types;
+		$new_filetypes['eot']   = 'application/vnd.ms-fontobject';
+		return array_merge( $file_types, $new_filetypes );
 	}
 
 
@@ -141,7 +151,7 @@ class Custom_Font {
 	}
 
 
-	function init_metabox_callback() {
+	public function init_metabox_callback() {
 		add_meta_box(
 			'wopb-custom-font-id',
 			esc_html__( 'Font Vaiations', 'product-blocks' ),
@@ -152,7 +162,7 @@ class Custom_Font {
 	}
 
 
-	function set_data( $arr = array(), $font_name = '' ) {
+	public function set_data( $arr = array(), $font_name = '' ) {
 		?>
 		<div class="wopb-custom-font-container wopb-custom-font<?php echo esc_attr( empty( $arr ) ) ? '-copy' : ''; ?>">
 			<div class="wopb-custom-font-heading">
@@ -225,7 +235,7 @@ class Custom_Font {
 	}
 
 
-	function custom_font_callback( $post ) {
+	public function custom_font_callback( $post ) {
 		wp_nonce_field( 'font_meta_box', 'custom_font_nonce' );
 		$settings = get_post_meta( $post->ID, '__font_settings', true );
 
@@ -240,29 +250,32 @@ class Custom_Font {
 	}
 
 
-	function metabox_save_data( $post_id ) {
-		if ( ! isset( $_POST['custom_font_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['custom_font_nonce'] ) ), 'font_meta_box' ) ) {
+	public function metabox_save_data( $post_id ) {
+		if (
+			( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
+			'wopb_custom_font' !== get_post_type( $post_id ) ||
+			! isset( $_POST['custom_font_nonce'] ) ||
+			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['custom_font_nonce'] ) ), 'font_meta_box' ) ||
+			! current_user_can( 'edit_post', $post_id )
+		) {
 			return;
 		}
 
 		$arr         = array();
-		$font_weight = isset( $_POST['weight'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['weight'] ) ) : array(); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$font_weight = isset( $_POST['weight'] ) ? map_deep( wp_unslash( $_POST['weight'] ), 'sanitize_text_field' ) : array();
 		if ( ! empty( $font_weight ) ) {
-			foreach ( $font_weight as $i => $value ) {
-				if ( isset( $font_weight[ $i ] ) &&
-					( ! empty( $_POST['woff'][ $i ] ) ||
-					! empty( $_POST['woff2'][ $i ] ) ||
-					! empty( $_POST['ttf'][ $i ] ) ||
-					! empty( $_POST['svg'][ $i ] ) ||
-                    !empty($_POST['eot'][$i])) ) { //phpcs:ignore
-							$temp           = array();
-                            $temp['weight'] = isset($_POST['weight'][$i]) ? sanitize_text_field($_POST['weight'][$i]) : ''; // phpcs:ignore
-                            $temp['woff'] = isset($_POST['woff'][$i]) ? sanitize_text_field($_POST['woff'][$i]) : ''; // phpcs:ignore
-                            $temp['woff2'] = isset($_POST['woff2'][$i]) ? sanitize_text_field($_POST['woff2'][$i]) : ''; // phpcs:ignore
-                            $temp['ttf'] = isset($_POST['ttf'][$i]) ? sanitize_text_field($_POST['ttf'][$i]) : ''; // phpcs:ignore
-                            $temp['svg'] = isset($_POST['svg'][$i]) ? sanitize_text_field($_POST['svg'][$i]) : ''; // phpcs:ignore
-                            $temp['eot'] = isset($_POST['eot'][$i]) ? sanitize_text_field($_POST['eot'][$i]) : ''; // phpcs:ignore
-							$arr[]          = $temp;
+			$formats = array( 'woff', 'woff2', 'ttf', 'svg', 'eot' );
+			$files   = array();
+			foreach ( $formats as $format ) {
+				$files[ $format ] = isset( $_POST[ $format ] ) ? map_deep( wp_unslash( $_POST[ $format ] ), 'sanitize_text_field' ) : array();
+			}
+			foreach ( $font_weight as $i => $weight ) {
+				$temp = array( 'weight' => $weight );
+				foreach ( $formats as $format ) {
+					$temp[ $format ] = isset( $files[ $format ][ $i ] ) ? $files[ $format ][ $i ] : '';
+				}
+				if ( $temp['woff'] || $temp['woff2'] || $temp['ttf'] || $temp['svg'] || $temp['eot'] ) {
+					$arr[] = $temp;
 				}
 			}
 			update_post_meta( $post_id, '__font_settings', $arr );

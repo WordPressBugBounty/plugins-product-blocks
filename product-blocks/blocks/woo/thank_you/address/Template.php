@@ -8,14 +8,13 @@ defined( 'ABSPATH' ) || exit;
 
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
 
-$order_id = absint( get_query_var( 'order-received' ) );
-$order    = wc_get_order( $order_id );
-
-$show_shipping = ! wc_ship_to_billing_address_only() && $order->needs_shipping_address();
+$order = wopb_function()->get_thankyou_order();
 
 if ( ! $order ) {
 	return;
 }
+
+$show_shipping = ! wc_ship_to_billing_address_only() && $order->needs_shipping_address();
 ?>
 <div class="wopb-thankyou-address-container">
 	<section class="woocommerce-customer-details">

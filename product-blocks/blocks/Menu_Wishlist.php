@@ -54,10 +54,10 @@ class Menu_Wishlist {
 
 		$href_link = '';
 		$page      = get_post( $wishlist_page );
-		if ( $action_added == 'redirect' ) {
-			if ( $wishlist_page && $page && $page->post_type === 'page' && $page->post_status === 'publish' ) {
+		if ( 'redirect' === $action_added ) {
+			if ( $wishlist_page && $page && 'page' === $page->post_type && 'publish' === $page->post_status ) {
 				$href_link .= 'href="' . esc_url( get_permalink( $wishlist_page ) ) . '"';
-			} elseif ( $page = get_post( 'wishlist' ) && $page->post_status === 'publish' && $link = get_permalink( get_page_by_path( 'wishlist' ) ) ) {
+			} elseif ( $page = get_post( 'wishlist' ) && 'publish' === $page->post_status && $link = get_permalink( get_page_by_path( 'wishlist' ) ) ) {
 				$href_link .= 'href="' . esc_url( $link ) . '"';
 			}
 		} else {
@@ -71,7 +71,7 @@ class Menu_Wishlist {
 				$wrapper_before .= ! empty( $wishlist_data['button_attr'] ) ? $wishlist_data['button_attr'] : '';
 			$wrapper_before     .= '>';
 				$wrapper_before .= '<div class="wopb-menu-wishlist-icon">';
-		if ( $attr['iconType'] == 'icon' ) {
+		if ( 'icon' === $attr['iconType'] ) {
 			$wrapper_before .= wopb_function()->svg_icon( $attr['iconSvg'] );
 		} else {
 			$wrapper_before .= '<img src=' . esc_url( isset( $attr['iconImage'] ) && $attr['iconImage']['url'] ? $attr['iconImage']['url'] : WOPB_URL . 'assets/img/wopb_fallback.jpg' ) . ' />';

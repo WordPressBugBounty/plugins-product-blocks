@@ -11,7 +11,6 @@ function wopb_variation_swatches_config( $config ) {
 	$configuration                     = array(
 		'name'     => __( 'Variation Swatches', 'product-blocks' ),
 		'desc'     => __( 'Convert product attributes into beautiful swatches to ensure effortless shopping experiences.', 'product-blocks' ),
-		'is_pro'   => false,
 		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-variation-swatches/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/variation-swatches-addon/',
 		'type'     => 'build',
@@ -28,9 +27,8 @@ function wopb_variation_swatches_config( $config ) {
  * @return ARRAY
  * @since v.2.2.7
  */
-add_filter( 'wopb_settings', 'get_variation_swatches_settings', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_variation_swatches_settings( $config ) {
+add_filter( 'wopb_settings', 'wopb_get_variation_swatches_settings', 10, 1 );
+function wopb_get_variation_swatches_settings( $config ) {
 	$arr = array(
 		'wopb_variation_swatches' => array(
 			'label' => __( 'Variation Swatches', 'product-blocks' ),
@@ -103,13 +101,6 @@ function get_variation_swatches_settings( $config ) {
 											'product-blocks',
 											'desc'    => 'Choose where to insert swatches in shop/listing',
 											'product-blocks',
-										),
-										'product_image_in_variation_switch' => array(
-											'type'    => 'toggle',
-											'label'   => __( 'Product Image in Swatch', 'product-blocks' ),
-											'default' => '',
-											'desc'    => 'Show image in variation switcher from product',
-											'pro'     => true,
 										),
 									),
 								),

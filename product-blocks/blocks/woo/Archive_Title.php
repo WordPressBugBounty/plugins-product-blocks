@@ -83,7 +83,7 @@ class Archive_Title {
 					return array(
 						'title' => get_the_author_meta( 'display_name' ),
 						'image' => get_avatar_url( get_the_author_meta( 'ID' ) ),
-						'desc'  => get_the_author_meta( 'user_email' ),
+						'desc'  => get_the_author_meta( 'description' ),
 					);
 				} elseif ( is_tax() ) {
 					$obj           = get_queried_object();
@@ -120,6 +120,7 @@ class Archive_Title {
 		$block_name        = 'archive-title';
 		$wraper_before     = $wraper_after = $post_loop = '';
 		$attr              = wp_parse_args( $attr, $this->get_attributes() );
+		$attr['titleTag']  = in_array( $attr['titleTag'], wopb_function()->allowed_block_tags(), true ) ? $attr['titleTag'] : 'h1';
 		$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 		$attr['align']     = ! empty( $attr['align'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
 
@@ -127,23 +128,34 @@ class Archive_Title {
 			$wraper_before .= '<div class="wopb-block-wrapper">';
 			$wraper_before .= '<div class="wopb-block-archive-title wopb-archive-layout-' . esc_attr( $attr['layout'] ) . '">';
 
-			$style  = ( $attr['layout'] == '2' && $data['image'] ) ? 'style="background-image: url(' . esc_url( $data['image'] ) . ')"' : '';
 			$prefix = ( $attr['prefixShow'] && $attr['prefixText'] ) ? '<span class="wopb-archive-prefix">' . esc_html( $attr['prefixText'] ) . '</span> ' : '';
 
 			$name = ( $data['title'] ) ? '<' . esc_attr( $attr['titleTag'] ) . ' class="wopb-archive-name">' . $prefix . esc_html( $data['title'] ) . '</' . esc_attr( $attr['titleTag'] ) . '>' : '';
 
 			$excerpt = ( $attr['excerptShow'] && $data['desc'] ) ? '<div class="wopb-archive-desc">' . wp_kses_post( $data['desc'] ) . '</div>' : '';
 
-				// Prefix
-		switch ( $attr['layout'] ) {
-			case 1:
-				$img        = ( $attr['showImage'] && $data['image'] ) ? '<img class="wopb-archive-image" src="' . esc_url( $data['image'] ) . '" alt="' . esc_attr( $data['title'] ) . '"/>' : '';
-				$post_loop .= $img . $name . $excerpt;
-				break;
-			case 2:
-				$post_loop .= '<div class="wopb-archive-content" ' . wp_kses_post( $style ) . '><div class="wopb-archive-overlay"></div>' . wp_kses_post( $name . $excerpt ) . '</div>';
-				break;
-		}
+			$img = ( $attr['showImage'] && $data['image'] ) ? '<img class="wopb-archive-image" src="' . esc_url( $data['image'] ) . '" alt="' . esc_attr( $data['title'] ) . '"/>' : '';
+
+			/**
+			 * Filters the inner markup of a block, so an extension can draw a layout this plugin doesn't have.
+			 *
+			 * @param string $html       The block's own markup (Layout 1).
+			 * @param string $block_name Block slug, e.g. 'archive-title'.
+			 * @param array  $attr       Block attributes.
+			 * @param array  $parts      Escaped pieces of the markup and the unescaped `data` they came from.
+			 */
+			$post_loop .= apply_filters(
+				'wopb_block_layout_html',
+				$img . $name . $excerpt,
+				$block_name,
+				$attr,
+				array(
+					'data'    => $data,
+					'image'   => $img,
+					'name'    => $name,
+					'excerpt' => $excerpt,
+				)
+			);
 
 			$wraper_after .= '</div>';
 			$wraper_after .= '</div>';

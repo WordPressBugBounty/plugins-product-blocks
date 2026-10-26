@@ -42,11 +42,14 @@ class Cart_Table {
 		);
 	}
 
-	function woocommerce_clear_cart_url() {
+	public function woocommerce_clear_cart_url() {
 		global $woocommerce;
-        if ( isset( $_GET['empty-cart'] ) ) { // phpcs:ignore
-			$woocommerce->cart->empty_cart();
-			header( 'Location: ' . wc_get_cart_url() );
+		// Empties the visitor's own cart, so the link carries a nonce: a link on another site can't do it.
+		if ( isset( $_GET['empty-cart'] ) && isset( $_GET['_wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_GET['_wpnonce'] ) ), 'wopb-empty-cart' ) ) {
+			if ( ! empty( $woocommerce->cart ) ) {
+				$woocommerce->cart->empty_cart();
+			}
+			wp_safe_redirect( wc_get_cart_url() );
 			exit();
 		}
 	}
@@ -61,16 +64,25 @@ class Cart_Table {
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 			$attr['align']     = ! empty( $attr['align'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
 
-			$wraper_before     .= '<div id="' . ( isset( $attr['advanceId'] ) ? sanitize_html_class( $attr['advanceId'] ) : '' ) . '"' . ' class="wp-block-product-blocks-' . $block_name . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . '">';
+			$wraper_before     .= '<div id="' . ( isset( $attr['advanceId'] ) ? sanitize_html_class( $attr['advanceId'] ) : '' ) . '" class="wp-block-product-blocks-' . $block_name . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . '">';
 				$wraper_before .= '<div class="wopb-product-wrapper wopb-cart-table-wrapper">';
 
+					$wopb_buffer_level_1 = ob_get_level();
 					ob_start();
-			if ( WC()->cart->is_empty() ) {
-				wc_get_template( 'cart/cart-empty.php' );
-			} else {
-				require_once WOPB_PATH . 'blocks/woo/cart_table/Template.php';
+			try {
+				if ( WC()->cart->is_empty() ) {
+					wc_get_template( 'cart/cart-empty.php' );
+				} else {
+					require_once WOPB_PATH . 'blocks/woo/cart_table/Template.php';
+				}
+				$content .= ob_get_clean();
+			} finally {
+				while ( ob_get_level() > $wopb_buffer_level_1 ) {
+					if ( ! ob_end_clean() ) {
+						break;
+					}
+				}
 			}
-					$content .= ob_get_clean();
 
 				$wraper_after .= '</div>';
 			$wraper_after     .= '</div>';

@@ -74,7 +74,7 @@ class Product_Slider {
 		$block_key       = 'product_slider';
 		$blocks_settings = wopb_function()->get_setting( $block_key );
 
-		if ( wopb_function()->get_setting() == '' || ! array_key_exists( $block_key, wopb_function()->get_setting() ) || $blocks_settings == 'yes' ) {
+		if ( wopb_function()->get_setting() == '' || ! array_key_exists( $block_key, wopb_function()->get_setting() ) || 'yes' === $blocks_settings ) {
 			$block_name    = 'product-slider';
 			$wraper_before = $wraper_after = $post_loop = '';
 			$attr          = wp_parse_args( $attr, $this->get_attributes() );
@@ -87,16 +87,18 @@ class Product_Slider {
 					'data-slidespeed'   => esc_attr( $attr['slideSpeed'] ),
 					'data-showdots'     => $attr['showDots'] ? esc_attr( $attr['showDots'] ) : false,
 					'data-showarrows'   => $attr['showArrows'] ? esc_attr( $attr['showArrows'] ) : false,
-					'data-fade'         => $attr['slideAnimation'] == 'fade' ? true : false,
+					'data-fade'         => $attr['slideAnimation'] === 'fade' ? true : false,
 				)
 			);
 
 			if ( $recent_posts->have_posts() ) {
-				$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
-				$attr['align']     = ! empty( $attr['align'] ) ? 'align' . preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
+				$attr['className']   = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
+				$attr['align']       = ! empty( $attr['align'] ) ? 'align' . preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
+				$wopb_buffer_level_1 = ob_get_level();
 				ob_start();
-				echo '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( $attr['blockId'] ) . ' ' . esc_attr( $attr['className'] ) . ' ' . esc_attr( $attr['align'] ) . ' wopb-product-slider-block">';
-				?>
+				try {
+					echo '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( $attr['blockId'] ) . ' ' . esc_attr( $attr['className'] ) . ' ' . esc_attr( $attr['align'] ) . ' wopb-product-slider-block">';
+					?>
 						<div class="wopb-block-wrapper">
 							<div class="wopb-slider-section">
 								<div class="wopb-product-blocks-slide" <?php echo wp_kses_post( $slider_attr ); ?>>
@@ -111,14 +113,32 @@ class Product_Slider {
 												<div class="wopb-block-item">
 													<div class="wopb-slide-wrap">
 													<?php
+														$wopb_buffer_level_2 = ob_get_level();
 														ob_start();
+													try {
 														$this->content_section( $product, $attr );
 														$section_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+													} finally {
+														while ( ob_get_level() > $wopb_buffer_level_2 ) {
+															if ( ! ob_end_clean() ) {
+																break;
+															}
+														}
+													}
 														echo $section_content_safe; // phpcs:ignore
 													if ( $attr['showImage'] ) {
+														$wopb_buffer_level_3 = ob_get_level();
 														ob_start();
-														$this->image_section( $product, $_discount, $attr );
-														$section_image_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+														try {
+															$this->image_section( $product, $_discount, $attr );
+															$section_image_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+														} finally {
+															while ( ob_get_level() > $wopb_buffer_level_3 ) {
+																if ( ! ob_end_clean() ) {
+																	break;
+																}
+															}
+														}
 														echo $section_image_safe; // phpcs:ignore
 													}
 													?>
@@ -158,27 +178,43 @@ class Product_Slider {
 							</div>
 						</div>
 					</div>
-				<?php
-				return ob_get_clean();
+					<?php
+					return ob_get_clean();
+				} finally {
+					while ( ob_get_level() > $wopb_buffer_level_1 ) {
+						if ( ! ob_end_clean() ) {
+							break;
+						}
+					}
+				}
 			}
 		}
 	}
 
 	public function content_section( $product, $attr ) {
-		$attr['titleTag'] = in_array( $attr['titleTag'], wopb_function()->allowed_block_tags() ) ? $attr['titleTag'] : 'h3';
+		$attr['titleTag'] = in_array( $attr['titleTag'], wopb_function()->allowed_block_tags(), true ) ? $attr['titleTag'] : 'h3';
 		$product_title    = $product->get_name();
 		?>
 		<div class="wopb-content-section">
 			<?php
 			if ( ! $attr['taxonomyUnderTitle'] ) {
+				$wopb_buffer_level_4 = ob_get_level();
 				ob_start();
-				$this->taxonomyContent( $product, $attr );
-				$tax_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+				try {
+					$this->taxonomyContent( $product, $attr );
+					$tax_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+				} finally {
+					while ( ob_get_level() > $wopb_buffer_level_4 ) {
+						if ( ! ob_end_clean() ) {
+							break;
+						}
+					}
+				}
 				echo $tax_content_safe; // phpcs:ignore
 			}
 			if ( $attr['showTitle'] ) {
 				?>
-					<<?php echo esc_attr( $attr['titleTag'] ); ?> class="wopb-product-title <?php echo ( $attr['titleHoverEffect'] == 'none' ? '' : 'wopb-title-' . esc_attr( $attr['titleHoverEffect'] ) ); ?>">
+					<<?php echo esc_attr( $attr['titleTag'] ); ?> class="wopb-product-title <?php echo ( $attr['titleHoverEffect'] === 'none' ? '' : 'wopb-title-' . esc_attr( $attr['titleHoverEffect'] ) ); ?>">
 
 						<a href="<?php echo esc_url( get_permalink( $product->get_id() ) ); ?>">
 						<?php
@@ -191,15 +227,33 @@ class Product_Slider {
 				<?php
 			}
 			if ( $attr['taxonomyUnderTitle'] ) {
+				$wopb_buffer_level_5 = ob_get_level();
 				ob_start();
-				$this->taxonomyContent( $product, $attr );
-				$tax_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+				try {
+					$this->taxonomyContent( $product, $attr );
+					$tax_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+				} finally {
+					while ( ob_get_level() > $wopb_buffer_level_5 ) {
+						if ( ! ob_end_clean() ) {
+							break;
+						}
+					}
+				}
 				echo $tax_content_safe; // phpcs:ignore
 			}
 			if ( $attr['priceOverDescription'] ) {
+				$wopb_buffer_level_6 = ob_get_level();
 				ob_start();
-				$this->priceContent( $product, $attr );
-				$price_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+				try {
+					$this->priceContent( $product, $attr );
+					$price_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+				} finally {
+					while ( ob_get_level() > $wopb_buffer_level_6 ) {
+						if ( ! ob_end_clean() ) {
+							break;
+						}
+					}
+				}
 				echo $price_content_safe; // phpcs:ignore
 			}
 			if ( $attr['showDescription'] ) {
@@ -212,14 +266,32 @@ class Product_Slider {
 				<?php
 			}
 			if ( ! $attr['priceOverDescription'] ) {
+				$wopb_buffer_level_7 = ob_get_level();
 				ob_start();
-				$this->priceContent( $product, $attr );
-				$price_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+				try {
+					$this->priceContent( $product, $attr );
+					$price_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+				} finally {
+					while ( ob_get_level() > $wopb_buffer_level_7 ) {
+						if ( ! ob_end_clean() ) {
+							break;
+						}
+					}
+				}
 				echo $price_content_safe; // phpcs:ignore
 			}
+				$wopb_buffer_level_8 = ob_get_level();
 				ob_start();
+			try {
 				$this->cartContent( $product, $attr );
 				$cart_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+			} finally {
+				while ( ob_get_level() > $wopb_buffer_level_8 ) {
+					if ( ! ob_end_clean() ) {
+						break;
+					}
+				}
+			}
                 echo $cart_content_safe; // phpcs:ignore
 			?>
 		</div>
@@ -230,7 +302,7 @@ class Product_Slider {
 	public function image_section( $product, $_discount, $attr ) {
 		$shapeClass = '';
 		$shape      = '';
-		if ( $attr['saleStyle'] === 'shape1' ) {
+		if ( 'shape1' === $attr['saleStyle'] ) {
 			$shapeClass = 'wopb-onsale-shape';
 			switch ( $attr['saleStyle'] ) {
 				case 'shape1':
@@ -252,23 +324,41 @@ class Product_Slider {
 					?>
 					<div class="wopb-onsale-hot <?php echo esc_attr( $shapeClass ); ?>">
 					<?php
-					if ( $shape !== '' ) {
+					if ( '' !== $shape ) {
 						?>
 								<span class="wopb-sale-shape">
 							<?php
 								$shape_safe = wopb_function()->wp_kses_safe( $shape );
 								echo $shape_safe; // phpcs:ignore
+								$wopb_buffer_level_9 = ob_get_level();
 								ob_start();
+							try {
 								$this->saleStyle( $_discount, $attr );
 								$sale_style_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+							} finally {
+								while ( ob_get_level() > $wopb_buffer_level_9 ) {
+									if ( ! ob_end_clean() ) {
+										break;
+									}
+								}
+							}
 								echo $sale_style_safe; // phpcs:ignore
 							?>
 								</span>
 						<?php
 					} else {
+						$wopb_buffer_level_10 = ob_get_level();
 						ob_start();
-						$this->saleStyle( $_discount, $attr );
-						$sale_style_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+						try {
+							$this->saleStyle( $_discount, $attr );
+							$sale_style_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+						} finally {
+							while ( ob_get_level() > $wopb_buffer_level_10 ) {
+								if ( ! ob_end_clean() ) {
+									break;
+								}
+							}
+						}
 						echo $sale_style_safe; // phpcs:ignore
 					}
 					?>
@@ -296,11 +386,11 @@ class Product_Slider {
 		?>
 		<span class="wopb-onsale wopb-onsale-<?php echo esc_attr( $attr['saleStyle'] ); ?>">
 			<?php
-			if ( $attr['saleDesign'] == 'digit' ) {
+			if ( 'digit' === $attr['saleDesign'] ) {
 				echo esc_html( '-' . $_discount );
-			} elseif ( $attr['saleDesign'] == 'text' ) {
+			} elseif ( 'text' === $attr['saleDesign'] ) {
 				echo isset( $attr['saleText'] ) ? esc_html( $attr['saleText'] ) : esc_html__( 'Sale!', 'product-blocks' );
-			} elseif ( $attr['saleDesign'] == 'textDigit' ) {
+			} elseif ( 'textDigit' === $attr['saleDesign'] ) {
 				echo esc_html( '-' . $_discount ) . esc_html__( ' Off', 'product-blocks' );
 			}
 			?>
@@ -314,7 +404,7 @@ class Product_Slider {
 			<div class="wopb-product-taxonomies">
 				<?php
 					$categories = get_the_terms( $product->get_id(), 'product_cat' );
-				if ( $attr['taxonomyType'] == 'product_cat' && $categories ) {
+				if ( 'product_cat' === $attr['taxonomyType'] && $categories ) {
 					foreach ( $categories as $category ) {
 						?>
 							<a href="<?php echo esc_url( get_term_link( $category->term_id ) ); ?>" class="wopb-taxonomy"><?php echo esc_attr( $category->name ); ?></a>
@@ -322,7 +412,7 @@ class Product_Slider {
 					}
 				}
 					$tags = get_the_terms( $product->get_id(), 'product_tag' );
-				if ( $attr['taxonomyType'] == 'product_tag' && $tags ) {
+				if ( 'product_tag' === $attr['taxonomyType'] && $tags ) {
 					foreach ( $tags as $tag ) {
 						?>
 							<a href="<?php echo esc_url( get_term_link( $tag->term_id ) ); ?>" class="wopb-taxonomy"><?php echo esc_attr( $tag->name ); ?></a>
@@ -367,21 +457,30 @@ class Product_Slider {
 				<form class="cart">
 					<?php if ( $attr['showQty'] && $product->is_type( 'simple' ) ) { ?>
 						<div class="quantity wopb-qty-wrap">
-							<?php if ( $attr['showPlusMinus'] && $attr['plusMinusPosition'] == 'both' ) { ?>
+							<?php if ( $attr['showPlusMinus'] && 'both' === $attr['plusMinusPosition'] ) { ?>
 								<span class="wopb-cart-minus wopb-add-to-cart-minus"><?php echo wp_kses( wopb_function()->svg_icon( 'minus' ), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 						<?php } ?>
 							<input type="number" class="wopb-qty" step="1" min="1" max="" name="quantity" value="1" title="Qty" size="4" placeholder="" inputMode="numeric"/>
-						<?php if ( $attr['showPlusMinus'] && $attr['plusMinusPosition'] == 'both' ) { ?>
+						<?php if ( $attr['showPlusMinus'] && 'both' === $attr['plusMinusPosition'] ) { ?>
 							<span class="wopb-cart-plus wopb-add-to-cart-plus"><?php echo wp_kses( wopb_function()->svg_icon( 'plus' ), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
 							<?php
 						}
-						if ( $attr['showPlusMinus'] && ( $attr['plusMinusPosition'] == 'left' || $attr['plusMinusPosition'] == 'right' ) ) {
+						if ( $attr['showPlusMinus'] && ( 'left' === $attr['plusMinusPosition'] || 'right' === $attr['plusMinusPosition'] ) ) {
 							?>
 							<span class="wopb-cart-plus-minus-icon">
 							<?php
+								$wopb_buffer_level_11 = ob_get_level();
 								ob_start();
+							try {
 								$this->plusMinusContent();
 								$plus_Minus_Content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+							} finally {
+								while ( ob_get_level() > $wopb_buffer_level_11 ) {
+									if ( ! ob_end_clean() ) {
+										break;
+									}
+								}
+							}
 								echo $plus_Minus_Content_safe; // phpcs:ignore
 							?>
 							</span>
@@ -415,7 +514,7 @@ class Product_Slider {
 				</form>
 				<?php
 				if ( $after_loop = apply_filters( 'wopb_after_loop_item', $content = '' ) ) {
-					$after_loop_safe = wopb_function()->core_esc_wp( $after_loop );
+					$after_loop_safe = wopb_function()->wp_kses_safe( $after_loop );
 					echo '<div class="wopb-after-loop-item">' . $after_loop_safe . '</div>'; // phpcs:ignore
 				}
 				?>

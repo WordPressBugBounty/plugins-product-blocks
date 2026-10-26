@@ -8,29 +8,10 @@ class Builder {
 		$this->builder_post_type_callback();
 		add_action( 'add_meta_boxes', array( $this, 'init_metabox_callback' ) );
 		add_action( 'save_post', array( $this, 'metabox_save_data' ) );
-		add_action( 'load-post-new.php', array( $this, 'disable_new_post_templates' ) );
-	}
-
-	public function disable_new_post_templates() {
-		// this function is not being used anymore. logic moved to rest api endpoint.
-		// and creating wowstore templates/pages is now unlimited for free users.
-		// decision taken by content head long ago.
-		// still implmeneted the renew license part here for consistentcy.
-		if ( get_current_screen()->post_type == 'wopb_builder' && ( ! defined( 'WOPB_PRO_VER' ) || wopb_function()->is_lc_expired() ) ) {
-			$post_count = wp_count_posts( 'wopb_builder' );
-			$post_count = $post_count->publish + $post_count->draft;
-			if ( $post_count > 0 ) {
-				$is_expired = wopb_function()->is_lc_expired();
-				$url        = $is_expired ? wopb_function()->get_renew_link() : wopb_function()->get_premium_link( '', 'menu_WB_go_pro' );
-				$text       = $is_expired ? __( 'Renew License.', 'product-blocks' ) : __( 'Upgrade Pro.', 'product-blocks' );
-				// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
-				wp_die( wp_kses_post( __( 'You are not allowed to do that! Please ', 'product-blocks' ) . '<a target="_blank" href="' . esc_url( $url ) . '">' . esc_html( $text ) . '</a>' ) );
-			}
-		}
 	}
 
 
-	function init_metabox_callback() {
+	public function init_metabox_callback() {
 		add_meta_box(
 			'container-width-id',
 			esc_html__( 'WowStore Builder', 'product-blocks' ),
@@ -41,7 +22,7 @@ class Builder {
 	}
 
 	// Meta Box Data HTML Callback
-	function container_width_callback( $post ) {
+	public function container_width_callback( $post ) {
 		wp_nonce_field( 'container_meta_box', 'container_meta_box_nonce' );
 
 		$width   = get_post_meta( $post->ID, '__wopb_container_width', true );
@@ -81,17 +62,22 @@ class Builder {
 	}
 
 	// Save Meta Box Data
-	function metabox_save_data( $post_id ) {
-		if ( ! isset( $_POST['container_meta_box_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['container_meta_box_nonce'] ) ), 'container_meta_box' ) ) {
+	public function metabox_save_data( $post_id ) {
+		if (
+			( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
+			! isset( $_POST['container_meta_box_nonce'] ) ||
+			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['container_meta_box_nonce'] ) ), 'container_meta_box' ) ||
+			! current_user_can( 'edit_post', $post_id )
+		) {
 			return;
 		}
         if ( ! isset( $_POST['container-width'] ) ) { //phpcs:ignore
 			return;
 		}
 
-        $width  = isset( $_POST['container-width'] ) ? sanitize_text_field( $_POST['container-width'] ) : '1140'; //phpcs:ignore
-        $sidebar= isset( $_POST['wopb-builder-sidebar'] ) ? sanitize_text_field( $_POST['wopb-builder-sidebar'] ) : ''; //phpcs:ignore
-        $widget = isset( $_POST['wopb-builder-widget-area'] ) ? sanitize_text_field( $_POST['wopb-builder-widget-area'] ) : ''; //phpcs:ignore
+        $width  = isset( $_POST['container-width'] ) ? sanitize_text_field( wp_unslash( $_POST['container-width'] ) ) : '1140'; //phpcs:ignore
+        $sidebar= isset( $_POST['wopb-builder-sidebar'] ) ? sanitize_text_field( wp_unslash( $_POST['wopb-builder-sidebar'] ) ) : ''; //phpcs:ignore
+        $widget = isset( $_POST['wopb-builder-widget-area'] ) ? sanitize_text_field( wp_unslash( $_POST['wopb-builder-widget-area'] ) ) : ''; //phpcs:ignore
 
 		update_post_meta( $post_id, '__wopb_container_width', $width );
 		update_post_meta( $post_id, 'wopb-builder-sidebar', $sidebar );

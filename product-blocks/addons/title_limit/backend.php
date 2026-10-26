@@ -11,7 +11,6 @@ function wopb_title_limit_config( $config ) {
 	$configuration = array(
 		'name'     => __( 'Product Title Limit', 'product-blocks' ),
 		'desc'     => __( 'Shorten the product title on the shop, archive, and product pages to keep your store organized.', 'product-blocks' ),
-		'is_pro'   => false,
 		'live'     => 'https://www.wpxpo.com/product/wowstore/',
 		// 'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-product-title-limit/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/product-title-limit/',
@@ -30,9 +29,8 @@ function wopb_title_limit_config( $config ) {
  * @param ARRAY | Default Congiguration
  * @return ARRAY
  */
-add_filter( 'wopb_settings', 'get_title_limit_settings', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_title_limit_settings( $config ) {
+add_filter( 'wopb_settings', 'wopb_get_title_limit_settings', 10, 1 );
+function wopb_get_title_limit_settings( $config ) {
 	$arr = array(
 		'wopb_title_limit' => array(
 			'label' => __( 'Product Title Limit Settings', 'product-blocks' ),

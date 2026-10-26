@@ -86,12 +86,20 @@ class Condition {
 				$templates[] = 'header.php';
 				remove_all_actions( 'wp_head' );
 				if ( $this->theme_name != 'bricks' ) {  // Conflict with Bricks Builder Backend
+					$wopb_buffer_level_1 = ob_get_level();
 					ob_start();
-				}
-				locate_template( $templates, true );
-				if ( $this->theme_name != 'bricks' ) { // Conflict with Bricks Builder Backend
-					ob_get_clean();
+					try {
+						locate_template( $templates, true );
+						ob_get_clean();
+					} finally {
+						while ( ob_get_level() > $wopb_buffer_level_1 ) {
+							if ( ! ob_end_clean() ) {
+								break;
+							}
+						}
+					}
 				} else {
+					locate_template( $templates, true );
 					wp_enqueue_style( 'wp-block-library' );  // Gutenberg CSS issue Bricks Builder frontend
 				}
 			}
@@ -117,11 +125,20 @@ class Condition {
 				$templates[] = 'footer.php';
 				remove_all_actions( 'wp_footer' );
 				if ( $this->theme_name != 'bricks' ) { // Conflict with Bricks Builder Backend
+					$wopb_buffer_level_2 = ob_get_level();
 					ob_start();
-				}
-				locate_template( $templates, true );
-				if ( $this->theme_name != 'bricks' ) { // Conflict with Bricks Builder Backend
-					ob_get_clean();
+					try {
+						locate_template( $templates, true );
+						ob_get_clean();
+					} finally {
+						while ( ob_get_level() > $wopb_buffer_level_2 ) {
+							if ( ! ob_end_clean() ) {
+								break;
+							}
+						}
+					}
+				} else {
+					locate_template( $templates, true );
 				}
 			}
 			?>
@@ -135,30 +152,8 @@ class Condition {
 		}
 	}
 
-	// Load Media
-	public function load_media() {
-		if ( ! $this->is_builder() ) {
-			return;
-		}
-		wp_enqueue_style( 'builder-style', WOPB_URL . 'addons/builder/builder.css', array(), WOPB_VER );
-		wp_enqueue_script( 'builder-script', WOPB_URL . 'addons/builder/builder.js', array( 'jquery' ), WOPB_VER, true );
-		wp_localize_script(
-			'builder-script',
-			'builder_option',
-			array(
-				'security' => wp_create_nonce( 'wopb-nonce' ),
-				'ajax'     => admin_url( 'admin-ajax.php' ),
-			)
-		);
-	}
-
 	public function include_builder_files( $template ) {
 		$includes = wopb_function()->conditions( 'includes' );
 		return $includes ? $includes : $template;
-	}
-
-	public function is_builder() {
-		global $post;
-        return isset( $_GET['post_type'] ) ? ( sanitize_text_field( $_GET['post_type'] ) == 'wopb_builder' ) : ( isset( $post->post_type ) ? ( $post->post_type == 'wopb_builder' ) : false ); // phpcs:ignore
 	}
 }

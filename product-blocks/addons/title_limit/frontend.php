@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
  */
 add_action( 'wp_loaded', 'wopb_title_limit_init' );
 function wopb_title_limit_init() {
-	if ( wopb_function()->get_setting( 'wopb_title_limit' ) == 'true' ) {
+	if ( wopb_function()->get_setting( 'wopb_title_limit' ) === 'true' ) {
 		require_once WOPB_PATH . '/addons/title_limit/TitleLimit.php';
 		new \WOPB\TitleLimit();
 	}

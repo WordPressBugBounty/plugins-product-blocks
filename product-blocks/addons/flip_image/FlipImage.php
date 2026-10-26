@@ -22,9 +22,12 @@ class FlipImage {
 		$this->animation_type         = wopb_function()->get_setting( 'flip_animation_type' );
 		$this->group_variable_disable = wopb_function()->get_setting( 'flip_group_variable_disable' );
 		$this->image_source           = wopb_function()->get_setting( 'flip_image_source' );
+		if ( ! $this->animation_type ) {
+			$this->animation_type = 'fade_in';
+		}
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'add_flip_image_scripts' ) );
-		if ( $this->image_source == 'feature' ) {
+		if ( 'feature' === $this->image_source ) {
 			add_action( 'add_meta_boxes', array( $this, 'feature_image_add_metabox' ) );
 			add_action( 'save_post', array( $this, 'feature_image_save' ), 10, 1 );
 		}
@@ -42,23 +45,28 @@ class FlipImage {
 	 */
 	public function flip_image_callback( $output, $product, $size = 'full' ) {
 		$image_id = '';
-		if ( $this->group_variable_disable == 'yes' && in_array( $product->get_type(), array( 'grouped', 'variable' ) ) ) {
+		if ( 'yes' === $this->group_variable_disable && in_array( $product->get_type(), array( 'grouped', 'variable' ) ) ) {
 			return '';
 		}
-		if ( $this->mobile_disable == 'yes' ) {
+		if ( 'yes' === $this->mobile_disable ) {
 			if ( wp_is_mobile() ) {
 				return;
 			}
 		}
 
-		if ( $this->image_source == 'feature' ) {
+		if ( 'feature' === $this->image_source ) {
 			$image_id = get_post_meta( $product->get_id(), '_flip_image_id', true );
 		} else {
 			$attachment_ids = $product->get_gallery_image_ids();
 			$image_id       = isset( $attachment_ids[0] ) ? $attachment_ids[0] : '';
 		}
 
-		return $image_id ? '<img class="wopb-flip-image wopb-' . esc_attr( $this->animation_type ) . '" alt="' . esc_attr( $product->get_name() ) . '" src="' . esc_url( wp_get_attachment_image_url( $image_id, $size ) ) . '" />' : '';
+		$image_url = $image_id ? wp_get_attachment_image_url( $image_id, $size ) : '';
+		if ( ! $image_url ) {
+			return '';
+		}
+
+		return '<img class="wopb-flip-image wopb-' . esc_attr( $this->animation_type ) . '" alt="' . esc_attr( $product->get_name() ) . '" src="' . esc_url( $image_url ) . '" />';
 	}
 
 	/**
@@ -115,7 +123,7 @@ class FlipImage {
 	 * @return NULL
 	 * @since v.1.1.0
 	 */
-	function feature_image_add_metabox() {
+	public function feature_image_add_metabox() {
 		add_meta_box(
 			'flipimage-feature-image',
 			'<div class="wopb-single-product-meta-box"><img src="' . esc_url( WOPB_URL . 'assets/img/logo-sm.svg' ) . '" /><span>' . esc_html__( 'Flip Image', 'product-blocks' ) . '</span></div>',
@@ -133,10 +141,11 @@ class FlipImage {
 	 * @return NULL
 	 * @since v.1.1.0
 	 */
-	function feature_image_metabox( $post ) {
+	public function feature_image_metabox( $post ) {
 		$image_id       = get_post_meta( $post->ID, '_flip_image_id', true );
 		$thumbnail_html = $image_id ? wp_get_attachment_image( $image_id, array( 254, 254 ) ) : ''; ?>
 		<div class="wopb-flip-image">
+			<?php wp_nonce_field( 'wopb_flip_image_save', 'wopb_flip_image_nonce' ); ?>
 			<?php
 			if ( $thumbnail_html ) {
 				echo wp_kses_post( $thumbnail_html );
@@ -167,9 +176,17 @@ class FlipImage {
 	 * @return NULL
 	 * @since v.1.1.0
 	 */
-	function feature_image_save( $post_id ) {
-        if ( isset( $_POST['_flip_image'] ) && sanitize_text_field( wp_unslash($_POST['_flip_image']) ) ) { // phpcs:ignore
-            $image_id = (int) sanitize_text_field( wp_unslash($_POST['_flip_image']) );  //phpcs:ignore
+	public function feature_image_save( $post_id ) {
+		if (
+			( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
+			! isset( $_POST['wopb_flip_image_nonce'] ) ||
+			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wopb_flip_image_nonce'] ) ), 'wopb_flip_image_save' ) ||
+			! current_user_can( 'edit_post', $post_id )
+		) {
+			return;
+		}
+		if ( isset( $_POST['_flip_image'] ) ) {
+			$image_id = absint( wp_unslash( $_POST['_flip_image'] ) );
 			if ( $image_id ) {
 				update_post_meta( $post_id, '_flip_image_id', $image_id );
 			} else {

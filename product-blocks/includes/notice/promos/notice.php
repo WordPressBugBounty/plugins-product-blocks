@@ -22,7 +22,7 @@
  * - `content_heading` is optional; omit it rather than passing an empty string.
  */
 
-use WOPB\Includes\Durbin\Xpo;
+use WOPB\Includes\Xpo;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -50,7 +50,7 @@ return array(
 				),
 			)
 		),
-		'visibility'         => ! Xpo::is_lc_active(),
+		'visibility'         => wopb_function()->show_upsell(),
 	),
 
 	// -- icon-message -----------------------------------------------------
@@ -68,7 +68,7 @@ return array(
 				),
 			)
 		),
-		'visibility'         => ! Xpo::is_lc_active(),
+		'visibility'         => wopb_function()->show_upsell(),
 		// translators: %s is the discount_content value (e.g. "Up to 60%") substituted into this string.
 		'content_subheading' => $brand_name . __( ' Summer Sale Offer is Live - Enjoy %s Off NOW.', 'product-blocks' ),
 		'discount_content'   => ' Up to 60%',
@@ -91,7 +91,7 @@ return array(
 				),
 			)
 		),
-		'visibility'         => ! Xpo::is_lc_active(),
+		'visibility'         => wopb_function()->show_upsell(),
 		// translators: %s is the discount_content value (e.g. "Up to 60%") substituted into this string.
 		'content_subheading' => $brand_name . __( ' Summer Sale Offer is Live - Enjoy %s Off NOW.', 'product-blocks' ),
 		'discount_content'   => ' Up to 60% ',
@@ -114,7 +114,7 @@ return array(
 				),
 			)
 		),
-		'visibility'         => ! Xpo::is_lc_active(),
+		'visibility'         => wopb_function()->show_upsell(),
 		// translators: %s is the discount_content value (e.g. "Up to 60%") substituted into this string.
 		'content_subheading' => $brand_name . __( ' Summer Sale Offer is Live - Enjoy %s Off NOW.', 'product-blocks' ),
 		'discount_content'   => ' Up to 60%',
@@ -137,7 +137,7 @@ return array(
 				),
 			)
 		),
-		'visibility'         => ! Xpo::is_lc_active(),
+		'visibility'         => wopb_function()->show_upsell(),
 		// translators: %s is the discount_content value (e.g. "Up to 60%") substituted into this string.
 		'content_subheading' => $brand_name . __( ' Summer Sale Offer is Live - Enjoy %s Off NOW.', 'product-blocks' ),
 		'discount_content'   => ' Up to 60% ',
@@ -161,7 +161,7 @@ return array(
 				),
 			)
 		),
-		'visibility'         => ! Xpo::is_lc_active(),
+		'visibility'         => wopb_function()->show_upsell(),
 		// translators: %s is the discount_content value (e.g. "up to 60% OFF") substituted into this string.
 		'content_subheading' => __( 'Flash Sale: Enjoy %s on ', 'product-blocks' ) . $brand_name . __( ' Pro.', 'product-blocks' ),
 		'discount_content'   => 'up to 60% OFF',
@@ -188,7 +188,7 @@ return array(
 			)
 		),
 		'close_color' => '#000000',
-		'visibility'  => ! Xpo::is_lc_active(),
+		'visibility'  => wopb_function()->show_upsell(),
 	),
 
 	// -- wow recommendation promo -----------------------------------------
@@ -209,7 +209,7 @@ return array(
 			)
 		),
 		'close_color' => '#ffffff',
-		'visibility'  => ! Xpo::is_lc_active(),
+		'visibility'  => wopb_function()->show_upsell(),
 	),
 	array(
 		'type'        => 'image-only',
@@ -228,7 +228,7 @@ return array(
 			)
 		),
 		'close_color' => '#ffffff',
-		'visibility'  => ! Xpo::is_lc_active(),
+		'visibility'  => wopb_function()->show_upsell(),
 	),
 );
 
@@ -261,7 +261,7 @@ return array(
  *             ),
  *         )
  *     ),
- *     'visibility'         => ! Xpo::is_lc_active(),
+ *     'visibility'         => wopb_function()->show_upsell(),
  * ),
  *
  * // icon-message — icon + text + button, no artwork.
@@ -288,7 +288,7 @@ return array(
  *             ),
  *         )
  *     ),
- *     'visibility'         => ! Xpo::is_lc_active(),
+ *     'visibility'         => wopb_function()->show_upsell(),
  * ),
  *
  * // image-only — one full-width artwork, no live text.
@@ -308,6 +308,6 @@ return array(
  *             ),
  *         )
  *     ),
- *     'visibility'  => ! Xpo::is_lc_active(),
+ *     'visibility'  => wopb_function()->show_upsell(),
  * ),
  */

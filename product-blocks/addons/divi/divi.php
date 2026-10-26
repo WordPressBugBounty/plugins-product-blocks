@@ -8,18 +8,18 @@ function wopb_productx_template_divi_modules() {
 	if ( ! class_exists( 'ET_Builder_Module' ) ) {
 		return; }
 
-	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Divi Builder module class name, must match Divi's own naming convention.
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Class is prefixed with the plugin's former name (ProductX); kept so existing integrations keep working.
 	class ProductX_Template_Module extends ET_Builder_Module {
 
 		public $slug       = 'wopb_productx_template';
 		public $vb_support = 'partial';
 
-		function init() {
+		public function init() {
 			$this->name      = __( 'WowStore Template', 'product-blocks' );
 			$this->icon_path = plugin_dir_path( __FILE__ ) . 'icon.svg';
 		}
 
-		function get_fields() {
+		public function get_fields() {
 			return array(
 				'templates' => array(
 					'label'       => __( 'Select Your Template', 'product-blocks' ),
@@ -31,13 +31,13 @@ function wopb_productx_template_divi_modules() {
 			);
 		}
 
-		function render( $attrs, $render_slug, $content = null ) {
+		public function render( $attrs, $render_slug, $content = null ) {
 			$templates = $this->props['templates'];
 
 			$output     = '';
 			$content    = '';
 			$body_class = get_body_class();
-			if ( $templates && $templates != 'none' ) {
+			if ( $templates && 'none' !== $templates ) {
 				$args      = array(
 					'p'         => $templates,
 					'post_type' => 'wopb_templates',
@@ -46,12 +46,21 @@ function wopb_productx_template_divi_modules() {
 				if ( $the_query->have_posts() ) {
 					while ( $the_query->have_posts() ) {
 						$the_query->the_post();
+						$wopb_buffer_level_1 = ob_get_level();
 						ob_start();
-						if ( in_array( 'et-fb', $body_class ) ) {
-							echo wopb_function()->build_css_for_inline_print( $templates, true ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-						}
+						try {
+							if ( in_array( 'et-fb', $body_class ) ) {
+								echo wopb_function()->build_css_for_inline_print( $templates, true ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							}
 							the_content();
-						$content = ob_get_clean();
+							$content = ob_get_clean();
+						} finally {
+							while ( ob_get_level() > $wopb_buffer_level_1 ) {
+								if ( ! ob_end_clean() ) {
+									break;
+								}
+							}
+						}
 					}
 					wp_reset_postdata();
 				}

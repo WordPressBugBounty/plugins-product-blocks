@@ -233,7 +233,7 @@ class VariationSwatches {
 			return $columns;
 		}
 
-        $attribute = $this->get_taxonomy_attribute( isset($_REQUEST['taxonomy'])? sanitize_text_field($_REQUEST['taxonomy']):'' ); // phpcs:ignore
+        $attribute = $this->get_taxonomy_attribute( isset($_REQUEST['taxonomy'])? sanitize_text_field( wp_unslash( $_REQUEST['taxonomy'] ) ):'' ); // phpcs:ignore
 		$attribute_value = get_term_meta( $term_id, $attribute->attribute_type, true );
 
 		switch ( $attribute->attribute_type ) {
@@ -286,9 +286,9 @@ class VariationSwatches {
 		foreach ( $this->attribute_types as $key => $value ) {
             if (isset($_POST[$key])) { // phpcs:ignore
 				if ( $key == self::COLOR ) {
-                    update_term_meta($term_id, $key, sanitize_hex_color($_POST[$key])); // phpcs:ignore
+                    update_term_meta($term_id, $key, sanitize_hex_color( wp_unslash( $_POST[$key] ) )); // phpcs:ignore
 				} else {
-                    update_term_meta($term_id, $key, sanitize_text_field($_POST[$key])); // phpcs:ignore
+                    update_term_meta($term_id, $key, sanitize_text_field( wp_unslash( $_POST[$key] ) )); // phpcs:ignore
 				}
 			}
 		}
@@ -308,11 +308,11 @@ class VariationSwatches {
 
 		printf(
 			'<%s class="form-field form-required">%s<label for="term-%s">%s</label>%s',
-			$form_type == 'edit' ? 'tr' : 'div',
-			$form_type == 'edit' ? '<th>' : '',
+			'edit' === $form_type ? 'tr' : 'div',
+			'edit' === $form_type ? '<th>' : '',
 			esc_attr( $attribute_type ),
 			esc_html( $attribute_types[ $attribute_type ] ),
-			$form_type == 'edit' ? '</th><td>' : ''
+			'edit' === $form_type ? '</th><td>' : ''
 		);
 
 		switch ( $attribute_type ) {
@@ -349,7 +349,7 @@ class VariationSwatches {
 			default:
 		}
 
-		if ( $form_type == 'edit' ) {
+		if ( 'edit' === $form_type ) {
 			echo '</td></tr>';
 		} else {
 			echo '</div>';
@@ -367,7 +367,7 @@ class VariationSwatches {
 			return;
 		}
 		global $thepostid;
-        $product_id = isset($_POST['post_id']) ? absint(sanitize_text_field($_POST['post_id'])) : $thepostid; // phpcs:ignore
+        $product_id = isset($_POST['post_id']) ? absint( sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) ) : $thepostid; // phpcs:ignore
 		$all_terms  = get_terms(
 			array(
 				'taxonomy'   => $attribute->get_taxonomy(),
@@ -420,7 +420,7 @@ class VariationSwatches {
 		$terms = wc_get_product_terms( $product->get_id(), $attribute, array( 'fields' => 'all' ) );
 
 		$custom_style = '';
-		if ( ! empty( $taxonomy_attribute->attribute_type ) && array_key_exists( $taxonomy_attribute->attribute_type, $attribute_types ) && $taxonomy_attribute->attribute_type != self::LABEL && wopb_function()->get_setting( 'variation_switch_shape_style' ) == 'circle' ) {
+		if ( ! empty( $taxonomy_attribute->attribute_type ) && array_key_exists( $taxonomy_attribute->attribute_type, $attribute_types ) && $taxonomy_attribute->attribute_type != self::LABEL && wopb_function()->get_setting( 'variation_switch_shape_style' ) === 'circle' ) {
 			$custom_style .= 'border-radius: 50%;';
 		}
 
@@ -441,7 +441,7 @@ class VariationSwatches {
 						$selected = sanitize_title( $args['selected'] ) == $term->slug ? 'selected' : '';
 						$name     = apply_filters( 'woocommerce_variation_option_name', $term->name );
 						$tooltip  = '';
-						if ( wopb_function()->get_setting( 'variation_switch_tooltip_enable' ) == 'yes' ) {
+						if ( wopb_function()->get_setting( 'variation_switch_tooltip_enable' ) === 'yes' ) {
 							$tooltip .= '<span class="wopb-variation-swatch-tooltip">' . ( $term->description ? $term->description : $name ) . '</span>';
 						}
 
@@ -454,7 +454,6 @@ class VariationSwatches {
 							continue;
 						}
 						$data_variation_id = ! empty( $variation_enable['variation_id'] ) ? $variation_enable['variation_id'] : '';
-						$variation_image   = ! empty( $variation_enable['variation_image'] ) ? $variation_enable['variation_image'] : '';
 
 						switch ( $taxonomy_attribute->attribute_type ) {
 							case self::COLOR:
@@ -475,10 +474,15 @@ class VariationSwatches {
 								break;
 
 							case self::IMAGE:
-								$image = '';
-								if ( wopb_function()->get_setting( 'product_image_in_variation_switch' ) && wopb_function()->get_setting( 'is_lc_active' ) ) {
-									$image = $variation_image;
-								}
+								/**
+								 * Filters the image URL of an image swatch. Empty falls back to the term's image.
+								 *
+								 * @since 4.6.0
+								 * @param string     $image        Image URL, '' by default.
+								 * @param \WP_Term   $term         Attribute term.
+								 * @param int|string $variation_id ID of the variation the swatch selects, or ''.
+								 */
+								$image = apply_filters( 'wopb_swatch_image', '', $term, $data_variation_id );
 
 								if ( empty( $image ) ) {
 									$image = get_term_meta( $term->term_id, $taxonomy_attribute->attribute_type, true );
@@ -504,7 +508,7 @@ class VariationSwatches {
 								$label           = $label ? $label : $name;
 								$label_class     = '';
 								$label_separator = '';
-								if ( wopb_function()->get_setting( 'variation_switch_label_is_background' ) != 'yes' ) {
+								if ( wopb_function()->get_setting( 'variation_switch_label_is_background' ) !== 'yes' ) {
 									$label_class = ' wopb-label-only-text';
 									if ( $i != count( $terms ) ) {
 										$label_separator = '<span class="wopb-variation-swatch-separator"> - </span>';
@@ -527,7 +531,7 @@ class VariationSwatches {
 					}
 				}
 			}
-		} elseif ( wopb_function()->get_setting( 'variation_switch_dropdown_to_button' ) == 'yes' ) {
+		} elseif ( wopb_function()->get_setting( 'variation_switch_dropdown_to_button' ) === 'yes' ) {
 			$class              = "wopb-variation-selector wopb-variation-select-{$attribute}";
 			$variation_swatches = '';
 			$i                  = 0;
@@ -548,10 +552,10 @@ class VariationSwatches {
 				$label_separator = '';
 				$selected        = ( sanitize_title( $option ) == sanitize_title( $args['selected'] ) ) ? 'selected' : '';
 				$tooltip         = '';
-				if ( wopb_function()->get_setting( 'variation_switch_tooltip_enable' ) == 'yes' ) {
+				if ( wopb_function()->get_setting( 'variation_switch_tooltip_enable' ) === 'yes' ) {
 					$tooltip .= '<span class="wopb-variation-swatch-tooltip">' . esc_html( $label ) . '</span>';
 				}
-				if ( wopb_function()->get_setting( 'variation_switch_label_is_background' ) != 'yes' ) {
+				if ( wopb_function()->get_setting( 'variation_switch_label_is_background' ) !== 'yes' ) {
 					$label_class = ' wopb-label-only-text';
 					if ( $i != count( $options ) ) {
 						$label_separator = '<span class="wopb-variation-swatch-separator"> - </span>';
@@ -578,7 +582,7 @@ class VariationSwatches {
 			$variation_content      = '<div class="wopb-variation-swatches" data-attribute_name="attribute_' . esc_attr( $attribute ) . '">';
 				$variation_content .= $variation_swatches;
 			$variation_content     .= '</div>';
-			$html                   = '<div class="' . esc_attr( $class ) . '">' . wopb_function()->core_esc_wp( $html ) . '</div>' . $variation_content;
+			$html                   = '<div class="' . esc_attr( $class ) . '">' . $html . '</div>' . $variation_content;
 		}
 
 		return $html;
@@ -593,24 +597,24 @@ class VariationSwatches {
 	public function swatchesInWcListingPage() {
 		if ( wopb_function()->get_setting( 'variation_switch_shop_page_enable' ) ) {
 			$position = wopb_function()->get_setting( 'variation_switch_position' );
-			if ( $position == 'before_title' || $position == 'after_title' ) {
+			if ( 'before_title' === $position || 'after_title' === $position ) {
 				$current_theme = wopb_function()->get_theme_name();
-				if ( $position == 'before_title' ) {
-					if ( $current_theme == 'astra' ) {
+				if ( 'before_title' === $position ) {
+					if ( 'astra' === $current_theme ) {
 						add_action( 'astra_woo_shop_title_before', array( $this, 'swatches_shop_loop_item_title' ) );
 					} else {
 						add_action( 'woocommerce_shop_loop_item_title', array( $this, 'swatches_shop_loop_item_title' ), 0 );
 					}
-				} elseif ( $position == 'after_title' ) {
-					if ( $current_theme == 'astra' ) {
+				} elseif ( 'after_title' === $position ) {
+					if ( 'astra' === $current_theme ) {
 						add_action( 'astra_woo_shop_title_after', array( $this, 'swatches_shop_loop_item_title' ) );
 					} else {
 						add_action( 'woocommerce_shop_loop_item_title', array( $this, 'swatches_shop_loop_item_title' ), 9999 );
 					}
 				}
-			} elseif ( $position == 'before_cart' ) {
+			} elseif ( 'before_cart' === $position ) {
 				add_filter( 'wopb_top_add_to_cart_loop', array( $this, 'swatches_show_loop_add_to_cart' ), 50, 2 );
-			} elseif ( $position == 'after_cart' ) {
+			} elseif ( 'after_cart' === $position ) {
 				add_filter( 'wopb_bottom_add_to_cart_loop', array( $this, 'swatches_show_loop_add_to_cart' ), 10, 2 );
 			}
 		}
@@ -627,9 +631,9 @@ class VariationSwatches {
 		global $product;
 		$content = '';
 		if ( $product->is_type( 'variable' ) && ! wopb_function()->is_builder() ) {
-			if ( wopb_function()->get_setting( 'variation_switch_position' ) == 'before_title' ) {
+			if ( wopb_function()->get_setting( 'variation_switch_position' ) === 'before_title' ) {
 				$content = $this->loop_variation_form( '', $product );
-			} elseif ( wopb_function()->get_setting( 'variation_switch_position' ) == 'after_title' ) {
+			} elseif ( wopb_function()->get_setting( 'variation_switch_position' ) === 'after_title' ) {
 				$content = $this->loop_variation_form( '', $product );
 			}
 		}
@@ -647,9 +651,9 @@ class VariationSwatches {
 		if ( $product->is_type( 'variable' ) && ! wopb_function()->is_builder() ) {
 			if ( is_shop() || is_archive() || is_product() ) {
 				$price = '<div class="wopb-variation-switcher-price">' . $price . '</div>';
-				if ( wc_get_loop_prop( 'total' ) && wopb_function()->get_setting( 'variation_switch_position' ) == 'before_price' ) {
+				if ( wc_get_loop_prop( 'total' ) && wopb_function()->get_setting( 'variation_switch_position' ) === 'before_price' ) {
 					$price = $this->loop_variation_form( '', $product ) . $price;
-				} elseif ( wc_get_loop_prop( 'total' ) && wopb_function()->get_setting( 'variation_switch_position' ) == 'after_price' ) {
+				} elseif ( wc_get_loop_prop( 'total' ) && wopb_function()->get_setting( 'variation_switch_position' ) === 'after_price' ) {
 					$price = $price . $this->loop_variation_form( '', $product );
 				}
 			}
@@ -699,20 +703,29 @@ class VariationSwatches {
 				$html     .= '<table class="variations" cellspacing="0">';
 					$html .= '<tbody>';
 			foreach ( $attributes as $attribute => $attribute_options ) {
-				$html .= '<tr>';
-				$html .= '<td class="value">';
+				$html               .= '<tr>';
+				$html               .= '<td class="value">';
+				$wopb_buffer_level_1 = ob_get_level();
 				ob_start();
-				wc_dropdown_variation_attribute_options(
-					array(
-						'options'    => $attribute_options,
-						'attribute'  => $attribute,
-						'product'    => $product,
-						'selected'   => '',
-						'is_archive' => true,
-					)
-				);
-				$dropdown_variation_attribute = ob_get_clean();
-				$html                        .= $dropdown_variation_attribute;
+				try {
+					wc_dropdown_variation_attribute_options(
+						array(
+							'options'    => $attribute_options,
+							'attribute'  => $attribute,
+							'product'    => $product,
+							'selected'   => '',
+							'is_archive' => true,
+						)
+					);
+					$dropdown_variation_attribute = ob_get_clean();
+				} finally {
+					while ( ob_get_level() > $wopb_buffer_level_1 ) {
+						if ( ! ob_end_clean() ) {
+							break;
+						}
+					}
+				}
+				$html .= $dropdown_variation_attribute;
 				if ( end( $attribute_keys ) === $attribute ) {
 					$html .= wp_kses_post( apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#">' . esc_html__( 'Clear', 'product-blocks' ) . '</a>' ) );
 				}
@@ -744,10 +757,10 @@ class VariationSwatches {
 			return;
 		}
 
-        $product_id        = apply_filters( 'woocommerce_add_to_cart_product_id', absint( sanitize_text_field($_POST['product_id']) ) ); // phpcs:ignore
-        $quantity          = ! empty( $_POST['quantity'] ) ? wc_stock_amount( absint( sanitize_text_field($_POST['quantity']) ) ) : 1; // phpcs:ignore
+        $product_id        = apply_filters( 'woocommerce_add_to_cart_product_id', absint( sanitize_text_field( wp_unslash( $_POST['product_id'] ) ) ) ); // phpcs:ignore
+        $quantity          = ! empty( $_POST['quantity'] ) ? wc_stock_amount( absint( sanitize_text_field( wp_unslash( $_POST['quantity'] ) ) ) ) : 1; // phpcs:ignore
 		$product_status    = get_post_status( $product_id );
-        $variation_id      = ! empty( $_POST['variation_id'] ) ? absint( sanitize_text_field($_POST['variation_id']) ) : 0; // phpcs:ignore
+        $variation_id      = ! empty( $_POST['variation_id'] ) ? absint( sanitize_text_field( wp_unslash( $_POST['variation_id'] ) ) ) : 0; // phpcs:ignore
         $variation         = ! empty( $_POST['variation'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['variation'] ) ) : array(); // phpcs:ignore
 		$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity, $variation_id, $variation );
 
@@ -786,7 +799,7 @@ class VariationSwatches {
 
 		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . $wpdb->prefix . 'woocommerce_attribute_taxonomies WHERE attribute_name = %s', $attribute ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 
-		if ( $row !== null ) {
+		if ( null !== $row ) {
 			self::$tax_cache[ $attribute ] = $row;
 		}
 
@@ -806,7 +819,6 @@ class VariationSwatches {
 	public function variation_enable_check( $get_variation_product = array(), $term = null, $attribute = '', $taxonomy_attribute = array() ) {
 		$variation_check = true;
 		$variation_id    = '';
-		$variation_image = '';
 		foreach ( $get_variation_product as $available_variation ) {
 			$variation = new \WC_Product_Variation( $available_variation['variation_id'] );
 			if ( isset( $available_variation['attributes'][ 'attribute_' . strtolower( $attribute ) ] ) ) {
@@ -819,6 +831,7 @@ class VariationSwatches {
 					)
 				) {
 					$variation_id = $available_variation['variation_id'];
+					// A color or image swatch selects the first matching variation that has its own image.
 					if (
 						! empty( $taxonomy_attribute ) &&
 						(
@@ -827,7 +840,6 @@ class VariationSwatches {
 						) &&
 						$variation->get_image_id( 'edit' ) != 0
 					) {
-						$variation_image = $available_variation['image']['thumb_src'];
 						break;
 					}
 				}
@@ -838,7 +850,6 @@ class VariationSwatches {
 		return array(
 			'variation_check' => $variation_check,
 			'variation_id'    => $variation_id,
-			'variation_image' => $variation_image,
 		);
 	}
 
@@ -849,7 +860,7 @@ class VariationSwatches {
 	 * @return void
 	 */
 	public function generate_css( $key ) {
-		if ( $key == 'wopb_variation_swatches' ) {
+		if ( 'wopb_variation_swatches' === $key ) {
 			$settings = wopb_function()->get_setting();
 			$css      = '.variations_form .wopb-variation-swatches .wopb-swatch {';
 				$css .= 'min-width: ' . esc_attr( $settings['variation_switch_width'] ) . 'px;';
@@ -864,7 +875,7 @@ class VariationSwatches {
 					$css .= 'justify-content: ' . $settings['variation_align_shop'] . ';';
 				$css     .= '}';
 			}
-			if ( ! empty( $settings['variation_switch_shape_style'] ) && $settings['variation_switch_shape_style'] == 'circle' ) {
+			if ( ! empty( $settings['variation_switch_shape_style'] ) && 'circle' === $settings['variation_switch_shape_style'] ) {
 				$css     .= '.wopb-variation-swatches .wopb-swatch.wopb-swatch-image,';
 				$css     .= '.wopb-variation-swatches .wopb-swatch.wopb-swatch-image img {';
 					$css .= 'border-radius: 50%;';

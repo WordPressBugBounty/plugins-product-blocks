@@ -1,17 +1,15 @@
 <?php
 
-use function Clue\StreamFilter\remove;
-
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- the variables below belong to the method scope that includes this partial; the functions it declares carry the wopb_ prefix.
 
 	do_action( 'woocommerce_before_cart' );
 	WC()->cart->calculate_totals();
 	WC()->cart->calculate_shipping();
 	$allowed_html_tags = wopb_function()->allowed_html_tags();
 
-function product_remove( $args ) {
+function wopb_cart_table_product_remove( $args ) {
 	echo '<div class="product-remove">';
 		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo apply_filters(
@@ -28,16 +26,34 @@ function product_remove( $args ) {
 	echo '</div>';
 }
 
-function product_thumbnail( $args ) {
-	$html  = '';
-	$html .= '<div class="wopb-product-image-section">';
+function wopb_cart_table_product_thumbnail( $args ) {
+	$html                    = '';
+	$html                   .= '<div class="wopb-product-image-section">';
+		$wopb_buffer_level_1 = ob_get_level();
 		ob_start();
-			printf( '<a href="%s">%s</a>', esc_url( $args['product_permalink'] ), wp_kses_post( $args['thumbnail'] ) );
+	try {
+		printf( '<a href="%s">%s</a>', esc_url( $args['product_permalink'] ), wp_kses_post( $args['thumbnail'] ) );
 		$html .= ob_get_clean();
-	if ( $args['attribute']['removeBtnPosition'] == 'withImage' ) {
+	} finally {
+		while ( ob_get_level() > $wopb_buffer_level_1 ) {
+			if ( ! ob_end_clean() ) {
+				break;
+			}
+		}
+	}
+	if ( 'withImage' === $args['attribute']['removeBtnPosition'] ) {
+		$wopb_buffer_level_2 = ob_get_level();
 		ob_start();
-			product_remove( $args );
-		$html .= ob_get_clean();
+		try {
+			wopb_cart_table_product_remove( $args );
+			$html .= ob_get_clean();
+		} finally {
+			while ( ob_get_level() > $wopb_buffer_level_2 ) {
+				if ( ! ob_end_clean() ) {
+					break;
+				}
+			}
+		}
 	}
 
 		$html .= '</div>';
@@ -45,12 +61,21 @@ function product_thumbnail( $args ) {
 		return $html;
 }
 
-function cross_sell_product() {
-	$cross_sell_product = '';
+function wopb_cart_table_cross_sell_product() {
+	$cross_sell_product  = '';
+	$wopb_buffer_level_3 = ob_get_level();
 	ob_start();
+	try {
 		remove_action( 'woocommerce_cart_collaterals', 'woocommerce_cart_totals' );
 		do_action( 'woocommerce_cart_collaterals' );
-	$cross_sell_product .= ob_get_clean();
+		$cross_sell_product .= ob_get_clean();
+	} finally {
+		while ( ob_get_level() > $wopb_buffer_level_3 ) {
+			if ( ! ob_end_clean() ) {
+				break;
+			}
+		}
+	}
 	return $cross_sell_product;
 }
 
@@ -58,16 +83,16 @@ function cross_sell_product() {
 	$cross_sell_class   = '';
 	$cart_form_class    = ' wopb-cart-form';
 
-if ( $attr['showCrossSell'] && ! empty( cross_sell_product() ) ) {
+if ( $attr['showCrossSell'] && ! empty( wopb_cart_table_cross_sell_product() ) ) {
 	$cross_sell_class .= 'wopb-cart-cross-sell';
-	if ( $attr['crossSellPosition'] == 'right' ) {
+	if ( 'right' === $attr['crossSellPosition'] ) {
 		$cart_form_class  .= ' wopb-cart-form-left';
 		$cross_sell_class .= ' wopb-cart-cross-sell-right';
-	} elseif ( $attr['crossSellPosition'] == 'bottom' ) {
+	} elseif ( 'bottom' === $attr['crossSellPosition'] ) {
 		$cart_form_class  .= ' wopb-cart-form-bottom';
 		$cross_sell_class .= ' wopb-cart-cross-sell-bottom';
 	}
-	$cross_sell_product .= '<div class="cart-collaterals ' . esc_attr( $cross_sell_class ) . '">' . cross_sell_product() . '</div>';
+	$cross_sell_product .= '<div class="cart-collaterals ' . esc_attr( $cross_sell_class ) . '">' . wopb_cart_table_cross_sell_product() . '</div>';
 }
 ?>
 <form class="woocommerce-cart-form <?php echo esc_attr( $cart_form_class ); ?>" action="<?php echo esc_url( wc_get_cart_url() ); ?>" method="post">
@@ -106,10 +131,10 @@ if ( $attr['showCrossSell'] && ! empty( cross_sell_product() ) ) {
 						<tr class="woocommerce-cart-form__cart-item <?php echo esc_attr( apply_filters( 'woocommerce_cart_item_class', 'cart_item', $args['cart_item'], $args['cart_item_key'] ) ); ?>">
 							<td class="wopb-cart-table-small">
 							<?php
-							if ( $attr['removeBtnPosition'] !== 'withImage' ) {
-								product_remove( $args );
+							if ( 'withImage' !== $attr['removeBtnPosition'] ) {
+								wopb_cart_table_product_remove( $args );
 							}
-								echo product_thumbnail( $args ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+								echo wopb_cart_table_product_thumbnail( $args ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 							?>
 							</td>
 							<td data-title="
@@ -122,11 +147,11 @@ if ( $attr['showCrossSell'] && ! empty( cross_sell_product() ) ) {
 								<div class="wopb-cart-table-product-details">
 									<div class="wopb-cart-table-medium">
 									<?php
-									if ( $attr['removeBtnPosition'] == 'left' ) {
-										product_remove( $args );
+									if ( 'left' === $attr['removeBtnPosition'] ) {
+										wopb_cart_table_product_remove( $args );
 									}
 									?>
-										<?php echo product_thumbnail( $args ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?> 
+										<?php echo wopb_cart_table_product_thumbnail( $args ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?> 
 									</div>
 
 									<div class="wopb-cart-table-product-section">
@@ -153,7 +178,7 @@ if ( $attr['showCrossSell'] && ! empty( cross_sell_product() ) ) {
 							<?php echo apply_filters( 'woocommerce_cart_item_price', WC()->cart->get_product_price( $product ), $args['cart_item'], $args['cart_item_key'] ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 							</td>
 
-							<td class="wopb-product-qty" data-title="<?php echo esc_attr( $attr['qtyHead'], 'product-blocks' ); ?>">
+							<td class="wopb-product-qty" data-title="<?php echo esc_attr( $attr['qtyHead'] ); ?>">
 								<div class="wopb-qty-wrap">
 								<?php if ( $product->is_sold_individually() ) { ?>
 										1 <input
@@ -172,7 +197,7 @@ if ( $attr['showCrossSell'] && ! empty( cross_sell_product() ) ) {
 											type="number"
 											class="qty wopb-qty"
 											name="cart[<?php echo esc_attr( $args['cart_item_key'] ); ?>][qty]"
-											value="<?php echo $args['cart_item']['quantity']; ?>"
+											value="<?php echo esc_attr( $args['cart_item']['quantity'] ); ?>"
 											min="0"
 										/>
 									<?php if ( ! empty( $attr['plusMinusShow'] ) ) { ?>
@@ -190,8 +215,8 @@ if ( $attr['showCrossSell'] && ! empty( cross_sell_product() ) ) {
 								?>
 								<div class="wopb-cart-table-medium">
 								<?php
-								if ( $attr['removeBtnPosition'] == 'right' ) {
-									product_remove( $args );
+								if ( 'right' === $attr['removeBtnPosition'] ) {
+									wopb_cart_table_product_remove( $args );
 								}
 								?>
 								</div>
@@ -213,7 +238,7 @@ if ( $attr['showCrossSell'] && ! empty( cross_sell_product() ) ) {
 			<?php if ( $attr['showCoupon'] && wc_coupons_enabled() ) : ?>
 				<div class="wopb-cart-coupon-section">
 					<input type="text" name="coupon_code" id="coupon_code" class="wopb-coupon-code" value="" placeholder="<?php echo esc_attr( $attr['couponInputPlaceholder'] ); ?>"/>
-					<button type="submit" class="wopb-cart-coupon-submit-btn" name="apply_coupon" value="<?php echo esc_attr( 'Apply coupon', 'product-blocks' ); ?>">
+					<button type="submit" class="wopb-cart-coupon-submit-btn" name="apply_coupon" value="<?php echo esc_attr__( 'Apply coupon', 'product-blocks' ); ?>">
 						<?php echo esc_html( $attr['couponBtnText'] ); ?>
 					</button>
 				</div>
@@ -224,7 +249,7 @@ if ( $attr['showCrossSell'] && ! empty( cross_sell_product() ) ) {
 			if ( $attr['showContinue'] ) {
 				$return_to = wc_get_page_permalink( 'shop' );
 				?>
-				<a class="wopb-cart-shopping-btn button " href=<?php printf( $return_to ); ?> >
+				<a class="wopb-cart-shopping-btn button " href="<?php echo esc_url( $return_to ); ?>">
 					&#8592;<?php echo esc_html( $attr['continueShoppingText'] ); ?>
 				</a>
 			<?php } ?>
@@ -232,7 +257,7 @@ if ( $attr['showCrossSell'] && ! empty( cross_sell_product() ) ) {
 
 		<span class="wopb-cart-table-option wopb-cart-table-second-option  <?php echo ( ! $attr['showEmpty'] || ! $attr['showUpdate'] ) ? 'wopb-cart-table-option-hidden' : ''; ?>">
 			<?php if ( $attr['showEmpty'] ) : ?>
-				<a class="wopb-cart-empty-btn " name="empty_cart" href="<?php echo wc_get_cart_url();//phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>?empty-cart"><?php echo esc_html( $attr['emptyText'] ); ?></a>
+				<a class="wopb-cart-empty-btn " name="empty_cart" href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'empty-cart', '1', wc_get_cart_url() ), 'wopb-empty-cart' ) ); ?>"><?php echo esc_html( $attr['emptyText'] ); ?></a>
 			<?php endif; ?>
 			<?php if ( $attr['showUpdate'] ) : ?>
 				<button type="submit" class="wopb-cart-update-btn" name="update_cart" value="Update cart"><?php echo esc_html( $attr['updateText'] ); ?></button>

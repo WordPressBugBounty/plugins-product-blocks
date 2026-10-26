@@ -99,19 +99,6 @@ class RequestAPI {
 	 * @return ARRAY | Data of the Premade
 	 */
 	public function get_single_premade_callback( $server ) {
-		$obj_count = wp_count_posts( 'wopb_builder' );
-
-		/*
-			Builder is unrestricted for all users
-		*/
-		// if ( ! wopb_function()->get_setting( 'is_lc_active' )  ) {
-		// $p_count = isset( $obj_count->publish ) ? $obj_count->publish : 0;
-		// $d_count = isset( $obj_count->draft ) ? $obj_count->draft : 0;
-		// if ( ( $p_count + $d_count ) > 0 ) {
-		// return array( 'success' => false );
-		// }
-		// }
-
 		$post = $server->get_params();
 		$id   = isset( $post['ID'] ) ? sanitize_text_field( $post['ID'] ) : '';
 		$type = isset( $post['type'] ) ? sanitize_text_field( $post['type'] ) : '';
@@ -122,10 +109,14 @@ class RequestAPI {
 				array(
 					'method'  => 'POST',
 					'timeout' => 120,
-					'body'    => array(
-						'section_id' => $id,
-						'license'    => get_option( 'edd_wopb_license_key' ),
-					),
+					/**
+					 * Filters the body sent to the template library.
+					 *
+					 * The Pro plugin adds the license key to it.
+					 *
+					 * @param array $body Request body.
+					 */
+					'body'    => apply_filters( 'wopb_template_request_params', array( 'section_id' => $id ) ),
 				)
 			);
 			if ( is_wp_error( $response ) ) {
@@ -282,14 +273,30 @@ class RequestAPI {
 	 */
 	public function condition_save_action( $server ) {
 		$post = $server->get_params();
-		if ( isset( $post['settings'] ) ) {
-			$settings = wopb_function()->recursive_sanitize_text_field( $post['settings'] );
-			update_option( 'wopb_builder_conditions', $settings );
-			return array(
-				'success' => true,
-				'data'    => 'Settings Saved!!!',
-			);
+		if ( ! isset( $post['settings'] ) || ! wopb_function()->is_valid_settings_input( $post['settings'] ) ) {
+			return new \WP_Error( 'wopb_invalid_conditions', __( 'Invalid builder conditions.', 'product-blocks' ), array( 'status' => 400 ) );
 		}
+		foreach ( $post['settings'] as $type => $templates ) {
+			if ( ! preg_match( '/^[a-z0-9_-]{1,100}$/D', (string) $type ) || ! is_array( $templates ) ) {
+				return new \WP_Error( 'wopb_invalid_conditions', __( 'Invalid builder conditions.', 'product-blocks' ), array( 'status' => 400 ) );
+			}
+			foreach ( $templates as $post_id => $rules ) {
+				if ( ! ctype_digit( (string) $post_id ) || (int) $post_id <= 0 || ! is_array( $rules ) || count( $rules ) > 100 ) {
+					return new \WP_Error( 'wopb_invalid_conditions', __( 'Invalid builder conditions.', 'product-blocks' ), array( 'status' => 400 ) );
+				}
+				foreach ( $rules as $index => $rule ) {
+					if ( ! ctype_digit( (string) $index ) || ! is_string( $rule ) || strlen( $rule ) > 500 || ! preg_match( '/^(include|exclude|filter)\/[a-zA-Z0-9_\/-]+$/D', $rule ) ) {
+						return new \WP_Error( 'wopb_invalid_conditions', __( 'Invalid builder condition rule.', 'product-blocks' ), array( 'status' => 400 ) );
+					}
+				}
+			}
+		}
+		$settings = wopb_function()->recursive_sanitize_text_field( $post['settings'] );
+		update_option( 'wopb_builder_conditions', $settings );
+		return array(
+			'success' => true,
+			'data'    => 'Settings Saved!!!',
+		);
 	}
 
 	/**
@@ -487,19 +494,43 @@ class RequestAPI {
 	public function template_page_action( $server ) {
 		$post    = $server->get_params();
 		$message = '';
+		if ( ! isset( $post['type'], $post['id'] ) || ! is_string( $post['type'] ) || ! in_array( $post['type'], array( 'delete', 'duplicate', 'status' ), true ) || ! ( is_string( $post['id'] ) || is_int( $post['id'] ) ) || ! ctype_digit( (string) $post['id'] ) || (int) $post['id'] <= 0 ) {
+			return new \WP_Error( 'wopb_invalid_template_action', __( 'Invalid template action.', 'product-blocks' ), array( 'status' => 400 ) );
+		}
+		$post_id = (int) $post['id'];
+		if ( 'wopb_builder' !== get_post_type( $post_id ) ) {
+			return new \WP_Error( 'wopb_invalid_template', __( 'Select a builder template.', 'product-blocks' ), array( 'status' => 400 ) );
+		}
+		if ( ! current_user_can( 'manage_options' ) || ! current_user_can( 'delete' === $post['type'] ? 'delete_post' : 'edit_post', $post_id ) ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot change this template.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+		$post_type = get_post_type_object( 'wopb_builder' );
+		if ( 'duplicate' === $post['type'] && ! current_user_can( $post_type->cap->create_posts ) ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot create templates.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+		if ( 'status' === $post['type'] ) {
+			if ( ! isset( $post['status'] ) || ! is_string( $post['status'] ) || ! in_array( $post['status'], array( 'draft', 'publish' ), true ) ) {
+				return new \WP_Error( 'wopb_invalid_status', __( 'Invalid template status.', 'product-blocks' ), array( 'status' => 400 ) );
+			}
+			if ( 'publish' === $post['status'] && ! current_user_can( $post_type->cap->publish_posts ) ) {
+				return new \WP_Error( 'rest_forbidden', __( 'You cannot publish templates.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+			}
+		}
 		if ( isset( $post['type'] ) && isset( $post['id'] ) && $post['id'] ) {
 			$s_type  = wopb_function()->rest_sanitize_params( $post['type'] );
 			$post_id = wopb_function()->rest_sanitize_params( $post['id'] );
 			if ( $s_type == 'delete' ) {
+				$builder_type = get_post_meta( $post_id, '_wopb_builder_type', true );
+				if ( ! wp_delete_post( $post_id, true ) ) {
+					return new \WP_Error( 'wopb_delete_failed', __( 'The template could not be deleted.', 'product-blocks' ), array( 'status' => 500 ) );
+				}
 				if ( isset( $post['section'] ) && $post['section'] == 'builder' ) { // phpcs:ignore WordPress.Security
 					$conditions   = get_option( 'wopb_builder_conditions', array() );
-					$builder_type = get_post_meta( $post_id, '_wopb_builder_type', true );
 					if ( isset( $conditions[ $builder_type ][ $post_id ] ) ) {
 						unset( $conditions[ $builder_type ][ $post_id ] );
 						update_option( 'wopb_builder_conditions', $conditions );
 					}
 				}
-				wp_delete_post( $post_id, true );
 				$message = __( 'Template has been deleted.', 'product-blocks' );
 			} elseif ( $s_type == 'duplicate' ) {
 				$post = get_post( $post_id );
@@ -514,7 +545,10 @@ class RequestAPI {
 						'post_title'   => $post->post_title,
 						'post_type'    => $post->post_type,
 					);
-					$new_post_id = wp_insert_post( $args );
+					$new_post_id = wp_insert_post( $args, true );
+					if ( is_wp_error( $new_post_id ) || ! $new_post_id ) {
+						return new \WP_Error( 'wopb_duplicate_failed', __( 'The template could not be duplicated.', 'product-blocks' ), array( 'status' => 500 ) );
+					}
 					$type        = get_post_meta( $post_id, '_wopb_builder_type', true );
 					$css         = get_post_meta( $post_id, '_wopb_css', true );
 					$width       = get_post_meta( $post_id, '__container_width', true );
@@ -539,12 +573,16 @@ class RequestAPI {
 				$message = __( 'Template has been duplicated.', 'product-blocks' );
 			} elseif ( $s_type == 'status' ) {
 				if ( $post['status'] ) {
-					wp_update_post(
+					$result = wp_update_post(
 						array(
 							'ID'          => $post_id,
 							'post_status' => wopb_function()->rest_sanitize_params( $post['status'] ),
-						)
+						),
+						true
 					);
+					if ( is_wp_error( $result ) || ! $result ) {
+						return new \WP_Error( 'wopb_status_failed', __( 'The template status could not be changed.', 'product-blocks' ), array( 'status' => 500 ) );
+					}
 					$message = __( 'Status has been changed.', 'product-blocks' );
 				}
 			}

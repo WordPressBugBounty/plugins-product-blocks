@@ -13,7 +13,6 @@ function wopb_backorder_setup( $config ) {
 		'desc'     => __( 'Keep getting orders for the products that are currently out of stock and will be restocked soon.', 'product-blocks' ),
 		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-backorder/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/back-order-addon/',
-		'is_pro'   => false,
 		'type'     => 'sales',
 		'priority' => 40,
 	);
@@ -28,9 +27,8 @@ function wopb_backorder_setup( $config ) {
  * @return ARRAY
  * @since v.1.0.7
  */
-add_filter( 'wopb_settings', 'get_backorder_opt', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_backorder_opt( $config ) {
+add_filter( 'wopb_settings', 'wopb_get_backorder_opt', 10, 1 );
+function wopb_get_backorder_opt( $config ) {
 	$arr = array(
 		'wopb_backorder' => array(
 			'label' => __( 'Backorder', 'product-blocks' ),
@@ -64,12 +62,6 @@ function get_backorder_opt( $config ) {
 											'label'   => __( 'Backorder Add to Cart Text', 'product-blocks' ),
 											'default' => __( 'Backorder Now', 'product-blocks' ),
 										),
-										'backorder_message_text' => array(
-											'type'    => 'text',
-											'label'   => __( 'Availability Message', 'product-blocks' ),
-											'default' => __( 'Available On', 'product-blocks' ),
-											'pro'     => true,
-										),
 									),
 								),
 							),
@@ -80,30 +72,6 @@ function get_backorder_opt( $config ) {
 								'container_2' => array(
 									'type' => 'container',
 									'attr' => array(
-										'backorder_available_typo' => array(
-											'type'    => 'typography',
-											'label'   => __( 'Available Label Typography', 'product-blocks' ),
-											'default' => (object) array(
-												'size'   => 16,
-												'bold'   => true,
-												'italic' => true,
-												'underline' => false,
-												'color'  => '#398e29',
-												'hover_color' => '',
-											),
-										),
-										'backorder_duration_typo' => array(
-											'type'    => 'typography',
-											'label'   => __( 'Duration Typography', 'product-blocks' ),
-											'default' => (object) array(
-												'size'   => 16,
-												'bold'   => true,
-												'italic' => true,
-												'underline' => false,
-												'color'  => '#398e29',
-												'hover_color' => '',
-											),
-										),
 										'backorder_remain_typo' => array(
 											'type'    => 'typography',
 											'label'   => __( 'Remaining Label Typography', 'product-blocks' ),

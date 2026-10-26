@@ -14,7 +14,7 @@
  * - $config, $prefix, $brand_name etc. come from Notice::get_promos().
  */
 
-use WOPB\Includes\Durbin\Xpo;
+use WOPB\Includes\Xpo;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -40,7 +40,7 @@ return array(
 				),
 			)
 		),
-		'visibility'         => ! Xpo::is_lc_active(),
+		'visibility'         => wopb_function()->show_upsell(),
 	),
 
 	array(
@@ -59,7 +59,7 @@ return array(
 				),
 			)
 		),
-		'visibility'         => ! Xpo::is_lc_active(),
+		'visibility'         => wopb_function()->show_upsell(),
 	),
 
 	/*
@@ -88,7 +88,7 @@ return array(
 				),
 			)
 		),
-		'visibility'         => ! Xpo::is_lc_active(),
+		'visibility'         => wopb_function()->show_upsell(),
 	),
 
 	// Flash Sale 2026 — takes over from the pro price push.
@@ -109,7 +109,7 @@ return array(
 				),
 			)
 		),
-		'visibility'         => ! Xpo::is_lc_active(),
+		'visibility'         => wopb_function()->show_upsell(),
 	),
 
 );
@@ -140,6 +140,6 @@ return array(
  *             ),
  *         )
  *     ),
- *     'visibility'         => ! Xpo::is_lc_active(),
+ *     'visibility'         => wopb_function()->show_upsell(),
  * ),
  */

@@ -35,26 +35,27 @@ class SizeChart {
 		add_action( 'woocommerce_product_data_panels', array( $this, 'size_chart_admin_product_tab_fields' ) );
 		add_action( 'woocommerce_process_product_meta', array( $this, 'size_chart_admin_fields_save' ), 10, 2 );
 
-		if ( wopb_function()->get_setting( 'size_chart_display' ) == 'popup' ) {
-			$chart_btn_position = wopb_function()->get_setting( 'size_chart_position' );
-			if ( $chart_btn_position == 'before_add_cart' || $chart_btn_position == 'after_add_cart' ) {
-				$wc_cart_position = array(
-					'before_add_cart' => 'wopb_top_add_to_cart',
-					'after_add_cart'  => 'wopb_bottom_add_to_cart',
-				);
-				add_action( $wc_cart_position[ $chart_btn_position ], array( $this, 'size_chart_position' ) );
-			} else {
-				$meta_position = array(
-					'before_meta' => 'woocommerce_product_meta_start',
-					'after_meta'  => 'woocommerce_product_meta_end',
-				);
-				add_action( $meta_position[ $chart_btn_position ], array( $this, 'size_chart_meta_position' ) );
-			}
+		// Size chart button and popup on the product page.
+		$chart_btn_position = wopb_function()->get_setting( 'size_chart_position' );
+		$meta_position      = array(
+			'before_meta' => 'woocommerce_product_meta_start',
+			'after_meta'  => 'woocommerce_product_meta_end',
+		);
+		if ( isset( $meta_position[ $chart_btn_position ] ) ) {
+			add_action( $meta_position[ $chart_btn_position ], array( $this, 'size_chart_meta_position' ) );
 		} else {
-			add_filter( 'woocommerce_product_tabs', array( $this, 'size_chart_product_tab' ) );
+			add_action( 'after_add_cart' === $chart_btn_position ? 'wopb_bottom_add_to_cart' : 'wopb_top_add_to_cart', array( $this, 'size_chart_position' ) );
 		}
 		// CSS Generator
 		add_action( 'wopb_save_settings', array( $this, 'generate_css' ), 10, 1 );
+
+		/**
+		 * Fires once the Size Chart add-on is set up.
+		 *
+		 * @since 4.6.0
+		 * @param SizeChart $size_chart This add-on; `get_chart_id()` and `chart_body()` are public.
+		 */
+		do_action( 'wopb_size_chart_init', $this );
 	}
 
 	/**
@@ -64,6 +65,10 @@ class SizeChart {
 	 * @since v.3.2.0
 	 */
 	public function enqueue_size_chart_assets() {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( $screen && ! in_array( $screen->post_type, array( 'product', $this->size_chart ), true ) ) {
+			return;
+		}
 		if ( wopb_function()->get_setting( 'is_wc_ready' ) ) {
 			wp_enqueue_style( 'woocommerce_admin_styles' );
 		}
@@ -98,21 +103,11 @@ class SizeChart {
 			'filter_items_list'     => esc_html__( 'Filter from charts', 'product-blocks' ),
 		);
 
-		$is_active = wopb_function()->get_setting( 'is_lc_active' );
-		$supports  = array( 'title', 'revisions' );
-		if ( $is_active ) {
-			$supports[]                      = 'thumbnail';
-			$labels['featured_image']        = esc_html__( 'Size chart Image', 'product-blocks' );
-			$labels['set_featured_image']    = esc_html__( 'Set size chart image', 'product-blocks' );
-			$labels['remove_featured_image'] = esc_html__( 'Remove image', 'product-blocks' );
-			$labels['use_featured_image']    = esc_html__( 'Use as size chart image', 'product-blocks' );
-		}
-
 		$chart_arg = array(
 			'label'               => esc_html__( 'Size Chart', 'product-blocks' ),
 			'description'         => esc_html__( 'Size Chart', 'product-blocks' ),
 			'labels'              => $labels,
-			'supports'            => $supports,
+			'supports'            => array( 'title', 'revisions' ),
 			'show_in_menu'        => false,
 			'public'              => false,
 			'show_ui'             => true,
@@ -132,31 +127,13 @@ class SizeChart {
 			'rest_base'           => $this->size_chart,
 		);
 
-		register_post_type( $this->size_chart, $chart_arg );
-
-		if ( ! $is_active ) {
-			add_action(
-				'add_meta_boxes',
-				function () {
-					add_meta_box(
-						'wopb-size-chart-image-upgrade',
-						esc_html__( 'Size chart Image', 'product-blocks' ),
-						function () {
-							$is_expired = wopb_function()->is_lc_expired();
-							$url        = $is_expired ? wopb_function()->get_renew_link() : wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore' );
-							$text       = $is_expired
-								? esc_html__( 'Renew your license to set a Size Chart Image.', 'product-blocks' )
-								: esc_html__( 'Upgrade to Pro to set a Size Chart Image.', 'product-blocks' );
-							// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
-							echo '<a style="padding:10px 0;color: #ff176b;" target="_blank" href="' . esc_url( $url ) . '" class="wopb-pro-feature-note">' . esc_html( $text ) . '</a>';
-						},
-						$this->size_chart,
-						'side',
-						'low'
-					);
-				}
-			);
-		}
+		/**
+		 * Filters the size chart post type arguments.
+		 *
+		 * @since 4.6.0
+		 * @param array $chart_arg Arguments for `register_post_type()`.
+		 */
+		register_post_type( $this->size_chart, apply_filters( 'wopb_size_chart_post_type_args', $chart_arg ) );
 	}
 
 	/**
@@ -234,7 +211,7 @@ class SizeChart {
 						id="wopb-sc-heading-position"
 						data-head-default="<?php echo esc_attr( $head_default ); ?>"
 						data-content-default="<?php echo esc_attr( $content_default ); ?>"
-						<?php echo $heading_position !== '' ? 'checked' : ''; ?>
+						<?php echo '' !== $heading_position ? 'checked' : ''; ?>
 					>
 					<label for="wopb-sc-heading-position" class="wopb-toggle"></label>
 				</span>
@@ -251,12 +228,13 @@ class SizeChart {
 						type="checkbox"
 						name="wopb_sc_hide_title"
 						id="wopb-sc-hide-title"
-						<?php echo $hide_name !== '' ? 'checked' : ''; ?>
+						<?php echo '' !== $hide_name ? 'checked' : ''; ?>
 					>
 					<label for="wopb-sc-hide-title" class="wopb-toggle"></label>
 				</span>
 			</span>
 		</p>
+		<?php wp_nonce_field( 'wopb_size_chart_save', 'wopb_size_chart_nonce' ); ?>
 		<input type="hidden" name="wopb_sc_column_array" id="wopb-sc-column-array">
 		<table class="wopb-sc-table">
 			<tbody>
@@ -283,15 +261,15 @@ class SizeChart {
 				<?php
 				if ( is_array( $chart_columns ) ) {
 					foreach ( $chart_columns as $row_index => $columns ) {
-						$row_control_class = $row_index == 0 ? ' wopb-d-none' : '';
+						$row_control_class = 0 == $row_index ? ' wopb-d-none' : '';
 						?>
 						<tr class="wopb-sc-input-row">
 							<?php
 							foreach ( $columns as $col_index => $column ) {
 								$col_class = '';
-								if ( $heading_position != '' && $row_index == 0 ) {
+								if ( '' != $heading_position && 0 == $row_index ) {
 									$col_class = ' wopb-sc-head-col';
-								} elseif ( $heading_position == '' && $col_index == 0 ) {
+								} elseif ( '' == $heading_position && 0 == $col_index ) {
 									$col_class = ' wopb-sc-head-col';
 								}
 								?>
@@ -336,7 +314,6 @@ class SizeChart {
 		global $post;
 		$all_product_selected = get_post_meta( $post->ID, 'wopb_sc_all_product', true );
 		$get_category         = get_post_meta( $post->ID, 'wopb_sc_category', true );
-		$include_products     = get_post_meta( $post->ID, 'wopb_sc_include_products', true );
 		$exclude_products     = get_post_meta( $post->ID, 'wopb_sc_exclude_products', true );
 		?>
 		<p>
@@ -377,19 +354,19 @@ class SizeChart {
 		</div>
 
 		<?php
-		$this->render_product_select_field(
-			'wopb_sc_include_products',
-			! empty( $include_products ) ? $include_products : array(),
-			__( 'Include Products', 'product-blocks' ),
-			'wopb-sc-include-products' . ( $all_product_selected ? ' wopb-d-none' : '' ),
-			true
-		);
+		/**
+		 * Fires in the size chart's "Assigning Chart" meta box, after the category field.
+		 *
+		 * @since 4.6.0
+		 * @param \WP_Post $post Size chart being edited.
+		 */
+		do_action( 'wopb_size_chart_assign_fields', $post );
+
 		$this->render_product_select_field(
 			'wopb_sc_exclude_products',
 			! empty( $exclude_products ) ? $exclude_products : array(),
 			__( 'Exclude Products', 'product-blocks' ),
-			'wopb-sc-exclude-products',
-			false
+			'wopb-sc-exclude-products'
 		);
 	}
 
@@ -403,8 +380,7 @@ class SizeChart {
 	 * @return void
 	 * @since v.3.2.0
 	 */
-	private function render_product_select_field( string $key, array $selected_products, string $label, string $class = '', $pro = false ) {
-		$is_active = wopb_function()->get_setting( 'is_lc_active' );
+	private function render_product_select_field( string $key, array $selected_products, string $label, string $class = '' ) {
 		?>
 		<p class="wopb-sc-products <?php echo esc_attr( $class ); ?>">
 			<label for="<?php echo esc_attr( $key ); ?>">
@@ -413,7 +389,6 @@ class SizeChart {
 				?>
 			</label>
 			<select
-				<?php echo ( $pro && ! $is_active ) ? 'disabled' : ''; ?>
 				id="<?php echo esc_attr( $key ); ?>"
 				class="wc-product-search"
 				name="<?php echo esc_attr( $key ) . '[]'; ?>"
@@ -442,20 +417,6 @@ class SizeChart {
 				}
 				?>
 			</select>
-			<?php
-
-			if ( $pro && ! $is_active ) {
-				// @wopb-upgrade-renew: renew or upgrade link based on the license expiry status.
-				$is_expired = wopb_function()->is_lc_expired();
-				printf(
-					'<a style="padding:10px 0;color: #ff176b;" target="_blank" href="%s" class="wopb-pro-feature-note">%s</a>',
-					esc_url( $is_expired ? wopb_function()->get_renew_link() : wopb_function()->get_premium_link( 'https://www.wpxpo.com/wowstore' ) ),
-					$is_expired
-						? esc_html__( 'Renew your license to use this feature.', 'product-blocks' )
-						: esc_html__( 'Upgrade to Pro to use this feature.', 'product-blocks' )
-				);
-			}
-			?>
 		</p>
 		<?php
 	}
@@ -473,23 +434,59 @@ class SizeChart {
 		if (
 			empty( $post_id ) ||
 			empty( $post ) ||
-			empty( $_POST['post_ID'] ) || //phpcs:ignore WordPress.Security.NonceVerification.Missing
-			absint( $_POST['post_ID'] ) !== $post_id || //phpcs:ignore WordPress.Security.NonceVerification.Missing
-			defined( 'DOING_AUTOSAVE' ) &&
+			( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
+			! isset( $_POST['wopb_size_chart_nonce'] ) ||
+			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wopb_size_chart_nonce'] ) ), 'wopb_size_chart_save' ) ||
 			! current_user_can( 'edit_post', $post_id )
 		) {
 			return;
 		}
-		if ( isset( $_POST['wopb_sc_column_array'] ) ) { //phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$column_array = json_decode( str_replace( '\"', '"', wp_unslash( $_POST['wopb_sc_column_array'] ) ) ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			update_post_meta( $post_id, 'wopb_sc_column', wopb_function()->rest_sanitize_params( $column_array ) ); //phpcs:ignore WordPress.Security.NonceVerification.Missing
+		if ( isset( $_POST['wopb_sc_column_array'] ) && is_string( $_POST['wopb_sc_column_array'] ) ) {
+			// Decode first, then sanitize each cell: sanitizing the encoded JSON breaks cells holding quotes.
+			$column_array = $this->sanitize_chart_rows( json_decode( wp_unslash( $_POST['wopb_sc_column_array'] ), true ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each cell is sanitized by sanitize_chart_rows().
+			if ( null !== $column_array ) {
+				// The metadata API unslashes values again; preserve literal backslashes in sanitized cells.
+				update_post_meta( $post_id, 'wopb_sc_column', wp_slash( $column_array ) );
+			}
 		}
-		update_post_meta( $post_id, 'wopb_sc_heading_position', isset( $_POST['wopb_sc_heading_position'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_heading_position'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		update_post_meta( $post_id, 'wopb_sc_hide_title', isset( $_POST['wopb_sc_hide_title'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_hide_title'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		update_post_meta( $post_id, 'wopb_sc_all_product', isset( $_POST['wopb_sc_all_product'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_all_product'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		update_post_meta( $post_id, 'wopb_sc_category', isset( $_POST['wopb_sc_category'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_category'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		update_post_meta( $post_id, 'wopb_sc_include_products', isset( $_POST['wopb_sc_include_products'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_include_products'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		update_post_meta( $post_id, 'wopb_sc_exclude_products', isset( $_POST['wopb_sc_exclude_products'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_sc_exclude_products'] ) ) : '' ); //phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$fields = array(
+			'wopb_sc_heading_position',
+			'wopb_sc_hide_title',
+			'wopb_sc_all_product',
+			'wopb_sc_category',
+			'wopb_sc_exclude_products',
+		);
+		foreach ( $fields as $field ) {
+			update_post_meta( $post_id, $field, isset( $_POST[ $field ] ) ? map_deep( wp_unslash( $_POST[ $field ] ), 'sanitize_text_field' ) : '' );
+		}
+	}
+
+	/**
+	 * Sanitize the chart table posted by the editor: a list of rows, each a list of cell texts.
+	 *
+	 * @param mixed $rows Decoded table.
+	 * @return array|null Sanitized rows, or null when the table isn't that shape, so the saved chart is kept.
+	 * @since 4.6.0
+	 */
+	private function sanitize_chart_rows( $rows ) {
+		if ( ! is_array( $rows ) ) {
+			return null;
+		}
+		$sanitized = array();
+		foreach ( $rows as $row ) {
+			if ( ! is_array( $row ) ) {
+				return null;
+			}
+			$cells = array();
+			foreach ( $row as $cell ) {
+				if ( null !== $cell && ! is_scalar( $cell ) ) {
+					return null;
+				}
+				$cells[] = sanitize_text_field( (string) $cell );
+			}
+			$sanitized[] = $cells;
+		}
+		return $sanitized;
 	}
 
 	/**
@@ -579,7 +576,7 @@ class SizeChart {
 	 * @since v.1.0.4
 	 */
 	public function size_chart_admin_fields_save( $post_id ) {
-		$args                = array(
+		$args    = array(
 			'post_type'      => $this->size_chart,
 			'posts_per_page' => -1,
 			'orderby'        => 'ID',
@@ -592,34 +589,43 @@ class SizeChart {
 				),
 			),
 		);
-		$results             = new \WP_Query( $args );
-		$chart_ids           = isset( $_POST['wopb_size_chart_ids'] ) ? wopb_function()->rest_sanitize_params( wp_unslash( $_POST['wopb_size_chart_ids'] ) ) : array(); //phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$results = new \WP_Query( $args );
+
+		$chart_ids = array();
+		if ( isset( $_POST['wopb_size_chart_ids'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verifies the product save nonce before this hook.
+			$chart_ids = array_map( 'absint', array_filter( (array) wp_unslash( $_POST['wopb_size_chart_ids'] ), 'is_scalar' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each ID is cast with absint(); the nonce is verified by WooCommerce.
+		}
+		// Only real size charts the user may edit can be linked to or unlinked from the product.
+		$chart_ids          = array_values( array_filter( array_unique( $chart_ids ), array( $this, 'can_link_chart' ) ) );
 		$selected_chart_ids = $chart_ids;
 		if ( $results->posts ) {
 			foreach ( $results->posts as $chart ) {
+				if ( ! $this->can_link_chart( $chart->ID ) ) {
+					continue;
+				}
 				$include_products = get_post_meta( $chart->ID, 'wopb_sc_include_products', true );
-				if ( ! empty( $include_products ) ) {
+				if ( ! empty( $include_products ) && is_array( $include_products ) ) {
 					if (
 						! empty( $chart_ids ) &&
-						in_array( $chart->ID, $chart_ids ) &&
+						in_array( $chart->ID, $chart_ids, true ) &&
 						in_array( $post_id, $include_products )
 					) {
 						// Check selected chart and product id exist or not in existing chart.
-						// If already exist skip then chart id save in database
+						// If already exist skip then chart id save in database.
 						$chart_ids = array_diff( $chart_ids, array( $chart->ID ) );
 					} elseif ( in_array( $post_id, $include_products ) ) {
-						// If product id exist in existing chart then product remove from the chart
+						// If product id exist in existing chart then product remove from the chart.
 						$include_products = array_diff( $include_products, array( $post_id ) );
 						update_post_meta( $chart->ID, 'wopb_sc_include_products', $include_products );
 					}
 				}
 			}
 		}
-		// Product save to selected chart
+		// Product save to selected chart.
 		if ( ! empty( $chart_ids ) ) {
 			foreach ( $chart_ids as $chart_id ) {
 				$include_products = get_post_meta( $chart_id, 'wopb_sc_include_products', true );
-				if ( empty( $include_products ) ) {
+				if ( empty( $include_products ) || ! is_array( $include_products ) ) {
 					$include_products = array();
 				}
 				$include_products[] = $post_id;
@@ -627,6 +633,17 @@ class SizeChart {
 			}
 		}
 		update_post_meta( $post_id, 'wopb_size_chart_ids', $selected_chart_ids );
+	}
+
+	/**
+	 * Whether a post is a size chart the current user can edit
+	 *
+	 * @param int $chart_id Post ID.
+	 * @return bool
+	 * @since 4.6.0
+	 */
+	public function can_link_chart( $chart_id ) {
+		return get_post_type( $chart_id ) === $this->size_chart && current_user_can( 'edit_post', $chart_id );
 	}
 
 	/**
@@ -686,27 +703,6 @@ class SizeChart {
 	}
 
 	/**
-	 * Size Chart Tab In Single Product
-	 *
-	 * @param array $tabs
-	 * @return array
-	 * @since v.3.2.0
-	 */
-	public function size_chart_product_tab( array $tabs ) {
-		$table_content = $this->table_content();
-		if ( $table_content ) {
-			$tabs['wopb_size_chart_tab'] = array(
-				'title'    => esc_html( wopb_function()->get_setting( 'size_chart_tab_text' ) ),
-				'callback' => function () use ( $table_content ) {
-					echo $table_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_attr()/esc_html()-escaped pieces; contains inline SVG that wp_kses_post would strip.
-				},
-				'priority' => 60,
-			);
-		}
-		return $tabs;
-	}
-
-	/**
 	 * Check If Product Assigned In Size Chart
 	 *
 	 * @param array $chart_ids
@@ -716,20 +712,26 @@ class SizeChart {
 	public function is_assigned_on_products( array $chart_ids ) {
 		global $product;
 		$exclude_products = get_post_meta( $chart_ids[0], 'wopb_sc_exclude_products', true );
-		$include_products = get_post_meta( $chart_ids[0], 'wopb_sc_include_products', true );
 		$categories       = get_post_meta( $chart_ids[0], 'wopb_sc_category', true );
 
 		if ( ! empty( $exclude_products ) && in_array( $product->get_id(), $exclude_products ) ) {
 			return false;
 		} elseif ( get_post_meta( $chart_ids[0], 'wopb_sc_all_product', true ) ) {
 			return true;
-		} elseif ( ! empty( $include_products ) && in_array( $product->get_id(), $include_products ) ) {
-			return true;
 		} elseif ( ! empty( $categories ) && array_intersect( $product->get_category_ids(), $categories ) ) {
 			return true;
 		}
 
-		return false;
+		/**
+		 * Filters whether a size chart applies to the product, after the free checks.
+		 * Not called for products the chart excludes.
+		 *
+		 * @since 4.6.0
+		 * @param bool        $assigned Whether the chart applies.
+		 * @param int         $chart_id Size chart post ID.
+		 * @param \WC_Product $product  Product being viewed.
+		 */
+		return (bool) apply_filters( 'wopb_size_chart_assigned', false, $chart_ids[0], $product );
 	}
 
 	/**
@@ -754,11 +756,6 @@ class SizeChart {
 					'compare' => '=',
 				),
 				array(
-					'key'     => 'wopb_sc_include_products',
-					'value'   => '"' . $product->get_id() . '"',
-					'compare' => 'LIKE',
-				),
-				array(
 					'key'     => 'wopb_sc_exclude_products',
 					'value'   => '"' . $product->get_id() . '"',
 					'compare' => 'LIKE',
@@ -775,96 +772,144 @@ class SizeChart {
 			}
 		}
 
+		/**
+		 * Filters the query for size charts that may apply to the product.
+		 *
+		 * @since 4.6.0
+		 * @param array       $args    `WP_Query` arguments.
+		 * @param \WC_Product $product Product being viewed.
+		 */
+		$args   = apply_filters( 'wopb_size_chart_query_args', $args, $product );
 		$query  = new \WP_Query( $args );
 		$charts = $query->posts;
 		return wp_list_pluck( $charts, 'ID' );
 	}
 
 	/**
+	 * Size Chart ID For The Current Product
+	 *
+	 * @return int Chart ID, or 0 when no published chart applies.
+	 * @since 4.6.0
+	 */
+	public function get_chart_id() {
+		if ( ! is_product() ) {
+			return 0;
+		}
+		global $product;
+		if ( ! is_a( $product, 'WC_Product' ) ) {
+			return 0;
+		}
+		$chart_ids = get_post_meta( $product->get_id(), 'wopb_size_chart_ids', true );
+		if ( ! empty( $chart_ids[0] ) && get_post_status( $chart_ids[0] ) === 'publish' ) {
+			return absint( $chart_ids[0] );
+		}
+		$chart_ids = $this->chart_list();
+		if ( $chart_ids && $this->is_assigned_on_products( $chart_ids ) ) {
+			return absint( $chart_ids[0] );
+		}
+		return 0;
+	}
+
+	/**
+	 * Size Chart Body Markup
+	 *
+	 * @param int $chart_id Size chart post ID.
+	 * @return string
+	 * @since 4.6.0
+	 */
+	public function chart_body( $chart_id ) {
+		$table_rows       = get_post_meta( $chart_id, 'wopb_sc_column', true );
+		$heading_position = get_post_meta( $chart_id, 'wopb_sc_heading_position', true );
+		$html             = '';
+		if ( ! empty( $table_rows ) && is_array( $table_rows ) ) {
+			$table_class         = ' wopb-scrollbar';
+			$table_class        .= $heading_position != '' ? ' wopb-heading-row' : ' wopb-heading-col';
+			$wopb_buffer_level_1 = ob_get_level();
+			ob_start();
+			try {
+				?>
+			<div class="wopb-sc-table<?php echo esc_attr( $table_class ); ?>">
+				<table >
+				<?php
+				foreach ( $table_rows as $key => $columns ) {
+					?>
+						<tr class="wopb-sc-table-row">
+					<?php
+					foreach ( $columns as $index => $column ) {
+						$col_class = '';
+						if ( '' != $heading_position && 0 == $key ) {
+							$col_class = 'wopb-sc-head-col';
+						} elseif ( '' == $heading_position && 0 == $index ) {
+							$col_class = 'wopb-sc-head-col';
+						}
+						?>
+							<td class="<?php echo esc_attr( $col_class ); ?>">
+							<?php echo esc_html( $column ); ?>
+							</td>
+							<?php } ?>
+						</tr>
+					<?php } ?>
+				</table>
+			</div>
+				<?php
+				$html = ob_get_clean();
+			} finally {
+				while ( ob_get_level() > $wopb_buffer_level_1 ) {
+					if ( ! ob_end_clean() ) {
+						break;
+					}
+				}
+			}
+		}
+
+		/**
+		 * Filters the size chart body markup.
+		 *
+		 * @since 4.6.0
+		 * @param string $html     Chart table markup, or '' when the chart has no rows.
+		 * @param int    $chart_id Size chart post ID.
+		 */
+		return (string) apply_filters( 'wopb_size_chart_content', $html, $chart_id );
+	}
+
+	/**
 	 * Table Content Preview in Front-end
 	 *
-	 * @return void|null|boolean
+	 * @return void|string
 	 * @since v.3.2.0
 	 */
 	public function table_content() {
-		if ( ! is_product() ) {
+		$chart_id = $this->get_chart_id();
+		if ( ! $chart_id ) {
 			return;
 		}
-		global $product;
-		$chart_ids             = get_post_meta( $product->get_id(), 'wopb_size_chart_ids', true );
-		$chart_id_from_product = '';
-		$chart_id_from_post    = '';
-		$chart_id              = '';
-		if ( ! empty( $chart_ids[0] ) && get_post_status( $chart_ids[0] ) == 'publish' ) {
-			$chart_id = $chart_id_from_product = $chart_ids[0];
-		} elseif ( $chart_ids = $this->chart_list() ) {
-			$chart_id = $chart_id_from_post = $chart_ids[0];
-		}
-		if (
-			$chart_id &&
-			(
-				$chart_id_from_product ||
-				( $chart_id_from_post && $this->is_assigned_on_products( $chart_ids ) )
-			)
-		) {
-			$table_rows       = get_post_meta( $chart_id, 'wopb_sc_column', true );
-			$heading_position = get_post_meta( $chart_id, 'wopb_sc_heading_position', true );
-			$hide_title       = get_post_meta( $chart_id, 'wopb_sc_hide_title', true );
-			$title            = get_the_title( $chart_id );
-			$is_tab           = wopb_function()->get_setting( 'size_chart_display' ) == 'additional_tab';
-			$modal_class      = 'wopb-size-chart-wrapper';
-			$modal_class     .= ! $is_tab ? ' wopb-size-chart-modal' : '';
-			ob_start();
+		$hide_title          = get_post_meta( $chart_id, 'wopb_sc_hide_title', true );
+		$title               = get_the_title( $chart_id );
+		$wopb_buffer_level_2 = ob_get_level();
+		ob_start();
+		try {
 			?>
-			<div class="<?php echo esc_attr( $modal_class ); ?>">
-				<div class="wopb-chart-<?php echo $is_tab ? 'tab' : 'modal'; ?>-content">
-					<?php if ( ( $is_tab && $title && ! $hide_title ) || ! $is_tab ) { ?>
-						<div class="wopb-sc-title">
-							<?php echo ! $hide_title ? esc_html( $title ) : ''; ?>
-							<?php if ( ! $is_tab ) { ?>
-								<span class="wopb-chart-modal-close">
-									<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 6 6 18M6 6l12 12" stroke="#070707" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-								</span>
-							<?php } ?>
-						</div>
-					<?php } ?>
-					<div class="wopb-chart-body">
-						<?php
-						if ( has_post_thumbnail( $chart_id ) ) {
-							echo '<div class="wopb-size-chart-image">' . get_the_post_thumbnail( $chart_id ) . '</div>';
-						} elseif ( ! empty( $table_rows ) ) {
-							$table_class  = ' wopb-scrollbar';
-							$table_class .= $heading_position != '' ? ' wopb-heading-row' : ' wopb-heading-col';
-							?>
-							<div class="wopb-sc-table<?php echo esc_attr( $table_class ); ?>">
-								<table >
-								<?php
-								foreach ( $table_rows as $key => $columns ) {
-									?>
-										<tr class="wopb-sc-table-row">
-									<?php
-									foreach ( $columns as $index => $column ) {
-										$col_class = '';
-										if ( $heading_position != '' && $key == 0 ) {
-											$col_class = 'wopb-sc-head-col';
-										} elseif ( $heading_position == '' && $index == 0 ) {
-											$col_class = 'wopb-sc-head-col';
-										}
-										?>
-											<td class="<?php echo esc_attr( $col_class ); ?>">
-											<?php echo esc_html( $column ); ?>
-											</td>
-											<?php } ?>
-										</tr>
-									<?php } ?>
-								</table>
-							</div>
-						<?php } ?>
-					</div>
+		<div class="wopb-size-chart-wrapper wopb-size-chart-modal">
+			<div class="wopb-chart-modal-content">
+				<div class="wopb-sc-title">
+					<?php echo ! $hide_title ? esc_html( $title ) : ''; ?>
+					<span class="wopb-chart-modal-close">
+						<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 6 6 18M6 6l12 12" stroke="#070707" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					</span>
+				</div>
+				<div class="wopb-chart-body">
+					<?php echo wp_kses_post( $this->chart_body( $chart_id ) ); ?>
 				</div>
 			</div>
+		</div>
 			<?php
 			return ob_get_clean();
+		} finally {
+			while ( ob_get_level() > $wopb_buffer_level_2 ) {
+				if ( ! ob_end_clean() ) {
+					break;
+				}
+			}
 		}
 	}
 
@@ -875,7 +920,7 @@ class SizeChart {
 	 * @since v.3.2.0
 	 */
 	public function generate_css( $key ) {
-		if ( $key == 'wopb_size_chart' && method_exists( wopb_function(), 'convert_css' ) ) {
+		if ( 'wopb_size_chart' === $key && method_exists( wopb_function(), 'convert_css' ) ) {
 			$settings  = wopb_function()->get_setting();
 			$btn_style = array_merge( $settings['size_chart_btn_typo'], $settings['size_chart_btn_bg'] );
 

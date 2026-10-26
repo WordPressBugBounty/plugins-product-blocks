@@ -14,11 +14,7 @@ if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Secu
 	remove_action( 'woocommerce_proceed_to_checkout', 'woocommerce_button_proceed_to_checkout', 20 );
 	add_action(
 		'woocommerce_proceed_to_checkout',
-		function () use ( $attr ) {
-			echo '<a href="' . esc_url( wc_get_checkout_url() ) . '" class="checkout-button button alt wc-forward">';
-			echo esc_html( $attr['checkoutTxt'] );
-			echo '</a>';
-		}
+		array( new \WOPB\blocks\CartTotalCheckoutButtonCallback( $attr ), 'render_checkout_button' )
 	);
 	?>
 
@@ -45,7 +41,7 @@ if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Secu
 					</tr>
 				<?php endforeach; ?>
 
-				
+
 				<?php if ( WC()->cart->needs_shipping() && WC()->cart->show_shipping() ) : ?>
 					<?php do_action( 'woocommerce_cart_totals_before_shipping' ); ?>
 					<?php wc_cart_totals_shipping_html(); ?>
@@ -57,7 +53,7 @@ if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Secu
 						<td class="wopb-total-price"><?php woocommerce_shipping_calculator(); ?></td>
 					</tr>
 				<?php endif; ?>
-				
+
 				<?php foreach ( WC()->cart->get_fees() as $fee ) : ?>
 					<tr class="fee">
 						<th><?php echo esc_html( $fee->name ); ?></th>
@@ -71,13 +67,13 @@ if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Secu
 					$estimated_text  = '';
 					if ( WC()->customer->is_customer_outside_base() && ! WC()->customer->has_calculated_shipping() ) {
 						/* translators: %s: is no estimated */
-						$estimated_text = sprintf( ' <small>' . esc_html__( '(estimated for %s)', 'product-blocks' ) . '</small>', WC()->countries->estimated_for_prefix( $taxable_address[0] ) . WC()->countries->countries[ $taxable_address[0] ] );
+						$estimated_text = sprintf( ' <small>' . esc_html__( '(estimated for %s)', 'product-blocks' ) . '</small>', esc_html( WC()->countries->estimated_for_prefix( $taxable_address[0] ) . WC()->countries->countries[ $taxable_address[0] ] ) );
 					}
 					if ( 'itemized' === get_option( 'woocommerce_tax_total_display' ) ) {
 						foreach ( WC()->cart->get_tax_totals() as $code => $tax ) {
 							?>
 							<tr class="tax-rate tax-rate-<?php echo esc_attr( sanitize_title( $code ) ); ?>">
-								<th><?php echo esc_html( $tax->label ) . $estimated_text; ?></th>
+								<th><?php echo esc_html( $tax->label ) . wp_kses_post( $estimated_text ); ?></th>
 								<td class="wopb-total-price"><?php echo wp_kses_post( $tax->formatted_amount ); ?></td>
 							</tr>
 							<?php
@@ -85,7 +81,7 @@ if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Secu
 					} else {
 						?>
 						<tr class="tax-total">
-							<th><?php echo esc_html( WC()->countries->tax_or_vat() ) . $estimated_text; ?></th>
+							<th><?php echo esc_html( WC()->countries->tax_or_vat() ) . wp_kses_post( $estimated_text ); ?></th>
 							<td class="wopb-total-price" data-title="<?php echo esc_attr( WC()->countries->tax_or_vat() ); ?>"><?php wc_cart_totals_taxes_total_html(); ?></td>
 						</tr>
 						<?php
@@ -94,7 +90,7 @@ if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Secu
 				?>
 
 				<?php do_action( 'woocommerce_cart_totals_before_order_total' ); ?>
-				
+
 				<tr class="order-total">
 					<th><?php echo ( $attr['totalTxt'] ? esc_html( $attr['totalTxt'] ) : esc_html__( 'Total', 'product-blocks' ) ); ?></th>
 					<td class="wopb-total-price" data-title="<?php echo ( $attr['totalTxt'] ? esc_html( $attr['totalTxt'] ) : esc_html__( 'Total', 'product-blocks' ) ); ?>"><?php wc_cart_totals_order_total_html(); ?></td>
@@ -103,7 +99,7 @@ if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Secu
 			<?php do_action( 'woocommerce_cart_totals_after_order_total' ); ?>
 
 		</table>
-		
+
 		<div class="wc-proceed-to-checkout">
 			<?php do_action( 'woocommerce_proceed_to_checkout' ); ?>
 		</div>

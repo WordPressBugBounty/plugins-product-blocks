@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- the variables below belong to the method scope that includes this partial; the functions it declares carry the wopb_ prefix.
 
 WC()->cart->calculate_totals();
 WC()->cart->calculate_shipping();
@@ -14,7 +14,7 @@ if ( ! empty( $free_shipping_instance_id ) ) {
 	$data      = get_option( 'woocommerce_free_shipping_' . $free_shipping_instance_id . '_settings', array() );
 
 	if ( isset( $data['min_amount'] ) ) {
-		$data['min_amount'] = wopb_function()->currency_switcher_data( $data['min_amount'] )['value'];
+		$data['min_amount'] = wopb_function()->get_price_data( $data['min_amount'] )['value'];
 		if ( $data['min_amount'] > $sub_total ) {
 			$free_shipping_cart_due = $data['min_amount'] - $sub_total;
 			$free_shipping_progress = floor( ( $sub_total * 100 ) / $data['min_amount'] );
@@ -24,7 +24,7 @@ if ( ! empty( $free_shipping_instance_id ) ) {
 	}
 }
 
-function progressBar( $free_shipping_progress, $attr ) {
+function wopb_free_shipping_progress_bar( $free_shipping_progress, $attr ) {
 	$html      = '';
 	$html     .= '<div class="wopb-progress-area ">';
 		$html .= '<div class="wopb-progress-bar-filled" style="width:' . esc_attr( $free_shipping_progress ) . '%;"></div>';
@@ -38,11 +38,11 @@ function progressBar( $free_shipping_progress, $attr ) {
 	<?php
 	if ( $attr['progressTop'] ) {
 		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo progressBar( $free_shipping_progress, $attr );
+		echo wopb_free_shipping_progress_bar( $free_shipping_progress, $attr );
 	}
 	?>
 	<div class="wopb-progress-msg">
-		<?php if ( $free_shipping_progress == 100 ) { ?>
+		<?php if ( 100 == $free_shipping_progress ) { ?>
 			<span><?php echo esc_html( $attr['freeShipText'] ); ?></span>
 		<?php } else { ?>
 			<span><?php echo wp_kses( $attr['beforePriceText'], wopb_function()->allowed_html_tags() ); ?></span>
@@ -58,7 +58,7 @@ function progressBar( $free_shipping_progress, $attr ) {
 	</div>
 	<?php
 	if ( ! $attr['progressTop'] ) {
-		echo progressBar( $free_shipping_progress, $attr ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wopb_free_shipping_progress_bar( $free_shipping_progress, $attr ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 	?>
 </div>

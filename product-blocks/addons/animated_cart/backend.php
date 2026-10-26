@@ -11,7 +11,6 @@ function wopb_animated_cart_config( $config ) {
 	$configuration                = array(
 		'name'     => __( 'Animated Add to Cart', 'product-blocks' ),
 		'desc'     => __( 'Grab customers attention by animating the Add to Cart button on hover or in the loop.', 'product-blocks' ),
-		'is_pro'   => false,
 		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-animated-add-to-cart-button/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/animated-add-to-cart/',
 		'type'     => 'checkout_cart',
@@ -28,9 +27,8 @@ function wopb_animated_cart_config( $config ) {
  * @param ARRAY | Default Congiguration
  * @return ARRAY
  */
-add_filter( 'wopb_settings', 'get_animated_cart_settings', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_animated_cart_settings( $config ) {
+add_filter( 'wopb_settings', 'wopb_get_animated_cart_settings', 10, 1 );
+function wopb_get_animated_cart_settings( $config ) {
 	$arr = array(
 		'wopb_animated_cart' => array(
 			'label' => __( 'Animated Add to Cart Settings', 'product-blocks' ),

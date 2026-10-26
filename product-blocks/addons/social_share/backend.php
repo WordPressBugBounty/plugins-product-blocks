@@ -11,7 +11,6 @@ function wopb_social_share_init( $config ) {
 	$configuration               = array(
 		'name'     => __( 'Quick Social Share', 'product-blocks' ),
 		'desc'     => __( 'Display social share icons and let your shoppers share products with their social profiles instantly.', 'product-blocks' ),
-		'is_pro'   => false,
 		'live'     => 'https://wpxpo.com/docs/wowstore/add-ons/quick-social-share/', // live link missing
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/quick-social-share/',
 		'type'     => 'exclusive',
@@ -28,11 +27,9 @@ function wopb_social_share_init( $config ) {
  * @param ARRAY | Default Congiguration
  * @return ARRAY
  */
-add_filter( 'wopb_settings', 'get_social_share_opt', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_social_share_opt( $config ) {
-	$is_active = wopb_function()->get_setting( 'is_lc_active' );
-	$arr       = array(
+add_filter( 'wopb_settings', 'wopb_get_social_share_opt', 10, 1 );
+function wopb_get_social_share_opt( $config ) {
+	$arr = array(
 		'wopb_social_share' => array(
 			'label' => __( 'Social Share Settings', 'product-blocks' ),
 			'attr'  => array(
@@ -54,7 +51,7 @@ function get_social_share_opt( $config ) {
 										'social_share_media' => array(
 											'type'    => 'select_item',
 											'label'   => __( 'Select Share Item', 'product-blocks' ),
-											'desc'    => __( 'Select the item you want to display. To rearrange these fields, you can also drag and drop. You can also customize the label name according to your preferences. Mail, WhatsApp, and Messenger are Pro features. You need to upgrade to Pro.', 'product-blocks' ),
+											'desc'    => __( 'Select the item you want to display. To rearrange these fields, you can also drag and drop. You can also customize the label name according to your preferences.', 'product-blocks' ),
 											'options' => array(
 												array(
 													'key' => '',
@@ -83,21 +80,6 @@ function get_social_share_opt( $config ) {
 												array(
 													'key' => 'reddit',
 													'label' => __( 'Reddit', 'product-blocks' ),
-												),
-												array(
-													'key' => 'mail',
-													'pro' => true,
-													'label' => __( 'Mail', 'product-blocks' ),
-												),
-												array(
-													'key' => 'whatsapp',
-													'pro' => true,
-													'label' => __( 'WhatsApp', 'product-blocks' ),
-												),
-												array(
-													'key' => 'messenger',
-													'pro' => true,
-													'label' => __( 'Messenger', 'product-blocks' ),
 												),
 											),
 											'default' => array(

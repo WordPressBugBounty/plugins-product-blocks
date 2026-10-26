@@ -11,7 +11,6 @@ function wopb_size_chart_init( $config ) {
 	$configuration             = array(
 		'name'     => __( 'Size Chart', 'product-blocks' ),
 		'desc'     => __( 'Create & display size charts to help the potential buyers make better buying decisions.', 'product-blocks' ),
-		'is_pro'   => false,
 		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-size-chart/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/size-chart/',
 		'type'     => 'exclusive',
@@ -28,11 +27,9 @@ function wopb_size_chart_init( $config ) {
  * @param ARRAY | Default Configuration
  * @return ARRAY
  */
-add_filter( 'wopb_settings', 'get_size_chart_opt', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_size_chart_opt( $config ) {
-	$is_active = wopb_function()->get_setting( 'is_lc_active' );
-	$arr       = array(
+add_filter( 'wopb_settings', 'wopb_get_size_chart_opt', 10, 1 );
+function wopb_get_size_chart_opt( $config ) {
+	$arr = array(
 		'wopb_size_chart' => array(
 			'label' => __( 'Size Chart Settings', 'product-blocks' ),
 			'attr'  => array(
@@ -47,7 +44,7 @@ function get_size_chart_opt( $config ) {
 									'attr' => array(
 										'wopb_size_chart' => array(
 											'type'  => 'toggle',
-											'value' => $is_active ? 'true' : 'false',
+											'value' => 'false',
 											'label' => __( 'Enable Size Chart', 'product-blocks' ),
 											'desc'  => __( 'Enable size chart on your website', 'product-blocks' ),
 										),
@@ -57,9 +54,6 @@ function get_size_chart_opt( $config ) {
 											'display' => 'inline-box',
 											'options' => array(
 												'popup' => __( 'Pop Up', 'product-blocks' ),
-											),
-											'pro'     => array(
-												'additional_tab' => __( 'Additional Tab', 'product-blocks' ),
 											),
 											'default' => 'popup',
 										),
@@ -74,31 +68,11 @@ function get_size_chart_opt( $config ) {
 												'after_meta' => __( 'After Meta', 'product-blocks' ),
 											),
 											'default' => 'before_add_cart',
-											'depends' => array(
-												'key'   => 'size_chart_display',
-												'condition' => '==',
-												'value' => 'popup',
-											),
 										),
 										'size_chart_btn_text' => array(
 											'type'    => 'text',
 											'label'   => __( 'Button Text', 'product-blocks' ),
 											'default' => 'Size Chart',
-											'depends' => array(
-												'key'   => 'size_chart_display',
-												'condition' => '==',
-												'value' => 'popup',
-											),
-										),
-										'size_chart_tab_text' => array(
-											'type'    => 'text',
-											'label'   => __( 'Tab Label Text', 'product-blocks' ),
-											'default' => 'Size Chart',
-											'depends' => array(
-												'key'   => 'size_chart_display',
-												'condition' => '==',
-												'value' => 'additional_tab',
-											),
 										),
 										'size_chart_btn_icon' => array(
 											'type'    => 'radio',
@@ -111,11 +85,6 @@ function get_size_chart_opt( $config ) {
 												'chart_4' => wopb_function()->svg_icon( 'chart_4' ),
 											),
 											'default' => 'chart_1',
-											'depends' => array(
-												'key'   => 'size_chart_display',
-												'condition' => '==',
-												'value' => 'popup',
-											),
 										),
 									),
 								),

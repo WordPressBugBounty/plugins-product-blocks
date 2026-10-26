@@ -1,38 +1,38 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Oxygen Builder element class name, must match Oxygen's own naming convention.
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Class is prefixed with the plugin's former name (ProductX); kept so existing integrations keep working.
 class ProductXElement extends OxyEl {
 
-	function init() {
+	public function init() {
 		// Do some initial things here.
 	}
 
-	function afterInit() {
+	public function afterInit() {
 		$this->removeApplyParamsButton();
 	}
 
-	function name() {
+	public function name() {
 		return __( 'WowStore Templates', 'product-blocks' );
 	}
 
-	function slug() {
+	public function slug() {
 		return 'productx-templates';
 	}
 
-	function icon() {
+	public function icon() {
 		return WOPB_URL . 'addons/oxygen/icon.svg';
 	}
 
-	function button_place() {
+	public function button_place() {
 		return 'interactive';
 	}
 
-	function button_priority() {
+	public function button_priority() {
 		return 9;
 	}
 
-	function render( $options, $defaults, $content ) {
+	public function render( $options, $defaults, $content ) {
 		$templates = $options['templates'];
 
 		if ( $templates ) {
@@ -58,7 +58,7 @@ class ProductXElement extends OxyEl {
 		}
 	}
 
-	function controls() {
+	public function controls() {
 		$this->addOptionControl(
 			array(
 				'type'    => 'dropdown',
@@ -69,7 +69,7 @@ class ProductXElement extends OxyEl {
 		)->setValue( wopb_function()->get_all_lists( 'wopb_templates' ) )->rebuildElementOnChange();
 	}
 
-	function defaultCSS() {
+	public function defaultCSS() {
 		wopb_function()->register_scripts_common();
 	}
 }

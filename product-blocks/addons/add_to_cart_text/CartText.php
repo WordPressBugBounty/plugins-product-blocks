@@ -32,7 +32,7 @@ class CartText {
 	 * @since v.4.0.0
 	 */
 	public function shop_archive_text_callback( $add_to_cart_text, $product ) {
-		if ( $product->get_stock_status() != 'outofstock' ) {
+		if ( $product->get_stock_status() !== 'outofstock' ) {
 			$p_type = $product->get_type();
 			if ( in_array( $p_type, array( 'simple', 'grouped', 'external', 'variable' ) ) ) {
 				$temp = wopb_function()->get_setting( 'cart_text_' . ( is_product() ? 'single' : 'archive' ) . '_' . $p_type );

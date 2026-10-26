@@ -7,8 +7,11 @@ defined( 'ABSPATH' ) || exit;
 
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
 
-$order_id = absint( get_query_var( 'order-received' ) );
-$order    = wc_get_order( $order_id );
+$order = wopb_function()->get_thankyou_order();
+
+if ( ! $order ) {
+	return;
+}
 
 $order_items           = $order->get_items( apply_filters( 'woocommerce_purchase_order_item_types', 'line_item' ) );
 $show_purchase_note    = $order->has_status( apply_filters( 'woocommerce_purchase_note_order_statuses', array( 'completed', 'processing' ) ) );
@@ -16,9 +19,6 @@ $show_customer_details = is_user_logged_in() && $order->get_user_id() === get_cu
 $downloads             = $order->get_downloadable_items();
 $show_downloads        = $order->has_downloadable_item() && $order->is_download_permitted();
 
-if ( ! $order ) {
-	return;
-}
 ?>
 
 <div class="wopb-thankyou-order-details-container">
@@ -124,13 +124,13 @@ if ( ! $order ) {
 			<?php
 
 			foreach ( $order->get_order_item_totals() as $key => $total ) {
-				if ( $key == 'cart_subtotal' ) {
+				if ( 'cart_subtotal' === $key ) {
 					$total['label'] = $attr['subTotalText'];
-				} elseif ( $key == 'shipping' ) {
+				} elseif ( 'shipping' === $key ) {
 					$total['label'] = $attr['shippingText'];
-				} elseif ( $key == 'payment_method' ) {
+				} elseif ( 'payment_method' === $key ) {
 					$total['label'] = $attr['payMethodText'];
-				} elseif ( $key == 'order_total' ) {
+				} elseif ( 'order_total' === $key ) {
 					$total['label'] = $attr['footTotalText'];
 				}
 				?>

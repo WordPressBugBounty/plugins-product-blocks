@@ -35,12 +35,10 @@ if ( ! function_exists( 'wopb_preorder_init' ) ) {
  * @return ARRAY
  * @since v.1.0.4
  */
-add_filter( 'wopb_settings', 'get_preorder_opt', 10, 1 );
+add_filter( 'wopb_settings', 'wopb_get_preorder_opt', 10, 1 );
 
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_preorder_opt( $config ) {
-	$is_active = wopb_function()->get_setting( 'is_lc_active' );
-	$arr       = array(
+function wopb_get_preorder_opt( $config ) {
+	$arr = array(
 		'wopb_preorder' => array(
 			'label' => __( 'Pre-order', 'product-blocks' ),
 			'attr'  => array(
@@ -63,12 +61,6 @@ function get_preorder_opt( $config ) {
 											'label' => __( 'Enable Preorder', 'product-blocks' ),
 											'desc'  => __( 'Enable preorder on your website', 'product-blocks' ),
 										),
-										'preorder_counter_disable' => array(
-											'type'    => 'toggle',
-											'label'   => __( 'Disable Counter', 'product-blocks' ),
-											'default' => '',
-											'desc'    => __( 'Enable switch if you want to hide counter.', 'product-blocks' ),
-										),
 										'preorder_button_text' => array(
 											'type'    => 'text',
 											'label'   => __( 'Pre-order Label/Text', 'product-blocks' ),
@@ -78,12 +70,6 @@ function get_preorder_opt( $config ) {
 											'type'    => 'text',
 											'label'   => __( 'Pre-order Add to Cart Text', 'product-blocks' ),
 											'default' => __( 'Pre-order Now', 'product-blocks' ),
-										),
-										'preorder_message_text' => array(
-											'type'    => 'text',
-											'pro'     => true,
-											'label'   => __( 'Availability Message', 'product-blocks' ),
-											'default' => __( 'Available On', 'product-blocks' ),
 										),
 										'preorder_coming_soon_text' => array(
 											'type'    => 'text',
@@ -103,18 +89,6 @@ function get_preorder_opt( $config ) {
 										'preorder_available_typo' => array(
 											'type'    => 'typography',
 											'label'   => __( 'Available Label Typography', 'product-blocks' ),
-											'default' => (object) array(
-												'size'   => 16,
-												'bold'   => true,
-												'italic' => true,
-												'underline' => false,
-												'color'  => '#398e29',
-												'hover_color' => '',
-											),
-										),
-										'preorder_duration_typo' => array(
-											'type'    => 'typography',
-											'label'   => __( 'Duration Typography', 'product-blocks' ),
 											'default' => (object) array(
 												'size'   => 16,
 												'bold'   => true,
@@ -145,53 +119,6 @@ function get_preorder_opt( $config ) {
 												'italic' => false,
 												'underline' => false,
 												'color'  => '#333333',
-												'hover_color' => '',
-											),
-										),
-										'preorder_timer_bg' => array(
-											'type'    => 'color2',
-											'field1'  => 'bg',
-											'field2'  => 'hover_bg',
-											'label'   => __( 'Timer Background', 'product-blocks' ),
-											'default' => (object) array(
-												'bg'       => '#191924',
-												'hover_bg' => '',
-											),
-											'tooltip' => __( 'Background Color', 'product-blocks' ),
-										),
-										'preorder_time_typo' => array(
-											'type'    => 'typography',
-											'label'   => __( 'Time Typography', 'product-blocks' ),
-											'default' => (object) array(
-												'size'   => 20,
-												'bold'   => false,
-												'italic' => false,
-												'underline' => false,
-												'color'  => '#ffffff',
-												'hover_color' => '',
-											),
-										),
-										'preorder_time_label_typo' => array(
-											'type'    => 'typography',
-											'label'   => __( 'Timer Label Typography', 'product-blocks' ),
-											'default' => (object) array(
-												'size'   => 12,
-												'bold'   => false,
-												'italic' => false,
-												'underline' => false,
-												'color'  => '#ffffff',
-												'hover_color' => '',
-											),
-										),
-										'preorder_time_separator_typo' => array(
-											'type'    => 'typography',
-											'label'   => __( 'Time Separator Typography', 'product-blocks' ),
-											'default' => (object) array(
-												'size'   => 24,
-												'bold'   => false,
-												'italic' => false,
-												'underline' => false,
-												'color'  => '#ffffff',
 												'hover_color' => '',
 											),
 										),

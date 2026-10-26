@@ -86,23 +86,6 @@ class Backorder {
 			'backorder_heading'                 => 'yes',
 			'backorder_button_text'             => __( 'Backorder', 'product-blocks' ),
 			'backorder_add_to_cart_button_text' => __( 'Backorder Now', 'product-blocks' ),
-			'backorder_message_text'            => 'Available On',
-			'backorder_available_typo'          => array(
-				'size'        => 16,
-				'bold'        => true,
-				'italic'      => true,
-				'underline'   => false,
-				'color'       => '#398e29',
-				'hover_color' => '',
-			),
-			'backorder_duration_typo'           => array(
-				'size'        => 16,
-				'bold'        => true,
-				'italic'      => true,
-				'underline'   => false,
-				'color'       => '#398e29',
-				'hover_color' => '',
-			),
 			'backorder_remain_typo'             => array(
 				'size'        => 16,
 				'bold'        => false,
@@ -159,7 +142,6 @@ class Backorder {
 	 */
 	public function product_options_inventory_product_data() {
 		global $post, $product_object;
-		// wopb_function()->get_setting( 'is_lc_active' )
 		if ( $product_object->is_type( 'simple' ) ) {
 			$html = $this->generate_field( $product_object );
             echo $html; //phpcs:ignore
@@ -185,19 +167,18 @@ class Backorder {
 	 * @since v.1.0.7
 	 */
 	public function generate_field( $product, $loop = '' ) {
-		$html = '';
-		$loop = $loop !== '' ? '[' . $loop . ']' : '';
-
-		$backorder_message         = $product->get_meta( '_wopb_backorder_message' );
-		$default_backorder_message = wopb_function()->get_setting( 'backorder_message_text' );
+		$html  = '';
+		$index = '' !== $loop ? '[' . $loop . ']' : '';
 
 		$html     .= '<div class="wopb-backorder-field-group">';
 			$html .= '<h4 class="wopb-backorder-title">' . __( 'WowStore Backorder Information', 'product-blocks' ) . '</h4>';
 
+			$wopb_buffer_level_1 = ob_get_level();
 			ob_start();
+		try {
 			woocommerce_wp_text_input(
 				array(
-					'id'          => '_wopb_max_backorder' . $loop,
+					'id'          => '_wopb_max_backorder' . $index,
 					'class'       => 'wopb-required w-60',
 					'label'       => __( 'Available Quantity', 'product-blocks' ),
 					'type'        => 'number',
@@ -207,39 +188,22 @@ class Backorder {
 				)
 			);
 
-			$is_active = wopb_function()->get_setting( 'is_lc_active' );
-
-		if ( $is_active ) {
-			woocommerce_wp_text_input(
-				array(
-					'id'          => '_wopb_backorder_date' . $loop,
-					'class'       => 'wopb-required w-60',
-					'label'       => __( 'Availability Date', 'product-blocks' ),
-					'type'        => 'datetime-local',
-					'value'       => $product->get_meta( '_wopb_backorder_date' ),
-					'desc_tip'    => true,
-					'description' => __( 'Message indicating date and time of the backorder product availability', 'product-blocks' ),
-				)
-			);
-		} else {
-			echo '<p class="form-field">';
-			echo '<label>' . esc_html__( 'Availability Date', 'product-blocks' ) . '</label>';
-			echo wopb_function()->pro_or_renew_field_notice( 'backorder' ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo '</p>';
-		}
-
-			woocommerce_wp_text_input(
-				array(
-					'id'          => '_wopb_backorder_message' . $loop,
-					'class'       => 'wopb-required w-60',
-					'label'       => __( 'Availability Message', 'product-blocks' ),
-					'type'        => 'text',
-					'value'       => $backorder_message ? $backorder_message : $default_backorder_message,
-					'desc_tip'    => true,
-					'description' => __( 'Message indicating date and time of the backorder product availability', 'product-blocks' ),
-				)
-			);
+			/**
+			 * Fires in the backorder fields of a product, after "Available Quantity". Output is echoed.
+			 *
+			 * @since 4.6.0
+			 * @param \WC_Product $product Simple product or variation.
+			 * @param int|string  $loop    Variation loop index, '' for simple products.
+			 */
+			do_action( 'wopb_backorder_product_fields', $product, $loop );
 			$html .= ob_get_clean();
+		} finally {
+			while ( ob_get_level() > $wopb_buffer_level_1 ) {
+				if ( ! ob_end_clean() ) {
+					break;
+				}
+			}
+		}
 
 		$html .= '</div>';
 
@@ -257,8 +221,15 @@ class Backorder {
 		if ( $product->is_on_backorder() || ( ( $product->managing_stock() && $product->get_backorders() === 'yes' ) ) ) {
 			// Nonce already verified by WC_Meta_Box_Product_Data::save() before this hook fires.
 			$product->update_meta_data( '_wopb_max_backorder', isset( $_POST['_wopb_max_backorder'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_backorder'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$product->update_meta_data( '_wopb_backorder_date', isset( $_POST['_wopb_backorder_date'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_backorder_date'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$product->update_meta_data( '_wopb_backorder_message', isset( $_POST['_wopb_backorder_message'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_backorder_message'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+			/**
+			 * Fires before a product on backorder is saved, so more backorder data can be added.
+			 *
+			 * @since 4.6.0
+			 * @param \WC_Product $product Simple product or variation.
+			 * @param int|null    $index   Variation loop index, null for simple products.
+			 */
+			do_action( 'wopb_backorder_saved', $product, null );
 			$product->save();
 		}
 	}
@@ -273,9 +244,10 @@ class Backorder {
 		$product = wc_get_product( $variation_id );
 		if ( $product->is_on_backorder() || ( ( $product->managing_stock() && $product->get_backorders() === 'yes' ) ) ) {
 			// Nonce already verified by WooCommerce before woocommerce_save_product_variation fires.
-			$product->update_meta_data( '_wopb_backorder_date', isset( $_POST['_wopb_backorder_date'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_backorder_date'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 			$product->update_meta_data( '_wopb_max_backorder', isset( $_POST['_wopb_max_backorder'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_backorder'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$product->update_meta_data( '_wopb_backorder_message', isset( $_POST['_wopb_backorder_message'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_backorder_message'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+			/** This action is documented in addons/backorder/Backorder.php */
+			do_action( 'wopb_backorder_saved', $product, $a );
 			$product->save();
 		}
 	}
@@ -292,13 +264,31 @@ class Backorder {
 			! $product->managing_stock() &&
 			$product->is_on_backorder() &&
 			$product->is_purchasable() &&
-			! wopb_function()->is_backorder_closed( $product ) &&
+			$this->is_active( $product ) &&
 			wopb_function()->get_setting( 'backorder_add_to_cart_button_text' )
 		) {
 			return wopb_function()->get_setting( 'backorder_add_to_cart_button_text' );
 		} else {
 			return $text;
 		}
+	}
+
+	/**
+	 * Whether the backorder label, limit and messages apply to a product on backorder
+	 *
+	 * @param \WC_Product $product Product or variation.
+	 * @return BOOLEAN
+	 * @since 4.6.0
+	 */
+	private function is_active( $product ) {
+		/**
+		 * Filters whether the backorder label, limit and messages apply to a product on backorder.
+		 *
+		 * @since 4.6.0
+		 * @param bool        $active  True by default.
+		 * @param \WC_Product $product Product or variation.
+		 */
+		return (bool) apply_filters( 'wopb_backorder_active', true, $product );
 	}
 
 	/**
@@ -311,20 +301,26 @@ class Backorder {
 		if (
 			( ( $product->managing_stock() && $product->get_backorders() === 'yes' ) ||
 			$product->is_on_backorder() ) &&
-			! wopb_function()->is_backorder_closed( $product ) &&
+			$this->is_active( $product ) &&
 			$product->is_purchasable()
 		) {
-			$available_date_time = gmdate( 'd M Y', strtotime( $product->get_meta( '_wopb_backorder_date' ) ) ) . ' at ' . gmdate( 'h:i a', strtotime( $product->get_meta( '_wopb_backorder_date' ) ) );
-			$remaining_items     = $this->remaining_item_count( $product );
+			$remaining_items = $this->remaining_item_count( $product );
 
-			$html = '<div class="wopb-backorder-wrapper">';
-			if ( $product->get_meta( '_wopb_backorder_date' ) ) {
-				$html     .= '<div class="wopb-singlepage-backorder-message">';
-					$html .= '<span class="wopb-backorder-message">' . $product->get_meta( '_wopb_backorder_message' ) . ': </span>';
-					$html .= '<span class="wopb-backorder-duration">' . $available_date_time . '</span>';
-					$html .= '<input type="hidden" class="wopb-single-variation-backorder-text" value="' . wopb_function()->get_setting( 'backorder_add_to_cart_button_text' ) . '">';
-				$html     .= '</div>';
-			}
+			/**
+			 * Filters the availability message of a product on backorder.
+			 *
+			 * @since 4.6.0
+			 * @param string      $message Message markup, '' by default.
+			 * @param \WC_Product $product Product or variation.
+			 * @param string      $context 'stock' (product page) or 'cart'.
+			 */
+			$message = apply_filters( 'wopb_backorder_available_message', '', $product, 'stock' );
+
+			$html      = '<div class="wopb-backorder-wrapper">';
+			$html     .= '<div class="wopb-singlepage-backorder-message">';
+				$html .= $message;
+				$html .= '<input type="hidden" class="wopb-single-variation-backorder-text" value="' . esc_attr( wopb_function()->get_setting( 'backorder_add_to_cart_button_text' ) ) . '">';
+			$html     .= '</div>';
 
 			if ( $remaining_items ) {
 				$html     .= '<div class="wopb-singlepage-backorder-remaining-item">';
@@ -348,17 +344,13 @@ class Backorder {
 		if ( $cart_item['variation_id'] ) {
 			$product = wc_get_product( $cart_item['variation_id'] );
 		}
-		if ( ! $product->managing_stock() && $product->is_on_backorder() && ! wopb_function()->is_backorder_closed( $product ) ) {
-			$backorder_available_date                = $product->get_meta( '_wopb_backorder_date' );
-			$backorder_message                       = $product->get_meta( '_wopb_backorder_message' ) . ': ';
-			$backorder_available_date_time_formatted = gmdate( 'd M Y h:i a', strtotime( $backorder_available_date ) );
+		if ( ! $product->managing_stock() && $product->is_on_backorder() && $this->is_active( $product ) ) {
+			/** This filter is documented in addons/backorder/Backorder.php */
+			$message = apply_filters( 'wopb_backorder_available_message', '', $product, 'cart' );
 
 			$html = '<span class="wopb-cart-backorder-badge">' . wopb_function()->get_setting( 'backorder_button_text' ) . '</span>';
-			if ( $backorder_available_date ) {
-				$html .= '<div class="wopb-cart-backorder-message">';
-				$html .= '<span class="wopb-backorder-message">' . $backorder_message . '</span>';
-				$html .= '<span class="wopb-backorder-duration">' . $backorder_available_date_time_formatted . '</span>';
-				$html .= '</div>';
+			if ( $message ) {
+				$html .= '<div class="wopb-cart-backorder-message">' . $message . '</div>';
 			}
 			return $name . $html;
 		}
@@ -377,7 +369,7 @@ class Backorder {
 		if ( $cart_item['variation_id'] ) {
 			$product = wc_get_product( $cart_item['variation_id'] );
 		}
-		if ( ! $product->managing_stock() && $product->is_on_backorder() && ! wopb_function()->is_backorder_closed( $product ) ) {
+		if ( ! $product->managing_stock() && $product->is_on_backorder() && $this->is_active( $product ) ) {
 			$item->update_meta_data( 'wopb_backorder_item', 'yes' );
 		}
 	}
@@ -390,7 +382,7 @@ class Backorder {
 	 */
 	public function order_item_get_formatted_meta_data( $formatted_meta, $item ) {
 		foreach ( $formatted_meta as $key => $meta ) {
-			if ( $meta->key == 'wopb_backorder_item' ) {
+			if ( 'wopb_backorder_item' === $meta->key ) {
 				$meta->display_key = '<span class="wopb-cart-backorder-badge">' . wopb_function()->get_setting( 'backorder_button_text' ) . '</span>';
 			}
 		}
@@ -407,7 +399,7 @@ class Backorder {
 		$reordered_columns = array();
 		foreach ( $columns as $key => $column ) {
 			$reordered_columns[ $key ] = $column;
-			if ( $key == 'order_status' ) {
+			if ( 'order_status' === $key ) {
 				$reordered_columns['wopb_order_page_order_type'] = __( 'Order Type', 'product-blocks' );
 			}
 		}
@@ -422,11 +414,11 @@ class Backorder {
 	 */
 	public function set_order_type_column_value( $column ) {
 		global $the_order;
-		if ( $column == 'wopb_order_page_order_type' ) {
+		if ( 'wopb_order_page_order_type' === $column ) {
 			$has_item = false;
 			$items    = $the_order->get_items();
 			foreach ( $the_order->get_items() as $item ) {
-				if ( $item->get_meta( 'wopb_backorder_item' ) == 'yes' ) {
+				if ( $item->get_meta( 'wopb_backorder_item' ) === 'yes' ) {
 					$has_item = true;
 				}
 			}
@@ -464,7 +456,7 @@ class Backorder {
 			$product = wc_get_product( $product_id );
 		}
 
-		if ( ! $product->managing_stock() && $product->is_on_backorder() && ! wopb_function()->is_backorder_closed( $product ) && $quantity > $this->remaining_item_count( $product ) ) {
+		if ( ! $product->managing_stock() && $product->is_on_backorder() && $this->is_active( $product ) && $quantity > $this->remaining_item_count( $product ) ) {
 			return false;
 		}
 
@@ -546,25 +538,11 @@ class Backorder {
 	 * @since v.4.0.0
 	 */
 	public function generate_css( $key ) {
-		if ( $key == 'wopb_backorder' && method_exists( wopb_function(), 'convert_css' ) ) {
+		if ( 'wopb_backorder' === $key && method_exists( wopb_function(), 'convert_css' ) ) {
 			$settings    = wopb_function()->get_setting();
 			$badge_style = array_merge( $settings['backorder_badge_typo'], $settings['backorder_badge_bg'] );
 
-			$css      = '.wopb-backorder-message{';
-				$css .= wopb_function()->convert_css( 'general', $settings['backorder_available_typo'] );
-			$css     .= '}';
-			$css     .= '.wopb-backorder-message:hover{';
-				$css .= wopb_function()->convert_css( 'hover', $settings['backorder_available_typo'] );
-			$css     .= '}';
-
-			$css     .= '.wopb-backorder-duration{';
-				$css .= wopb_function()->convert_css( 'general', $settings['backorder_duration_typo'] );
-			$css     .= '}';
-			$css     .= '.wopb-backorder-duration:hover{';
-				$css .= wopb_function()->convert_css( 'hover', $settings['backorder_duration_typo'] );
-			$css     .= '}';
-
-			$css     .= '.wopb-backorder-remaining-label{';
+			$css      = '.wopb-backorder-remaining-label{';
 				$css .= wopb_function()->convert_css( 'general', $settings['backorder_remain_typo'] );
 			$css     .= '}';
 			$css     .= '.wopb-backorder-remaining-label:hover{';

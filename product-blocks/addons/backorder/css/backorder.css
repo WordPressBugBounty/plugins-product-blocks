@@ -28,10 +28,6 @@
 .wopb-cart-backorder-message{
     display: none;
 }
-.wopb-cart-preorder-message .wopb-cart-backorder-message,
-.wopb-cart-preorder-message .wopb-backorder-duration {
-    font-size: 14px;
-}
 
 .woocommerce-cart-form__contents .wopb-cart-backorder-message{
     display: block;

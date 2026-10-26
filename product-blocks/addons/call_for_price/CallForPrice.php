@@ -22,7 +22,7 @@ class CallForPrices {
 	 */
 	public function __construct() {
 		add_action( 'wp_head', array( $this, 'single_loop_product_callback' ) );
-		if ( wopb_function()->get_setting( 'call_on_shop' ) == 'yes' ) {
+		if ( wopb_function()->get_setting( 'call_on_shop' ) === 'yes' ) {
 			add_filter( 'woocommerce_loop_add_to_cart_link', array( $this, 'add_to_cart_button' ), 10, 3 );
 		}
 		add_filter( 'woocommerce_is_purchasable', array( $this, 'product_purchasable' ), 10, 2 ); // Purchasable false for Empty Price products
@@ -40,8 +40,8 @@ class CallForPrices {
 	public function product_purchasable( $value, $product ) {
 		if (
 			( ! $product->get_price() ) ||
-			( wopb_function()->get_setting( 'call_all_product' ) == 'yes' ) ||
-			( wopb_function()->get_setting( 'call_out_stock' ) == 'yes' && ! $product->is_in_stock() )
+			( wopb_function()->get_setting( 'call_all_product' ) === 'yes' ) ||
+			( wopb_function()->get_setting( 'call_out_stock' ) === 'yes' && ! $product->is_in_stock() )
 		) {
 			return false;
 		}
@@ -57,20 +57,16 @@ class CallForPrices {
 	public function single_loop_product_callback() {
 		if ( is_product() ) {
 			$btn_position = wopb_function()->get_setting( 'call_btn_position' );
-			if ( $btn_position == 'description_bottom' ) {
+			if ( 'description_bottom' === $btn_position ) {
 				add_filter(
 					'woocommerce_short_description',
-					function ( $content ) {
-						ob_start();
-						$this->price_condition_callback();
-						return $content . ob_get_clean();
-					},
+					array( $this, 'append_price_to_description' ),
 					10,
 					1
 				);
-			} elseif ( $btn_position == 'meta_bottom' ) {
+			} elseif ( 'meta_bottom' === $btn_position ) {
 				add_filter( 'woocommerce_product_meta_end', array( $this, 'price_condition_callback' ) );
-			} elseif ( $btn_position == 'title_bottom' ) {
+			} elseif ( 'title_bottom' === $btn_position ) {
 				add_action( 'wopb_after_single_product_title', array( $this, 'price_condition_callback' ), 6 );
 				add_action( 'woocommerce_single_product_summary', array( $this, 'price_condition_callback' ), 6 );
 			}
@@ -84,13 +80,13 @@ class CallForPrices {
 	 * @return NULL
 	 */
 	public function price_condition_callback( $price = '', $product = '' ) {
-		if ( gettype( $product ) != 'object' ) {
+		if ( gettype( $product ) !== 'object' ) {
 			$product = wc_get_product( get_the_ID() );
 		}
 		if (
 			! $product->get_price()
-			|| wopb_function()->get_setting( 'call_all_product' ) == 'yes'
-			|| ( wopb_function()->get_setting( 'call_out_stock' ) == 'yes' && ! $product->is_in_stock() )
+			|| wopb_function()->get_setting( 'call_all_product' ) === 'yes'
+			|| ( wopb_function()->get_setting( 'call_out_stock' ) === 'yes' && ! $product->is_in_stock() )
 		) {
 			$html = $this->product_price_html( $product );
 			if ( is_product() ) {
@@ -224,24 +220,28 @@ class CallForPrices {
 			case 'skype':
 				$link = 'skype:' . $call_link . '?call';
 				break;
-			case 'whatsapp':
-                $link = 'https://api.whatsapp.com/send?phone=' . $call_link . '&text=' . esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); //phpcs:ignore
-				$target = '_blank';
-				break;
-			case 'email':
-				$link = 'mailto:' . $call_link;
-				break;
-			case 'link':
-				$link   = $call_link;
-				$target = '_blank';
-				break;
 			default:
 				break;
 		}
 
-		if ( wopb_function()->get_setting( 'call_type' ) && wopb_function()->get_setting( 'call_price_icon_enable' ) == 'yes' ) {
-			$icon = $this->icons( wopb_function()->get_setting( 'call_type' ) );
+		if ( $call_type && wopb_function()->get_setting( 'call_price_icon_enable' ) === 'yes' ) {
+			$icon = $this->icons( $call_type );
 		}
+
+		$button = apply_filters(
+			'wopb_call_for_price_button',
+			array(
+				'link'   => $link,
+				'target' => $target,
+				'icon'   => $icon,
+			),
+			$call_type,
+			$call_link,
+			$product
+		);
+		$link   = isset( $button['link'] ) ? $button['link'] : '';
+		$target = ! empty( $button['target'] ) ? $button['target'] : '_self';
+		$icon   = 'yes' === wopb_function()->get_setting( 'call_price_icon_enable' ) && isset( $button['icon'] ) ? $button['icon'] : '';
 
 		if ( $link ) {
 			$button_class = 'wopb-call-to-action';
@@ -251,11 +251,11 @@ class CallForPrices {
 				$button_class .= ' wopb-call-price-shop-btn';
 			}
 			$html = '<a target="' . esc_attr( $target ) . '" class="' . esc_attr( $button_class ) . '" href="' . esc_url( $link ) . '">';
-			if ( wopb_function()->get_setting( 'call_icon_position' ) == 'before' ) {
+			if ( wopb_function()->get_setting( 'call_icon_position' ) === 'before' ) {
 				$html .= $icon;
 			}
 			$html .= wopb_function()->get_setting( 'call_for_price_text' );
-			if ( wopb_function()->get_setting( 'call_icon_position' ) == 'after' ) {
+			if ( wopb_function()->get_setting( 'call_icon_position' ) === 'after' ) {
 				$html .= $icon;
 			}
 			$html .= '</a>';
@@ -273,9 +273,18 @@ class CallForPrices {
 	 * @since v.4.0.0
 	 */
 	public function add_to_cart_button( $add_to_cart_html, $product, $args ) {
+		$wopb_buffer_level_2 = ob_get_level();
 		ob_start();
-		echo wopb_function()->wp_kses_safe( $this->price_condition_callback( '', $product ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		$call_html = ob_get_clean();
+		try {
+			echo wopb_function()->wp_kses_safe( $this->price_condition_callback( '', $product ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$call_html = ob_get_clean();
+		} finally {
+			while ( ob_get_level() > $wopb_buffer_level_2 ) {
+				if ( ! ob_end_clean() ) {
+					break;
+				}
+			}
+		}
 		return $call_html ? $call_html : $add_to_cart_html;
 	}
 
@@ -287,17 +296,12 @@ class CallForPrices {
 	 */
 	public function icons( $key = '' ) {
 		$icon = array(
-			'phone'    => 'phone.svg',
-			'skype'    => 'skype.svg',
-			'whatsapp' => 'whatsapp.svg',
-			'email'    => 'mail.svg',
-			'link'     => 'link.svg',
+			'phone' => 'phone.svg',
+			'skype' => 'skype.svg',
 		);
 		if ( $key && isset( $icon[ $key ] ) ) {
 			$svg_path = WOPB_PATH . 'assets/img/addons/call_for_price/' . $icon[ $key ];
-			if ( file_exists( $svg_path ) ) {
-				return file_get_contents( $svg_path );
-			}
+			return wopb_function()->get_path_file_contents( $svg_path );
 		}
 		return '';
 	}
@@ -310,7 +314,7 @@ class CallForPrices {
 	 */
 	public function generate_css( $key ) {
 
-		if ( $key == 'wopb_call_for_price' && method_exists( wopb_function(), 'convert_css' ) ) {
+		if ( 'wopb_call_for_price' === $key && method_exists( wopb_function(), 'convert_css' ) ) {
 			$settings         = wopb_function()->get_setting();
 			$single_btn_style = array_merge( $settings['call_btn_typo_single'], $settings['call_btn_bg_single'] );
 			$shop_btn_style   = array_merge( $settings['call_btn_typo_shop'], $settings['call_btn_bg_shop'] );
@@ -362,6 +366,22 @@ class CallForPrices {
 			/* Shop page button style */
 
 			wopb_function()->update_css( $key, 'add', $css );
+		}
+	}
+
+	/** Named WordPress hook callback. */
+	public function append_price_to_description( $content ) {
+		$wopb_buffer_level_1 = ob_get_level();
+		ob_start();
+		try {
+			$this->price_condition_callback();
+			return $content . ob_get_clean();
+		} finally {
+			while ( ob_get_level() > $wopb_buffer_level_1 ) {
+				if ( ! ob_end_clean() ) {
+					break;
+				}
+			}
 		}
 	}
 }

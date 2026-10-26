@@ -43,10 +43,9 @@ if ( wp_is_block_theme() ) {
 	<?php
 	wp_body_open();
 	if ( ! $WOPB_HEADER_ID ) {
-		ob_start();
+		echo '<header class="wp-block-template-part">';
 		block_template_part( 'header' );
-		$header_safe = wopb_function()->core_esc_wp( ob_get_clean() );
-		echo '<header class="wp-block-template-part">' . $header_safe . '</header>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '</header>';
 	}
 } else {
 	get_header();
@@ -173,8 +172,6 @@ if ( $page_id ) {
 
 		foreach ( $blocks as $block ) {
 			$contents = $embed->autoembed( do_shortcode( render_block( $block ) ) );
-			// phpcs:ignore Squiz.PHP.CommentedOutCode.Found -- reserved for future use.
-			// $content_safe = wopb_function()->wp_kses_safe( $contents, $allow_script_tag );
 			echo $contents; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- rendered block/shortcode output; each block's own render callback is responsible for escaping its content.
 		}
 	}
@@ -234,10 +231,9 @@ if ( wp_is_block_theme() ) {
 	</html>
 	<?php
 	if ( ! $WOPB_FOOTER_ID ) {
-		ob_start();
+		echo '<footer class="wp-block-template-part">';
 		block_template_part( 'footer' );
-		$footer_safe = wopb_function()->core_esc_wp( ob_get_clean() );
-		echo '<footer class="wp-block-template-part">' . $footer_safe . '</footer>'; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '</footer>';
 	}
 	wp_head();
 	wp_footer();

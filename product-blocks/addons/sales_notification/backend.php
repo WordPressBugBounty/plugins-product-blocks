@@ -11,7 +11,6 @@ function wopb_sales_notification_config( $config ) {
 	$configuration                     = array(
 		'name'     => __( 'Sales Push Notification', 'product-blocks' ),
 		'desc'     => __( 'Build trust and give the customers confidence to purchase products from your online store.', 'product-blocks' ),
-		'is_pro'   => false,
 		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-live-sales-notification/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/sales-push-notification/',
 		'type'     => 'sales',
@@ -28,9 +27,8 @@ function wopb_sales_notification_config( $config ) {
  * @param ARRAY | Default Congiguration
  * @return ARRAY
  */
-add_filter( 'wopb_settings', 'get_sales_notification_settings', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_sales_notification_settings( $config ) {
+add_filter( 'wopb_settings', 'wopb_get_sales_notification_settings', 10, 1 );
+function wopb_get_sales_notification_settings( $config ) {
 	$arr = array(
 		'wopb_sales_notification' => array(
 			'label' => __( 'Sale Push Notification Settings', 'product-blocks' ),
@@ -70,6 +68,7 @@ function get_sales_notification_settings( $config ) {
 											'type'    => 'select',
 											'label'   => __( 'Name', 'product-blocks' ),
 											'options' => array(
+												'none'    => __( 'No Name', 'product-blocks' ),
 												'display' => __( 'Display Name', 'product-blocks' ),
 												'first_name' => __( 'First Name', 'product-blocks' ),
 												'last_name' => __( 'Last Name', 'product-blocks' ),
@@ -77,7 +76,7 @@ function get_sales_notification_settings( $config ) {
 												'user_name' => __( 'Username', 'product-blocks' ),
 												'nick_name' => __( 'Nickname', 'product-blocks' ),
 											),
-											'default' => 'display',
+											'default' => 'none',
 										),
 										'sales_label'     => array(
 											'type'    => 'text',
@@ -326,7 +325,7 @@ function wopb_get_all_pages_list() {
 
 		foreach ( $woo_pages as $page_key => $label ) {
 			$page_id  = wc_get_page_id( $page_key );
-			$fallback = $page_key === 'myaccount' ? 'my_account' : $page_key;
+			$fallback = 'myaccount' === $page_key ? 'my_account' : $page_key;
 			$add_page( $page_id, $fallback, $label );
 		}
 

@@ -11,7 +11,6 @@ function wopb_product_video_init( $config ) {
 	$configuration                = array(
 		'name'     => __( 'Product Video', 'product-blocks' ),
 		'desc'     => __( "Display product-featured videos instead of featured images and grab users' attention to specific products.", 'product-blocks' ),
-		'is_pro'   => false,
 		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-product-video/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/product-video/',
 		'type'     => 'exclusive',
@@ -28,11 +27,9 @@ function wopb_product_video_init( $config ) {
  * @param ARRAY | Default Congiguration
  * @return ARRAY
  */
-add_filter( 'wopb_settings', 'get_product_video_opt', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_product_video_opt( $config ) {
-	$is_active = wopb_function()->get_setting( 'is_lc_active' );
-	$arr       = array(
+add_filter( 'wopb_settings', 'wopb_get_product_video_opt', 10, 1 );
+function wopb_get_product_video_opt( $config ) {
+	$arr = array(
 		'wopb_product_video' => array(
 			'label' => __( 'Product Video Settings', 'product-blocks' ),
 			'attr'  => array(
@@ -44,13 +41,6 @@ function get_product_video_opt( $config ) {
 							'value' => false,
 							'label' => __( 'Enable Product Video', 'product-blocks' ),
 							'desc'  => __( 'Enable product video on your website', 'product-blocks' ),
-						),
-						'product_video_archive' => array(
-							'type'    => 'toggle',
-							'label'   => __( 'Show on Shop & Archive', 'product-blocks' ),
-							'default' => 'yes',
-							'desc'    => __( 'Show Video on Shop & Archive Page', 'product-blocks' ),
-							'pro'     => 'true',
 						),
 						'product_video_single'  => array(
 							'type'    => 'toggle',

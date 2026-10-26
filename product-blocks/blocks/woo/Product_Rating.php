@@ -42,20 +42,29 @@ class Product_Rating {
 			$average               = $product->get_average_rating();
 				$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-				$wraper_before           .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
-					$content             .= '<div class="wopb-product-wrapper">';
-						$content         .= '<div class="woocommerce-product-rating">';
-							$content     .= '<div class="star-rating">';
-								$content .= wc_get_star_rating_html( $average, $rating_count );
-							$content     .= '</div>';
-							$content     .= '<a href="#reviews" class="woocommerce-review-link" rel="nofollow">';
-								$content .= '(<span class="count">' . $review_count . '</span> ' . esc_html__( 'customer review', 'product-blocks' ) . ')';
-							$content     .= '</a>';
-						$content         .= '</div>';
+				$wraper_before              .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
+					$content                .= '<div class="wopb-product-wrapper">';
+						$content            .= '<div class="woocommerce-product-rating">';
+							$content        .= '<div class="star-rating">';
+								$content    .= wc_get_star_rating_html( $average, $rating_count );
+							$content        .= '</div>';
+							$content        .= '<a href="#reviews" class="woocommerce-review-link" rel="nofollow">';
+								$content    .= '(<span class="count">' . $review_count . '</span> ' . esc_html__( 'customer review', 'product-blocks' ) . ')';
+							$content        .= '</a>';
+						$content            .= '</div>';
+						$wopb_buffer_level_1 = ob_get_level();
 						ob_start();
-						$content .= ob_get_clean();
-					$content     .= '</div>';
-				$wraper_after    .= '</div>';
+			try {
+				$content .= ob_get_clean();
+			} finally {
+				while ( ob_get_level() > $wopb_buffer_level_1 ) {
+					if ( ! ob_end_clean() ) {
+						break;
+					}
+				}
+			}
+					$content  .= '</div>';
+				$wraper_after .= '</div>';
 			// }
 		}
 

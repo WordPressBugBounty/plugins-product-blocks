@@ -7,8 +7,6 @@
  */
 namespace WOPB;
 
-use WOPB\blocks\Product_Search;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -40,7 +38,7 @@ class REST_API {
 				'methods'             => \WP_REST_Server::READABLE,
 				'args'                => array(),
 				'callback'            => array( $this, 'wopb_route_post_data' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( $this, 'can_access_editor_data' ),
 			)
 		);
 		register_rest_route(
@@ -50,7 +48,7 @@ class REST_API {
 				'methods'             => \WP_REST_Server::READABLE,
 				'args'                => array(),
 				'callback'            => array( $this, 'wopb_route_category_data' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( $this, 'can_access_editor_data' ),
 			)
 		);
 		register_rest_route(
@@ -60,7 +58,7 @@ class REST_API {
 				'methods'             => \WP_REST_Server::READABLE,
 				'args'                => array(),
 				'callback'            => array( $this, 'wopb_route_common_data' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( $this, 'can_access_editor_data' ),
 			)
 		);
 		register_rest_route(
@@ -70,7 +68,7 @@ class REST_API {
 				'methods'             => \WP_REST_Server::READABLE,
 				'args'                => array(),
 				'callback'            => array( $this, 'wopb_route_preview_data' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( $this, 'can_preview_product' ),
 			)
 		);
 		register_rest_route(
@@ -103,41 +101,169 @@ class REST_API {
 		);
 		register_rest_route(
 			'wopb',
-			'/product-filter/',
-			array(
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'product_filter' ),
-				'permission_callback' => '__return_true',
-				'args'                => array(),
-			),
-		);
-		register_rest_route(
-			'wopb',
-			'product-search',
-			array(
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'product_search' ),
-				'permission_callback' => '__return_true',
-			)
-		);
-		register_rest_route(
-			'wopb',
 			'views',
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'popular_posts_tracker_callback' ),
-				'permission_callback' => '__return_true',
+				'permission_callback' => array( $this, 'can_track_product_view' ),
 			)
 		);
-		register_rest_route(
-			'wopb/v1', // Add version
-			'/get-pd-taxonomy-data', // Remove trailing slash
-			array(
-				'methods'             => 'GET',
-				'callback'            => array( $this, 'get_product_taxonomy_data' ),
-				'permission_callback' => '__return_true',
-			)
+	}
+
+
+	/**
+	 * The request's parameters, which must all be single values (the editor sends JSON as strings).
+	 *
+	 * Values are not run through sanitize_text_field(): that would strip the %xx octets of
+	 * non-Latin term slugs. WP_Query and the term functions handle them as before.
+	 *
+	 * @param \WP_REST_Request $request The request.
+	 * @return array|\WP_Error Parameters, or a 400 error naming the first invalid field.
+	 */
+	private function get_scalar_params( $request ) {
+		$params = $request->get_params();
+		foreach ( $params as $key => $value ) {
+			if ( null !== $value && ! is_scalar( $value ) ) {
+				return $this->invalid_param_error( $key );
+			}
+		}
+
+		// These attributes are built by server-side renderers, never by editor REST requests.
+		foreach ( array( 'productTaxonomy', 'queryCatAction', 'queryTagAction', 'custom_action', 'post__not_in' ) as $key ) {
+			if ( array_key_exists( $key, $params ) ) {
+				return $this->invalid_param_error( $key );
+			}
+		}
+
+		$json_keys = array( 'queryCat', 'queryTaxValue', 'filterCat', 'filterTag', 'filterAction' );
+		foreach ( $json_keys as $key ) {
+			if ( ! array_key_exists( $key, $params ) ) {
+				continue;
+			}
+			// Older blocks may store an empty selection as an empty string.
+			if ( '' === $params[ $key ] ) {
+				$params[ $key ] = '[]';
+			}
+			if ( ! $this->is_selection_json( $params[ $key ], 'filterAction' !== $key ) ) {
+				return $this->invalid_param_error( $key );
+			}
+		}
+
+		// Product include/exclude controls also accept their legacy comma-separated IDs.
+		foreach ( array( 'queryInclude', 'queryExclude' ) as $key ) {
+			if ( isset( $params[ $key ] ) && is_string( $params[ $key ] ) && '[' === substr( $params[ $key ], 0, 1 ) && ! $this->is_selection_json( $params[ $key ], true, false ) ) {
+				return $this->invalid_param_error( $key );
+			}
+		}
+
+		if ( ! empty( $params['filterShow'] ) ) {
+			$params += array(
+				'productView'  => 'grid',
+				'filterType'   => 'product_cat',
+				'filterCat'    => '[]',
+				'filterTag'    => '[]',
+				'filterAction' => '[]',
+			);
+		}
+
+		return $params;
+	}
+
+	/**
+	 * Validate JSON selections without changing the strings passed to query filters.
+	 *
+	 * Select controls send either scalar values or objects with a value property.
+	 * Keep each list homogeneous: get_value() consumes the whole list as objects.
+	 *
+	 * @param mixed $json          Encoded selection.
+	 * @param bool  $allow_objects Whether selection objects are supported by the consumer.
+	 * @param bool  $allow_scalars Whether plain scalar list entries are supported.
+	 * @return bool
+	 */
+	private function is_selection_json( $json, $allow_objects, $allow_scalars = true ) {
+		if ( ! is_string( $json ) ) {
+			return false;
+		}
+		$items = json_decode( $json );
+		if ( ! is_array( $items ) ) {
+			return false;
+		}
+		$object_list = isset( $items[0] ) && is_object( $items[0] );
+		foreach ( $items as $item ) {
+			if ( is_object( $item ) !== $object_list ) {
+				return false;
+			}
+			if ( $object_list ) {
+				if ( ! $allow_objects || ! isset( $item->value ) ) {
+					return false;
+				}
+				$item = $item->value;
+			} elseif ( ! $allow_scalars ) {
+				return false;
+			}
+			if ( ! is_string( $item ) && ! is_int( $item ) ) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * A 400 error for a parameter of the wrong shape.
+	 *
+	 * @param string $key Parameter name.
+	 * @return \WP_Error
+	 */
+	private function invalid_param_error( $key ) {
+		return new \WP_Error(
+			'rest_invalid_param',
+			/* translators: %s: Parameter name. */
+			sprintf( __( 'Invalid parameter: %s', 'product-blocks' ), $key ),
+			array( 'status' => 400 )
 		);
+	}
+
+	/**
+	 * Editor data is available only to users who can edit content.
+	 *
+	 * @return bool
+	 */
+	public function can_access_editor_data() {
+		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Authorize access to the individual product used in a builder preview.
+	 *
+	 * @param \WP_REST_Request $request REST request.
+	 * @return bool
+	 */
+	public function can_preview_product( $request ) {
+		if ( ! $this->can_access_editor_data() ) {
+			return false;
+		}
+		$post_id = $request->get_param( 'previews' );
+		if ( null === $post_id || '' === $post_id ) {
+			return true;
+		}
+		return is_scalar( $post_id ) && ctype_digit( (string) $post_id )
+			&& 'product' === get_post_type( (int) $post_id )
+			&& current_user_can( 'read_post', (int) $post_id );
+	}
+
+	/**
+	 * Public view tracking is limited to visible, unprotected catalog products.
+	 *
+	 * @param \WP_REST_Request $request REST request.
+	 * @return bool
+	 */
+	public function can_track_product_view( $request ) {
+		$post_id = $request->get_param( 'postID' );
+		if ( ! is_scalar( $post_id ) || ! ctype_digit( (string) $post_id ) || 'product' !== get_post_type( (int) $post_id ) ) {
+			return false;
+		}
+		$product = wc_get_product( (int) $post_id );
+		return $product && 'publish' === $product->get_status() && $product->is_visible() && ! post_password_required( (int) $post_id );
 	}
 
 
@@ -148,11 +274,15 @@ class REST_API {
 	 * @return NULL
 	 */
 	public function popular_posts_tracker_callback( $server ) {
+		if ( ! $this->can_track_product_view( $server ) ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot access this resource.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
 		$params = $server->get_params();
 		if ( ! isset( $params['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			die();
 		}
-		$post_id = sanitize_text_field( $params['postID'] );
+		$post_id = absint( $params['postID'] );
 		if ( $post_id ) {
 			// View Product Count
 			$count = (int) get_post_meta( $post_id, '__product_views_count', true );
@@ -163,7 +293,7 @@ class REST_API {
 			if ( ! in_array( $post_id, $viewed_products ) ) {
 				$viewed_products[] = $post_id;
 			}
-			if ( sizeof( $viewed_products ) > 30 ) {
+			if ( count( $viewed_products ) > 30 ) {
 				array_shift( $viewed_products );
 			}
 			wc_setcookie( '__wopb_recently_viewed', implode( '|', $viewed_products ) );
@@ -177,30 +307,24 @@ class REST_API {
 	 * Taxonomy Data Response of REST API
 	 *
 	 * @since v.2.3.7
-	 * @param ARRAY | Parameter (ARRAY)
 	 * @return ARRAY | \WP_REST_Response Taxonomy List as Array
 	 */
-	public function wopb_route_common_data( $prams ) {
+	public function wopb_route_common_data() {
+		if ( ! $this->can_access_editor_data() ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot access this resource.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
 		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return rest_ensure_response( array() );
 		}
 
-		$action_type = isset( $prams['action_type'] ) ? esc_attr( $prams['action_type'] ) : '';
-
 		// Stock Status
 		$stock_status = array();
 		foreach ( wc_get_product_stock_status_options() as $key => $status ) {
-			$temp = array(
+			$stock_status[] = array(
 				'value' => $key,
 				'label' => $status,
 			);
-			if ( $action_type == 'status' ) {
-				$temp['count'] = wopb_function()->generate_stock_status_count_query( $key, $prams );
-			}
-			$stock_status[] = $temp;
-		}
-		if ( $action_type == 'status' ) {
-			return $stock_status;
 		}
 
 		// Global Customizer
@@ -211,7 +335,7 @@ class REST_API {
 		$post_type_data = array();
 		$post_types     = wopb_function()->get_post_type();
 		foreach ( $post_types as $post_type_slug => $post_type ) {
-			$taxonomies     = $post_type_slug == 'product' ? array_diff( get_object_taxonomies( $post_type_slug ), array( 'product_type', 'product_visibility', 'product_shipping_class' ) ) : get_object_taxonomies( $post_type_slug );
+			$taxonomies     = 'product' === $post_type_slug ? array_diff( get_object_taxonomies( $post_type_slug ), array( 'product_type', 'product_visibility', 'product_shipping_class' ) ) : get_object_taxonomies( $post_type_slug );
 			$taxonomy_array = array();
 			foreach ( $taxonomies as $key => $taxonomy_slug ) {
 				$taxonomy   = get_taxonomy( $taxonomy_slug );
@@ -260,6 +384,10 @@ class REST_API {
 	 * @return ARRAY | Response as Array
 	 */
 	public function wopb_route_preview_data( $prams ) {
+		if ( ! $this->can_preview_product( $prams ) ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot access this resource.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
 		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return rest_ensure_response( array() );
 		}
@@ -269,6 +397,9 @@ class REST_API {
 		if ( $post_id ) {
 			$post_data = array();
 			$products  = wc_get_product( $post_id );
+			if ( ! $products ) {
+				return new \WP_Error( 'rest_not_found', __( 'Product not found.', 'product-blocks' ), array( 'status' => 404 ) );
+			}
 			switch ( $prams['type'] ) {
 				case 'title':
 					$post_data['title'] = $products->get_title();
@@ -295,7 +426,7 @@ class REST_API {
 					$regular                   = $products->get_regular_price();
 					$post_data['images']       = $images;
 					$post_data['images_thumb'] = $images;
-					$post_data['percentage']   = ( $regular && $sales ) ? round( ( ( $regular - $sales ) / $regular ) * 100 ) : 0;
+					$post_data['percentage']   = ( $sales && (float) $regular > 0 ) ? round( ( ( $regular - $sales ) / $regular ) * 100 ) : 0;
 					break;
 				case 'meta':
 					$post_data['sku']      = $products->get_sku();
@@ -311,7 +442,7 @@ class REST_API {
 					$post_data['sales_price']   = $sales;
 					$post_data['regular_price'] = $regular;
 					$post_data['range_price']   = ! $regular && ! $sales ? $products->get_price_html() : '';
-					$post_data['percentage']    = ( $regular && $sales ) ? round( ( ( $regular - $sales ) / $regular ) * 100 ) : 0;
+					$post_data['percentage']    = ( $sales && (float) $regular > 0 ) ? round( ( ( $regular - $sales ) / $regular ) * 100 ) : 0;
 					$post_data['symbol']        = get_woocommerce_currency_symbol();
 					break;
 				case 'rating':
@@ -374,14 +505,27 @@ class REST_API {
 	 * @return ARRAY | Response as Array
 	 */
 	public function wopb_route_category_data( $prams ) {
+		if ( ! $this->can_access_editor_data() ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot access this resource.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
 		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return rest_ensure_response( array() );
 		}
 
-		$queryCat    = isset( $prams['queryCat'] ) ? wopb_function()->rest_sanitize_params( $prams['queryCat'] ) : '';
-		$queryNumber = isset( $prams['queryNumber'] ) ? wopb_function()->rest_sanitize_params( $prams['queryNumber'] ) : '';
-		$queryType   = isset( $prams['queryType'] ) ? wopb_function()->rest_sanitize_params( $prams['queryType'] ) : '';
-		$data        = wopb_function()->get_category_data( json_decode( $queryCat ), $queryNumber, $queryType );
+		$params = $this->get_scalar_params( $prams );
+		if ( is_wp_error( $params ) ) {
+			return $params;
+		}
+
+		$queryCat = isset( $params['queryCat'] ) && '' !== $params['queryCat'] ? json_decode( $params['queryCat'] ) : array();
+		if ( ! is_array( $queryCat ) ) {
+			return $this->invalid_param_error( 'queryCat' );
+		}
+
+		$queryNumber = isset( $params['queryNumber'] ) ? absint( $params['queryNumber'] ) : '';
+		$queryType   = isset( $params['queryType'] ) ? sanitize_key( $params['queryType'] ) : '';
+		$data        = wopb_function()->get_category_data( $queryCat, $queryNumber, $queryType );
 		return rest_ensure_response( $data );
 	}
 
@@ -394,12 +538,21 @@ class REST_API {
 	 * @return ARRAY | Response Image Size as Array
 	 */
 	public function wopb_route_post_data( $prams ) {
+		if ( ! $this->can_access_editor_data() ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot access this resource.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+
 		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
 
+		$prams = $this->get_scalar_params( $prams );
+		if ( is_wp_error( $prams ) ) {
+			return $prams;
+		}
+
 		$data = array();
-		$loop = new \WP_Query( wopb_function()->get_query( wopb_function()->rest_sanitize_params( $prams ) ) );
+		$loop = new \WP_Query( wopb_function()->get_query( $prams ) );
 
 		if ( $loop->have_posts() ) {
 			while ( $loop->have_posts() ) {
@@ -415,7 +568,7 @@ class REST_API {
 				$var['time']           = get_the_date();
 				$var['price_sale']     = $product->get_sale_price();
 				$var['price_regular']  = $product->get_regular_price();
-				$var['discount']       = ( $var['price_sale'] && $var['price_regular'] ) ? round( ( $var['price_regular'] - $var['price_sale'] ) / $var['price_regular'] * 100 ) . '%' : '';
+				$var['discount']       = ( $var['price_sale'] && (float) $var['price_regular'] > 0 ) ? round( ( $var['price_regular'] - $var['price_sale'] ) / $var['price_regular'] * 100 ) . '%' : '';
 				$var['sale']           = $product->is_on_sale();
 				$var['price_html']     = $product->get_price_html();
 				$var['stock']          = $product->get_stock_status();
@@ -498,14 +651,25 @@ class REST_API {
 	 * @return ARRAY | Inserted Post Url
 	 */
 	public function template_page_insert( $server ) {
-		$post     = $server->get_params();
+		$post = $server->get_params();
+		if ( ! isset( $post['title'], $post['blockCode'] ) || ! is_string( $post['title'] ) || '' === trim( $post['title'] ) || strlen( $post['title'] ) > 1000 || ! is_string( $post['blockCode'] ) || strlen( $post['blockCode'] ) > 2097152 ) {
+			return new \WP_Error( 'wopb_invalid_template_content', __( 'Provide a valid title and block content.', 'product-blocks' ), array( 'status' => 400 ) );
+		}
+		$post_type = get_post_type_object( 'page' );
+		if ( ! $post_type || ! current_user_can( $post_type->cap->create_posts ) ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot create pages.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+		$content  = current_user_can( 'unfiltered_html' ) ? $post['blockCode'] : wp_kses_post( $post['blockCode'] );
 		$new_page = array(
 			'post_title'   => sanitize_text_field( $post['title'] ),
 			'post_type'    => 'page',
-			'post_content' => wp_slash( $post['blockCode'] ),
+			'post_content' => wp_slash( $content ),
 			'post_status'  => 'draft',
 		);
-		$post_id  = wp_insert_post( $new_page );
+		$post_id  = wp_insert_post( $new_page, true );
+		if ( is_wp_error( $post_id ) || ! $post_id ) {
+			return new \WP_Error( 'wopb_template_insert_failed', __( 'The page could not be created.', 'product-blocks' ), array( 'status' => 500 ) );
+		}
 		return array(
 			'success' => true,
 			'link'    => get_edit_post_link( $post_id ),
@@ -530,9 +694,9 @@ class REST_API {
 			case 'allpost':
 			case 'postExclude':
 				$post_type = array( 'post' );
-				if ( $type == 'allpost' ) {
+				if ( 'allpost' === $type ) {
 					$post_type = array_keys( wopb_function()->get_post_type() );
-				} elseif ( $type == 'postExclude' ) {
+				} elseif ( 'postExclude' === $type ) {
 					$post_type = array( $condition_type );
 				}
 				$args = array(
@@ -571,9 +735,9 @@ class REST_API {
 			case 'productInclude':
 			case 'productExclude':
 				$post_type = array( 'product' );
-				if ( $type == 'allproduct' ) {
+				if ( 'allproduct' === $type ) {
 					$post_type = array_keys( wopb_function()->get_post_type() );
-				} elseif ( $type == 'productInclude' || $type == 'productExclude' ) {
+				} elseif ( 'productInclude' === $type || 'productExclude' === $type ) {
 					$post_type = array( $condition_type );
 				}
 				$args = array(
@@ -620,20 +784,35 @@ class REST_API {
 
 			case 'author':
 				$term = '%' . $wpdb->esc_like( $term_type ) . '%';
-                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-				$post_results = $wpdb->get_results(
-					$wpdb->prepare(
-						"SELECT ID, display_name 
-                        FROM $wpdb->users 
-                        WHERE user_login LIKE %s OR ID LIKE %s OR user_nicename LIKE %s OR user_email LIKE %s OR display_name LIKE %s LIMIT 10",
-						$term,
-						$term,
-						$term,
-						$term,
-						$term
-					)
-				);
-				$data         = array();
+				// The block editor only needs names to pick an author. Matching on the email address is for
+				// users who may list users, so a contributor can't probe which addresses exist.
+				if ( current_user_can( 'list_users' ) ) {
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+					$post_results = $wpdb->get_results(
+						$wpdb->prepare(
+							"SELECT ID, display_name
+							FROM $wpdb->users
+							WHERE user_login LIKE %s OR ID LIKE %s OR user_nicename LIKE %s OR user_email LIKE %s OR display_name LIKE %s LIMIT 10",
+							$term,
+							$term,
+							$term,
+							$term,
+							$term
+						)
+					);
+				} else {
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+					$post_results = $wpdb->get_results(
+						$wpdb->prepare(
+							"SELECT ID, display_name
+							FROM $wpdb->users
+							WHERE user_nicename LIKE %s OR display_name LIKE %s LIMIT 10",
+							$term,
+							$term
+						)
+					);
+				}
+				$data = array();
 				if ( ! empty( $post_results ) ) {
 					foreach ( $post_results as $key => $val ) {
 						$data[] = array(
@@ -649,8 +828,23 @@ class REST_API {
 				break;
 
 			case 'taxValue':
-				$split     = explode( '###', $condition_type );
-				$condition = $split && isset( $split[1] ) && $split[1] != 'multiTaxonomy' ? array( $split[1] ) : get_object_taxonomies( $split[0] );
+				$split = explode( '###', $condition_type );
+				if ( isset( $split[1] ) && ! taxonomy_exists( $split[1] ) ) {
+					/**
+					 * Filters the term search results of a block whose taxonomy isn't a registered one.
+					 *
+					 * @since 4.6.0
+					 * @param array  $data           Results, `array( 'value', 'title' )` rows; none by default.
+					 * @param string $type           Search type: `taxValue`, `product_cat` or `product_tag`.
+					 * @param string $condition_type The field's condition, `<post type>###<taxonomy>`.
+					 * @param string $term_type      What the user typed: a name, or a term ID.
+					 */
+					return array(
+						'success' => true,
+						'data'    => apply_filters( 'wopb_rest_tax_value_data', array(), $type, $condition_type, $term_type ),
+					);
+				}
+				$condition = isset( $split[1] ) ? array( $split[1] ) : get_object_taxonomies( $split[0] );
 				$args      = array(
 					'taxonomy'   => $condition,
 					'fields'     => 'all',
@@ -667,18 +861,10 @@ class REST_API {
 				$data         = array();
 				if ( ! empty( $post_results ) ) {
 					foreach ( $post_results as $key => $val ) {
-						$taxonomy = get_taxonomy( $val->taxonomy );
-						if ( $split && isset( $split[1] ) && $split[1] == 'multiTaxonomy' ) {
-							$data[] = array(
-								'value' => $val->taxonomy . '###' . $val->slug,
-								'title' => '[ID: ' . $val->term_id . '] ' . $taxonomy->label . ': ' . $val->name,
-							);
-						} else {
-							$data[] = array(
-								'value' => $val->slug,
-								'title' => '[ID: ' . $val->term_id . '] ' . $val->name,
-							);
-						}
+						$data[] = array(
+							'value' => $val->slug,
+							'title' => '[ID: ' . $val->term_id . '] ' . $val->name,
+						);
 					}
 				}
 				return array(
@@ -718,8 +904,15 @@ class REST_API {
 
 			case 'product_cat':
 			case 'product_tag':
-				$split     = explode( '###', $condition_type );
-				$condition = $split && isset( $split[1] ) && $split[1] != 'multiTaxonomy' ? array( $split[1] ) : get_object_taxonomies( $split[0] );
+				$split = explode( '###', $condition_type );
+				if ( isset( $split[1] ) && ! taxonomy_exists( $split[1] ) ) {
+					/** This filter is documented in classes/REST_API.php */
+					return array(
+						'success' => true,
+						'data'    => apply_filters( 'wopb_rest_tax_value_data', array(), $type, $condition_type, $term_type ),
+					);
+				}
+				$condition = isset( $split[1] ) ? array( $split[1] ) : get_object_taxonomies( $split[0] );
 				$args      = array(
 					'taxonomy'   => $type,
 					'fields'     => 'all',
@@ -736,18 +929,10 @@ class REST_API {
 				$data         = array();
 				if ( ! empty( $post_results ) ) {
 					foreach ( $post_results as $key => $val ) {
-						$taxonomy = get_taxonomy( $val->taxonomy );
-						if ( $split && isset( $split[1] ) && $split[1] == 'multiTaxonomy' ) {
-							$data[] = array(
-								'value' => $val->taxonomy . '###' . $val->slug,
-								'title' => '[ID: ' . $val->term_id . '] ' . $taxonomy->label . ': ' . $val->name,
-							);
-						} else {
-							$data[] = array(
-								'value' => $val->slug,
-								'title' => '[ID: ' . $val->term_id . '] ' . $val->name,
-							);
-						}
+						$data[] = array(
+							'value' => $val->slug,
+							'title' => '[ID: ' . $val->term_id . '] ' . $val->name,
+						);
 					}
 				}
 				return array(
@@ -789,9 +974,9 @@ class REST_API {
 			// Use parameterized query with $wpdb->prepare().
 			$search = $wpdb->prepare(
 				" AND (
-                {$wpdb->prefix}posts.post_title LIKE %s 
-                OR {$wpdb->prefix}posts.post_content LIKE %s 
-                OR {$wpdb->prefix}posts.post_excerpt LIKE %s 
+                {$wpdb->prefix}posts.post_title LIKE %s
+                OR {$wpdb->prefix}posts.post_content LIKE %s
+                OR {$wpdb->prefix}posts.post_excerpt LIKE %s
                 OR (post_meta.meta_key='_sku' AND post_meta.meta_value LIKE %s)
             ) ",
 				$search_term_like,
@@ -813,228 +998,5 @@ class REST_API {
 	 */
 	public function searchProductsDistinct( $where ) {
 		return 'DISTINCT';
-	}
-
-	/**
-	 * Get block list by product filtering
-	 *
-	 * @since v.2.6.5
-	 * @param STRING
-	 * @return array
-	 */
-	public function product_filter( $server ) {
-		$params = $server->get_params();
-
-		if ( ! isset( $params['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) {
-			return array(
-				'blockList' => array(),
-			);
-		}
-
-		$product_filters = $params['product_filters'];
-		$post_id         = sanitize_text_field( $params['post_id'] );
-		$post            = get_post( $post_id );
-		$blockRaw        = sanitize_text_field( $params['block_name'] );
-		$blockName       = str_replace( '_', '/', $blockRaw );
-		$blocks          = parse_blocks( $post->post_content );
-		$params          = array(
-			'page_post_id'    => $post_id,
-			'current_url'     => sanitize_url( $params['current_url'] ),
-			'product_filters' => $product_filters,
-			'ajax_source'     => 'filter',
-		);
-
-		$block_list = array();
-		$block_list = $this->product_filter_block_target( $blocks, $blockName, $blockRaw, $params, $block_list );
-		return array(
-			'blockList' => $block_list,
-		);
-	}
-
-	/**
-	 * Filter Callback of the Blocks
-	 *
-	 * @param $blocks
-	 * @param $blockName
-	 * @param $blockRaw
-	 * @param $params
-	 * @param $block_list
-	 * @return STRING
-	 * @since v.2.1.4
-	 */
-	public function product_filter_block_target( $blocks, $blockName, $blockRaw, $params, &$block_list ) {
-		foreach ( $blocks as $key => $value ) {
-			if ( $blockName == $value['blockName'] ) {
-				$objName = str_replace( ' ', '_', ucwords( join( ' ', explode( '-', explode( '/', $blockName )[1] ) ) ) );
-				$obj     = '\WOPB\blocks\\' . $objName;
-				$newObj  = new $obj();
-				$attr    = $newObj->get_attributes( true );
-
-				$attr         = array_merge( $attr, $params );
-				$attr         = array_merge( $attr, $value['attrs'] );
-				$block_list[] = array(
-					'blockId' => $value['attrs']['blockId'],
-					'content' => $newObj->content( $attr, true ),
-				);
-				remove_filter( 'posts_where', 'title_filter', 1000 );
-				remove_filter( 'posts_join', 'custom_join_product_filter', 1000 );
-			}
-			if ( ! empty( $value['innerBlocks'] ) ) {
-				$this->product_filter_block_target( $value['innerBlocks'], $blockName, $blockRaw, $params, $block_list );
-			}
-		}
-		return $block_list;
-	}
-
-	/**
-	 * Get Product Search Block Search Content
-	 *
-	 * @since v.2.6.8
-	 * @param $server
-	 * @return HTML
-	 */
-	public function product_search( $server ) {
-		$data = $server->get_params();
-		if ( ! isset( $data['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $data['wpnonce'] ) ), 'wopb-nonce' ) ) {
-			return rest_ensure_response( array() );
-		}
-		$blockId       = isset( $data['blockId'] ) ? sanitize_text_field( $data['blockId'] ) : '';
-		$blockRaw      = isset( $data['blockName'] ) ? sanitize_text_field( $data['blockName'] ) : '';
-		$blockName     = str_replace( '_', '/', $blockRaw );
-		$widgetBlockId = isset( $data['widgetBlockId'] ) ? sanitize_key( $data['widgetBlockId'] ) : '';
-		$postId        = isset( $data['postId'] ) ? sanitize_text_field( $data['postId'] ) : '';
-		$params        = array(
-			'search'   => isset( $data['search'] ) ? sanitize_text_field( $data['search'] ) : '',
-			'category' => isset( $data['category'] ) ? sanitize_text_field( $data['category'] ) : '',
-		);
-
-		$post_data = get_post( $postId );
-		if ( $widgetBlockId ) {
-			$blocks = parse_blocks( get_option( 'widget_block' )[ $widgetBlockId ]['content'] );
-		} elseif ( has_blocks( $post_data->post_content ) ) {
-			$blocks = parse_blocks( $post_data->post_content );
-		}
-
-		$this->search_block_attr( $blocks, $blockId, $blockRaw, $blockName, $params );
-		if ( isset( $data['attr'] ) && $data['attr'] ) {
-			$params['attr'] = $data['attr'];
-		}
-		$search_param = $this->search_block_param( $params );
-		if ( isset( $data['source'] ) && $data['source'] == 'block_editor' ) {
-			$search_param['products'] = wopb_function()->product_format( $search_param );
-			return $search_param;
-		}
-		$product_search = new Product_Search();
-		ob_start();
-			$product_search->search_item_content( $search_param );
-		return ob_get_clean();
-	}
-
-	/**
-	 * Get Product Search Block Search Data
-	 *
-	 * @since v.2.6.8
-	 * @param $blocks
-	 * @param $blockId
-	 * @param $blockRaw
-	 * @param $blockName
-	 * @return array
-	 */
-	public function search_block_attr( $blocks, $blockId, $blockRaw, $blockName, &$params ) {
-		foreach ( $blocks as $key => $value ) {
-			if ( $blockName == $value['blockName'] && $value['attrs']['blockId'] == $blockId ) {
-				$objName        = str_replace( ' ', '_', ucwords( join( ' ', explode( '-', explode( '/', $blockName )[1] ) ) ) );
-				$obj            = '\WOPB\blocks\\' . $objName;
-				$newObj         = new $obj();
-				$attr           = $newObj->get_attributes( true );
-				$params['attr'] = array_merge( $attr, $value['attrs'] );
-				break;
-			}
-			if ( ! empty( $value['innerBlocks'] ) ) {
-				$this->search_block_attr( $value['innerBlocks'], $blockId, $blockRaw, $blockName, $params );
-			}
-		}
-
-		return $params;
-	}
-
-
-	/**
-	 * Get Product Search Param
-	 *
-	 * @since v.2.6.8
-	 * @param $params
-	 * @return array
-	 */
-	public function search_block_param( $params = array() ) {
-		$query_args = array(
-			'post_type'      => 'product',
-			'posts_per_page' => -1,
-			'post_status'    => 'publish',
-		);
-		$tax_args   = array(
-			'taxonomy'   => 'product_cat',
-			'hide_empty' => true,
-		);
-		$tax_terms  = '';
-
-		if ( isset( $params['search'] ) && $params['search'] ) {
-			$query_args['filter_search_key'] = $params['search'];
-			add_filter( 'posts_join', array( wopb_function(), 'custom_post_join' ), 100, 2 );
-			add_filter( 'posts_where', array( wopb_function(), 'custom_post_query' ), 1000, 2 );
-			add_filter(
-				'posts_distinct',
-				function () {
-					return 'DISTINCT'; // duplicate data remove
-				}
-			);
-
-			$tax_args['search'] = $params['search'];
-		}
-		if ( isset( $params['category'] ) && $params['category'] ) {
-			$query_args['tax_query'][] = array(
-				'taxonomy' => 'product_cat',
-				'field'    => 'slug',
-				'terms'    => $params['category'],
-				'operator' => 'IN',
-			);
-		} else {
-			$tax_terms = get_terms( $tax_args );
-		}
-
-		$products = new \WP_Query( $query_args );
-		$params   = array(
-			'search'        => $params['search'],
-			'attr'          => isset( $params['attr'] ) ? $params['attr'] : '',
-			'products'      => $products,
-			'total_product' => count( $products->posts ),
-			'tax_terms'     => $tax_terms,
-		);
-		return $params;
-	}
-	/**
-	 * Get Product Search Param
-	 *
-	 * @since v.2.6.8
-	 * @param $params
-	 * @return array
-	 */
-	public function get_product_taxonomy_data() {
-		$product_taxonomies = array();
-		$object_taxonomies  = array_diff( get_object_taxonomies( 'product' ), array( 'product_type', 'product_visibility', 'product_shipping_class' ) );
-		foreach ( $object_taxonomies as $key ) {
-			$params          = array(
-				'taxonomy'           => $key,
-				'product_visibility' => true,
-				'term_limit'         => 3,
-			);
-			$taxonomy        = get_taxonomy( $key );
-			$taxonomy->terms = wopb_function()->taxonomy_terms_tree( $params );
-			if ( wopb_function()->get_attribute_by_taxonomy( $key ) ) {
-				$taxonomy->attribute = wopb_function()->get_attribute_by_taxonomy( $key );
-			}
-			$product_taxonomies[] = $taxonomy;
-		}
-		wp_send_json_success( $product_taxonomies );
 	}
 }

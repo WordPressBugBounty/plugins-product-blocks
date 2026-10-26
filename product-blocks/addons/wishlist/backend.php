@@ -12,7 +12,6 @@ function wopb_wishlist_config( $config ) {
 		'name'     => __( 'Wishlist', 'product-blocks' ),
 		'desc'     => __( 'It allows your shoppers to add their desired product to a list that they are willing to purchase later from the wishlist page.', 'product-blocks' ),
 		'img'      => WOPB_URL . '/assets/img/addons/wishlist.svg',
-		'is_pro'   => false,
 		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-wishlist/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/wishlist-settings/',
 		'type'     => 'build',
@@ -29,9 +28,8 @@ function wopb_wishlist_config( $config ) {
  * @param ARRAY | Default Filter Congiguration
  * @return ARRAY
  */
-add_filter( 'wopb_settings', 'get_wishlist_settings', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_wishlist_settings( $config ) {
+add_filter( 'wopb_settings', 'wopb_get_wishlist_settings', 10, 1 );
+function wopb_get_wishlist_settings( $config ) {
 	$arr = array(
 		'wopb_wishlist' => array(
 			'label' => __( 'Wishlist', 'product-blocks' ),
@@ -56,25 +54,11 @@ function get_wishlist_settings( $config ) {
 									'type'  => 'section',
 									'label' => __( 'General Settings', 'product-blocks' ),
 									'attr'  => array(
-										'wishlist_page'  => array(
+										'wishlist_page' => array(
 											'type'    => 'select',
 											'label'   => __( 'Wishlist Page', 'product-blocks' ),
 											'options' => wopb_function()->all_pages( true ),
 											'desc'    => '[wopb_wishlist] ' . __( 'Use shortcode inside wishlist page.', 'product-blocks' ),
-										),
-										'wishlist_require_login' => array(
-											'type'    => 'toggle',
-											'label'   => __( 'Enable / Disable', 'product-blocks' ),
-											'default' => '',
-											'pro'     => true,
-											'desc'    => __( 'Require Login for Wishlist.', 'product-blocks' ),
-										),
-										'wishlist_empty' => array(
-											'type'    => 'toggle',
-											'label'   => __( 'Enable / Disable', 'product-blocks' ),
-											'default' => '',
-											'pro'     => true,
-											'desc'    => __( 'Empty Wishlist After All Add To Cart.', 'product-blocks' ),
 										),
 										'wishlist_redirect_cart' => array(
 											'type'    => 'toggle',

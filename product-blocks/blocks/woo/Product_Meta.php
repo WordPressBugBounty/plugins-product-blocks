@@ -61,11 +61,20 @@ class Product_Meta {
 		if ( ! empty( $product ) ) {
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
-				$content   .= '<div class="wopb-product-wrapper">';
+			$wraper_before              .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
+				$content                .= '<div class="wopb-product-wrapper">';
+					$wopb_buffer_level_1 = ob_get_level();
 					ob_start();
-						do_action( 'woocommerce_product_meta_start' );
-					$content .= ob_get_clean();
+			try {
+				do_action( 'woocommerce_product_meta_start' );
+				$content .= ob_get_clean();
+			} finally {
+				while ( ob_get_level() > $wopb_buffer_level_1 ) {
+					if ( ! ob_end_clean() ) {
+						break;
+					}
+				}
+			}
 			if ( $attr['metaSku'] ) {
 				$content .= '<div class="wopb-meta-sku"><div class="product_meta" style="display: contents !important;">';
 				if ( $attr['metaLabelShow'] ) {
@@ -117,14 +126,23 @@ class Product_Meta {
 							$content .= '</div>';
 				}
 			}
-					$content .= '<div class="wopb-product-meta-end">';
+					$content                .= '<div class="wopb-product-meta-end">';
+						$wopb_buffer_level_2 = ob_get_level();
 						ob_start();
-							do_action( 'woocommerce_product_meta_end' );
-							do_action( 'wopb_product_meta_end' );
-						$content .= ob_get_clean();
-				$content         .= '</div>';
-				$content         .= '</div>';
-			$wraper_after        .= '</div>';
+			try {
+				do_action( 'woocommerce_product_meta_end' );
+				do_action( 'wopb_product_meta_end' );
+				$content .= ob_get_clean();
+			} finally {
+				while ( ob_get_level() > $wopb_buffer_level_2 ) {
+					if ( ! ob_end_clean() ) {
+						break;
+					}
+				}
+			}
+				$content  .= '</div>';
+				$content  .= '</div>';
+			$wraper_after .= '</div>';
 		}
 
 		return $wraper_before . $content . $wraper_after;

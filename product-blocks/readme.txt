@@ -1,10 +1,10 @@
 === WowStore – Store Builder & Product Blocks for WooCommerce ===
 Contributors: wpxpo, anik4e, jakirhasan
-Tags: woocommerce builder, woocommerce blocks, product filter, variation swatches, woocommerce compare
+Tags: woocommerce builder, woocommerce blocks, woocommerce wishlist, variation swatches, woocommerce compare
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 4.5.8
+Stable tag: 4.6.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,44 +12,36 @@ Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCom
 
 == Description ==
 
-🥇 First ever **WooCommerce Builder** for Gutenberg
+🥇 **WooCommerce Builder** for Gutenberg
 📈 Build professional eCommerce stores and **boost earnings**
-💕 A **WPXPO** plugin that supports over 60K businesses!
-📞 Benefit from dedicated support, with a **4.9/5** [Trustpilot](https://uk.trustpilot.com/review/wpxpo.com) customer rating!
-
 
 😲 [**Free Demo**](https://trywowstore.wpxpo.com/) | 🔥 [**WowStore Pro**](https://www.wpxpo.com/product/wowstore/) | 📃 [**Documentation**](https://wpxpo.com/docs/wowstore/)
 
 [youtube https://www.youtube.com/watch?v=6t9JSvAR-to]
 
-## WowStore – #1 WooCommerce Builder & Blocks Plugin with Sales Boosting Features! 
+## WowStore – WooCommerce Builder & Blocks Plugin with Sales Boosting Features!
 
 WowStore comes with numerous features to expand the default WooCommerce functionality. So you can give your eCommerce site a professional look. On top of that, its additional features help you to get more sales, boost conversions, and increase the average order value.
 
-✅ Gutenberg WooCommerce Blocks
-✅ WooCommerce Builder
+✅ Gutenberg Product Blocks
+✅ Store Builder
 ✅ Product Grid Layout
 ✅ Product List Layout
-✅ Product Slider and Carousel 
-✅ Advanced Product Filter
-✅ WooCommerce Wishlist
-✅ WooCommerce Compare
-✅ WooCommerce Product Comparison
+✅ Product Slider and Carousel
+✅ Wishlist
+✅ Product Compare
 ✅ Variation Swatches
-✅ Quick View for WooCommerce
-✅ WooCommerce Product Video
-✅ WooCommerce Size Chart
+✅ Quick View
+✅ Quick Social Share
+✅ Product Video
+✅ Size Chart
 ✅ Preorder
 ✅ Backorder
-✅ Partial Payments
 ✅ Call for Price
-✅ Currency Switcher
-✅ Stock Progress Bar
 ✅ Name Your Price
 ✅ Animated Add to Cart
 ✅ Add to Cart Text
 ✅ Sales Push Notification
-✅ Sticky Add to Cart
 ✅ Cart Reserved Timer
 ✅ Up-Selling 
 ✅ Cross-Selling
@@ -66,10 +58,42 @@ WooCommerce blocks help you to display the products in an organized and professi
 ✔ Product Slider Blocks
 ✔ Product Category Blocks
 ✔ List Blocks
-✔ Product Search Blocks
 ✔ Button Group Blocks
 ✔ Row and Column Blocks
 ✔ Banner Maker Blocks
+
+**Pro Features and Blocks**
+
+The features below are **not** part of this free plugin. They are included in the separate [**WowStore Pro**](https://www.wpxpo.com/product/wowstore/) plugin, which requires a license. Without it, these blocks and features are not available.
+
+*Pro blocks*
+
+✨ Product Filter Block (advanced product filter by category, color, price, rating, and more)
+✨ Product Search Block
+✨ Product Category 3 Block
+✨ Currency Switcher Block
+
+*Pro add-ons*
+
+✨ [Partial Payments](https://www.wpxpo.com/product/wowstore/features/woocommerce-partial-payment/): Split product prices into two parts and let shoppers book products with a deposit amount.
+✨ [Currency Switcher](https://www.wpxpo.com/product/wowstore/features/woocommerce-currency-switcher/): Let customers pay with their local currencies.
+✨ [Stock Progress Bar](https://www.wpxpo.com/product/wowstore/features/woocommerce-stock-progress-bar/): Visually highlight the total and remaining quantity of products.
+✨ [Sticky Add to Cart](https://www.wpxpo.com/product/wowstore/features/woocommerce-sticky-add-to-cart/): Keep the Add to Cart button sticky while scrolling the product pages.
+
+*Pro options in the free features*
+
+✨ Call for Price: WhatsApp, Email and custom link buttons
+✨ Quick Social Share: Mail, WhatsApp and Messenger
+✨ Cart Reserved Timer: clear the cart when the timer expires
+✨ Wishlist: require login, and empty the wishlist after adding to the cart
+✨ Size Chart: product tab, chart image and choosing the products a chart applies to
+✨ Variation Swatches: variation image swatches
+✨ Product Video: videos on archive pages, autoplay, repeat and play on hover
+✨ Backorder: available date and availability message
+✨ Pre-Order: release date, auto convert, custom price, countdown, availability message and pre-order for variations
+✨ Advanced product query: extra Order By options (popular by sales, popular by views, top rated), Most Viewed and Random sorting by time period, specific products, stock status, author include/exclude and multi-taxonomy
+✨ Extra layouts for the Product Category 2 and Archive Title blocks, and the Product Slider title hover effects
+✨ Template library: additional Pro starter packs, templates and patterns (shown in the library with a Pro badge, see "Pro designs in the library" below)
 
 [**The Ultimate WooCommerce Builder for Gutenberg**](https://www.wpxpo.com/wowstore/woocommerce-builder/)
 
@@ -94,8 +118,6 @@ WowStore helps you build store pages without leaving the Gutenberg ecosystem. It
 
 After having a good-looking eCommerce website, the next step is to ensure a better shopping experience for the customers. And, WowStore has the right features for that.
 
-[**Product Filter:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-product-filter/) Help shoppers find their desired products fast with product filtering – filter products by category, color, price, rating, and more.
-
 [**Variation Swatches:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-variation-swatches/) Convert product variations to variation swatches to help shoppers select the right colors.
 
 [**Wishlist:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-wishlist/) Let the potential buyers create a wishlist of interested products. So they can decide later whether they want to buy them or not.
@@ -104,7 +126,7 @@ After having a good-looking eCommerce website, the next step is to ensure a bett
 
 [**Compare:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-product-comparison/) Help customers make the buying decisions faster by letting them compare multiple products side by side.
 
-[**Product Video:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-product-video/) Replace featured images with product videos. The videos can be played upon clicking or continuously in the loop.
+[**Product Video:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-product-video/) Replace featured images with product videos. The videos can be played upon clicking.
 
 [**Size Chart:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-size-chart/) Create and add Size Charts to product pages. So the shoppers will be able to choose the right sizes.
 
@@ -112,17 +134,11 @@ After having a good-looking eCommerce website, the next step is to ensure a bett
 
 WowStore has multiple effective features to increase sales. Explore and implement them all to see major improvements in your sales!
 
-[**Pre-Order:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-pre-order/) Showcase upcoming products in your stores with a countdown of releasing date and let shoppers preorder products.
+[**Pre-Order:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-pre-order/) Showcase upcoming products in your store with a pre-release message, and let shoppers pre-order them within the quantity you make available.
 
 [**Backorder:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-backorder/) Enable backorder to keep taking orders for the products that are currently not available in stock but will be available soon.
 
-[**Partial Payments:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-partial-payment/) Split product prices into two parts with partial payment features and let shoppers book products with a deposit amount.
-
 [**Call for Price:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-call-for-price/) Hide product prices and the Add to Cart button with a “Call for Price” button. It encourages shoppers to call you to know the prices.
-
-[**Currency Switcher:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-currency-switcher/) Let customers pay with their local currencies using WowStore’s currency switcher.
-
-[**Stock Progress Bar:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-stock-progress-bar/) Create FOMO (Fear of Missing Out!) among customers by visually highlighting the total and remaining quantity of products.
 
 
 ## Increase Conversion
@@ -135,9 +151,8 @@ Getting customers to your WooCommerce store is challenging and not being able to
 
 [**Add to Cart Button Text:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-change-add-to-cart-text/) Replace the text of the Add to Cart buttons effortlessly. You can add your desired text for all types of products including Simple, Variable, Grouped, and External products.
 
-[**Sales Push Notification:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-live-sales-notification/) Highlight recently purchased notifications to give your store’s visitors confidence to place orders. 
+[**Sales Push Notification:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-live-sales-notification/) Highlight recently purchased products in a notification popup, with an option to show or hide the buyer's name, to give your store’s visitors confidence to place orders. 
 
-[**Sticky Add to Cart:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-sticky-add-to-cart/) Make the Add to Cart button sticky while scrolling the product pages. 
 
 ## Reduce Cart Abandonment
 
@@ -151,7 +166,7 @@ WowStore also has solutions to reduce Cart Abandonment rates. Check out the feat
 
 Increasing the average value can help you to increase revenue with the same number of sales that you usually get. WowStore has the right features for that as well.
 
-[**Upsell Products:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-upsell/) Showcase higher price alternatives as related products. The shoppers may buy any alternative product that makes them more profit.
+[**Upsell Products:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-upsell/) Showcase higher price alternatives as related products. Shoppers may choose a pricier alternative, which earns you more per sale.
 
 [**Cross Selling:**](https://www.wpxpo.com/product/wowstore/features/woocommerce-cross-sell/) Displaying related supplementary products to the cart pages increases the chances of cross-selling.
 
@@ -163,9 +178,9 @@ We are glad that you are considering WowStore. Please have a look at our other p
 
 📄 [**WowInvoice 🔥:**](https://wordpress.org/plugins/wow-pdf-invoices-packing-slips/) A powerful PDF invoices & packing slips plugin for WooCommerce that helps you automate essential order documents with ease.
 
-🚚 [**WowShipping 🔥:**](https://wordpress.org/plugins/revenue/) An all-in-one table rate shipping plugin for WooCommerce, featuring 30+ shipping rates and seamless integrations with popular carriers including UPS, USPS, DHL, Sendle, and more.
+🚚 [**WowShipping 🔥:**](https://wordpress.org/plugins/wow-table-rate-shipping/) An all-in-one table rate shipping plugin for WooCommerce, featuring 30+ shipping rates and seamless integrations with popular carriers including UPS, USPS, DHL, Sendle, and more.
 
-➕ [**WowAddons 🔥:**](https://wordpress.org/plugins/revenue/) Start selling highly customizable products with 25+ extra product options, addons, and custom fields, helping you increase order value while making your customer happy.
+➕ [**WowAddons 🔥:**](https://wordpress.org/plugins/product-addons/) Start selling highly customizable products with 25+ extra product options, addons, and custom fields, helping you increase order value while making your customer happy.
 
 💲 [**WowRevenue:**](https://wordpress.org/plugins/revenue/) The all-in-one revenue-boosting plugin with various features like WooCommerce product bundles, mix-and-match product bundles, and more.
 
@@ -173,7 +188,7 @@ We are glad that you are considering WowStore. Please have a look at our other p
 
 🧲 [**WowOptin:**](https://wordpress.org/plugins/optin/) The most advanced and futuristic Optin plugin that helps to collect leads, increase sales, boost conversions, and reduce abandoned carts.
 
-📃 [**PostX:**](https://wordpress.org/plugins/ultimate-post/) #1 WordPress plugin to create complete News, Magazine, and Blogging sites. It helps you make your site ready in just three simple steps. 
+📃 [**PostX:**](https://wordpress.org/plugins/ultimate-post/) WordPress plugin to create complete News, Magazine, and Blogging sites. It helps you make your site ready in just three simple steps. 
 
 
 
@@ -181,7 +196,7 @@ We are glad that you are considering WowStore. Please have a look at our other p
 Developed by [WPXPO](https://www.wpxpo.com). [Contribute to Gutenberg WooCommerce Blocks on Bitbucket](https://bitbucket.org/wpstabon/product-blocks/src/master/) and join the party.
 
 = Plugin Source =
-This plugin code is accesible and any contribution will be appretiated. [Source Code](https://bitbucket.org/wpstabon/product-blocks/src/master/)
+The plugin source code and build tools are publicly available. Contributions are welcome. [Source Code](https://bitbucket.org/wpstabon/product-blocks/src/master/)
 
 == Installation ==
 
@@ -197,7 +212,7 @@ Automatic installation is the easiest option as WordPress handles the file trans
 
 1. Go to your WordPress Plugin installation menu (Dashboard > Plugins > Add New)
 2. In the search field type “WowStore” and press enter.
-3. "Install Now" and then click "Active"
+3. Click "Install Now" and then "Activate"
 
 == Frequently Asked Questions ==
 
@@ -210,17 +225,52 @@ You can share your feature request by [clicking here](https://www.wpxpo.com/prod
 = Where can I report bugs and contribute to the project? =
 Bugs can be reported on the WordPress support forum.
 
-= Is it working with older versions of WordPress? =
-It is a Gutenberg WooCommerce plugin and it works great with WordPress version 5.x.x or more. And WordPress older version with Gutenberg plugin.
+= Which WordPress version does it need? =
+WowStore needs WordPress 6.8 or newer, PHP 7.4 or newer and WooCommerce (see Minimum Requirements).
 
 == External services ==
 
-= IPinfo =
-This plugin connects to an API [IPinfo](https://ipinfo.io/) to obtain the user's IP address location with user consent when user wants to share their address.
+WowStore uses these external services, including services operated by WPXPO. Browser requests expose IP address, browser details, and potentially referrer and service cookies; server requests expose the server IP and normal HTTP details.
 
-= Remote Files =
-This plugin uses External Files from [Country Flags](https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags). This resources is open for all and owned by this plugin owner.
-This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https://raw.githubusercontent.com/wpxpo/wpxpo_profile/main/country_flags/bdt.png)
+Free library content requires no WPXPO account. Pro library content requires the separate licensed WowStore Pro plugin. Public fonts and avatars require no provider account. Video and social services may require an account depending on the content or action. Configure external media and fonts only if you accept the provider's terms and privacy policy; use locally hosted media and system fonts to avoid those provider requests.
+
+* **WPXPO template and design library:** Supplies presets, designs, and templates from wopb.wpxpo.com/wp-json/restapi/v2/. Opening library features downloads missing or expired catalogs through wopbdata; resetting refreshes them. Selecting a design or template for import contacts single-design, single-template, or single-premade through the browser or your server. Requests send the catalog type, design_id, template_id, or section_id, and the license key only when the WowStore Pro plugin is active and supplies one. Displaying catalog previews or imported remote images also contacts the image hosts specified by that content. The library lists every design and template of the catalog, as described under "Pro designs in the library" below. [Terms](https://www.wpxpo.com/terms-and-conditions/) | [Privacy Policy](https://www.wpxpo.com/policy/privacy/)
+
+* **Gravatar (Automattic):** Displays My Account and Archive Title avatars, unless replaced by another avatar provider. Image requests to gravatar.com send an email-derived hash, image size, and default-image settings when displayed, without a plain email address. [Terms](https://wordpress.com/tos/) | [Privacy Policy](https://automattic.com/privacy/)
+
+* **Google Fonts:** Loads selected fonts from fonts.googleapis.com and fonts.gstatic.com when editor previews or pages render them and they are not cached. Requests include font families and styles, without customer account or order data. [Terms](https://policies.google.com/terms) | [Privacy Policy](https://policies.google.com/privacy)
+
+* **YouTube (Google):** Displays tutorials and configured video embeds from youtube.com when the player is rendered. For a Product Video add-on URL, WordPress also requests embed code from YouTube on your server when the product media renders. The add-on does not cache that embed response itself. Requests include the video URL or ID and player settings; YouTube may use cookies and process playback interactions. [Terms](https://www.youtube.com/t/terms) | [Privacy Policy](https://policies.google.com/privacy)
+
+* **Vimeo:** Displays Product Video add-on embeds and editor video previews from player.vimeo.com when the player is rendered. For a Vimeo URL, WordPress also requests embed code from vimeo.com on your server when the product media renders. The add-on does not cache that embed response itself. Requests include the video URL or ID and player settings; Vimeo may use cookies and process playback interactions. [Terms](https://vimeo.com/terms) | [Privacy Policy](https://vimeo.com/privacy)
+
+* **Other configured video and media hosts:** Product Video passes the merchant's configured URL to WordPress oEmbed, which may contact another supported provider or the URL's discovered embed endpoint to request player HTML. If no embed is available, the visitor's browser loads the configured MP4 URL; a configured remote fallback image also contacts its image host. These requests occur when the product media renders and can expose the configured URL, server or visitor IP address, browser details, and referrer to that host. Hosting files on your own site avoids a separate media provider. Provider availability follows your WordPress configuration; review the chosen host's Terms and Privacy Policy before configuring its URL. [WordPress embed providers](https://wordpress.org/documentation/article/embeds/)
+
+Social Share links contact the chosen service only when clicked, sending the product/page URL to open its sharing interface. No social tracking SDK is loaded and displaying links does not submit messages or posts.
+
+* Facebook and Messenger (Meta): facebook.com sharing and Messenger send dialogs. Messenger also receives a fixed Facebook application ID built into WowStore (not configurable), and the page URL as the redirect URL. [Terms](https://www.facebook.com/legal/terms) | [Privacy Policy](https://www.facebook.com/privacy/policy/).
+* X (Twitter): twitter.com sharing URL; [Terms](https://x.com/en/tos) | [Privacy Policy](https://x.com/en/privacy).
+* LinkedIn: linkedin.com; [Terms](https://www.linkedin.com/legal/user-agreement) | [Privacy Policy](https://www.linkedin.com/legal/privacy-policy).
+* Pinterest: pinterest.com; [Terms](https://policy.pinterest.com/en/terms-of-service) | [Privacy Policy](https://policy.pinterest.com/en/privacy-policy).
+* Reddit: reddit.com; [Terms](https://redditinc.com/policies/user-agreement) | [Privacy Policy](https://www.reddit.com/policies/privacy-policy).
+* WhatsApp (Meta): api.whatsapp.com; [Terms](https://www.whatsapp.com/legal/terms-of-service) | [Privacy Policy](https://www.whatsapp.com/legal/privacy-policy).
+* Skype (Microsoft): the legacy web.skype.com sharing link sends the page URL when opened. Call for Price can also hand a configured Skype identifier to an installed application using a skype: link. Availability depends on Microsoft's current service support; [Terms](https://www.microsoft.com/en-us/servicesagreement) | [Privacy Policy](https://www.microsoft.com/en-us/privacy/privacystatement).
+
+* **Telephone:** Call for Price links open the visitor's chosen app with the configured number. WowStore does not place calls itself.
+
+* **Email sharing:** A mailto: share link opens the visitor's chosen email app with the product/page URL. WowStore does not send the email itself.
+
+== Pro designs in the library ==
+
+The WowStore template library is a content catalog that WPXPO hosts and updates remotely (see External services). Some of its designs belong to the separate WowStore Pro plugin. WowStore shows them next to the others with a "Pro" badge and a link to the WowStore Pro page, so you can see what the paid plugin adds. This is a preview for promotion only.
+
+* Nothing in WowStore is disabled, limited, time-limited or switched off to make room for it. Every design and template that isn't marked Pro, and every feature, block and add-on in this plugin, works without a license and without an account.
+* A Pro design is a remote catalog entry, not code that ships in this plugin. Inserting one needs the separate WowStore Pro plugin, which sends its license key with the request. Without it, WowStore only shows the badge and the link.
+* You can ignore the badge. The library has a filter for Free and Pro designs, and the Pro designs add nothing to your site unless you insert them.
+
+== Third-party libraries ==
+
+WowStore includes open source libraries (React, Slick, flexMenu and others) under GPL-compatible licenses. The full list with versions and sources, and the complete copyright and license text of each library, is in licenses.txt in the plugin folder. The readable source of the compiled scripts is in the public repository linked under Plugin Source.
 
 == Screenshots ==
 1. Woo Builder
@@ -234,6 +284,11 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 9. WooCommerce Compare
 
 == Changelog ==
+= 4.6.0 - 22 October 2026 =
+* Update: Product Filter, Product Search, Product Category 3 and Currency Switcher blocks, the Partial Payments, Currency Switcher, Stock Progress Bar and Sticky Add to Cart add-ons, and the advanced options of several add-ons and blocks are now part of WowStore Pro.
+* Update: Sales Push Notification shows recently purchased products; the Name setting picks the buyer name shown, or No Name (default).
+* Fix: Security hardening of the Social Share output.
+
 = 4.5.8 - 06 October 2026 =
 * Update: Performance improvements.
 
@@ -254,7 +309,7 @@ This shows the country flags in blocks. Uses example - [Bangladeshi Flag](https:
 * Fix: Security hardening for Quick View, Compare and Wishlist to prevent unauthorized access to private, draft, and password protected product data
 
 = 4.5.2 - 11 August 2026 =
-* Fix: WP Rocket chaching plugin compatility with Wordpress Blocks
+* Fix: WP Rocket caching plugin compatibility with WordPress blocks
 
 = 4.5.1 - 03 August 2026 =
 * Fix: Bridge theme slider compatibility

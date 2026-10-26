@@ -34,7 +34,7 @@ class SalesNotification {
 	 * @since v.4.0.0
 	 */
 	public function generate_css( $key ) {
-		if ( $key == 'wopb_sales_notification' ) {
+		if ( 'wopb_sales_notification' === $key ) {
 			$settings = wopb_function()->get_setting();
 			$css      = '.wopb-notification-wrap { ' . $settings['sales_push_display_position'] . ': 20px; }';
 			$css     .= '.wopb-notification .wopb-notification-wrap {';
@@ -89,134 +89,184 @@ class SalesNotification {
 	 */
 	public function sales_notification_route() {
 		register_rest_route(
-			'sales/v1',
-			'/notification/',
+			'wopb/v1',
+			'/sales-notification/',
 			array(
-				array(
-					'methods'             => 'POST',
-					'callback'            => array( $this, 'sales_notification_action' ),
-					'permission_callback' => '__return_true',
-					'args'                => array(),
-				),
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'public_notification_action' ),
+				'permission_callback' => '__return_true', // Shown to every visitor; the response holds no order details and a buyer name only if the owner chose one.
 			)
 		);
 	}
 
 	/**
-	 * Sale Notification
+	 * Recent sales for the notification popup
 	 *
+	 * Public, so each notification holds only a published, visible product and
+	 * how long ago it was bought. The buyer's name is added only when the owner
+	 * picks one in the Name setting (default: No Name). No order number, price
+	 * or address is read or returned.
+	 *
+	 * @param \WP_REST_Request $request REST request.
 	 * @return array
 	 * @since v.4.0.0
 	 */
-	public function sales_notification_action() {
-		// Public REST route (permission_callback => '__return_true'); no WP nonce applies here.
-		$page_id = isset( $_POST['page_id'] ) ? sanitize_text_field( wp_unslash( $_POST['page_id'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
-
-		// Check if notification should display on this page
-		if ( ! $this->should_display_notification( $page_id ) ) {
-			return array( 'html' => array() );
-		}
-		$output      = array();
-		$number      = wopb_function()->get_setting( 'sales_number' );
-		$order_types = wc_get_order_types();
-		if ( ( $key = array_search( 'shop_order_refund', $order_types ) ) !== false ) {
-			unset( $order_types[ $key ] );
+	public function public_notification_action( $request ) {
+		$output = array();
+		if ( ! $this->should_display_notification( absint( $request->get_param( 'page_id' ) ) ) ) {
+			return array(
+				'html'    => $output,
+				'message' => 'Notification not displayed.',
+			);
 		}
 
-		$args   = array(
-			'limit'   => $number ? $number : 10,
-			'orderby' => 'date',
-			'order'   => 'DESC',
-			'status'  => array( 'wc-completed', 'wc-pending', 'wc-processing', 'wc-on-hold' ),
-			'type'    => $order_types,
+		$number = absint( wopb_function()->get_setting( 'sales_number' ) );
+		$orders = wc_get_orders(
+			array(
+				'limit'   => min( 20, max( 1, $number ? $number : 10 ) ),
+				'orderby' => 'date',
+				'order'   => 'DESC',
+				'status'  => wc_get_is_paid_statuses(),
+				'type'    => 'shop_order',
+			)
 		);
-		$orders = wc_get_orders( $args );
+		if ( empty( $orders ) ) {
+			return array(
+				'html'    => $output,
+				'message' => 'No recent orders.',
+			);
+		}
 
-		if ( ! empty( $orders ) ) {
-			$name    = wopb_function()->get_setting( 'sales_name' );
-			$label   = wopb_function()->get_setting( 'sales_label' );
-			$image   = wopb_function()->get_setting( 'sales_image' );
-			$time    = wopb_function()->get_setting( 'sales_time' );
-			$prefix  = wopb_function()->get_setting( 'sales_time_prefix' );
-			$postfix = wopb_function()->get_setting( 'sales_time_postfix' );
+		$name    = wopb_function()->get_setting( 'sales_name' );
+		$label   = wopb_function()->get_setting( 'sales_label' );
+		$image   = wopb_function()->get_setting( 'sales_image' );
+		$time    = wopb_function()->get_setting( 'sales_time' );
+		$prefix  = wopb_function()->get_setting( 'sales_time_prefix' );
+		$postfix = wopb_function()->get_setting( 'sales_time_postfix' );
 
-			foreach ( $orders as $order ) {
-				$product_name = $product_url = $image_url = '';
-				$date         = (array) $order->get_date_created();
-				$user_info    = get_userdata( $order->get_user_id() );
-				$time_deff    = isset( $date['date'] ) ? human_time_diff( strtotime( $date['date'] ), time() ) : '0';
-				if ( $user_info ) {
-					if (
-						$name == 'display' ||
-						( $user_info->first_name == '' && $user_info->last_name == '' )
-					) {
-						$customer_name = $user_info->display_name;
-					} elseif ( $name == 'user_name' && $user_info->user_login ) {
-						$customer_name = $user_info->user_login;
-					} elseif ( $name == 'nick_name' && $user_info->nickname ) {
-						$customer_name = $user_info->nickname;
-					} elseif ( $name == 'first_name' && $user_info->first_name ) {
-						$customer_name = $user_info->first_name;
-					} elseif ( $name == 'last_name' && $user_info->last_name ) {
-						$customer_name = $user_info->last_name;
-					} else {
-						$customer_name = $user_info->first_name . ' ' . $user_info->last_name;
-					}
-				} else {
-					// use billing first and last name for guest user.
-					// first name and last name can be used easily based on user settings.
-					// for any other case like display_name, nick_name, username, full_name show "Full Billing Name".
-					$billing_first_name = $order->get_billing_first_name();
-					$billing_last_name  = $order->get_billing_last_name();
-					if ( 'first_name' === $name && $billing_first_name ) {
-						$customer_name = $billing_first_name;
-					} elseif ( 'last_name' === $name && $billing_last_name ) {
-						$customer_name = $billing_last_name;
-					} else {
-						$customer_name = $billing_first_name . ' ' . $billing_last_name;
-					}
-				}
-
-				foreach ( $order->get_items() as $item ) {
-					$id           = $item->get_product_id();
-					$product_name = $item->get_name();
-					$product_url  = get_permalink( $id );
-					$temp         = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'thumbnail' );
-					$image_url    = isset( $temp[0] ) ? $temp[0] : wc_placeholder_img_src( 'thumbnail' );
-					break;
-				}
-				$wrap_style = 'padding: 10px';
-				if ( $image != 'yes' || ! $image_url ) {
-					$wrap_style = 'padding: 12px 25px';
-				}
-
-				$html          = '<div class="wopb-notification wopb-animation-notification active">';
-					$html     .= '<div class="wopb-notification-wrap" style="' . wopb_function()->core_esc_wp( $wrap_style ) . '">';
-						$html .= '<a href="' . esc_url( $product_url ) . '">';
-				if ( $image == 'yes' && $image_url ) {
-					$html     .= '<div class="wopb-img-wrap">';
-						$html .= '<img src="' . esc_url( $image_url ) . '"/>';
-					$html     .= '</div>';
-				}
-							$html     .= '<div class="wopb-col">';
-								$html .= '<div class="wopb-notification-name">' . esc_html( $customer_name ) . ' ' . ( $label ? '<span>' . esc_html( $label ) . '</span>' : '' ) . '</div>';
-								$html .= '<div class="wopb-notification-product">' . esc_html( $product_name ) . '</div>';
-				if ( $time == 'yes' ) {
-					$html .= '<div class="wopb-notification-time">' . esc_html( $prefix . ' ' . $time_deff . ' ' . $postfix ) . '</div>';
-				}
-							$html .= '</div>';
-						$html     .= '</a>';
-						$html     .= '<span class="wopb-notification-close"></span>';
-					$html         .= '</div>';
-				$html             .= '</div>';
-
-				$output[] = $html;
+		foreach ( $orders as $order ) {
+			$product = $this->get_notification_product( $order );
+			$created = $order->get_date_created();
+			if ( ! $product || ! $created ) {
+				continue;
 			}
+
+			$customer_name = $this->get_customer_name( $order, $name );
+			$title_html    = trim( esc_html( $customer_name ) . ' ' . ( $label ? '<span>' . esc_html( $label ) . '</span>' : '' ) );
+
+			$image_url = '';
+			if ( 'yes' === $image ) {
+				$image_url = wp_get_attachment_image_url( $product->get_image_id(), 'thumbnail' );
+				$image_url = $image_url ? $image_url : wc_placeholder_img_src( 'thumbnail' );
+			}
+
+			$html          = '<div class="wopb-notification wopb-animation-notification active">';
+				$html     .= '<div class="wopb-notification-wrap" style="' . ( $image_url ? 'padding: 10px' : 'padding: 12px 25px' ) . '">';
+					$html .= '<a href="' . esc_url( $product->get_permalink() ) . '">';
+			if ( $image_url ) {
+				$html     .= '<div class="wopb-img-wrap">';
+					$html .= '<img alt="" src="' . esc_url( $image_url ) . '"/>';
+				$html     .= '</div>';
+			}
+						$html     .= '<div class="wopb-col">';
+			if ( $title_html ) {
+							$html .= '<div class="wopb-notification-name">' . $title_html . '</div>';
+			}
+							$html .= '<div class="wopb-notification-product">' . esc_html( $product->get_name() ) . '</div>';
+			if ( 'yes' === $time ) {
+				$html .= '<div class="wopb-notification-time">' . esc_html( $prefix . ' ' . human_time_diff( $created->getTimestamp(), time() ) . ' ' . $postfix ) . '</div>';
+			}
+						$html .= '</div>';
+					$html     .= '</a>';
+					$html     .= '<span class="wopb-notification-close"></span>';
+				$html         .= '</div>';
+			$html             .= '</div>';
+
+			$output[] = $html;
 		}
 
 		return array(
-			'html' => $output,
+			'html'    => $output,
+			'message' => 'No recent orders.',
 		);
+	}
+
+	/**
+	 * Buyer name for a notification
+	 *
+	 * Empty for "No Name" (the default and any unknown value), so nothing
+	 * about the buyer is read. Falls back to "Someone" when the chosen name
+	 * is blank on the order.
+	 *
+	 * @param \WC_Order $order Order.
+	 * @param string    $type  Value of the Name setting.
+	 * @return string
+	 * @since 4.6.0
+	 */
+	private function get_customer_name( $order, $type ) {
+		$types = array( 'display', 'first_name', 'last_name', 'full', 'user_name', 'nick_name' );
+		if ( ! in_array( $type, $types, true ) ) {
+			return '';
+		}
+
+		$first = $order->get_billing_first_name();
+		$last  = $order->get_billing_last_name();
+		$user  = $order->get_user_id() ? get_userdata( $order->get_user_id() ) : false;
+
+		if ( $user ) {
+			$first = $user->first_name ? $user->first_name : $first;
+			$last  = $user->last_name ? $user->last_name : $last;
+		}
+
+		$name = '';
+		switch ( $type ) {
+			case 'first_name':
+				$name = $first;
+				break;
+			case 'last_name':
+				$name = $last;
+				break;
+			case 'user_name':
+				$name = $user ? $user->user_login : '';
+				break;
+			case 'nick_name':
+				$name = $user ? $user->nickname : '';
+				break;
+			case 'display':
+				$name = $user ? $user->display_name : '';
+				break;
+		}
+		if ( '' === trim( $name ) ) {
+			// "Full" and any blank choice fall back to the full name.
+			$name = trim( $first . ' ' . $last );
+		}
+
+		return '' === $name ? __( 'Someone', 'product-blocks' ) : $name;
+	}
+
+	/**
+	 * First product of an order that any visitor may see
+	 *
+	 * @param \WC_Order $order Order.
+	 * @return \WC_Product|null
+	 * @since 4.6.0
+	 */
+	private function get_notification_product( $order ) {
+		foreach ( $order->get_items() as $item ) {
+			if ( ! is_callable( array( $item, 'get_product_id' ) ) ) {
+				continue;
+			}
+			$product = wc_get_product( $item->get_product_id() );
+			if (
+				$product &&
+				'publish' === $product->get_status() &&
+				$product->is_visible() &&
+				! post_password_required( $product->get_id() )
+			) {
+				return $product;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -229,14 +279,14 @@ class SalesNotification {
 	public function should_display_notification( $page_id = 0 ) {
 		$action = wopb_function()->get_setting( 'select_page_visibility' );
 
-		if ( $action === 'all' ) {
+		if ( 'all' === $action ) {
 			return true;
 		}
 
 		$selected_page_list = wopb_function()->get_setting( 'custom_page_selection' );
 
-		$is_page_in_list    = is_array( $selected_page_list ) && in_array( $page_id, $selected_page_list );
+		$is_page_in_list = is_array( $selected_page_list ) && in_array( $page_id, $selected_page_list );
 
-		return $action === 'include' ? $is_page_in_list : ! $is_page_in_list;
+		return 'include' === $action ? $is_page_in_list : ! $is_page_in_list;
 	}
 }

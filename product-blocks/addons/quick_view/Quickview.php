@@ -40,18 +40,13 @@ class Quickview {
 		if ( isset( $position_filters[ $quick_view_position ] ) ) {
 			add_filter( $position_filters[ $quick_view_position ], array( $this, 'quick_view_in_cart' ), 20, 2 );
 		}
-		if ( $quick_view_position == 'shortcode' ) {
-			add_shortcode( 'wopb_quick_view_button', array( $this, 'quick_view_button' ) );
+		if ( 'shortcode' === $quick_view_position ) {
+			add_shortcode( 'wopb_quick_view_button', array( $this, 'quick_view_shortcode' ) );
 		}
 
 		add_filter(
 			'wopb_active_modal',
-			function ( array $loaders ) {
-				if ( ! in_array( $modal_loader = wopb_function()->get_setting( 'quick_view_loader' ), $loaders ) ) {
-					$loaders[] = $modal_loader;
-				}
-				return $loaders;
-			}
+			array( $this, 'filter_modal_loaders' )
 		);
 		add_action( 'wopb_save_settings', array( $this, 'generate_css' ), 10, 1 ); // CSS Generator
 
@@ -68,7 +63,7 @@ class Quickview {
 	public function get_grid_quick_view( $output, $post, $post_id, $position = '' ) {
 		$modal_wrapper_class  = 'wopb-quick-view-wrapper wopb-layout-' . wopb_function()->get_setting( 'quick_view_layout' );
 		$click_action_setting = wopb_function()->get_setting( 'quick_view_click_action' );
-		$modal_wrapper_class .= ( $click_action_setting == 'right_sidebar' || $click_action_setting == 'left_sidebar' ) ? ' wopb-sidebar-wrap wopb-' . $click_action_setting : '';
+		$modal_wrapper_class .= ( 'right_sidebar' === $click_action_setting || 'left_sidebar' === $click_action_setting ) ? ' wopb-sidebar-wrap wopb-' . $click_action_setting : '';
 		$quick_view_text      = wopb_function()->get_setting( 'quick_view_text' );
 
 		$output         .= '<div
@@ -241,7 +236,7 @@ class Quickview {
 		if ( empty( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
-		$params            = array(
+		$params = array(
             'post_id'   => isset( $_POST['postid'] ) ? absint( wp_unslash( $_POST['postid'] ) ) : 0, // phpcs:ignore
             'post_list' => isset( $_POST['postList'] ) ? sanitize_text_field( wp_unslash( $_POST['postList'] ) ) : '' // phpcs:ignore
 		);
@@ -252,9 +247,9 @@ class Quickview {
 		$image_effect_type = wopb_function()->get_setting( 'quick_view_image_effect_type' );
 		?>
 		<div class="wopb-modal-header">
-			<?php if ( wopb_function()->get_setting( 'quick_view_close_button' ) == 'yes' ) { ?>
+			<?php if ( wopb_function()->get_setting( 'quick_view_close_button' ) === 'yes' ) { ?>
 				<a class="wopb-modal-close">
-                    <?php echo wp_kses( wopb_function()->svg_icon( 'close' ), $this->allowed_html_tag ); // phpcs:ignore ?> 
+                    <?php echo wp_kses( wopb_function()->svg_icon( 'close' ), $this->allowed_html_tag ); // phpcs:ignore ?>
 				</a>
 			<?php } ?>
 		</div>
@@ -267,14 +262,14 @@ class Quickview {
 			<div class="woocommerce-message wopb-d-none" role="alert"></div>
 			<?php $this->quick_view_content( $params ); ?>
 		</div>
-		<?php if ( $image_effect == 'yes' && $image_effect_type == 'popup' ) { ?>
+		<?php if ( 'yes' === $image_effect && 'popup' === $image_effect_type ) { ?>
 			<div class="wopb-quick-view-zoom wopb-zoom-2 wopb-d-none">
 				<a class="wopb-zoom-close wopb-modal-close-icon"></a>
 				<img alt="Zoom Image" src="">
 			</div>
 			<?php
 		}
-		if ( wopb_function()->get_setting( 'quick_view_product_navigation' ) == 'yes' && $params['post_list'] ) {
+		if ( wopb_function()->get_setting( 'quick_view_product_navigation' ) === 'yes' && $params['post_list'] ) {
 			$this->quick_view_navigation( $params ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		}
 		die();
@@ -306,7 +301,7 @@ class Quickview {
 						data-postid="<?php echo esc_attr( ${$type} ); ?>"
 						data-modal-loader="<?php echo esc_attr( wopb_function()->get_setting( 'quick_view_loader' ) ); ?>">
 						<span class="wopb-nav-icon">
-							<?php echo wp_kses( wopb_function()->svg_icon( $type == 'previous' ? 'leftAngle2' : 'rightAngle2' ), $this->allowed_html_tag ); ?>
+							<?php echo wp_kses( wopb_function()->svg_icon( 'previous' === $type ? 'leftAngle2' : 'rightAngle2' ), $this->allowed_html_tag ); ?>
 						</span>
 						<div class="wopb-quick-view-btn-image">
 							<?php
@@ -349,7 +344,7 @@ class Quickview {
 		$review_count = $product->get_review_count();
 		$average      = $product->get_average_rating();
 
-		if ( $quick_view_layout == 2 ) {
+		if ( 2 == $quick_view_layout ) {
 			?>
 			<div class="wopb-product-info">
 				<?php
@@ -375,14 +370,14 @@ class Quickview {
 				foreach ( $view_contents as $content ) {
 					switch ( $content['key'] ) {
 						case 'title':
-							if ( $quick_view_layout != 2 ) {
+							if ( 2 != $quick_view_layout ) {
 								woocommerce_template_single_title();
 							}
 							break;
 						case 'rating':
 							if ( in_array( $quick_view_layout, array( 1, 4, 5 ) ) ) {
 								woocommerce_template_single_rating();
-							} elseif ( $quick_view_layout == 3 ) {
+							} elseif ( 3 == $quick_view_layout ) {
 								?>
 								<div class="wopb-rating-info">
 									<?php
@@ -395,7 +390,7 @@ class Quickview {
 							break;
 						case 'price':
 							if ( $product->get_price() ) {
-								$save_percentage = ( $product->get_sale_price() && $product->get_regular_price() ) ? round( ( $product->get_regular_price() - $product->get_sale_price() ) / $product->get_regular_price() * 100 ) . '%' : '';
+								$save_percentage = ( $product->get_sale_price() && (float) $product->get_regular_price() > 0 ) ? round( ( $product->get_regular_price() - $product->get_sale_price() ) / $product->get_regular_price() * 100 ) . '%' : '';
 								echo '<div>';
 									woocommerce_template_single_price();
 								if ( $save_percentage ) {
@@ -408,22 +403,40 @@ class Quickview {
 							woocommerce_template_single_excerpt();
 							break;
 						case 'stock_status':
-							if ( $quick_view_layout != 3 ) {
+							if ( 3 != $quick_view_layout ) {
 								$this->stock_status( $product );
 							}
 							break;
 						case 'add_to_cart':
 							echo '<div>';
+								$wopb_buffer_level_1 = ob_get_level();
 								ob_start();
-									add_action( 'woocommerce_before_quantity_input_field', array( $this, 'quick_view_before_add_to_cart_quantity' ) );
-									add_action( 'woocommerce_after_quantity_input_field', array( $this, 'quick_view_after_add_to_cart_quantity' ) );
-									woocommerce_template_single_add_to_cart();
-								echo ob_get_clean(); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+							try {
+								add_action( 'woocommerce_before_quantity_input_field', array( $this, 'quick_view_before_add_to_cart_quantity' ) );
+								add_action( 'woocommerce_after_quantity_input_field', array( $this, 'quick_view_after_add_to_cart_quantity' ) );
+								woocommerce_template_single_add_to_cart();
+								echo ob_get_clean();
+							} finally {
+								while ( ob_get_level() > $wopb_buffer_level_1 ) {
+									if ( ! ob_end_clean() ) {
+										break;
+									}
+								}
+							} // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 								echo '<div class="wopb-cart-bottom">' . apply_filters( 'wopb_quick_view_bottom_cart', '', $product->get_id() ) . '</div>';
 							if ( wopb_function()->get_setting( 'quick_view_buy_now' ) && ! $product->is_type( 'external' ) ) {
+								$wopb_buffer_level_2 = ob_get_level();
 								ob_start();
-								$this->quick_buy_now_button();
-								$quick_buy_now_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+								try {
+									$this->quick_buy_now_button();
+									$quick_buy_now_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+								} finally {
+									while ( ob_get_level() > $wopb_buffer_level_2 ) {
+										if ( ! ob_end_clean() ) {
+											break;
+										}
+									}
+								}
 								echo $quick_buy_now_safe; // phpcs:disable
 								}
                                 echo '</div>';
@@ -462,9 +475,9 @@ class Quickview {
     public function stock_status( $product ) { ?>
         <div class="wopb-product-stock-status">
             <?php
-            if ( $product->get_stock_status() == 'instock' ) {
+            if ( $product->get_stock_status() === 'instock' ) {
                 echo '<span class="wopb-product-in-stock">' . esc_html__( "In Stock", "product-blocks" ) . '</span>';
-            } elseif ( $product->get_stock_status() == 'outofstock' ) {
+            } elseif ( $product->get_stock_status() === 'outofstock' ) {
                 echo '<span class="wopb-product-out-stock">' . esc_html__( "Out of stock", "product-blocks" ) . '</span>';
             }
             ?>
@@ -504,14 +517,14 @@ class Quickview {
     public function quick_view_image( $product ) {
         $image_effect = wopb_function()->get_setting('quick_view_image_effect');
         $image_effect_type = wopb_function()->get_setting('quick_view_image_effect_type');
-        $image_wrapper_class = wopb_function()->get_setting('quick_view_thumbnail_freeze') == 'yes' &&  ! $this->is_mobile ? ' wopb-image-sticky' : '';
+        $image_wrapper_class = wopb_function()->get_setting('quick_view_thumbnail_freeze') === 'yes' &&  ! $this->is_mobile ? ' wopb-image-sticky' : '';
 ?>
         <div class="wopb-quick-view-image <?php echo esc_attr($image_wrapper_class); ?>">
             <div class="<?php echo esc_attr($image_wrapper_class); ?>">
             <?php
                 if (
-                    $image_effect == 'yes' &&
-                    $image_effect_type == 'zoom' &&
+                    'yes' === $image_effect &&
+                    'zoom' === $image_effect_type &&
                     ! $this->is_mobile
                 ) {
             ?>
@@ -522,118 +535,15 @@ class Quickview {
                 </div>
             <?php
                 }
-                $slick_html = function() use( $product ) {
-                    $image_type = wopb_function()->get_setting('quick_view_image_type');
-                    $quick_image_gallery = 'wopb-' . wopb_function()->get_setting('quick_view_image_gallery');
-                    $quick_image_pagination = wopb_function()->get_setting('quick_view_image_pagination');
-                    $save_percentage = ($product->get_sale_price() && $product->get_regular_price()) ? round(($product->get_regular_price() - $product->get_sale_price()) / $product->get_regular_price() * 100) . '%' : '';
-                    $attachment = $product->get_image_id();
-                    $gallery    = $product->get_gallery_image_ids();
-                    $all_id = [];
-                    if ( !empty( $attachment ) ) {
-                        $all_id[] = $attachment;
-                    }
-                    if ( !empty($gallery) ) {
-                        $all_id = array_merge($all_id, $gallery);
-                    }
-                    $image_full = $image_thumb = '';
-                    $gallery_thumbnail = wc_get_image_size( 'gallery_thumbnail' );
-                    $thumbnail_size = apply_filters( 'woocommerce_gallery_thumbnail_size', array( $gallery_thumbnail['width'], $gallery_thumbnail['height'] ) );
-                    $full_size = apply_filters( 'woocommerce_gallery_full_size', apply_filters( 'woocommerce_product_thumbnails_large_size', 'full' ) );
-                    foreach ( $all_id as $key => $attachment_id ) {
-                        $thumbnail_src = wp_get_attachment_image_src( $attachment_id, $thumbnail_size );
-                        $full_src = wp_get_attachment_image_src( $attachment_id, $full_size );
-                        $alt_text = trim( wp_strip_all_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) );
-                        $image_full .= '<div>';
-                            $image_full .= '<a>';
-                                $image_full .= '<img class="wopb-main-image" src="'.esc_url($full_src[0]).'" alt="'.esc_attr($alt_text).'" data-width="'.esc_attr($full_src[1]).'" data-height="'.esc_attr($full_src[2]).'"/>';
-                            $image_full .= '</a>';
-                        $image_full .= '</div>';
-                        $image_thumb .= '<div>';
-                            $image_thumb .= '<img src="'.esc_url($thumbnail_src[0]).'" alt="'.esc_attr($alt_text).'" />';
-                        $image_thumb .= '</div>';
-                    }
-                    $slider_attr = '';
-                    $image_class = $image_type;
-                    $image_class .= ' wopb-' . wopb_function()->get_setting('quick_view_thumbnail_ratio');
-                    if ( count( $all_id) > 1 ) {
-                        $nav_html = '';
-                        $nav_class = '';
-                        $dot = '';
-                        $position = '';
-                        if( $image_type == 'image_with_gallery' ) {
-                            $image_class .= $nav_class .= ' ' . $quick_image_gallery;
-                            $position = wopb_function()->get_setting('quick_view_image_gallery');
-                            if( $image_thumb ) {
-                                $nav_html = wp_kses_post( $image_thumb );
-                            }
-                        }elseif( $image_type == 'image_with_pagination' ) {
-                            $image_class .= $nav_class .= ' ' . $quick_image_pagination;
-                            $dot = $quick_image_pagination == 'line' || $quick_image_pagination == 'dot' ? true : $dot;
-                        }
-                        $slider_attr = wc_implode_html_attributes(
-                            array(
-                                'data-arrow'  => true,
-                                'data-dots'  => $dot,
-                            )
-                        );
-                    }
-            ?>
-                <div class="wopb-quick-view-gallery <?php echo esc_attr( $image_class ) ?>">
-                    <div class="wopb-thumbnail">
-                        <div
-                            class="<?php echo count( $all_id) > 1 ? 'wopb-quick-slider' : '' ?>"
-                            <?php echo wp_kses_post( $slider_attr ) ?>
-                        >
-                            <?php if( $image_full) { echo wp_kses_post( $image_full );}  ?>
-                        </div>
-                        <?php if ( $save_percentage ) { ?>
-                            <span class="wopb-quick-view-sale">-
-                                <span><?php echo esc_html__('Sale!', 'product-blocks'); ?></span>
-                            </span>
-                        <?php } ?>
-                    </div>
-                    <?php
-                        if ( isset($nav_html) && $nav_html ) {
-                    ?>
-                        <div
-                            class="wopb-quick-slider-nav<?php echo esc_attr( $nav_class ) ?>"
-                            data-arrow="true"
-                            data-collg="4"
-                            data-colmd="4"
-                            data-colsm="3"
-                            data-colxs="3"
-                            data-position=<?php echo esc_attr($position); ?>
-                        >
-					<?php 
-						$nav_html_safe = wopb_function()->wp_kses_safe( $nav_html );
-						echo $nav_html_safe; // phpcs:ignore
-						?>
-                        </div>
-                    <?php } ?>
-                </div>
-            </div>
-        <?php
-        };
-        $gallery_classes = function($classes) {
-            return $classes;
-        };
-        add_filter( 'wc_get_template', function ( $template, $template_name, $args, $template_path, $default_path ) use( $slick_html ) {
-            if ( 'single-product/product-image.php' == $template_name ) {
-                return WC_ABSPATH . 'templates/single-product/product-image.php';
-            }
-            return $template;
-        }, 20, 5 );
+                $slick_html = array( new QuickviewRenderProductGalleryCallback( $product ), 'render_product_gallery' );
+        $gallery_classes = array( $this, 'gallery_class_names' );
+        add_filter( 'wc_get_template', array( $this, 'product_image_template' ), 20, 5 );
         add_action('woocommerce_product_thumbnails', $slick_html);
         add_filter('woocommerce_single_product_image_gallery_classes', $gallery_classes);
-        add_filter('woocommerce_single_product_image_thumbnail_html', function () {
-            return '';
-        }, 10, 2);
+        add_filter('woocommerce_single_product_image_thumbnail_html', array( $this, 'hide_thumbnail_html' ), 10, 2);
         echo woocommerce_show_product_images(); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
         remove_filter('woocommerce_single_product_image_gallery_classes', $gallery_classes);
-        remove_filter('woocommerce_single_product_image_thumbnail_html', function () {
-            return '';
-        }, 10, 2);
+        remove_filter('woocommerce_single_product_image_thumbnail_html', array( $this, 'hide_thumbnail_html' ), 10, 2);
         remove_action('woocommerce_product_thumbnails', $slick_html);
         ?>
         </div>
@@ -674,16 +584,16 @@ class Quickview {
         ?>
         <div class="wopb-product-social-share">
             <span><?php echo esc_html__( 'Social Share','product-blocks' ); ?></span>
-            <a href="<?php echo esc_url( 'http://www.facebook.com/sharer.php?u=' . $link ); ?>" target="_blank" class="wopb-share-facebook">
+            <a href="<?php echo esc_url( 'https://www.facebook.com/sharer.php?u=' . $link ); ?>" target="_blank" class="wopb-share-facebook">
                 <?php echo wp_kses( wopb_function()->svg_icon( 'facebook' ), $this->allowed_html_tag ); ?>
             </a>
             <a href="<?php echo esc_url( 'https://www.linkedin.com/sharing/share-offsite/?url=' . $link ); ?>" target="_blank" class="wopb-share-linkedin">
                 <?php echo wp_kses( wopb_function()->svg_icon( 'linkedin' ), $this->allowed_html_tag ); ?>
             </a>
-            <a href="<?php echo esc_url( 'http://twitter.com/share?url=' . $link ); ?>" target="_blank" class="wopb-share-twitter">
+            <a href="<?php echo esc_url( 'https://twitter.com/share?url=' . $link ); ?>" target="_blank" class="wopb-share-twitter">
                 <?php echo wp_kses( wopb_function()->svg_icon( 'twitter' ), $this->allowed_html_tag ); ?>
             </a>
-            <a href="<?php echo esc_url( 'http://pinterest.com/pin/create/link/?url=' . $link ); ?>" target="_blank" class="wopb-share-pinterest">
+            <a href="<?php echo esc_url( 'https://pinterest.com/pin/create/link/?url=' . $link ); ?>" target="_blank" class="wopb-share-pinterest">
                 <?php echo wp_kses( wopb_function()->svg_icon( 'pinterest' ), $this->allowed_html_tag ); ?>
             </a>
             <a href="<?php echo esc_url( 'https://web.skype.com/share?url=' . $link ); ?>" target="_blank" class="wopb-share-skype">
@@ -699,6 +609,21 @@ class Quickview {
      * @return null
      * @since v.3.1.5
      */
+    public function quick_view_shortcode() {
+        $wopb_buffer_level_3 = ob_get_level();
+        ob_start();
+        try {
+        $this->quick_view_button();
+        return wopb_function()->wp_kses_safe( ob_get_clean() );
+        } finally {
+            while ( ob_get_level() > $wopb_buffer_level_3 ) {
+                if ( ! ob_end_clean() ) {
+                    break;
+                }
+            }
+        }
+    }
+
     public function quick_view_button() {
         global $wp_query;
         $params = array(
@@ -717,7 +642,7 @@ class Quickview {
 	 * @return STRING
 	 */
     public function get_quick_view( $params = [] ) {
-        if ( wopb_function()->get_setting( 'quickview_mobile_disable' ) == 'yes' && wp_is_mobile() ) {} else {
+        if ( wopb_function()->get_setting( 'quickview_mobile_disable' ) === 'yes' && wp_is_mobile() ) {} else {
             $output = '';
 
             $modal_wrapper_class        = 'wopb-quick-view-wrapper wopb-layout-' . wopb_function()->get_setting( 'quick_view_layout' );
@@ -727,11 +652,11 @@ class Quickview {
             $button_icon_enable         = isset( $params['icon'] ) ? $params['icon'] : wopb_function()->get_setting( 'quick_view_button_icon_enable' );
             $button_class               = 'wopb-quickview-btn wopb-quick-addon-btn';
 
-            $default_woo            = ( isset( $params['source'] ) && $params['source'] == 'default' ) ? 'yes' : '';
-            $before_text            = ( $button_icon_enable == 'yes' && $quick_view_icon_position == 'before_text' ) ? $quick_view_icon : '';
-            $after_text             = ( $button_icon_enable == 'yes' && $quick_view_icon_position == 'after_text' ) ? $quick_view_icon : '';
+            $default_woo            = ( isset( $params['source'] ) && 'default' === $params['source'] ) ? 'yes' : '';
+            $before_text            = ( 'yes' === $button_icon_enable && 'before_text' === $quick_view_icon_position ) ? $quick_view_icon : '';
+            $after_text             = ( 'yes' === $button_icon_enable && 'after_text' === $quick_view_icon_position ) ? $quick_view_icon : '';
             $quick_view_text        = wopb_function()->get_setting( 'quick_view_text' );
-            $modal_wrapper_class    .= ( $click_action_setting == 'right_sidebar' ||  $click_action_setting == 'left_sidebar' ) ? ' wopb-sidebar-wrap wopb-' . $click_action_setting : '';
+            $modal_wrapper_class    .= ( 'right_sidebar' === $click_action_setting ||  'left_sidebar' === $click_action_setting ) ? ' wopb-sidebar-wrap wopb-' . $click_action_setting : '';
 
             $output .= '<span class="wopb-quick-btn-wrap">';
                 $output .= '<span
@@ -754,7 +679,7 @@ class Quickview {
 					}
 				$output .= '</span>';
                     } else {
-				$output .= $before_text . $quick_view_text . $after_text;
+				$output .= $before_text . esc_html( $quick_view_text ) . $after_text;
                     }
                 $output .= '</span>';
             $output .= '</span>';
@@ -774,13 +699,22 @@ class Quickview {
     public function quick_view_in_cart( $content, $args ) {
         if ( ! wopb_function()->is_builder() &&
             (
-                ( wopb_function()->get_setting( 'quick_view_shop_enable' ) == 'yes' && is_shop() )  ||
-                ( wopb_function()->get_setting( 'quick_view_archive_enable' ) == 'yes' && is_archive() )
+                ( wopb_function()->get_setting( 'quick_view_shop_enable' ) === 'yes' && is_shop() )  ||
+                ( wopb_function()->get_setting( 'quick_view_archive_enable' ) === 'yes' && is_archive() )
             ) ) {
             global $product;
+            $wopb_buffer_level_4 = ob_get_level();
             ob_start();
+            try {
             $this->quick_view_button();
             return $content . ob_get_clean();
+            } finally {
+                while ( ob_get_level() > $wopb_buffer_level_4 ) {
+                    if ( ! ob_end_clean() ) {
+                        break;
+                    }
+                }
+            }
         }
         return $content;
     }
@@ -825,7 +759,7 @@ class Quickview {
             ['key' => '','label' => __( 'Select Column','product-blocks' )],
             ...$default_options,
         );
-        return $default && $default == 'default' ? $default_options : $options;
+        return $default && 'default' === $default ? $default_options : $options;
     }
 
     /**
@@ -835,7 +769,7 @@ class Quickview {
      * @return string
      */
     public function generate_css( $key ) {
-        if ( $key == 'wopb_quickview' ) {
+        if ( 'wopb_quickview' === $key ) {
             $settings = wopb_function()->get_setting();
             $btn_style = array_merge( $settings['quick_view_btn_typo'], $settings['quick_view_btn_bg'] );
             $modal_btn_style = array_merge( $settings['quick_view_modal_btn_typo'], $settings['quick_view_modal_btn_bg'] );
@@ -887,7 +821,7 @@ class Quickview {
                 $css .= '}';
             }
 
-            if ( ! empty( $settings['quick_view_thumbnail_ratio'] ) && $settings['quick_view_thumbnail_ratio'] == 'custom' ) {
+            if ( ! empty( $settings['quick_view_thumbnail_ratio'] ) && 'custom' === $settings['quick_view_thumbnail_ratio'] ) {
                 if( ! empty( $settings['quick_view_thumbnail_width'] ) ) {
                     $css .= '.wopb-quick-view-wrapper .wopb-quick-view-image{';
                         $css .= ! empty( $settings['quick_view_thumbnail_width'] ) ? ( 'max-width: ' . $settings['quick_view_thumbnail_width'] . 'px !important;' ) : '';
@@ -920,4 +854,135 @@ class Quickview {
             wopb_function()->update_css( $key, 'add', $css );
         }
     }
+
+	/** Named WordPress hook callback. */
+	public function filter_modal_loaders( array $loaders ) {
+		if ( ! in_array( $modal_loader = wopb_function()->get_setting( 'quick_view_loader' ), $loaders ) ) {
+		    $loaders[] = $modal_loader;
+		}
+		return $loaders;
+	}
+
+	/** Named WordPress hook callback. */
+	public function gallery_class_names($classes) {
+		return $classes;
+	}
+
+	/** Named WordPress hook callback. */
+	public function product_image_template( $template, $template_name, $args, $template_path, $default_path ) {
+		if ( 'single-product/product-image.php' === $template_name ) {
+		    return WC_ABSPATH . 'templates/single-product/product-image.php';
+		}
+		return $template;
+	}
+
+	/** Named WordPress hook callback. */
+	public function hide_thumbnail_html() {
+		return '';
+	}
+}
+
+
+/** Holds the render context for a removable, named hook callback. */
+class QuickviewRenderProductGalleryCallback {
+	private $product;
+
+	public function __construct( $product ) {
+		$this->product = $product;
+	}
+
+	public function render_product_gallery() {
+		$product = $this->product;
+		            $image_type = wopb_function()->get_setting('quick_view_image_type');
+		            $quick_image_gallery = 'wopb-' . wopb_function()->get_setting('quick_view_image_gallery');
+		            $quick_image_pagination = wopb_function()->get_setting('quick_view_image_pagination');
+		            $save_percentage = ($product->get_sale_price() && (float) $product->get_regular_price() > 0) ? round(($product->get_regular_price() - $product->get_sale_price()) / $product->get_regular_price() * 100) . '%' : '';
+		            $attachment = $product->get_image_id();
+		            $gallery    = $product->get_gallery_image_ids();
+		            $all_id = [];
+		            if ( !empty( $attachment ) ) {
+			$all_id[] = $attachment;
+		            }
+		            if ( !empty($gallery) ) {
+			$all_id = array_merge($all_id, $gallery);
+		            }
+		            $image_full = $image_thumb = '';
+		            $gallery_thumbnail = wc_get_image_size( 'gallery_thumbnail' );
+		            $thumbnail_size = apply_filters( 'woocommerce_gallery_thumbnail_size', array( $gallery_thumbnail['width'], $gallery_thumbnail['height'] ) );
+		            $full_size = apply_filters( 'woocommerce_gallery_full_size', apply_filters( 'woocommerce_product_thumbnails_large_size', 'full' ) );
+		            foreach ( $all_id as $key => $attachment_id ) {
+			$thumbnail_src = wp_get_attachment_image_src( $attachment_id, $thumbnail_size );
+			$full_src = wp_get_attachment_image_src( $attachment_id, $full_size );
+			$alt_text = trim( wp_strip_all_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) );
+			$image_full .= '<div>';
+	$image_full .= '<a>';
+		$image_full .= '<img class="wopb-main-image" src="'.esc_url($full_src[0]).'" alt="'.esc_attr($alt_text).'" data-width="'.esc_attr($full_src[1]).'" data-height="'.esc_attr($full_src[2]).'"/>';
+	$image_full .= '</a>';
+			$image_full .= '</div>';
+			$image_thumb .= '<div>';
+	$image_thumb .= '<img src="'.esc_url($thumbnail_src[0]).'" alt="'.esc_attr($alt_text).'" />';
+			$image_thumb .= '</div>';
+		            }
+		            $slider_attr = '';
+		            $image_class = $image_type;
+		            $image_class .= ' wopb-' . wopb_function()->get_setting('quick_view_thumbnail_ratio');
+		            if ( count( $all_id) > 1 ) {
+			$nav_html = '';
+			$nav_class = '';
+			$dot = '';
+			$position = '';
+			if( 'image_with_gallery' === $image_type ) {
+				$image_class .= $nav_class .= ' ' . $quick_image_gallery;
+				$position = wopb_function()->get_setting('quick_view_image_gallery');
+				if( $image_thumb ) {
+					$nav_html = wp_kses_post( $image_thumb );
+				}
+			}elseif( 'image_with_pagination' === $image_type ) {
+				$image_class .= $nav_class .= ' ' . $quick_image_pagination;
+				$dot = 'line' === $quick_image_pagination || 'dot' === $quick_image_pagination ? true : $dot;
+			}
+			$slider_attr = wc_implode_html_attributes(
+	array(
+		'data-arrow'  => true,
+		'data-dots'  => $dot,
+	)
+);
+		            }
+		    ?>
+		        <div class="wopb-quick-view-gallery <?php echo esc_attr( $image_class ) ?>">
+		            <div class="wopb-thumbnail">
+		                <div
+		                    class="<?php echo count( $all_id) > 1 ? 'wopb-quick-slider' : '' ?>"
+		                    <?php echo wp_kses_post( $slider_attr ) ?>
+		                >
+		                    <?php if( $image_full) { echo wp_kses_post( $image_full );}  ?>
+		                </div>
+		                <?php if ( $save_percentage ) { ?>
+		                    <span class="wopb-quick-view-sale">-
+		                        <span><?php echo esc_html__('Sale!', 'product-blocks'); ?></span>
+		                    </span>
+		                <?php } ?>
+		            </div>
+		            <?php
+		                if ( isset($nav_html) && $nav_html ) {
+		            ?>
+		                <div
+		                    class="wopb-quick-slider-nav<?php echo esc_attr( $nav_class ) ?>"
+		                    data-arrow="true"
+		                    data-collg="4"
+		                    data-colmd="4"
+		                    data-colsm="3"
+		                    data-colxs="3"
+		                    data-position=<?php echo esc_attr($position); ?>
+		                >
+		            <?php
+		                $nav_html_safe = wopb_function()->wp_kses_safe( $nav_html );
+		                echo $nav_html_safe; // phpcs:ignore
+		                ?>
+		                </div>
+		            <?php } ?>
+		        </div>
+		    </div>
+		<?php
+	}
 }

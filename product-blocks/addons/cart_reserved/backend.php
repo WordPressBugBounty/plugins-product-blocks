@@ -11,7 +11,6 @@ function wopb_cart_reserved_init( $config ) {
 	$configuration                = array(
 		'name'     => __( 'Cart Reserved Timer', 'product-blocks' ),
 		'desc'     => __( 'Display a countdown timer and show a FOMO message once someone adds products to the cart.', 'product-blocks' ),
-		'is_pro'   => false,
 		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-cart-reserved-timer/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/cart-reserved-timer/',
 		'type'     => 'checkout_cart',
@@ -22,17 +21,56 @@ function wopb_cart_reserved_init( $config ) {
 }
 
 /**
+ * Show "What to do after the timer expires?" with its one free choice, "Hide Timer".
+ *
+ * Pro adds its own choices to this field, or the whole field on older versions, so
+ * with Pro active the field is left to it.
+ *
+ * @param array $config Settings screens, keyed by add-on.
+ * @return array
+ */
+add_filter( 'wopb_settings', 'wopb_cart_reserved_expire_field', 11, 1 );
+function wopb_cart_reserved_expire_field( $config ) {
+	$path = array( 'wopb_cart_reserved', 'attr', 'tab', 'options', 'settings', 'attr', 'container_1', 'attr' );
+	$node = $config;
+	foreach ( $path as $step ) {
+		if ( ! isset( $node[ $step ] ) ) {
+			return $config;
+		}
+		$node = $node[ $step ];
+	}
+	if ( ! wopb_function()->show_upsell() || isset( $node['cart_reserved_expire'] ) ) {
+		return $config;
+	}
+
+	$position = array_search( 'cart_reserved_time_msg', array_keys( $node ), true );
+	$position = false === $position ? count( $node ) : $position + 1;
+	$field    = array(
+		'cart_reserved_expire' => array(
+			'type'    => 'radio',
+			'label'   => __( 'What to do after the timer expires?', 'product-blocks' ),
+			'options' => array(
+				'hide' => __( 'Hide Timer', 'product-blocks' ),
+			),
+			'default' => 'hide',
+		),
+	);
+
+	$config['wopb_cart_reserved']['attr']['tab']['options']['settings']['attr']['container_1']['attr'] =
+		array_slice( $node, 0, $position, true ) + $field + array_slice( $node, $position, null, true );
+	return $config;
+}
+
+/**
  * Cart Reserved Timer Addons Default Settings
  *
  * @since v.3.2.0
  * @param ARRAY | Default Congiguration
  * @return ARRAY
  */
-add_filter( 'wopb_settings', 'get_cart_reserved_opt', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_cart_reserved_opt( $config ) {
-	$is_active = wopb_function()->get_setting( 'is_lc_active' );
-	$arr       = array(
+add_filter( 'wopb_settings', 'wopb_get_cart_reserved_opt', 10, 1 );
+function wopb_get_cart_reserved_opt( $config ) {
+	$arr = array(
 		'wopb_cart_reserved' => array(
 			'label' => __( 'Cart Reserved Timer Settings', 'product-blocks' ),
 			'attr'  => array(
@@ -66,17 +104,6 @@ function get_cart_reserved_opt( $config ) {
 											'type'    => 'text',
 											'label'   => __( 'Timer Message', 'product-blocks' ),
 											'default' => 'Your cart is saved for {time} minutes!',
-										),
-										'cart_reserved_expire' => array(
-											'type'    => 'radio',
-											'label'   => __( 'What to do after the timer expires?', 'product-blocks' ),
-											'options' => array(
-												'hide' => __( 'Hide Timer', 'product-blocks' ),
-											),
-											'default' => 'hide',
-											'pro'     => array(
-												'clear' => __( 'Clear Cart', 'product-blocks' ),
-											),
 										),
 										'cart_reserved_icon' => array(
 											'type'    => 'radio',

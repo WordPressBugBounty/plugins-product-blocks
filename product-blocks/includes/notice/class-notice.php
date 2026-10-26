@@ -1,8 +1,7 @@
 <?php //phpcs:ignore
 namespace WOPB\Includes\Notice;
 
-use WOPB\Includes\Durbin\DurbinClient;
-use WOPB\Includes\Durbin\Xpo;
+use WOPB\Includes\Xpo;
 
 defined( 'ABSPATH' ) || exit;
 /**
@@ -13,11 +12,6 @@ defined( 'ABSPATH' ) || exit;
  *   promos/hellobar.php     -> get_hellobar_config(), localized for React
  *   promos/plugin-meta.php  -> get_active_promo(), called by the plugin's
  *                              plugin_action_links / plugin_row_meta handler
- *
- * Two things here are NOT promo-driven and just live in this file:
- *   render_durbin_consent_box()      -> the data-collection consent box
- *   render_sibling_plugin_notice()   -> WOWSTORE-ONLY cross-promo; delete it
- *                                       when porting, see its own comment
  */
 class Notice {
 
@@ -343,7 +337,20 @@ class Notice {
 		$type           = isset( $request_params['type'] ) ? $request_params['type'] : '';
 		$id             = isset( $request_params['id'] ) ? $request_params['id'] : '';
 
-		if ( 'hello_bar' === $type && ! empty( $id ) ) {
+		$id = is_string( $id ) ? sanitize_text_field( $id ) : '';
+
+		// Only the keys of this plugin's own hello-bar promos name a transient, so a request
+		// can't write or overwrite an option of its own choosing.
+		if ( 'hello_bar' === $type && '' !== $id ) {
+			$hellobar_keys = array();
+			foreach ( self::get_promos( 'hellobar' ) as $promo ) {
+				if ( ! empty( $promo['key'] ) ) {
+					$hellobar_keys[] = (string) $promo['key'];
+				}
+			}
+			if ( ! in_array( $id, $hellobar_keys, true ) ) {
+				return new \WP_Error( 'wopb_invalid_hello_bar', __( 'Unknown hello bar.', 'product-blocks' ), array( 'status' => 400 ) );
+			}
 			// we are setting the transient for 15 days to hide the hello bar.
 			Xpo::set_transient_without_cache( $id, 'hide', 15 * DAY_IN_SECONDS );
 		}
@@ -363,26 +370,22 @@ class Notice {
 	 * @return void
 	 */
 	public function set_dismiss_notice_callback() {
-		$prefix = $this->config['prefix'];
-
-		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['wpnonce'] ?? '' ) ), $prefix . '-nonce' ) ) {
+		// Runs on every `admin_init`, including logged-out requests to admin-ajax.php, so it
+		// does nothing unless an administrator carries this action's own nonce.
+		if ( empty( $_GET['wpnonce'] ) || ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
-		$durbin_key = sanitize_text_field( wp_unslash( $_GET[ $prefix . '_durbin_key' ] ?? '' ) );
+		$prefix = $this->config['prefix'];
 
-		// Durbin notice dismiss.
-		if ( ! empty( $durbin_key ) ) {
-			Xpo::set_transient_without_cache( $prefix . '_durbin_notice_' . $durbin_key, 'off' );
-
-			if ( 'get' === sanitize_text_field( wp_unslash( $_GET[ $prefix . '_get_durbin' ] ?? '' ) ) ) {
-				DurbinClient::send( DurbinClient::ACTIVATE_ACTION );
-			}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['wpnonce'] ) ), $prefix . '-dismiss-nonce' ) ) {
+			return;
 		}
 
+		// Promo dismiss. Only the keys of the promos this plugin shows are accepted.
 		$notice_key = sanitize_text_field( wp_unslash( $_GET[ 'disable_' . $prefix . '_notice' ] ?? '' ) );
-		if ( ! empty( $notice_key ) ) {
-			$interval = (int) sanitize_text_field( wp_unslash( $_GET[ $prefix . '_interval' ] ?? '' ) );
+		if ( ! empty( $notice_key ) && in_array( $notice_key, $this->known_promo_keys(), true ) ) {
+			$interval = absint( sanitize_text_field( wp_unslash( $_GET[ $prefix . '_interval' ] ?? '' ) ) );
 			if ( ! empty( $interval ) ) {
 				Xpo::set_transient_without_cache( $prefix . '_get_pro_notice_' . $notice_key, 'off', $interval );
 			} else {
@@ -392,16 +395,39 @@ class Notice {
 	}
 
 	/**
+	 * Keys of every promo this plugin can show, so a dismiss request can't create a key of its own.
+	 *
+	 * @return string[]
+	 */
+	private function known_promo_keys() {
+		$keys = array();
+		foreach ( array_keys( self::SURFACES ) as $surface ) {
+			foreach ( self::get_promos( $surface ) as $promo ) {
+				if ( ! empty( $promo['key'] ) ) {
+					$keys[] = (string) $promo['key'];
+				}
+			}
+		}
+		return $keys;
+	}
+
+	/**
 	 * Admin Notices Callback
 	 *
 	 * @return void
 	 */
 	public function admin_notices_callback() {
-		if ( $this->is_available_for_notice() ) {
+		// Promos are for the people who run the store.
+		// The WowStore dashboard shows none of them: it has its own hello bar and banner.
+		if ( ! current_user_can( 'manage_options' ) || 'wopb-settings' === wopb_function()->get_screen() ) {
+			return;
+		}
+
+		// Promos show only where they are relevant: the Plugins screen and
+		// this plugin's own screens.
+		if ( $this->is_available_for_notice() && $this->is_own_or_overview_screen() ) {
 			$this->render_notices( self::get_promos( 'notice' ) );
 		}
-		$this->render_durbin_consent_box();
-		$this->render_sibling_plugin_notice(); // WOWSTORE-ONLY — see the method.
 	}
 
 	/**
@@ -432,7 +458,7 @@ class Notice {
 
 			$query_args = array(
 				'disable_' . $prefix . '_notice' => $notice['key'],
-				'wpnonce'                        => wp_create_nonce( $prefix . '-nonce' ),
+				'wpnonce'                        => wp_create_nonce( $prefix . '-dismiss-nonce' ),
 			);
 			if ( ! empty( $notice['repeat_interval'] ) ) {
 				$query_args[ $prefix . '_interval' ] = $notice['repeat_interval'];
@@ -446,239 +472,24 @@ class Notice {
 	}
 
 	/**
-	 * The Durbin Html
+	 * Whether the current admin screen is Plugins or one of this plugin's own
+	 * screens (its pages or post types).
 	 *
-	 * @return void
+	 * @return bool
 	 */
-	public function render_durbin_consent_box() {
-		$prefix       = $this->config['prefix'];
-		$durbin_key   = $prefix . '_durbin_dc1';
-		$consent_box  = $prefix . '-consent-box';
-		$consent_cont = $prefix . '-consent-content';
-		$text_first   = $prefix . '-consent-text-first';
-		$text_last    = $prefix . '-consent-text-last';
-		$accept_btn   = $prefix . '-consent-accept';
-		$close_link   = $prefix . '-notice-close';
-		$close_icon   = $prefix . '-notice-close-icon';
-		$text_group   = $prefix . '-consent-text';
-		$wrapper      = $prefix . '-notice-wrapper';
-		$brand_name   = $this->config['brand_name'];
-
-		if (
-			isset( $_GET[ $prefix . '_durbin_key' ] ) || // phpcs:ignore
-			'off' === Xpo::get_transient_without_cache( $prefix . '_durbin_notice_' . $durbin_key )
-		) {
-			return;
+	private function is_own_or_overview_screen() {
+		$pagenow = isset( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : '';
+		if ( 'plugins.php' === $pagenow ) {
+			return true;
 		}
 
-		$db_nonce = wp_create_nonce( $prefix . '-nonce' );
-
-		?>
-		<style>
-				.<?php echo esc_attr( $consent_box ); ?> {
-					width: 656px;
-					padding: 16px;
-					border: 1px solid #070707;
-					border-left-width: 4px;
-					border-radius: 4px;
-					background-color: #fff;
-					position: relative;
-					width: 100%;
-					box-sizing: border-box;
-				}
-				.<?php echo esc_attr( $consent_cont ); ?> {
-					display: flex;
-					justify-content: flex-start;
-					align-items: flex-end;
-					gap: 26px;
-				}
-
-				.<?php echo esc_attr( $text_first ); ?> {
-					font-size: 14px;
-					font-weight: 600;
-					color: #070707;
-				}
-				.<?php echo esc_attr( $text_last ); ?> {
-					margin: 4px 0 0;
-					font-size: 14px;
-					color: #070707;
-				}
-
-				.<?php echo esc_attr( $accept_btn ); ?> {
-					background-color: #070707;
-					color: #fff !important;
-					border: none;
-					padding: 6px 10px;
-					border-radius: 4px;
-					cursor: pointer;
-					font-size: 12px;
-					font-weight: 600;
-					text-decoration: none;
-				}
-				.<?php echo esc_attr( $accept_btn ); ?>:hover {
-					background-color:rgb(38, 38, 38);
-					color: #fff;
-				}
-			</style>
-			<div class="<?php echo esc_attr( $consent_box . ' ' . $wrapper ); ?> notice data_collection_notice">
-			<div class="<?php echo esc_attr( $consent_cont ); ?>">
-			<div class="<?php echo esc_attr( $text_group ); ?>">
-			<div class="<?php echo esc_attr( $text_first ); ?>">
-			<?php
-				/* translators: %s: plugin brand name, from config.php. */
-				printf( esc_html__( 'Want to help make %s even more awesome?', 'product-blocks' ), esc_html( $brand_name ) );
-			?>
-			</div>
-			<div class="<?php echo esc_attr( $text_last ); ?>">
-					<?php esc_html_e( 'Allow us to collect diagnostic data and usage information. see ', 'product-blocks' ); ?>
-			<a href="https://www.wpxpo.com/data-collection-policy/" target="_blank" ><?php esc_html_e( 'what we collect.', 'product-blocks' ); ?></a>
-			</div>
-			</div>
-			<a
-					class="<?php echo esc_attr( $accept_btn ); ?>"
-					href=
-					<?php
-									echo esc_url(
-										add_query_arg(
-											array(
-												$prefix . '_durbin_key' => $durbin_key,
-												$prefix . '_get_durbin' => 'get',
-												'wpnonce' => $db_nonce,
-											)
-										)
-									);
-					?>
-									class="<?php echo esc_attr( $close_link ); ?>"
-			><?php esc_html_e( 'Accept & Close', 'product-blocks' ); ?></a>
-			</div>
-			<a href=
-				<?php
-							echo esc_url(
-								add_query_arg(
-									array(
-										$prefix . '_durbin_key' => $durbin_key,
-										'wpnonce' => $db_nonce,
-									)
-								)
-							);
-				?>
-				class="<?php echo esc_attr( $close_link ); ?>"
-				style="
-					position: absolute;
-					right: 2px;
-					top: 5px;
-					text-decoration: unset;
-					color: #b6b6b6;
-					font-family: dashicons;
-					font-size: 16px;
-					font-style: normal;
-					font-weight: 400;
-					line-height: 20px;
-				"
-			>
-				<span
-				style="font-size: 14px;"
-				class="<?php echo esc_attr( $close_icon ); ?> dashicons dashicons-dismiss"> </span></a>
-			</div>
-		<?php
-	}
-
-	/**
-	 * ------------------------------------------------------------------
-	 * WOWSTORE-ONLY. NOT part of the common promo system.
-	 *
-	 * When copying notice/ into another plugin: DELETE this method, its
-	 * call in admin_notices_callback(), and templates/plugin-install.php
-	 * — unless that plugin also cross-promotes a sibling, in which case
-	 * only the payload below changes.
-	 *
-	 * Two things earn it a hand-written method instead of a promos/ entry:
-	 *
-	 * 1. It is evergreen, and an always-live entry in promos/notice.php
-	 *    would make has_active_promo() permanently true, claiming this
-	 *    plugin's xpo_active_notice_lists slot on plugins.php/index.php
-	 *    and muting every sibling plugin's notices there. Rendering it
-	 *    here keeps it outside that arbitration, exactly as the old
-	 *    our_plugin_install_notice_callback() was.
-	 * 2. Its visibility depends on another plugin's install state and DB,
-	 *    which is not the kind of thing promos/ should carry.
-	 *
-	 * Only the DATA lives here. The markup, CSS and JS stay in
-	 * templates/plugin-install.php like every other design, and dismissal
-	 * still goes through set_dismiss_notice_callback() untouched.
-	 * ------------------------------------------------------------------
-	 *
-	 * @return void
-	 */
-	private function render_sibling_plugin_notice() {
-		$prefix      = $this->config['prefix'];
-		$brand_color = $this->config['brand_color'];
-		$key         = $prefix . '_wow_revenue_install';
-		$screen      = isset( $GLOBALS['pagenow'] ) ? $GLOBALS['pagenow'] : '';
-		$on_screen   = in_array( $screen, array( 'plugins.php', 'index.php' ), true );
-
-		if ( ! $on_screen ) {
-			return;
+		$prefix = $this->config['prefix'];
+		$page   = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen check.
+		if ( 0 === strpos( $page, $prefix ) ) {
+			return true;
 		}
 
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
-		$plugin_file = 'revenue/revenue.php';
-		$installed   = file_exists( WP_PLUGIN_DIR . '/' . $plugin_file );
-		$active      = is_plugin_active( $plugin_file );
-
-		// Someone already running campaigns doesn't need the pitch. Only
-		// query once past the screen check — the table exists only while
-		// the plugin is active.
-		if ( $active ) {
-			global $wpdb;
-			if ( $wpdb->get_var( "SELECT 1 FROM {$wpdb->prefix}revenue_campaigns LIMIT 1" ) ) { // phpcs:ignore WordPress.DB
-				return;
-			}
-		}
-
-		$notice = array(
-			// `start`/`end` are placeholders: this is evergreen, but
-			// promo_is_live() is the one gate (dismiss-in-flight, dismissed
-			// transient, visibility) and it expects a window. Reusing it
-			// beats a second copy of that logic; widen before 2035.
-			'start'        => '2020-01-01 00:00 Asia/Dhaka',
-			'end'          => '2035-12-31 23:59 Asia/Dhaka',
-			'key'          => $key,
-			'visibility'   => ! Xpo::is_lc_active(),
-			'bg_image'     => $this->config['asset_url'] . 'wow_rev_activation_updated.jpg',
-			'accent_color' => '#6E3FF3',
-			'button_color' => '#00A464',
-			'title'        => __( '🚀 Offer Discounts, Boost Sales, and Increase Revenue', 'product-blocks' ),
-			'description'  => __( "Looking to maximize profits? WowRevenue can help send your store's sales through the roof - It's a discount builder that ignites growth with flexible upselling, cross-selling, and downselling campaigns.", 'product-blocks' ),
-			'tags'         => array(
-				__( 'Bundle Discount', 'product-blocks' ),
-				__( 'Quantity Discount', 'product-blocks' ),
-				__( 'Frequently Bought Together', 'product-blocks' ),
-				__( 'Buy X Get Y', 'product-blocks' ),
-			),
-			// Empty slug = a plain link, used once the plugin is active.
-			'install_slug' => $active ? '' : 'wow_revenue',
-			'button_text'  => $active
-				? __( 'Create Discount Campaign', 'product-blocks' )
-				: ( $installed
-					? __( 'Activate WowRevenue', 'product-blocks' )
-					: __( 'Free Install WowRevenue', 'product-blocks' ) ),
-			'button_url'   => admin_url( 'admin.php?page=revenue#/campaigns' ),
-		);
-
-		if ( ! self::promo_is_live( $notice ) ) {
-			return;
-		}
-
-		$query_args = array(
-			'disable_' . $prefix . '_notice' => $key,
-			'wpnonce'                        => wp_create_nonce( $prefix . '-nonce' ),
-		);
-
-		// $notice, $query_args, $prefix and $brand_color are in scope for the template.
-		include __DIR__ . '/templates/plugin-install.php';
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		return $screen && ! empty( $screen->post_type ) && 0 === strpos( $screen->post_type, $prefix );
 	}
 }

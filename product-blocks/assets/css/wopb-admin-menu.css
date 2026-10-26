@@ -1,0 +1,30 @@
+/* WowStore admin menu styling. Loaded on every admin screen, so keep it limited to the menu. */
+#toplevel_page_wopb-settings a[href="admin.php?page=go_productx_pro"],
+#toplevel_page_wopb-settings a[href="admin.php?page=go_productx_pro"]:hover {
+    color: #73b81c;
+}
+#toplevel_page_wopb-settings .wp-menu-image > img {
+    width: 20px;
+    padding-top: 5px;
+}
+#toplevel_page_wopb-settings .wp-submenu a[href*="wopb-pro"] {
+	display:none;
+}
+#toplevel_page_wopb-settings .wp-submenu a.wopb-go-pro {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	color: white;
+	background-color: #FF176B;
+	margin-inline: 10px;
+	border-radius: 6px;
+	margin-top: 6px;
+	padding-block: 6px;
+	box-shadow: none;
+	white-space: nowrap;
+	transition: background-color 200ms ease;
+}
+#toplevel_page_wopb-settings .wp-submenu a.wopb-go-pro:hover {
+	background-color: #dd1b63;
+	color: white;
+}

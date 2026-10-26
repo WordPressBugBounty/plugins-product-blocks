@@ -49,11 +49,20 @@ class Product_Price {
 					$content .= '<span class="wopb-builder-price-label"><bdi>' . esc_html( $attr['salesTextLabel'] ) . '</bdi></span>';
 				}
 
+				$wopb_buffer_level_1 = ob_get_level();
 				ob_start();
-				woocommerce_template_single_price();
-				$content .= ob_get_clean();
+				try {
+					woocommerce_template_single_price();
+					$content .= ob_get_clean();
+				} finally {
+					while ( ob_get_level() > $wopb_buffer_level_1 ) {
+						if ( ! ob_end_clean() ) {
+							break;
+						}
+					}
+				}
 
-				if ( $product->get_sale_price() && $attr['salesBadge'] ) {
+				if ( $product->get_sale_price() && (float) $product->get_regular_price() > 0 && $attr['salesBadge'] ) {
 					$percentage = 100 - ( $product->get_sale_price() / $product->get_regular_price() * 100 );
 					$content   .= '<div class="woocommerce-discount-badge">' . round( $percentage, 2 ) . '% ' . esc_html( $attr['badgeLabel'] ) . '</div>';
 				}

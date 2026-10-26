@@ -41,9 +41,18 @@ class Order_Conformation {
 				$wraper_before .= '<div class="wopb-product-wrapper">';
 			if ( ! is_admin() ) {
 				if ( isset( WC()->customer ) ) {
+					$wopb_buffer_level_1 = ob_get_level();
 					ob_start();
-					require_once WOPB_PATH . 'blocks/woo/thank_you/order_conformation/Template.php';
-					$content .= ob_get_clean();
+					try {
+						require_once WOPB_PATH . 'blocks/woo/thank_you/order_conformation/Template.php';
+						$content .= ob_get_clean();
+					} finally {
+						while ( ob_get_level() > $wopb_buffer_level_1 ) {
+							if ( ! ob_end_clean() ) {
+								break;
+							}
+						}
+					}
 				}
 			}
 				$wraper_after .= '</div>';

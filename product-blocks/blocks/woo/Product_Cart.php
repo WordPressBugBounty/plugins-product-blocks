@@ -41,57 +41,18 @@ class Product_Cart {
 		$attr          = wp_parse_args( $attr, $this->get_attributes() );
 
 		if ( ! empty( $product ) ) {
-			global $productx_cart;
 			$cart_class = '';
 
 			if ( ! empty( $attr['showBuyNow'] ) ) {
 				add_filter(
 					'wopb_bottom_add_to_cart',
-					function ( $content ) use ( $attr, $product ) {
-
-						if ( ! empty( $attr['removeProduct'] ) ) {
-							$content .= '<input type="hidden" name="wopb-remove-product" value="true">';
-						}
-
-						$content .= '<button ';
-						$content .= 'type="submit" ';
-						$content .= 'name="wopb-buy-now" ';
-						$content .= 'class="wopb-buy-button ' . ( $product->is_type( 'variable' ) ? 'wc-variation-selection-needed button disabled' : '' ) . '" ';
-						$content .= 'value="' . $product->get_id() . '" ';
-						$content .= 'data-product_id="' . $product->get_id() . '" ';
-						$content .= '>';
-						$content .= ! empty( $attr['btnBuyText'] ) ? $attr['btnBuyText'] : esc_html__( 'Buy Now', 'product-blocks' );
-						$content .= '</button>';
-						return $content;
-					}
+					array( new ProductCartAppendBuyNowButtonCallback( $attr, $product ), 'append_buy_now_button' )
 				);
 			}
 
-			if ( wopb_function()->isPro() ) {
-				$methods = get_class_methods( wopb_pro_function() );
-				if ( in_array( 'is_simple_preorder', $methods ) ) {
-					if ( wopb_function()->is_simple_preorder() && wopb_function()->get_setting( 'preorder_add_to_cart_button_text' ) ) {
-						$productx_cart = wopb_function()->get_setting( 'preorder_add_to_cart_button_text' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
-					}
-				}
-				if ( in_array( 'is_simple_backorder', $methods ) ) {
-					if ( wopb_function()->is_simple_backorder() && wopb_function()->get_setting( 'backorder_add_to_cart_button_text' ) ) {
-						$productx_cart = wopb_function()->get_setting( 'backorder_add_to_cart_button_text' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
-					}
-				}
-			}
-
-			$cart_text         = function () {
-				global $productx_cart;
-				return $productx_cart;
-			};
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
 			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
-
-			if ( $productx_cart ) {
-				add_filter( 'woocommerce_product_single_add_to_cart_text', $cart_text );
-			}
 
 			if (
 				! $attr['showQuantity'] ||
@@ -101,18 +62,23 @@ class Product_Cart {
 				add_filter( 'woocommerce_is_sold_individually', array( $this, 'remove_quantity_fields' ), 10, 2 );
 			}
 
+			$wopb_buffer_level_1 = ob_get_level();
 			ob_start();
+			try {
             echo '<div class="wopb-product-wrapper wopb-builder-cart' . esc_attr($cart_class) . '" data-type="'. ( $attr['showQuantity'] && $attr['showQuantityBtn'] ? esc_attr($attr['quantityBtnPosition']) : '' ).'">'; // phpcs:ignores
-			$this->remove_qty_element();
-			woocommerce_template_single_add_to_cart();
-			do_action( 'wopb_after_builder_add_cart_button' );
-			echo '</div>';
-			$form     = ob_get_clean();
-			$content .= str_replace( 'single_add_to_cart_button', 'single_add_to_cart_button wopb-cart-button', $form );
-
-			if ( $productx_cart ) {
-				remove_filter( 'woocommerce_product_single_add_to_cart_text', $cart_text );
+				$this->remove_qty_element();
+				woocommerce_template_single_add_to_cart();
+				do_action( 'wopb_after_builder_add_cart_button' );
+				echo '</div>';
+				$form = ob_get_clean();
+			} finally {
+				while ( ob_get_level() > $wopb_buffer_level_1 ) {
+					if ( ! ob_end_clean() ) {
+						break;
+					}
+				}
 			}
+			$content .= str_replace( 'single_add_to_cart_button', 'single_add_to_cart_button wopb-cart-button', $form );
 
 			$wraper_after .= '</div>';
 		}
@@ -179,5 +145,36 @@ class Product_Cart {
 				}
 			}
 		}
+	}
+}
+
+
+/** Holds the render context for a removable, named hook callback. */
+class ProductCartAppendBuyNowButtonCallback {
+	private $attr;
+	private $product;
+
+	public function __construct( $attr, $product ) {
+		$this->attr    = $attr;
+		$this->product = $product;
+	}
+
+	public function append_buy_now_button( $content ) {
+		$attr    = $this->attr;
+		$product = $this->product;
+		if ( ! empty( $attr['removeProduct'] ) ) {
+			$content .= '<input type="hidden" name="wopb-remove-product" value="true">';
+		}
+
+		$content .= '<button ';
+		$content .= 'type="submit" ';
+		$content .= 'name="wopb-buy-now" ';
+		$content .= 'class="wopb-buy-button ' . ( $product->is_type( 'variable' ) ? 'wc-variation-selection-needed button disabled' : '' ) . '" ';
+		$content .= 'value="' . $product->get_id() . '" ';
+		$content .= 'data-product_id="' . $product->get_id() . '" ';
+		$content .= '>';
+		$content .= ! empty( $attr['btnBuyText'] ) ? $attr['btnBuyText'] : esc_html__( 'Buy Now', 'product-blocks' );
+		$content .= '</button>';
+		return $content;
 	}
 }

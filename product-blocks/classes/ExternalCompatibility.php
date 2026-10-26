@@ -135,7 +135,14 @@ class ExternalCompatibility {
 					}
 
 					$css_file_path = $dir . 'uag-css-' . $post_id . '.css';
-					file_put_contents( $css_file_path, $assets['css'] );
+					global $wp_filesystem;
+					if ( empty( $wp_filesystem ) ) {
+						require_once ABSPATH . 'wp-admin/includes/file.php';
+						WP_Filesystem();
+					}
+					if ( $wp_filesystem ) {
+						$wp_filesystem->put_contents( $css_file_path, $assets['css'], FS_CHMOD_FILE );
+					}
 					// error_log( 'Spectra CSS generated: ' . $css_file_path );
 				}
 			}
@@ -165,7 +172,7 @@ class ExternalCompatibility {
 		}
 
 		// Check if it's a wopb_builder post type
-		if ( $post_type == 'wopb_builder' && class_exists( 'UAGB_Helper' ) ) {
+		if ( 'wopb_builder' === $post_type && class_exists( 'UAGB_Helper' ) ) {
 			$upload_dir       = wp_upload_dir();
 			$spectra_css_path = $upload_dir['basedir'] . '/uag-plugin/assets/0/uag-css-' . $post_id . '.css';
 
@@ -246,65 +253,24 @@ class ExternalCompatibility {
 
 		add_filter(
 			'rocket_rucss_excluded_selectors',
-			function ( $selectors ) {
-				$selectors[] = '.wopb-product';
-				$selectors[] = '.productx-global-style';
-				$selectors[] = '.wopb-(.*)';
-				$selectors[] = '[class^="wopb-"]';
-				$selectors[] = '.wp-block-navigation(.*)';
-				$selectors[] = '[class^="wp-block-navigation"]';
-				return $selectors;
-			}
+			array( $this, 'rocket_excluded_selectors' )
 		);
 
 		add_filter(
 			'rocket_rucss_safelist',
-			function ( $selectors ) {
-				$selectors[] = '.wopb-product';
-				$selectors[] = '.productx-global-style';
-				$selectors[] = '.wopb-(.*)';
-				$selectors[] = '[class^="wopb-"]';
-				$selectors[] = '.wp-block-navigation(.*)';
-				$selectors[] = '[class^="wp-block-navigation"]';
-				$selectors[] = '[class*=" wp-block-navigation"]';
-				$selectors[] = '.wp-block-navigation__responsive-container';
-				$selectors[] = '.wp-block-navigation__responsive-container.is-menu-open';
-				$selectors[] = '.wp-block-navigation__responsive-close';
-				$selectors[] = '.wp-block-navigation__responsive-dialog';
-				$selectors[] = '.wp-block-navigation__responsive-container-content';
-				$selectors[] = '.wp-block-navigation__responsive-container-open';
-				$selectors[] = '.wp-block-navigation__responsive-container-close';
-				$selectors[] = '.wp-block-navigation__overlay-container';
-				$selectors[] = '.has-modal-open';
-				$selectors[] = 'html.has-modal-open';
-				$selectors[] = '.disable-default-overlay';
-
-				return $selectors;
-			}
+			array( $this, 'rocket_safelist' )
 		);
 
 		// Exclude inline styles from Remove Unused CSS
 		add_filter(
 			'rocket_rucss_inline_content_exclusions',
-			function ( $excluded_inline ) {
-				$excluded_inline[] = 'wopb-post-(.*?)';
-				$excluded_inline[] = 'productx-global-style';
-				$excluded_inline[] = 'wopb-(.*)';
-				$excluded_inline[] = 'wp-block-navigation__responsive-container';
-				$excluded_inline[] = 'wp-block-navigation';
-				return $excluded_inline;
-			}
+			array( $this, 'rocket_inline_exclusions' )
 		);
 
 		// Exclude CSS files from optimization
 		add_filter(
 			'rocket_exclude_css',
-			function ( $excluded_files ) {
-				$excluded_files[] = '/product-blocks/wopb-css-(.*?)\.css';
-				$excluded_files[] = '/wp-content/plugins/product-blocks/(.*?)\.css';
-				$excluded_files[] = 'product-blocks/assets/css/.*\.css';
-				return $excluded_files;
-			}
+			array( $this, 'rocket_css_exclusions' )
 		);
 	}
 
@@ -325,52 +291,16 @@ class ExternalCompatibility {
 			return;
 		}
 
-		$js_exclusions = function ( $excluded_files ) {
-			$excluded_files[] = 'wopb-slick-script';
-			$excluded_files[] = 'wopb-slick-script-js';
-			$excluded_files[] = 'wopb-script';
-			$excluded_files[] = 'wopb-script-js';
-			$excluded_files[] = 'wopb-filter-script';
-			$excluded_files[] = 'wopb-filter-script-js';
-			$excluded_files[] = 'product-blocks/assets/js/slick.min.js';
-			$excluded_files[] = 'product-blocks/assets/js/wopb.js';
-			$excluded_files[] = 'product-blocks/assets/js/filter.js';
-			$excluded_files[] = '/wp-content/plugins/product-blocks/assets/js/slick.min.js';
-			$excluded_files[] = '/wp-content/plugins/product-blocks/assets/js/wopb.js';
-			$excluded_files[] = '/wp-content/plugins/product-blocks/assets/js/filter.js';
-			$excluded_files[] = '/wp-content/plugins/product-blocks/(.*)\.js';
-			$excluded_files[] = '/wp-content/plugins/product-blocks-pro/(.*)\.js';
-			$excluded_files[] = 'product-blocks/assets/js/.*\.js';
-			$excluded_files[] = 'product-blocks-pro/(.*)\.js';
+		$js_exclusions = array( $this, 'rocket_js_exclusions' );
 
-			return array_unique( $excluded_files );
-		};
-
-		$wp_script_module_exclusions = function ( $excluded_files ) use ( $js_exclusions ) {
-			$excluded_files = $js_exclusions( $excluded_files );
-
-			$excluded_files[] = '/wp-includes/js/jquery/jquery.min.js';
-			$excluded_files[] = '/wp-includes/js/jquery/jquery.js';
-			$excluded_files[] = '/wp-includes/js/jquery/jquery-migrate.min.js';
-			$excluded_files[] = '/wp-includes/js/jquery/jquery-migrate.js';
-			$excluded_files[] = '/jquery-?[0-9.]*(.min|.slim|.slim.min)?.js';
-			$excluded_files[] = '/jquery-migrate(.min)?.js';
-			$excluded_files[] = '/wp-includes/js/dist/script-modules/(.*)\.js';
-			$excluded_files[] = '@wordpress/(.*)-js-module';
-
-			return array_unique( $excluded_files );
-		};
+		$wp_script_module_exclusions = array( $this, 'rocket_module_exclusions' );
 
 		add_filter( 'rocket_exclude_js', $js_exclusions );
 		add_filter( 'rocket_exclude_defer_js', $wp_script_module_exclusions );
 		add_filter( 'rocket_delay_js_exclusions', $wp_script_module_exclusions );
 		add_filter(
 			'rocket_cdn_reject_files',
-			function ( $excluded_files ) {
-				$excluded_files[] = '/wp-includes/js/dist/script-modules/(.*)\.js';
-
-				return $excluded_files;
-			}
+			array( $this, 'rocket_cdn_exclusions' )
 		);
 	}
 
@@ -393,17 +323,7 @@ class ExternalCompatibility {
 
 		add_action(
 			'init',
-			function () {
-				wp_enqueue_block_style(
-					'core/navigation',
-					array(
-						'handle' => 'wopb-core-navigation-compat',
-						'src'    => WOPB_URL . 'assets/css/core-navigation-compat.css',
-						'path'   => WOPB_PATH . 'assets/css/core-navigation-compat.css',
-						'ver'    => WOPB_VER,
-					)
-				);
-			}
+			array( $this, 'enqueue_navigation_style' )
 		);
 	}
 
@@ -491,5 +411,118 @@ class ExternalCompatibility {
 		}
 
 		apply_filters( 'rocket_saas_clean_all', array() ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WP Rocket's own filter hook name, must match exactly to integrate with it.
+	}
+
+	/** Named WordPress hook callback. */
+	public function rocket_excluded_selectors( $selectors ) {
+		$selectors[] = '.wopb-product';
+		$selectors[] = '.productx-global-style';
+		$selectors[] = '.wopb-(.*)';
+		$selectors[] = '[class^="wopb-"]';
+		$selectors[] = '.wp-block-navigation(.*)';
+		$selectors[] = '[class^="wp-block-navigation"]';
+		return $selectors;
+	}
+
+	/** Named WordPress hook callback. */
+	public function rocket_safelist( $selectors ) {
+		$selectors[] = '.wopb-product';
+		$selectors[] = '.productx-global-style';
+		$selectors[] = '.wopb-(.*)';
+		$selectors[] = '[class^="wopb-"]';
+		$selectors[] = '.wp-block-navigation(.*)';
+		$selectors[] = '[class^="wp-block-navigation"]';
+		$selectors[] = '[class*=" wp-block-navigation"]';
+		$selectors[] = '.wp-block-navigation__responsive-container';
+		$selectors[] = '.wp-block-navigation__responsive-container.is-menu-open';
+		$selectors[] = '.wp-block-navigation__responsive-close';
+		$selectors[] = '.wp-block-navigation__responsive-dialog';
+		$selectors[] = '.wp-block-navigation__responsive-container-content';
+		$selectors[] = '.wp-block-navigation__responsive-container-open';
+		$selectors[] = '.wp-block-navigation__responsive-container-close';
+		$selectors[] = '.wp-block-navigation__overlay-container';
+		$selectors[] = '.has-modal-open';
+		$selectors[] = 'html.has-modal-open';
+		$selectors[] = '.disable-default-overlay';
+
+		return $selectors;
+	}
+
+	/** Named WordPress hook callback. */
+	public function rocket_inline_exclusions( $excluded_inline ) {
+		$excluded_inline[] = 'wopb-post-(.*?)';
+		$excluded_inline[] = 'productx-global-style';
+		$excluded_inline[] = 'wopb-(.*)';
+		$excluded_inline[] = 'wp-block-navigation__responsive-container';
+		$excluded_inline[] = 'wp-block-navigation';
+		return $excluded_inline;
+	}
+
+	/** Named WordPress hook callback. */
+	public function rocket_css_exclusions( $excluded_files ) {
+		$excluded_files[] = '/product-blocks/wopb-css-(.*?)\.css';
+		$excluded_files[] = wp_parse_url( WOPB_URL, PHP_URL_PATH ) . '(.*?)\.css';
+		$excluded_files[] = dirname( WOPB_BASE ) . '/assets/css/.*\.css';
+		return $excluded_files;
+	}
+
+	/** Named WordPress hook callback. */
+	public function rocket_js_exclusions( $excluded_files ) {
+		$excluded_files[] = 'wopb-slick-script';
+		$excluded_files[] = 'wopb-slick-script-js';
+		$excluded_files[] = 'wopb-script';
+		$excluded_files[] = 'wopb-script-js';
+		$excluded_files[] = 'wopb-filter-script';
+		$excluded_files[] = 'wopb-filter-script-js';
+		$excluded_files[] = dirname( WOPB_BASE ) . '/assets/js/slick.min.js';
+		$excluded_files[] = dirname( WOPB_BASE ) . '/assets/js/wopb.js';
+		$excluded_files[] = dirname( WOPB_BASE ) . '/assets/js/filter.js';
+		$excluded_files[] = wp_parse_url( WOPB_URL . 'assets/js/slick.min.js', PHP_URL_PATH );
+		$excluded_files[] = wp_parse_url( WOPB_URL . 'assets/js/wopb.js', PHP_URL_PATH );
+		$excluded_files[] = wp_parse_url( WOPB_URL . 'assets/js/filter.js', PHP_URL_PATH );
+		$excluded_files[] = wp_parse_url( WOPB_URL, PHP_URL_PATH ) . '(.*)\.js';
+		if ( defined( 'WOPB_PRO_URL' ) ) {
+			$excluded_files[] = wp_parse_url( WOPB_PRO_URL, PHP_URL_PATH ) . '(.*)\.js';
+		}
+		$excluded_files[] = dirname( WOPB_BASE ) . '/assets/js/.*\.js';
+		$excluded_files[] = 'product-blocks-pro/(.*)\.js';
+
+		return array_unique( $excluded_files );
+	}
+
+	/** Named WordPress hook callback. */
+	public function rocket_module_exclusions( $excluded_files ) {
+		$excluded_files = $this->rocket_js_exclusions( $excluded_files );
+
+		$excluded_files[] = '/wp-includes/js/jquery/jquery.min.js';
+		$excluded_files[] = '/wp-includes/js/jquery/jquery.js';
+		$excluded_files[] = '/wp-includes/js/jquery/jquery-migrate.min.js';
+		$excluded_files[] = '/wp-includes/js/jquery/jquery-migrate.js';
+		$excluded_files[] = '/jquery-?[0-9.]*(.min|.slim|.slim.min)?.js';
+		$excluded_files[] = '/jquery-migrate(.min)?.js';
+		$excluded_files[] = '/wp-includes/js/dist/script-modules/(.*)\.js';
+		$excluded_files[] = '@wordpress/(.*)-js-module';
+
+		return array_unique( $excluded_files );
+	}
+
+	/** Named WordPress hook callback. */
+	public function rocket_cdn_exclusions( $excluded_files ) {
+		$excluded_files[] = '/wp-includes/js/dist/script-modules/(.*)\.js';
+
+		return $excluded_files;
+	}
+
+	/** Named WordPress hook callback. */
+	public function enqueue_navigation_style() {
+		wp_enqueue_block_style(
+			'core/navigation',
+			array(
+				'handle' => 'wopb-core-navigation-compat',
+				'src'    => WOPB_URL . 'assets/css/core-navigation-compat.css',
+				'path'   => WOPB_PATH . 'assets/css/core-navigation-compat.css',
+				'ver'    => WOPB_VER,
+			)
+		);
 	}
 }

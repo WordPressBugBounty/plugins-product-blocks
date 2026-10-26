@@ -1,8 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- Elementor extension class name, must match Elementor's own naming convention.
-final class Elementor_WOPB_Extension {
+final class WOPB_Elementor_Extension {
 
 	private static $_instance = null;
 

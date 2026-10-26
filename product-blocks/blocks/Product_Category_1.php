@@ -95,7 +95,7 @@ class Product_Category_1 {
 		if ( ! empty( $recent_posts ) ) {
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 			$attr['align']     = ! empty( $attr['align'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
-			$attr['titleTag']  = in_array( $attr['titleTag'], wopb_function()->allowed_block_tags() ) ? $attr['titleTag'] : 'h3';
+			$attr['titleTag']  = in_array( $attr['titleTag'], wopb_function()->allowed_block_tags(), true ) ? $attr['titleTag'] : 'h3';
 
 			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . ( isset( $attr['align'] ) ? ' align' . $attr['align'] : '' ) . '">';
 				$wraper_before .= '<div class="wopb-block-wrapper">';
@@ -109,7 +109,7 @@ class Product_Category_1 {
 			}
 
 					$wraper_before .= '<div class="wopb-wrapper-main-content">';
-			if ( $attr['productView'] == 'slide' ) {
+			if ( 'slide' === $attr['productView'] ) {
 				$wrapper_main_content .= '<div class="wopb-product-blocks-slide" ' . wp_kses_post( $slider_attr ) . '>';
 			} else {
 				$wrapper_main_content .= '<div class="wopb-block-items-wrap wopb-block-row wopb-block-column-' . sanitize_html_class( json_decode( wp_json_encode( $attr['columns'] ), true )['lg'] ) . '">';
@@ -125,16 +125,16 @@ class Product_Category_1 {
 									$post_loop     .= '<div class="wopb-category-content-items wopb-category-content-' . sanitize_html_class( $attr['contentVerticalPosition'] ) . ' wopb-category-content-' . sanitize_html_class( $attr['contentHorizontalPosition'] ) . '">';
 										$post_loop .= '<div class="wopb-category-content-item">';
 					if ( $attr['titleShow'] ) {
-						$post_loop .= '<' . $attr['titleTag'] . ' class="wopb-product-cat-title"><a href=' . esc_url( $value['url'] ) . '>' . esc_html( $value['name'] ) . '</a></' . $attr['titleTag'] . '>';
+						$post_loop .= '<' . esc_attr( $attr['titleTag'] ) . ' class="wopb-product-cat-title"><a href="' . esc_url( $value['url'] ) . '">' . esc_html( $value['name'] ) . '</a></' . esc_attr( $attr['titleTag'] ) . '>';
 					}
 					if ( $attr['countShow'] ) {
 						$post_loop .= '<div class="wopb-product-cat-count">' . esc_html( $value['count'] ) . ' ' . ( isset( $attr['categoryrCountText'] ) ? esc_html( $attr['categoryrCountText'] ) : esc_html__( 'products', 'product-blocks' ) ) . '</div>';
 					}
 					if ( $attr['descShow'] ) {
-						$post_loop .= '<div class="wopb-product-cat-desc">' . wc_format_content( wp_kses_post( wp_trim_words( $value['desc'], $attr['descLimit'] ) ) ) . '</div>';
+						$post_loop .= '<div class="wopb-product-cat-desc">' . wp_kses_post( wc_format_content( wp_trim_words( $value['desc'], $attr['descLimit'] ) ) ) . '</div>';
 					}
 					if ( $attr['readMore'] ) {
-						$post_loop .= '<div class="wopb-product-readmore"><a href=' . esc_url( $value['url'] ) . '>' . ( $attr['readMoreText'] ? esc_html( $attr['readMoreText'] ) : esc_html__( 'Read More', 'product-blocks' ) ) . '</a></div>';
+						$post_loop .= '<div class="wopb-product-readmore"><a href="' . esc_url( $value['url'] ) . '">' . ( $attr['readMoreText'] ? esc_html( $attr['readMoreText'] ) : esc_html__( 'Read More', 'product-blocks' ) ) . '</a></div>';
 					}
 										$post_loop .= '</div>';
 									$post_loop     .= '</div>';
@@ -147,7 +147,7 @@ class Product_Category_1 {
 
 						$wrapper_main_content .= '</div>';// wopb-block-items-wrap
 
-			if ( $attr['productView'] == 'slide' && $attr['showArrows'] ) {
+			if ( 'slide' === $attr['productView'] && $attr['showArrows'] ) {
 				include WOPB_PATH . 'blocks/template/arrow.php';
 			}
 

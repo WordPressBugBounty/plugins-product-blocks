@@ -11,7 +11,6 @@ function wopb_compare_config( $config ) {
 	$configuration          = array(
 		'name'     => __( 'Product Compare', 'product-blocks' ),
 		'desc'     => __( 'Let your shoppers compare multiple products by displaying a pop-up or redirecting to a compare page.', 'product-blocks' ),
-		'is_pro'   => false,
 		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-product-comparison/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/compare-settings/',
 		'type'     => 'exclusive',

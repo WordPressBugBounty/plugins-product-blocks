@@ -86,7 +86,10 @@ class Caches {
 	 */
 	public function get_file_callback( $request ) {
 		$type = $request->get_param( 'type' );
-		if ( $type == 'reset' ) {
+		if ( ! is_string( $type ) || ! in_array( $type, array_merge( $this->files, array( 'all', 'reset' ) ), true ) ) {
+			return new \WP_Error( 'wopb_invalid_type', __( 'Invalid library type.', 'product-blocks' ), array( 'status' => 400 ) );
+		}
+		if ( 'reset' === $type ) {
 			return $this->reset_all_callback();
 		} else {
 			try {
@@ -116,37 +119,22 @@ class Caches {
 		}
 		$upload_url = wp_upload_dir();
 		$dir        = trailingslashit( $upload_url['basedir'] ) . 'wopb/';
-		$downloads  = $type == 'all' ? $this->files : array( $type );
+		$downloads  = 'all' === $type ? $this->files : array( $type );
 		foreach ( $downloads as $key => $download ) {
 			$file_path = $dir . $download . '.json';
-			if ( file_exists( $file_path ) ) {
-				if ( ( current_time( 'timestamp' ) - filemtime( $file_path ) ) > 432000 ) { // 5 Days in Seconds
-					$content = $this->download_source( $download );
-					if ( $type == 'all' ) {
-						$res[ $download ] = json_decode( $content );
-					} else {
-						return array(
-							'success' => true,
-							'data'    => $content,
-						);
-					}
-				} else {
-					$content = $wp_filesystem->get_contents( $file_path );
-					if ( $type == 'all' ) {
-						$res[ $download ] = json_decode( $content );
-					} else {
-						return array(
-							'success' => true,
-							'data'    => $content,
-						);
-					}
-				}
-			} elseif ( $type == 'all' ) {
-					$res[ $download ] = json_decode( $this->download_source( $download ) );
+			if ( file_exists( $file_path ) && ( current_time( 'timestamp' ) - filemtime( $file_path ) ) <= 432000 ) { // 5 Days in Seconds
+				$content = $wp_filesystem->get_contents( $file_path );
+			} else {
+				$content = $this->download_source( $download );
+			}
+
+			$items = $this->get_listed_items( $content, $download );
+			if ( 'all' === $type ) {
+				$res[ $download ] = $items;
 			} else {
 				return array(
 					'success' => true,
-					'data'    => $this->download_source( $download ),
+					'data'    => null === $items ? $content : wp_json_encode( $items ),
 				);
 			}
 		}
@@ -154,6 +142,35 @@ class Caches {
 			'success' => true,
 			'data'    => wp_json_encode( $res ),
 		);
+	}
+
+	/**
+	 * Designs of a library catalog that the library lists
+	 *
+	 * Every design of the catalog is listed. The ones the catalog marks as Pro show a Pro badge
+	 * and a link to the WowStore Pro page until Pro is licensed.
+	 *
+	 * @since 4.6.0
+	 * @param string $content Catalog as JSON, a list of designs.
+	 * @param string $type    Catalog: 'design', 'premade' or 'template'.
+	 * @return array|null Null when the catalog isn't a list.
+	 */
+	private function get_listed_items( $content, $type ) {
+		$all = json_decode( (string) $content );
+		if ( ! is_array( $all ) ) {
+			return null;
+		}
+
+		/**
+		 * Filters the designs the template library lists.
+		 *
+		 * @since 4.6.0
+		 * @param array  $items Designs the library lists, the whole catalog.
+		 * @param array  $all   Every design in the catalog.
+		 * @param string $type  Catalog: 'design', 'premade' or 'template'.
+		 */
+		$items = apply_filters( 'wopb_template_library_items', $all, $all, $type );
+		return is_array( $items ) ? array_values( $items ) : array();
 	}
 
 	/**

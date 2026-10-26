@@ -43,49 +43,18 @@
 /* ---------------------------
 --- 2.x Plugins body Style  --
 ------------------------------ */
-.toplevel_page_wopb-settings #wpcontent,
-.toplevel_page_wopb-initial-setup-wizard #wpcontent {
+.toplevel_page_wopb-settings #wpcontent {
     padding-left: 0;
 }
-#toplevel_page_wopb-settings a[href="admin.php?page=go_productx_pro"],
-#toplevel_page_wopb-settings a[href="admin.php?page=go_productx_pro"]:hover {
-    color: var(--wowstore-success-button-color);
-}
-#toplevel_page_wopb-settings .wp-menu-image > img {
-    width: 20px;
-    padding-top: 5px;
-}
-.rotate {
-    animation: rotate 1.5s linear infinite;
-    -webkit-animation: rotate 1.5s linear infinite;
+.wopb-rotate {
+    animation: wopb-rotate 1.5s linear infinite;
+    -webkit-animation: wopb-rotate 1.5s linear infinite;
 }
 .wopb-d-none {
     display: none;
 }
 .wopb-select2, .wopb-select2 .select2-container {
     width: 100%;
-}
-
-#toplevel_page_wopb-settings .wp-submenu a[href*="wopb-pro"] {
-	display:none;
-}
-#toplevel_page_wopb-settings .wp-submenu a.wopb-go-pro {
-	display: flex;
-	align-items: center;
-	gap: 5px;
-	color: white;
-	background-color: var(--wowstore-primary-color);
-	margin-inline: 10px;
-	border-radius: 6px;
-	margin-top: 6px;
-	padding-block: 6px;
-	box-shadow: none;
-	white-space: nowrap;
-	transition: background-color 200ms ease;
-}
-#toplevel_page_wopb-settings .wp-submenu a.wopb-go-pro:hover {
-	background-color: #dd1b63;
-	color: white;
 }
 
 
@@ -161,9 +130,9 @@ button.wopb-btn {
 
 
 /* ---------------------------
----- 4.x Partial Payment  ----
+---- 4.x Pre-order Tab  ------
 ------------------------------ */
-.productx_options a, .partial_payment_options a{
+.productx_options a{
     color: #3816bd;
 }
 
@@ -350,29 +319,6 @@ button.wopb-btn {
 /* Modal component for Design template end */
 
 /* ========== Premade Body Part ========== */
-.wopb-templatekit-premium-free-btn {
-    background: #005bd6 !important;
-    color: #fff !important;
-}
-.wopb-templatekit-premium-btn {
-    position: absolute;
-    z-index: 1;
-    background: #ff176b;
-    font-size: 12px;
-    color: var(--wowstore-white-color);
-    line-height: 17px;
-    padding: 2px 8px;
-    border-radius: 2px;
-    top: 20px;
-    right: 22px;
-    text-transform: uppercase;
-    transition: .4s;
-    border-radius: 2px;
-    opacity: 0;
-}
-.wopb-item-list:hover .wopb-templatekit-premium-btn {
-    opacity: 1;
-}
 .wopb-templatekit-img {
     display: block;
     width: 100%;
@@ -405,8 +351,8 @@ button.wopb-btn {
     -webkit-text-fill-color: transparent;
 }
 .wopb-popup-rotate {
-    animation: rotate 1s linear infinite;
-    -webkit-animation: rotate 1s linear infinite;
+    animation: wopb-rotate 1s linear infinite;
+    -webkit-animation: wopb-rotate 1s linear infinite;
 }
 .wopb-templatekit-wrap {
     display: flex;
@@ -779,8 +725,8 @@ button.wopb-btn {
     content: "\f531" !important;
     font-family: 'dashicons' !important;
     margin-left: 4px;
-    animation: rotate 1.2s linear infinite;
-    -webkit-animation: rotate 1.2s linear infinite;
+    animation: wopb-rotate 1.2s linear infinite;
+    -webkit-animation: wopb-rotate 1.2s linear infinite;
 }
 
 
@@ -927,13 +873,10 @@ th:has(.wopb-custom-font-preview-th) {
 #productx-submenu-blocks {
     border-bottom: 1px solid #565656;
 }
-#productx-submenu-revenue {
-    border-top: 1px solid #565656;
-}
 #productx-submenu-support {
     color: #FFEBB8 !important;
 }
-@keyframes rotate {
+@keyframes wopb-rotate {
     to {
         transform: rotate(360deg);
         -webkit-transform: rotate(360deg);
@@ -995,14 +938,9 @@ th:has(.wopb-custom-font-preview-th) {
 /*.wrap .wopb-notice-wrapper {*/
 /*    width: 100%;*/
 /*}*/
-.wopb-notice-wrapper.notice.data_collection_notice {
-    background-color: #fff;
-}
-
 .wopb-notice-type-1 .wopb-notice-icon img,
 .wopb-notice-type-2 .wopb-notice-icon img,
-.wopb-notice-type-3 .wopb-notice-icon img,
-.data_collection_notice .wopb-notice-icon img
+.wopb-notice-type-3 .wopb-notice-icon img
  {
     max-width: 72px;
 }
@@ -1064,8 +1002,7 @@ a.wopb-notice-close:hover {
 }
 .wopb-notice-wrapper.wopb-notice-type-2, 
 .wopb-notice-wrapper.wopb-notice-type-4,
-.wopb-notice-wrapper.wopb-notice-type-5,
-.wopb-notice-wrapper.data_collection_notice
+.wopb-notice-wrapper.wopb-notice-type-5
 {
     border-left: 3px solid #6C6CFF;
 }
@@ -1398,36 +1335,6 @@ Flip Image Addon [START]
     display: none;
 }
 
-/*revenue css*/
-
-#productx-submenu-revenue {
-    position: relative;
-}
-.toplevel_page_wopb-settings #productx-submenu-revenue .wopb-revenue-tag {
-    right: 55px;
-}
-#productx-submenu-revenue .wopb-revenue-tag {
-    top: 3px;
-    right: 50px;
-}
-.wopb-revenue-tag {
-    color: #FF176B;
-    font-size: 12px;
-    background-color: #FFEEF4;
-    padding: 0px 8px;
-    border: 1px solid #FF176B;
-    border-radius: 10px;
-    margin-left: 8px;
-    position: absolute;
-    transform: scale(0.8);
-}
-
-.form-field.wopb_video_autoplay_field a,
-.form-field.wopb_video_repeat_field a,
-.form-field.wopb_video_hover_field a {
-    color: #FF176B;
-}
-
-#wopb-size-chart-assign .wopb-sc-products > select, #wopb_sc_include_products {
+#wopb-size-chart-assign .wopb-sc-products > select {
     min-width: auto !important;
 }

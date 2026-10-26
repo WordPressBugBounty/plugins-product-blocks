@@ -104,7 +104,7 @@ class Styles {
 		}
 
 		if ( $post_id ) {
-			if ( $css == '' ) {
+			if ( '' == $css ) {
 				global $wp_filesystem;
 				if ( ! $wp_filesystem ) {
 					require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -115,7 +115,7 @@ class Styles {
 				$css            = '';
 				if ( file_exists( $_path ) ) {
 					$css = $wp_filesystem->get_contents( $_path );
-				} elseif ( $post_id == 'wopb-widget' ) {
+				} elseif ( 'wopb-widget' === $post_id ) {
 					$css = get_option( $post_id, true );
 				} else {
 					$css = get_post_meta( $post_id, '_wopb_css', true );
@@ -130,7 +130,7 @@ class Styles {
 		}
 
 		$post_type = get_post_type( $post_id );
-		if ( $post_type == 'wopb_builder' && class_exists( 'UAGB_Helper' ) ) {
+		if ( 'wopb_builder' === $post_type && class_exists( 'UAGB_Helper' ) ) {
 			do_action( 'wopb_enqueue_plugin_css', $post_id );
 		}
 	}
@@ -166,9 +166,7 @@ class Styles {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'save_block_content_css' ),
-					'permission_callback' => function () {
-						return current_user_can( 'publish_posts' );
-					},
+					'permission_callback' => array( $this, 'can_save_block_css' ),
 					'args'                => array(),
 				),
 			)
@@ -180,9 +178,7 @@ class Styles {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'get_other_post_content_callback' ),
-					'permission_callback' => function () {
-						return current_user_can( 'publish_posts' );
-					},
+					'permission_callback' => array( $this, 'can_get_post_content' ),
 					'args'                => array(),
 				),
 			)
@@ -194,13 +190,57 @@ class Styles {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'global_settings_action' ),
-					'permission_callback' => function () {
-						return current_user_can( 'edit_posts' );
-					},
+					'permission_callback' => array( $this, 'can_access_global_settings' ),
 					'args'                => array(),
 				),
 			)
 		);
+	}
+
+	/**
+	 * Authorize CSS changes for the requested post or shared widget styles.
+	 *
+	 * @param \WP_REST_Request $request REST request.
+	 * @return bool
+	 */
+	public function can_save_block_css( $request ) {
+		$post_id = $request->get_param( 'post_id' );
+		if ( 'wopb-widget' === $post_id ) {
+			return current_user_can( 'manage_options' );
+		}
+		if ( ! is_scalar( $post_id ) || ! ctype_digit( (string) $post_id ) || ! get_post( (int) $post_id ) ) {
+			return false;
+		}
+		if ( in_array( get_post_type( (int) $post_id ), array( 'wp_template', 'wp_template_part' ), true ) && ! current_user_can( 'edit_theme_options' ) ) {
+			return false;
+		}
+		return current_user_can( 'edit_post', (int) $post_id );
+	}
+
+	/**
+	 * Authorize access to editable post content.
+	 *
+	 * @param \WP_REST_Request $request REST request.
+	 * @return bool
+	 */
+	public function can_get_post_content( $request ) {
+		$post_id = $request->get_param( 'postId' );
+		return is_scalar( $post_id ) && ctype_digit( (string) $post_id ) && get_post( (int) $post_id ) && current_user_can( 'edit_post', (int) $post_id );
+	}
+
+	/**
+	 * Allow editors to read defaults and administrators to change global settings.
+	 *
+	 * @param \WP_REST_Request $request REST request.
+	 * @return bool
+	 */
+	public function can_access_global_settings( $request ) {
+		$type = $request->get_param( 'type' );
+		if ( ! is_string( $type ) ) {
+			return false;
+		}
+		$type = wopb_function()->rest_sanitize_params( $type );
+		return current_user_can( in_array( $type, array( 'set', 'regenerate_font' ), true ) ? 'manage_options' : 'edit_posts' );
 	}
 
 	/**
@@ -211,7 +251,7 @@ class Styles {
 	 * @return STRING
 	 */
 	public function disable_google_font_callback() {
-		if ( ! wopb_function()->permission_check_for_restapi() ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 		global $wp_filesystem;
@@ -225,7 +265,7 @@ class Styles {
 		$css_dir        = glob( $dir . '*.css' );
 		// Custom Font
 		$custom_fonts = array();
-		if ( wopb_function()->get_setting( 'wopb_custom_font' ) == 'true' ) {
+		if ( wopb_function()->get_setting( 'wopb_custom_font' ) === 'true' ) {
 			$args  = array(
 				'post_type'   => 'wopb_custom_font',
 				'post_status' => 'publish',
@@ -272,7 +312,7 @@ class Styles {
 		}
 
 		global $wpdb;
-		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE `meta_key`='_wopb_css'" ) ); //phpcs:ignore
+		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE `meta_key`=%s", '_wopb_css' ) ); //phpcs:ignore
 		if ( ! empty( $results ) ) {
 			foreach ( $results as $key => $value ) {
 				$filter_css = preg_replace( '/(@import)[\w\s:\/?=,;.\'()+]*;/m', '', $value->meta_value ); // Remove Import Font
@@ -296,12 +336,23 @@ class Styles {
 	 */
 	public function global_settings_action( $server ) {
 		$post = $server->get_params();
+		if ( ! isset( $post['type'] ) || ! is_string( $post['type'] ) || ! in_array( $post['type'], array( 'get', 'set', 'regenerate_font' ), true ) ) {
+			return new \WP_Error( 'wopb_invalid_style_action', __( 'Invalid global style action.', 'product-blocks' ), array( 'status' => 400 ) );
+		}
+		if ( ! $this->can_access_global_settings( $server ) ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot change global styles.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+		$post = $server->get_params();
 		if ( isset( $post['type'] ) ) {
 			$type = wopb_function()->rest_sanitize_params( $post['type'] );
-			if ( $type == 'set' ) {
-				update_option( 'productx_global', $post['data'] );
+			if ( 'set' === $type ) {
+				$data = $this->sanitize_global_settings( isset( $post['data'] ) ? $post['data'] : null );
+				if ( is_wp_error( $data ) ) {
+					return $data;
+				}
+				update_option( 'productx_global', $data );
 				return array( 'success' => true );
-			} elseif ( $type == 'regenerate_font' ) {
+			} elseif ( 'regenerate_font' === $type ) {
 				return $this->disable_google_font_callback();
 			} else {
 				return array(
@@ -312,6 +363,51 @@ class Styles {
 		} else {
 			return array( 'success' => false );
 		}
+	}
+
+	/**
+	 * Accept the palette, editor width and breakpoint fields used by the editor.
+	 *
+	 * @param mixed $data Global settings input.
+	 * @return array|\WP_Error
+	 */
+	private function sanitize_global_settings( $data ) {
+		$error = new \WP_Error( 'wopb_invalid_global_styles', __( 'Invalid global style settings.', 'product-blocks' ), array( 'status' => 400 ) );
+		if ( ! is_array( $data ) || count( $data ) > 14 ) {
+			return $error;
+		}
+		$dimensions = array(
+			'editorWidth'  => array( 500, 3000 ),
+			'breakpointSm' => array( 600, 1200 ),
+			'breakpointXs' => array( 300, 1000 ),
+		);
+		foreach ( $data as $key => $value ) {
+			if ( preg_match( '/^presetColor[1-9]$/D', (string) $key ) ) {
+				if ( ! is_string( $value ) || strlen( $value ) > 100 ) {
+					return $error;
+				}
+				$value = trim( $value );
+				if ( sanitize_hex_color( $value ) || 'transparent' === $value ) {
+					$data[ $key ] = sanitize_text_field( $value );
+				} elseif ( preg_match( '/^rgba?\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})(?:\s*,\s*(0(?:\.[0-9]+)?|1(?:\.0+)?|\.[0-9]+))?\s*\)$/D', $value, $matches ) && (int) $matches[1] <= 255 && (int) $matches[2] <= 255 && (int) $matches[3] <= 255 && ( ( 0 === strpos( $value, 'rgba(' ) ) === isset( $matches[4] ) ) ) {
+					$data[ $key ] = sanitize_text_field( $value );
+				} else {
+					return $error;
+				}
+			} elseif ( isset( $dimensions[ $key ] ) ) {
+				if ( ! ( is_int( $value ) || is_string( $value ) ) || ! ctype_digit( (string) $value ) || (int) $value < $dimensions[ $key ][0] || (int) $value > $dimensions[ $key ][1] ) {
+					return $error;
+				}
+				$data[ $key ] = (int) $value;
+			} elseif ( 'editorType' === $key ) {
+				if ( ! is_string( $value ) || ! in_array( $value, array( 'default', 'fullscreen', 'custom' ), true ) ) {
+					return $error;
+				}
+			} elseif ( 'productxColorOnly' !== $key || ! is_bool( $value ) ) {
+				return $error;
+			}
+		}
+		return $data;
 	}
 
 
@@ -325,18 +421,20 @@ class Styles {
 	public function save_block_content_css( $request ) {
 
 		$params     = $request->get_params();
+		$boolean_values = array( true, false, 0, 1, '0', '1', 'true', 'false' );
+		if ( ! isset( $params['post_id'], $params['has_block'] ) || ! ( is_int( $params['post_id'] ) || is_string( $params['post_id'] ) ) || ! in_array( $params['has_block'], $boolean_values, true ) || ( array_key_exists( 'preview', $params ) && ! in_array( $params['preview'], $boolean_values, true ) ) || ( rest_sanitize_boolean( $params['has_block'] ) && ! isset( $params['block_css'] ) ) || ( array_key_exists( 'block_css', $params ) && ( ! is_string( $params['block_css'] ) || strlen( $params['block_css'] ) > 1048576 || false !== strpos( $params['block_css'], "\0" ) ) ) ) {
+			return new \WP_Error( 'wopb_invalid_css', __( 'Provide valid block CSS and save options.', 'product-blocks' ), array( 'status' => 400 ) );
+		}
+		if ( isset( $params['block_css'] ) ) {
+			$params['block_css'] = wp_strip_all_tags( $params['block_css'] );
+		}
 		$post_id    = isset( $params['post_id'] ) ? sanitize_text_field( $params['post_id'] ) : '';
 		$has_block  = isset( $params['has_block'] ) ? rest_sanitize_boolean( $params['has_block'] ) : '';
 		$is_preview = isset( $params['preview'] ) ? rest_sanitize_boolean( $params['preview'] ) : '';
-		$is_widget  = $post_id == 'wopb-widget';
+		$is_widget  = 'wopb-widget' === $post_id;
 
-		$cap     = '';
-		$c_pType = get_post_type( $post_id );
-		if ( $post_id == 'wopb-widget' || $c_pType == 'wp_template' || $c_pType == 'wp_template_part' ) {
-			$cap = 'publish_posts';
-		}
-		if ( ! wopb_function()->permission_check_for_restapi( is_numeric( $post_id ) ? $post_id : false, $cap ) ) {
-			return;
+		if ( ! $this->can_save_block_css( $request ) ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot edit these styles.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 		try {
 			$upload_dir_url = wp_upload_dir();
@@ -414,13 +512,7 @@ class Styles {
 		$post        = $server->get_params();
 		$post_id     = isset( $post['postId'] ) ? sanitize_text_field( $post['postId'] ) : '';
 		$c_post_type = get_post_type( $post_id );
-		if ( $post_id &&
-		(
-			wopb_function()->permission_check_for_restapi( $post_id ) ||
-			'wp_template_part' === $c_post_type ||
-			'wp_block' === $c_post_type
-		)
-		) {
+		if ( $this->can_get_post_content( $server ) ) {
 			if ( 'wp_block' === $c_post_type ) {
 				$this->handle_wpblock_current_id( $post_id );
 			}
@@ -467,7 +559,7 @@ class Styles {
 	 * @param OBJECT | Request Param of the REST API
 	 * @return ARRAY/Exception | Array of the Custom Message
 	 */
-	function update_block_attributes_func( $blocks, $post_id ) {
+	public function update_block_attributes_func( $blocks, $post_id ) {
 		foreach ( $blocks as &$block ) {
 			if ( strpos( $block['blockName'], 'product-blocks/' ) > -1 && isset( $block['attrs']['currentPostId'] ) && $post_id != $block['attrs']['currentPostId'] ) {
 				$this->changed_wp_block = true;
@@ -491,7 +583,7 @@ class Styles {
 	 */
 	public function set_top_css( $get_css = '' ) {
 		$disable_google_font = wopb_function()->get_setting( 'disable_google_font' );
-		if ( $disable_google_font != 'yes' ) {
+		if ( 'yes' !== $disable_google_font ) {
 			$css_url     = "@import url('https://fonts.googleapis.com/css?family=";
 			$font_exists = substr_count( $get_css, $css_url );
 			if ( $font_exists ) {
@@ -543,7 +635,7 @@ class Styles {
 			}';
 
 		// Addon Genetarate CSS Added
-		if ( $src == 'front' ) {
+		if ( 'front' === $src ) {
 			$addon_css = get_option( 'wopb_generated_css' );
 			if ( $addon_css ) {
 				$custom_css .= $addon_css;

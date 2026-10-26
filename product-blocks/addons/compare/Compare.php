@@ -51,12 +51,10 @@ class Compare {
 		add_shortcode( 'wopb_compare', array( $this, 'compare_wrapper' ) );
 
 		if ( 'yes' === wopb_function()->get_setting( 'compare_single_enable' ) ) {
-			if ( 'true' == wopb_function()->get_setting( 'wopb_quickview' ) ) {
+			if ( 'true' === wopb_function()->get_setting( 'wopb_quickview' ) ) {
 				add_filter(
 					'wopb_quick_view_bottom_cart',
-					function ( $content, $product_id ) {
-						return $content . $this->get_compare( $product_id, 'default' );
-					},
+					array( $this, 'append_quick_view_compare' ),
 					11,
 					2
 				);
@@ -80,10 +78,7 @@ class Compare {
 			add_filter( 'woocommerce_get_query_vars', array( $this, 'woocommerce_query_vars' ) );
 			add_action(
 				'woocommerce_account_' . $this->my_account_compare_end_point . '_endpoint',
-				function () {
-					$compare_wrapper_safe = wopb_function()->wp_kses_safe( $this->compare_wrapper() );
-					echo $compare_wrapper_safe; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				}
+				array( $this, 'render_account_compare' )
 			);
 		}
 
@@ -93,12 +88,7 @@ class Compare {
 		) {
 			add_filter(
 				'wopb_active_modal',
-				function ( array $loaders ) {
-					if ( ! in_array( $modal_loader = wopb_function()->get_setting( 'compare_modal_loading' ), $loaders ) ) {
-						$loaders[] = $modal_loader;
-					}
-					return $loaders;
-				}
+				array( $this, 'filter_modal_loaders' )
 			);
 		}
 
@@ -288,9 +278,18 @@ class Compare {
 	 * @since v.3.1.5
 	 */
 	public function clear_compare_cookie() {
+		$wopb_buffer_level_1 = ob_get_level();
 		ob_start();
+		try {
 			setcookie( 'wopb_compare', '', time() - 3600, '/' );
-		ob_get_clean();
+			ob_get_clean();
+		} finally {
+			while ( ob_get_level() > $wopb_buffer_level_1 ) {
+				if ( ! ob_end_clean() ) {
+					break;
+				}
+			}
+		}
 
 		if ( isset( $_COOKIE['wopb_compare'] ) ) {
 			// Unset the cookie from the $_COOKIE array
@@ -548,7 +547,7 @@ class Compare {
 		$params = array(
 			'source'       => 'ajax',
 			'postid'       => $postId,
-            'added_action'  => isset($_POST['added_action']) ? sanitize_text_field($_POST['added_action']) : '', // phpcs:ignore
+            'added_action'  => isset($_POST['added_action']) ? sanitize_text_field( wp_unslash( $_POST['added_action'] ) ) : '', // phpcs:ignore
 			'action_type'  => $action_type,
 		);
 
@@ -565,7 +564,7 @@ class Compare {
 				$data_id = array();
 				$message = __( 'Compare Item Clear.', 'product-blocks' );
 			} elseif ( $postId && 'nav_popup' !== $action_type ) {
-				// strict comparison is necessary. 
+				// strict comparison is necessary.
 				// array search returns false if not found and 0 or "0" if found at the first position.
 				// if we use loose comparison then it will treat 0 or "0" as false and will not remove the item from compare list.
 				if ( false !== ( $key = array_search( $postId, $data_id ) ) ) {
@@ -622,7 +621,7 @@ class Compare {
 		}
 
 		$output     .= '<div class="wopb-compare-wrapper ' . esc_attr( $wrapper_class ) . '">';
-			$output .= wopb_function()->core_esc_wp( $content );
+			$output .= $content;
 		$output     .= '</div>';
 
 		return $output;
@@ -696,7 +695,7 @@ class Compare {
 		if ( empty( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
-        $params = ['s' => isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '']; // phpcs:ignore
+        $params = ['s' => isset($_POST['search']) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : '']; // phpcs:ignore
 		return wp_send_json_success( array( 'html' => $this->product_list( $params ) ) );
 		die();
 	}
@@ -711,18 +710,21 @@ class Compare {
 	public function product_list( $params = array() ) {
 		$output       = '';
 		$compare_data = isset( $params['source'] ) && 'ajax' === $params['source'] ? $params['data_id'] : $this->compare_id;
+		$search       = ( isset( $params['s'] ) && '' !== $params['s'] ) ? $params['s'] : '';
 		$query_args   = array(
 			'posts_per_page' => 10,
 			'post_type'      => 'product',
 			'post_status'    => 'publish',
 			'no_found_rows'  => true,
-			's'              => ( isset( $params['s'] ) && '' !== $params['s'] ) ? $params['s'] : '',
+			's'              => $search,
+			// Keep products hidden from the shop out of the picker, like the shop's own listing and search.
+			'visibility'     => '' !== $search ? 'search' : 'catalog',
 		);
 		$products     = wc_get_products( $query_args );
 
 		if ( $products && 0 < count( $products ) ) {
 			foreach ( $products as $product ) {
-				if ( $product && ! in_array( $product->get_id(), $compare_data ) ) {
+				if ( $product && ! in_array( $product->get_id(), $compare_data ) && wopb_function()->can_view_product( $product->get_id() ) ) {
 					$output                     .= '<div class="wopb-compare-item wopb-compare-item-' . esc_attr( $product->get_id() ) . '">';
 						$output                 .= '<div class="wopb-compare-product-details">';
 							$output             .= '<a href="' . esc_url( $product->get_permalink() ) . '" class="wopb-product-image">';
@@ -762,7 +764,7 @@ class Compare {
 	public function nav_menu_item( $items, $args ) {
 		$nav_location = wopb_function()->get_setting( 'compare_nav_menu_location' );
 		if ( $nav_location ) {
-			$nav_menu = '<li class="menu-item">' . wopb_function()->core_esc_wp( $this->compare_nav_menu() ) . '</li>';
+			$nav_menu = '<li class="menu-item">' . $this->compare_nav_menu() . '</li>';
 			if ( $args->theme_location ) {
 				if ( $args->theme_location == $nav_location ) {
 					$items .= $nav_menu;
@@ -802,14 +804,14 @@ class Compare {
 			) . '>';
 
 		if ( 'after_text' === $icon_position ) {
-			$output .= wopb_function()->core_esc_wp( $compare_text );
+			$output .= wp_kses_post( $compare_text );
 		}
 			$output     .= '<span class="wopb-compare-icon">';
 				$output .= wopb_function()->svg_icon( wopb_function()->get_setting( 'compare_nav_icon' ) );
 				$output .= '<span class="wopb-compare-count">' . esc_html( count( $this->compare_id ) ) . '</span>';
 			$output     .= '</span>';
 		if ( 'before_text' === $icon_position || 'top_text' === $icon_position ) {
-			$output .= wopb_function()->core_esc_wp( $compare_text );
+			$output .= wp_kses_post( $compare_text );
 		}
 		$output .= '</a>';
 
@@ -825,10 +827,12 @@ class Compare {
 	 * @since v.3.1.1
 	 */
 	public function compare_modal_content( $params = array() ) {
-		$compare_data     = isset( $params['source'] ) && 'ajax' === $params['source'] ? $params['data_id'] : $this->compare_id;
-		$allowed_html_tag = wopb_function()->allowed_html_tags();
+		$compare_data        = isset( $params['source'] ) && 'ajax' === $params['source'] ? $params['data_id'] : $this->compare_id;
+		$allowed_html_tag    = wopb_function()->allowed_html_tags();
+		$wopb_buffer_level_2 = ob_get_level();
 		ob_start();
-		?>
+		try {
+			?>
 		<div
 			class="wopb-modal-body"
 			data-outside_click="yes"
@@ -889,12 +893,16 @@ class Compare {
 						$short_desc   = $product->get_short_description() ? $product->get_short_description() : 'N/A';
 						?>
 							<tr class="<?php echo esc_attr( $row_class ); ?>">
-								<th class="<?php echo esc_attr( $column_class ); ?>"><?php echo esc_html(
+								<th class="<?php echo esc_attr( $column_class ); ?>">
+								<?php
+								echo esc_html(
 									$this->get_translated_column_heading(
 										$table_column['key'],
 										$table_column['label']
 									)
-								); ?></th>
+								);
+								?>
+								</th>
 							<?php
 							foreach ( $compare_data as $key => $val ) {
 								$product = wc_get_product( $val );
@@ -982,9 +990,18 @@ class Compare {
 												<?php
 											break;
 										case 'additional':
+											$wopb_buffer_level_3 = ob_get_level();
 											ob_start();
+											try {
 												wc_display_product_attributes( $product );
-											$additional = ob_get_clean();
+												$additional = ob_get_clean();
+											} finally {
+												while ( ob_get_level() > $wopb_buffer_level_3 ) {
+													if ( ! ob_end_clean() ) {
+														break;
+													}
+												}
+											}
 											?>
 													<span class="wopb-additional">
 											<?php echo $additional ? wopb_function()->wp_kses_safe( $additional ) : 'N/A'; ?>
@@ -1029,8 +1046,15 @@ class Compare {
 					</table>
 			<?php } ?>
 		</div>
-		<?php
-		return ob_get_clean();
+			<?php
+			return ob_get_clean();
+		} finally {
+			while ( ob_get_level() > $wopb_buffer_level_2 ) {
+				if ( ! ob_end_clean() ) {
+					break;
+				}
+			}
+		}
 	}
 
 	/**
@@ -1186,9 +1210,7 @@ class Compare {
 		if ( isset( $position_filters[ $compare_position ] ) ) {
 			add_filter(
 				$position_filters[ $compare_position ],
-				function ( $content ) {
-					return $content . $this->get_compare( get_the_ID(), 'default' );
-				},
+				array( $this, 'append_compare_button' ),
 				100,
 				1
 			);
@@ -1287,39 +1309,39 @@ class Compare {
 	public function compare_table_columns( $default = '' ) {
 		$default_options = array(
 			array(
-				'key'   => 'image',
+				'key'     => 'image',
 				'default' => 'Image',
-				'label' => __( 'Image', 'product-blocks' ),
+				'label'   => __( 'Image', 'product-blocks' ),
 			),
 			array(
-				'key'   => 'title',
+				'key'     => 'title',
 				'default' => 'Title',
-				'label' => __( 'Title', 'product-blocks' ),
+				'label'   => __( 'Title', 'product-blocks' ),
 			),
 			array(
-				'key'   => 'price',
+				'key'     => 'price',
 				'default' => 'Price',
-				'label' => __( 'Price', 'product-blocks' ),
+				'label'   => __( 'Price', 'product-blocks' ),
 			),
 			array(
-				'key'   => 'stock_status',
+				'key'     => 'stock_status',
 				'default' => 'Stock Status',
-				'label' => __( 'Stock Status', 'product-blocks' ),
+				'label'   => __( 'Stock Status', 'product-blocks' ),
 			),
 			array(
-				'key'   => 'quantity',
+				'key'     => 'quantity',
 				'default' => 'Quantity',
-				'label' => __( 'Quantity', 'product-blocks' ),
+				'label'   => __( 'Quantity', 'product-blocks' ),
 			),
 			array(
-				'key'   => 'add_to_cart',
+				'key'     => 'add_to_cart',
 				'default' => 'Add To Cart',
-				'label' => __( 'Add To Cart', 'product-blocks' ),
+				'label'   => __( 'Add To Cart', 'product-blocks' ),
 			),
 			array(
-				'key'   => 'review',
+				'key'     => 'review',
 				'default' => 'Review',
-				'label' => __( 'Review', 'product-blocks' ),
+				'label'   => __( 'Review', 'product-blocks' ),
 			),
 		);
 		$options         = array(
@@ -1329,29 +1351,29 @@ class Compare {
 			),
 			...$default_options,
 			array(
-				'key'   => 'additional',
+				'key'     => 'additional',
 				'default' => 'Additional',
-				'label' => __( 'Additional', 'product-blocks' ),
+				'label'   => __( 'Additional', 'product-blocks' ),
 			),
 			array(
-				'key'   => 'description',
+				'key'     => 'description',
 				'default' => 'Description',
-				'label' => __( 'Description', 'product-blocks' ),
+				'label'   => __( 'Description', 'product-blocks' ),
 			),
 			array(
-				'key'   => 'weight',
+				'key'     => 'weight',
 				'default' => 'Weight',
-				'label' => __( 'Weight', 'product-blocks' ),
+				'label'   => __( 'Weight', 'product-blocks' ),
 			),
 			array(
-				'key'   => 'dimensions',
+				'key'     => 'dimensions',
 				'default' => 'Dimensions',
-				'label' => __( 'Dimensions', 'product-blocks' ),
+				'label'   => __( 'Dimensions', 'product-blocks' ),
 			),
 			array(
-				'key'   => 'sku',
+				'key'     => 'sku',
 				'default' => 'SKU',
-				'label' => __( 'SKU', 'product-blocks' ),
+				'label'   => __( 'SKU', 'product-blocks' ),
 			),
 		);
 		return ( $default && 'default' === $default ) ? $default_options : $options;
@@ -1495,5 +1517,29 @@ class Compare {
 
 			wopb_function()->update_css( $key, 'add', $css );
 		}
+	}
+
+	/** Named WordPress hook callback. */
+	public function append_quick_view_compare( $content, $product_id ) {
+		return $content . $this->get_compare( $product_id, 'default' );
+	}
+
+	/** Named WordPress hook callback. */
+	public function render_account_compare() {
+		$compare_wrapper_safe = wopb_function()->wp_kses_safe( $this->compare_wrapper() );
+		echo $compare_wrapper_safe; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	/** Named WordPress hook callback. */
+	public function filter_modal_loaders( array $loaders ) {
+		if ( ! in_array( $modal_loader = wopb_function()->get_setting( 'compare_modal_loading' ), $loaders ) ) {
+			$loaders[] = $modal_loader;
+		}
+		return $loaders;
+	}
+
+	/** Named WordPress hook callback. */
+	public function append_compare_button( $content ) {
+		return $content . $this->get_compare( get_the_ID(), 'default' );
 	}
 }

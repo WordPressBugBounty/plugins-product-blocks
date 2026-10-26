@@ -10,9 +10,9 @@ add_action( 'wp_loaded', 'wopb_quickview_init' );
 function wopb_quickview_init() {
 	$settings = wopb_function()->get_setting();
 	$mobile   = wp_is_mobile();
-	if ( isset( $settings['wopb_quickview'] ) && $settings['wopb_quickview'] == 'true' ) {
+	if ( isset( $settings['wopb_quickview'] ) && 'true' === $settings['wopb_quickview'] ) {
 		if (
-			( $mobile && isset( $settings['quick_view_mobile_enable'] ) && $settings['quick_view_mobile_enable'] == 'yes' ) ||
+			( $mobile && isset( $settings['quick_view_mobile_enable'] ) && 'yes' === $settings['quick_view_mobile_enable'] ) ||
 			! $mobile
 		) {
 			require_once WOPB_PATH . '/addons/quick_view/Quickview.php';

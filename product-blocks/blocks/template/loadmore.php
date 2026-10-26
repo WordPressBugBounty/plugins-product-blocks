@@ -4,16 +4,26 @@ defined( 'ABSPATH' ) || exit;
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
 global $wpdb;
 global $wp_query;
-$query_vars        = $wp_query->query_vars;
-$queried_object    = get_queried_object();
-$page_post_id      = ! empty( $attr['currentPostId'] )
+$query_vars     = $wp_query->query_vars;
+$queried_object = get_queried_object();
+$page_post_id   = ! empty( $attr['currentPostId'] )
 	? absint( $attr['currentPostId'] )
 	: absint( wopb_function()->get_page_post_id( wopb_function()->get_ID(), $attr['blockId'] ) );
-$page_post_id      = $page_post_id ? $page_post_id : ( ! empty( $attr['page_post_id'] ) ? absint( $attr['page_post_id'] ) : '' );
-$filter_attributes = array();
-if ( isset( $attr['product_filters'] ) ) {
-	$filter_attributes['product_filters'] = $attr['product_filters'];
-} elseif ( isset( $attr['queryTax'] ) ) {
+$page_post_id   = $page_post_id ? $page_post_id : ( ! empty( $attr['page_post_id'] ) ? absint( $attr['page_post_id'] ) : '' );
+/**
+ * Filters the attributes the next page of a block is built from, besides its own settings.
+ *
+ * Add-ons return the state they keep outside the block, such as a visitor's current filter choices.
+ * When it returns something, the block's taxonomy attributes aren't added.
+ *
+ * @since 4.6.0
+ * @param array $filter_attributes Attributes to pass on; empty by default.
+ * @param array $attr              Block attributes.
+ */
+$filter_attributes = (array) apply_filters( 'wopb_pagination_filter_attributes', array(), $attr );
+$has_extra_filters = ! empty( $filter_attributes );
+// Filters supplied by an add-on replace the block's own query filters.
+if ( ! $has_extra_filters && isset( $attr['queryTax'] ) ) {
 	$filter_attributes['queryTax'] = $attr['queryTax'];
 	if ( isset( $attr['queryCatAction'] ) ) {
 		$filter_attributes['queryCatAction'] = $attr['queryCatAction'];
@@ -21,7 +31,7 @@ if ( isset( $attr['product_filters'] ) ) {
 		$filter_attributes['queryTagAction'] = $attr['queryTagAction'];
 	}
 }
-if ( is_product_taxonomy() && ! isset( $attr['product_filters'] ) ) {
+if ( is_product_taxonomy() && ! $has_extra_filters ) {
 	$filter_attributes['productTaxonomy'] = array(
 		'taxonomy' => $queried_object->taxonomy,
 		'term_ids' => array( $queried_object->term_id ),

@@ -60,46 +60,65 @@ class GermanizedSupport {
 			'nutri_score'                => 'woocommerce_gzd_template_single_nutri_score',
 		);
 
+		$wopb_buffer_level_1 = ob_get_level();
 		ob_start();
-		echo '<div class="wopb-germanized-info">';
+		try {
+			echo '<div class="wopb-germanized-info">';
 
-		/**
-		 * Fires before Germanized content is output.
-		 * Useful for adding custom HTML or actions.
-		 *
-		 * @param \WC_Product $product The current WooCommerce product.
-		 */
-		do_action( 'wopb_germanized_before', $product );
+			/**
+			 * Fires before Germanized content is output.
+			 * Useful for adding custom HTML or actions.
+			 *
+			 * @param \WC_Product $product The current WooCommerce product.
+			 */
+			do_action( 'wopb_germanized_before', $product );
 
-		foreach ( $germanized_wc_calllbacks as $func ) {
-			if ( function_exists( $func ) ) {
-				ob_start();
-				$func();
-				$output = ob_get_clean();
-				if ( trim( $output ) !== '' ) {
-					echo $output; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+			foreach ( $germanized_wc_calllbacks as $func ) {
+				if ( function_exists( $func ) ) {
+					$wopb_buffer_level_2 = ob_get_level();
+					ob_start();
+					try {
+						$func();
+						$output = ob_get_clean();
+					} finally {
+						while ( ob_get_level() > $wopb_buffer_level_2 ) {
+							if ( ! ob_end_clean() ) {
+								break;
+							}
+						}
+					}
+					if ( trim( $output ) !== '' ) {
+						echo $output; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+				}
+			}
+
+			/**
+			 * Fires after Germanized content is output.
+			 *
+			 * @param \WC_Product $product The current WooCommerce product.
+			 */
+			do_action( 'wopb_germanized_after', $product );
+
+			echo '</div>';
+
+			$content = ob_get_clean();
+		} finally {
+			while ( ob_get_level() > $wopb_buffer_level_1 ) {
+				if ( ! ob_end_clean() ) {
+					break;
 				}
 			}
 		}
 
 		/**
-		 * Fires after Germanized content is output.
-		 *
-		 * @param \WC_Product $product The current WooCommerce product.
-		 */
-		do_action( 'wopb_germanized_after', $product );
-
-		echo '</div>';
-
-		$content = ob_get_clean();
-
-		/**
 		 * Filter Germanized output before returning.
 		 *
 		 * Example usage:
-		 * add_filter('wopb_germanized_contents_output', function($content, $product){
+		 * function wopb_custom_germanized_contents( $content, $product ) {
 		 *     return '<div class="custom-wrapper">' . $content . '</div>';
-		 * }, 10, 2);
+		 * }
+		 * add_filter( 'wopb_germanized_contents_output', 'wopb_custom_germanized_contents', 10, 2 );
 		 *
 		 * @param string      $content Output HTML
 		 * @param \WC_Product $product Current product

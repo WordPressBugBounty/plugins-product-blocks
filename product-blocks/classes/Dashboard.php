@@ -91,7 +91,7 @@ class Dashboard {
 					'methods'             => 'POST',
 					'callback'            => array( $this, 'premade_wishlist_save' ),
 					'permission_callback' => function () {
-						return current_user_can( 'edit_posts' );
+						return current_user_can( 'manage_options' );
 					},
 					'args'                => array(),
 				),
@@ -107,15 +107,22 @@ class Dashboard {
 	 * @return ARRAY | Inserted Post Url
 	 */
 	public function premade_wishlist_save( $server ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot manage shared template preferences.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+		}
 		$post        = $server->get_params();
+		if ( ! isset( $post['id'], $post['action'], $post['type'] ) || ! ( is_string( $post['id'] ) || is_int( $post['id'] ) ) || ! is_string( $post['action'] ) || ! in_array( $post['action'], array( '', 'add', 'remove' ), true ) || ! is_string( $post['type'] ) || ! in_array( $post['type'], array( '', 'fetchData' ), true ) || ( 'fetchData' !== $post['type'] && ! preg_match( '/^[a-zA-Z0-9_-]{1,100}$/D', (string) $post['id'] ) ) ) {
+			return new \WP_Error( 'wopb_invalid_wishlist', __( 'Invalid template preference request.', 'product-blocks' ), array( 'status' => 400 ) );
+		}
 		$id          = sanitize_text_field( $post['id'] );
 		$action      = sanitize_text_field( $post['action'] );
 		$wishListArr = get_option( 'wopb_premade_wishlist', array() );
+		$wishListArr = is_array( $wishListArr ) ? $wishListArr : array();
 
-		if ( $id && sanitize_text_field( $post['type'] ) != 'fetchData' ) {
-			if ( $action == 'remove' ) {
+		if ( $id && sanitize_text_field( $post['type'] ) !== 'fetchData' ) {
+			if ( 'remove' === $action ) {
 				$index = array_search( $id, $wishListArr );
-				if ( $index !== false ) {
+				if ( false !== $index ) {
 					unset( $wishListArr[ $index ] );
 				}
 			} elseif ( ! in_array( $id, $wishListArr ) ) {
@@ -126,7 +133,7 @@ class Dashboard {
 		return rest_ensure_response(
 			array(
 				'success'     => true,
-				'message'     => $action == 'remove' ? __( 'Item has been removed from wishlist.', 'product-blocks' ) : __( 'Item added to wishlist.', 'product-blocks' ),
+				'message'     => $action === 'remove' ? __( 'Item has been removed from wishlist.', 'product-blocks' ) : __( 'Item added to wishlist.', 'product-blocks' ),
 				'wishListArr' => wp_json_encode( $wishListArr ),
 			)
 		);
@@ -139,8 +146,15 @@ class Dashboard {
 	 * @return NULL
 	 */
 	public function save_plugin_settings( $server ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return new \WP_Error( 'rest_forbidden', __( 'You cannot change plugin settings.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
+		}
 		$post = $server->get_params();
-		$key  = sanitize_text_field( $post['key'] );
+		if ( ! isset( $post['type'], $post['settings'] ) || ! is_string( $post['type'] ) || ! in_array( $post['type'], array( 'add', 'delete' ), true ) || ! wopb_function()->is_valid_settings_input( $post['settings'] ) || ( array_key_exists( 'key', $post ) && ( ! is_string( $post['key'] ) || ( '' !== $post['key'] && ! preg_match( '/^[a-z0-9_-]{1,100}$/D', $post['key'] ) ) ) ) || ( 'delete' === $post['type'] && empty( $post['key'] ) ) ) {
+			return new \WP_Error( 'wopb_invalid_settings', __( 'Invalid plugin settings request.', 'product-blocks' ), array( 'status' => 400 ) );
+		}
+		// General settings omit the add-on key; keep that existing request valid.
+		$key  = isset( $post['key'] ) ? sanitize_key( $post['key'] ) : '';
 		$type = sanitize_text_field( $post['type'] );
 		$data = wopb_function()->recursive_sanitize_text_field( $post['settings'] );
 
@@ -152,7 +166,7 @@ class Dashboard {
 
 		// Hook for Settings Save Data
 		do_action( 'wopb_save_settings', $key );
-		if ( $type == 'delete' ) {
+		if ( 'delete' === $type ) {
 			wopb_function()->update_css( $key, 'delete' );
 		}
 
@@ -184,7 +198,7 @@ class Dashboard {
 
 		return array(
 			'success' => true,
-			'message' => ( $addon_value == 'true' || $addon_value == 'false' ) ? ( $addon_value == 'true' ? __( 'The addon has been enabled.', 'product-blocks' ) : __( 'The addon has been disabled.', 'product-blocks' ) ) : ( $addon_value == 'yes' ? __( 'The block has been enabled.', 'product-blocks' ) : __( 'The block has been disabled.', 'product-blocks' ) ),
+			'message' => ( 'true' === $addon_value || 'false' === $addon_value ) ? ( 'true' === $addon_value ? __( 'The addon has been enabled.', 'product-blocks' ) : __( 'The addon has been disabled.', 'product-blocks' ) ) : ( 'yes' === $addon_value ? __( 'The block has been enabled.', 'product-blocks' ) : __( 'The block has been disabled.', 'product-blocks' ) ),
 		);
 	}
 
@@ -204,6 +218,50 @@ class Dashboard {
 	}
 
 	/**
+	 * Post types the dashboard lists and bulk-edits.
+	 *
+	 * @since 4.6.0
+	 * @return string[]
+	 */
+	private function get_dashboard_post_types() {
+		/**
+		 * Filters the post types the dashboard can list, publish, draft and delete.
+		 *
+		 * @since 4.6.0
+		 * @param string[] $post_types Post type names.
+		 */
+		$post_types = apply_filters( 'wopb_dashboard_post_types', array( 'wopb_templates', 'wopb_custom_font', 'wopb-size-chart' ) );
+		return is_array( $post_types ) ? $post_types : array();
+	}
+
+	/**
+	 * The requested post type when the dashboard may list it, or an empty string.
+	 *
+	 * @since 4.6.0
+	 * @param mixed $post_type Requested post type.
+	 * @return string
+	 */
+	private function get_requested_post_type( $post_type ) {
+		return is_string( $post_type ) && in_array( $post_type, $this->get_dashboard_post_types(), true ) ? $post_type : '';
+	}
+
+	/**
+	 * Whether the current user may run a bulk action on a post.
+	 *
+	 * The post has to be one of the dashboard's post types, and the user needs the capability for
+	 * that exact post.
+	 *
+	 * @since 4.6.0
+	 * @param mixed  $post_id    Post ID from the request.
+	 * @param string $capability Meta capability, `edit_post` or `delete_post`.
+	 * @return bool
+	 */
+	private function can_bulk_edit_post( $post_id, $capability ) {
+		$post_id = absint( $post_id );
+		return $post_id && in_array( get_post_type( $post_id ), $this->get_dashboard_post_types(), true ) && current_user_can( $capability, $post_id );
+	}
+
+	/**
 	 * Dashboard & Saved Template & Custom Font Actions
 	 *
 	 * @since 3.0.0
@@ -220,8 +278,12 @@ class Dashboard {
 				case 'saved_templates':
 					$post_per_page = 10;
 					$data          = array();
+					$list_type     = $this->get_requested_post_type( isset( $post['pType'] ) ? $post['pType'] : '' );
+					if ( ! $list_type ) {
+						return new \WP_Error( 'wopb_invalid_post_type', __( 'Invalid post type.', 'product-blocks' ), array( 'status' => 400 ) );
+					}
 					$args          = array(
-						'post_type'      => $post['pType'],
+						'post_type'      => $list_type,
 						'post_status'    => array( 'publish', 'draft' ),
 						'posts_per_page' => $post_per_page,
 						'paged'          => $post['pages'],
@@ -244,7 +306,7 @@ class Dashboard {
 								'edit'   => get_edit_post_link(),
 							);
 
-							if ( $post['pType'] == 'wopb_custom_font' ) {
+							if ( 'wopb_custom_font' === $list_type ) {
 								$final    = array_merge(
 									$final,
 									array(
@@ -277,7 +339,7 @@ class Dashboard {
 					return array(
 						'success' => true,
 						'data'    => $data,
-						'new'     => ( $post['pType'] == 'wopb_custom_font' ? admin_url( 'post-new.php?post_type=wopb_custom_font' ) : admin_url( 'post-new.php?post_type=wopb_templates' ) ),
+						'new'     => ( 'wopb_custom_font' === $list_type ? admin_url( 'post-new.php?post_type=wopb_custom_font' ) : admin_url( 'post-new.php?post_type=wopb_templates' ) ),
 						'found'   => $the_query->found_posts,
 						'pages'   => $the_query->max_num_pages,
 					);
@@ -287,9 +349,12 @@ class Dashboard {
 				case 'action_publish':
 					if ( isset( $post['ids'] ) && is_array( $post['ids'] ) ) {
 						foreach ( $post['ids'] as $id ) {
+							if ( ! $this->can_bulk_edit_post( $id, 'edit_post' ) ) {
+								continue;
+							}
 							wp_update_post(
 								array(
-									'ID'          => sanitize_text_field( $id ),
+									'ID'          => absint( $id ),
 									'post_status' => str_replace( 'action_', '', $type ),
 								)
 							);
@@ -304,7 +369,9 @@ class Dashboard {
 				case 'action_delete':
 					if ( isset( $post['ids'] ) && is_array( $post['ids'] ) ) {
 						foreach ( $post['ids'] as $id ) {
-							wp_delete_post( $id, true );
+							if ( $this->can_bulk_edit_post( $id, 'delete_post' ) ) {
+								wp_delete_post( absint( $id ), true );
+							}
 						}
 					}
 					return array(
@@ -312,46 +379,15 @@ class Dashboard {
 						'message' => __( 'The selected item is deleted.', 'product-blocks' ),
 					);
 				break;
-				case 'support_data':
-					$user_info = get_userdata( get_current_user_id() );
-					$name      = $user_info->first_name . ( $user_info->last_name ? ' ' . $user_info->last_name : '' );
-					return array(
-						'success' => true,
-						'data'    => array(
-							'name'  => $name ? $name : $user_info->user_login,
-							'email' => $user_info->user_email,
-						),
-					);
-
-				case 'support_action':
-					$api_params    = array(
-						'user_name'  => sanitize_text_field( $post['name'] ),
-						'user_email' => sanitize_email( $post['email'] ),
-						'subject'    => sanitize_text_field( $post['subject'] ),
-						'desc'       => sanitize_textarea_field( $post['desc'] ),
-					);
-					$response      = wp_remote_get(
-						'https://wpxpo.com/wp-json/v2/support_mail',
-						array(
-							'method'  => 'POST',
-							'timeout' => 120,
-							'body'    => $api_params,
-						)
-					);
-					$response_data = json_decode( $response['body'] );
-					$success       = ( isset( $response_data->success ) && $response_data->success ) ? true : false;
-
-					return array(
-						'success' => $success,
-						'message' => $success ? __( 'New Support Ticket has been Created.', 'product-blocks' ) : __( 'New Support Ticket is not Created Due to Some Issues.', 'product-blocks' ),
-					);
-					break;
-
 				case 'wopb-size-chart':
 					$post_per_page = 10;
 					$data          = array();
+					$list_type     = $this->get_requested_post_type( isset( $post['pType'] ) ? $post['pType'] : '' );
+					if ( ! $list_type ) {
+						return new \WP_Error( 'wopb_invalid_post_type', __( 'Invalid post type.', 'product-blocks' ), array( 'status' => 400 ) );
+					}
 					$args          = array(
-						'post_type'      => $post['pType'],
+						'post_type'      => $list_type,
 						'post_status'    => array( 'publish', 'draft' ),
 						'posts_per_page' => $post_per_page,
 						'paged'          => $post['pages'],
@@ -447,92 +483,5 @@ class Dashboard {
 		if ( ! empty( $product_names ) ) {
 			return implode( ', ', $product_names );
 		}
-	}
-
-	private function license_save_action( $post ) {
-		$message       = '';
-		$requirePlugin = false;
-
-		if ( isset( $post['edd_wopb_license_key'] ) && function_exists( 'wopb_pro_function' ) ) {
-			$is_success = false;
-			$license    = trim( sanitize_text_field( $post['edd_wopb_license_key'] ) );
-
-			if ( $license && $license != '******************' ) {
-				update_option( 'edd_wopb_license_key', $license );
-				$api_params = array(
-					'edd_action' => 'activate_license',
-					'license'    => $license,
-					'item_id'    => 1263,
-					'url'        => home_url(),
-				);
-
-				$response = wp_remote_post(
-					'https://account.wpxpo.com',
-					array(
-						'timeout'   => 15,
-						'sslverify' => false,
-						'body'      => $api_params,
-					)
-				);
-
-				if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-					$message = ( is_wp_error( $response ) && ! empty( $response->get_error_message() ) ) ? $response->get_error_message() : __( 'An error occurred, please try again.', 'product-blocks' );
-				} else {
-					$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-					if ( false === $license_data->success ) {
-						update_option( 'edd_wopb_license_key', '' );
-						switch ( $license_data->error ) {
-							case 'expired':
-								$message = sprintf(
-								/* translators: %s: is date */
-									__( 'Your license key expired on %s.', 'product-blocks' ),
-									date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) )
-								);
-								break;
-							case 'revoked':
-								$message = __( 'Your license key has been disabled.', 'product-blocks' );
-								break;
-							case 'missing':
-								$message = __( 'Invalid license.', 'product-blocks' );
-								break;
-							case 'invalid':
-							case 'site_inactive':
-								$message = __( 'Your license is not active for this URL.', 'product-blocks' );
-								break;
-							case 'item_name_mismatch':
-								$message = __( 'This appears to be an invalid license key.', 'product-blocks' );
-								break;
-							case 'no_activations_left':
-								$message = __( 'Your license key has reached its activation limit.', 'product-blocks' );
-								break;
-							default:
-								$message = __( 'An error occurred, please try again.', 'product-blocks' );
-								break;
-						}
-					} else {
-						$message    = __( 'Your license key has been updated.', 'product-blocks' );
-						$is_success = true;
-					}
-					update_option( 'edd_wopb_license_limit', $license_data->license_limit );
-					update_option( 'edd_wopb_license_activations_left', $license_data->activations_left );
-					update_option( 'edd_wopb_license_price_id', $license_data->price_id );
-					update_option( 'edd_wopb_license_data', (array) $license_data );
-
-				}
-			} else {
-				$message = __( 'Invalid license.', 'product-blocks' );
-			}
-		} else {
-			$message = __( 'Invalid license.', 'product-blocks' );
-			if ( ! function_exists( 'wopb_pro_function' ) ) {
-				$requirePlugin = true;
-				$message       = __( 'Install & Acivate WowStore Pro plugin.', 'product-blocks' );
-			}
-		}
-		return array(
-			'success'       => $is_success,
-			'message'       => $message,
-			'requirePlugin' => $requirePlugin,
-		);
 	}
 }

@@ -23,7 +23,6 @@ class CartReserved {
 	public function __construct() {
 		add_action( 'wp', array( $this, 'cart_reserved_action' ) ); // Cart Reserved Timer Action
 		add_action( 'woocommerce_add_to_cart', array( $this, 'set_cookie_after_add_cart' ), 10, 6 ); // Set The Cookie For Every Add to Cart Button Trigger
-		add_action( 'template_redirect', array( $this, 'custom_clear_cart' ) ); // Reload The Same Page For Clear the Cart Page
 		add_action( 'wopb_save_settings', array( $this, 'generate_css' ), 10, 1 ); // CSS Generator
 
 		// Set Cookie If By Default Cookie Are Not Set
@@ -54,7 +53,7 @@ class CartReserved {
 	 */
 	public function cart_reserved_action() {
 		if ( wc_get_page_id( 'cart' ) == get_the_ID() ) {
-			if ( ! WC()->cart->is_empty() && wopb_function()->get_setting( 'wopb_cart_reserved' ) == 'true' ) {
+			if ( ! WC()->cart->is_empty() && wopb_function()->get_setting( 'wopb_cart_reserved' ) === 'true' ) {
 				add_filter( 'productx_common_script', '__return_true' );
 			}
 			if ( wc_post_content_has_shortcode( 'woocommerce_cart' ) || wopb_function()->is_builder() ) {
@@ -86,20 +85,6 @@ class CartReserved {
 	}
 
 	/**
-	 * Reload The Same Page For Clear the Cart Page
-	 *
-	 * @return void
-	 * @since v.3.2.0
-	 */
-	public function custom_clear_cart() {
-		if ( is_cart() && isset( $_GET['wopb-cart-clear'] ) ) {  // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			WC()->cart->empty_cart();
-			wp_safe_redirect( get_permalink() );
-			exit;
-		}
-	}
-
-	/**
 	 * Cart Reserved Timer Custom Message
 	 *
 	 * @param $content
@@ -111,16 +96,16 @@ class CartReserved {
 		if (
 			WC()->cart->is_empty() ||
 			! $reserved_time ||
-			( isset( $_COOKIE['wopb_cart_reserved_timer'] ) && $_COOKIE['wopb_cart_reserved_timer'] == '0' )
+			( isset( $_COOKIE['wopb_cart_reserved_timer'] ) && '0' == $_COOKIE['wopb_cart_reserved_timer'] )
 		) {
 			return $content;
 		}
 		if ( $reserved_time ) {
 			$countTime = ( isset( $_COOKIE['wopb_cart_reserved_timer'] ) ? (int) sanitize_text_field( wp_unslash( $_COOKIE['wopb_cart_reserved_timer'] ) ) : 0 ) + ( $reserved_time * 60000 );
 			$distance  = $countTime - ( time() * 1000 );
-			$hours     = floor( ( $distance % ( 1000 * 60 * 60 * 24 ) ) / ( 1000 * 60 * 60 ) );
-			$minutes   = floor( ( $distance % ( 1000 * 60 * 60 ) ) / ( 1000 * 60 ) );
-			$seconds   = floor( ( $distance % ( 1000 * 60 ) ) / 1000 );
+			$hours     = (int) floor( ( $distance % ( 1000 * 60 * 60 * 24 ) ) / ( 1000 * 60 * 60 ) );
+			$minutes   = (int) floor( ( $distance % ( 1000 * 60 * 60 ) ) / ( 1000 * 60 ) );
+			$seconds   = (int) floor( ( $distance % ( 1000 * 60 ) ) / 1000 );
 
 			$timer_message       = explode( '{time}', wopb_function()->get_setting( 'cart_reserved_time_msg' ) );
 			$cart_reversed_icons = wopb_function()->get_setting( 'cart_reserved_icon' );
@@ -134,11 +119,11 @@ class CartReserved {
 				'blast'  => '💥',
 			);
 
-			$html          = '<div class="wopb-cart-reserved" data-expire="' . $reserved_time . '" data-hides="' . wopb_function()->get_setting( 'cart_reserved_expire' ) . '">';
-				$html     .= '<div class="wopb-cart-reserved-icon"> ' . $cart_icon[ $cart_reversed_icons ] . ' </div>';
+			$html          = '<div class="wopb-cart-reserved" data-expire="' . esc_attr( $reserved_time ) . '">';
+				$html     .= '<div class="wopb-cart-reserved-icon"> ' . esc_html( isset( $cart_icon[ $cart_reversed_icons ] ) ? $cart_icon[ $cart_reversed_icons ] : '' ) . ' </div>';
 				$html     .= '<div class="wopb-cart-reserved-content">';
-					$html .= '<div class="wopb-cart-reserved-message">' . wopb_function()->get_setting( 'cart_reserved_msg' ) . '</div>';
-					$html .= '<div class="wopb-cart-reserved-timer"> ' . ( isset( $timer_message[0] ) ? $timer_message[0] : '' ) . ' <div class="wopb-cart-time">' . ( $hours > 0 ? ( $hours > 9 ? $hours . ':' : '0' . $hours . ':' ) : '' ) . ( $minutes > 9 ? $minutes : '0' . $minutes ) . ':' . ( $seconds > 9 ? $seconds : '0' . $seconds ) . '</div> ' . ( isset( $timer_message[1] ) ? $timer_message[1] : '' ) . ' </div>';
+					$html .= '<div class="wopb-cart-reserved-message">' . wp_kses_post( wopb_function()->get_setting( 'cart_reserved_msg' ) ) . '</div>';
+					$html .= '<div class="wopb-cart-reserved-timer"> ' . ( isset( $timer_message[0] ) ? wp_kses_post( $timer_message[0] ) : '' ) . ' <div class="wopb-cart-time">' . ( $hours > 0 ? ( $hours > 9 ? $hours . ':' : '0' . $hours . ':' ) : '' ) . ( $minutes > 9 ? $minutes : '0' . $minutes ) . ':' . ( $seconds > 9 ? $seconds : '0' . $seconds ) . '</div> ' . ( isset( $timer_message[1] ) ? wp_kses_post( $timer_message[1] ) : '' ) . ' </div>';
 				$html     .= '</div>';
 			$html         .= '</div>';
 			return $html . $content;
@@ -153,7 +138,7 @@ class CartReserved {
 	 * @since v.3.2.0
 	 */
 	public function generate_css( $key ) {
-		if ( $key == 'wopb_cart_reserved' && method_exists( wopb_function(), 'convert_css' ) ) {
+		if ( 'wopb_cart_reserved' === $key && method_exists( wopb_function(), 'convert_css' ) ) {
 			$settings = wopb_function()->get_setting();
 			$css      = '.wopb-cart-reserved {';
 				$css .= 'background-color: ' . ( ! empty( $settings['cart_reserved_bg']['bg'] ) ? $settings['cart_reserved_bg']['bg'] : '#e2e2e2' ) . ';';

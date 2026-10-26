@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
  */
 add_action( 'init', 'wopb_templates_init' );
 function wopb_templates_init() {
-	if ( wopb_function()->get_setting( 'wopb_templates' ) == 'true' ) {
+	if ( wopb_function()->get_setting( 'wopb_templates' ) === 'true' ) {
 		require_once WOPB_PATH . '/addons/templates/Saved_Templates.php';
 		require_once WOPB_PATH . '/addons/templates/Shortcode.php';
 		new \WOPB\Saved_Templates();

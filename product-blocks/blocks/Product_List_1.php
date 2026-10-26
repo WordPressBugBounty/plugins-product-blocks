@@ -101,17 +101,17 @@ class Product_List_1 {
 			$paged         = is_front_page() ? get_query_var( 'page' ) : get_query_var( 'paged' );
 			$attr['paged'] = $paged ? $paged : 1;
 
-			if ( isset( $_COOKIE['productFilters'] ) ) {
-				// Remove extra backslashes.
-				$raw = sanitize_text_field( wp_unslash( $_COOKIE['productFilters'] ?? '' ) );
-
-				// Then decode JSON.
-				$product_filters = json_decode( $raw, true );
-
-				if ( is_array( $product_filters ) ) {
-					$attr['product_filters'] = $product_filters;
-				}
-			}
+			/**
+			 * Filters the attributes of a block on its first render, before the products are queried.
+			 *
+			 * The block's own settings are in `$attr`. Add-ons use it to bring in state kept outside the
+			 * block, such as a visitor's current filter choices.
+			 *
+			 * @since 4.6.0
+			 * @param array  $attr       Block attributes.
+			 * @param string $block_name Block slug, for example 'product-grid-1'.
+			 */
+			$attr = apply_filters( 'wopb_block_render_attributes', $attr, 'product-list-1' );
 		}
 
 		$block_name            = 'product-list-1';
@@ -152,7 +152,7 @@ class Product_List_1 {
 						// Heading
 						include WOPB_PATH . 'blocks/template/heading.php';
 
-				if ( $attr['filterShow'] && $attr['productView'] == 'grid' ) {
+				if ( $attr['filterShow'] && 'grid' === $attr['productView'] ) {
 					$wraper_before .= '<div class="wopb-filter-navigation">';
 
 						// Filter
@@ -166,7 +166,7 @@ class Product_List_1 {
 			}
 
 					$wraper_before .= '<div class="wopb-wrapper-main-content">';
-			if ( $attr['productView'] == 'slide' ) {
+			if ( 'slide' === $attr['productView'] ) {
 				$wrapper_main_content .= '<div class="wopb-product-blocks-slide" ' . wp_kses_post( $slider_attr ) . '>';
 			} else {
 				$wrapper_main_content .= '<div class="wopb-block-items-wrap wopb-block-row wopb-block-column-' . ( ! empty( $attr['columns']['lg'] ) ? intval( $attr['columns']['lg'] ) : 4 ) . ' wopb-block-content-' . esc_attr( $attr['imgFlip'] ) . '">';
@@ -215,16 +215,16 @@ class Product_List_1 {
 							$meta_class .= ! $attr['hoverMeta'] ? ' wopb-is-visible' : '';
 							$post_loop  .= '<div class="wopb-product-new-meta' . $meta_class . '">';
 							foreach ( $parsedOverlayMetaList as $meta_val ) {
-								if ( $meta_val == '_wishlist' ) {
+								if ( '_wishlist' === $meta_val ) {
 									$post_loop .= apply_filters( 'wopb_grid_wishlist', '', $post_id, $attr['tooltipPosition'] );
 								}
-								if ( $meta_val == '_qview' ) {
+								if ( '_qview' === $meta_val ) {
 													$post_loop .= apply_filters( 'wopb_grid_quickview', '', $recent_posts, $post_id, $attr['tooltipPosition'] );
 								}
-								if ( $meta_val == '_compare' ) {
+								if ( '_compare' === $meta_val ) {
 									$post_loop .= apply_filters( 'wopb_grid_compare', '', $post_id, $attr['tooltipPosition'] );
 								}
-								if ( $meta_val == '_cart' ) {
+								if ( '_cart' === $meta_val ) {
 												$cart_params['isIcon'] = true;
 												$post_loop            .= wopb_function()->get_add_to_cart( $product, $cart_params );
 								}
@@ -245,14 +245,14 @@ class Product_List_1 {
 								// Category & Brand
 					$above_title = $below_title = '';
 					if ( $attr['catShow'] ) {
-						if ( $attr['catPosition'] == 'belowTitle' ) {
+						if ( 'belowTitle' === $attr['catPosition'] ) {
 							$below_title .= wp_kses_post( $category );
 						} else {
 							$above_title .= wp_kses_post( $category );
 						}
 					}
 					if ( $attr['brandShow'] ) {
-						if ( $attr['brandPosition'] == 'belowTitle' ) {
+						if ( 'belowTitle' === $attr['brandPosition'] ) {
 							$below_title .= wp_kses_post( $brand );
 						} else {
 							$above_title .= wp_kses_post( $brand );
@@ -293,23 +293,23 @@ class Product_List_1 {
 
 							$wrapper_main_content .= $post_loop;
 
-			if ( $attr['paginationShow'] && $attr['productView'] == 'grid' && $attr['paginationType'] == 'loadMore' ) {
+			if ( $attr['paginationShow'] && 'grid' === $attr['productView'] && 'loadMore' === $attr['paginationType'] ) {
 				$wrapper_main_content .= '<span class="wopb-loadmore-insert-before"></span>';
 			}
 
 						$wrapper_main_content .= '</div>';// wopb-block-items-wrap
 
 						// Load More
-			if ( $attr['paginationShow'] && $attr['productView'] == 'grid' && $attr['paginationType'] == 'loadMore' ) {
+			if ( $attr['paginationShow'] && 'grid' === $attr['productView'] && 'loadMore' === $attr['paginationType'] ) {
 				include WOPB_PATH . 'blocks/template/loadmore.php';
 			}
 
 						// Pagination
-			if ( $attr['paginationShow'] && $attr['productView'] == 'grid' && $attr['paginationType'] == 'pagination' ) {
+			if ( $attr['paginationShow'] && 'grid' === $attr['productView'] && 'pagination' === $attr['paginationType'] ) {
 				include WOPB_PATH . 'blocks/template/pagination.php';
 			}
 
-			if ( $attr['productView'] == 'slide' && $attr['showArrows'] ) {
+			if ( 'slide' === $attr['productView'] && $attr['showArrows'] ) {
 				include WOPB_PATH . 'blocks/template/arrow.php';
 			}
 
@@ -320,8 +320,8 @@ class Product_List_1 {
 			wp_reset_postdata();
 		}
 
-		if ( $noAjax && $attr['ajax_source'] == 'filter' || ! ( $recent_posts->have_posts() ) ) {
-			if ( $post_loop === '' ) {
+		if ( ( $noAjax && 'filter' === $attr['ajax_source'] ) || ! ( $recent_posts->have_posts() ) ) {
+			if ( '' === $post_loop ) {
 				// note: dont remove without proper check. - Shihab.
 				// these before after are necessary for jquery use in filter.js .
 				$wraper_before .= '<div '

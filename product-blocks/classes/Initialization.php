@@ -7,7 +7,6 @@
  */
 namespace WOPB;
 
-use WOPB\Includes\Durbin\Xpo;
 use WOPB\Includes\Notice\Notice;
 
 defined( 'ABSPATH' ) || exit;
@@ -25,7 +24,12 @@ class Initialization {
 	public function __construct() {
 		$this->compatibility_check();
 		$this->requires();
-		$this->include_addons(); // Include Addons.
+		// WooCommerce loads after this plugin, so its presence is only known on `plugins_loaded`.
+		if ( did_action( 'plugins_loaded' ) ) {
+			$this->load_woocommerce_features();
+		} else {
+			add_action( 'plugins_loaded', array( $this, 'load_woocommerce_features' ), 0 );
+		}
 
 		add_action( 'enqueue_block_editor_assets', array( $this, 'register_scripts_back_callback' ) ); // Only editor
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_scripts_option_panel_callback' ) ); // Option Panel
@@ -36,28 +40,10 @@ class Initialization {
 		add_action( 'wp_footer', array( $this, 'footer_callback' ) ); // Footer Text Added
 		add_action( 'wp_enqueue_scripts', array( $this, 're_enqueue_wc_scripts' ), 99999 );
 
-		$this->include_promotions();
-
 		add_filter(
 			'body_class',
-			function ( $classes ) {
-				$classes[] = 'wopb-front-page';
-
-				return $classes;
-			}
+			array( $this, 'add_body_classes' )
 		);
-	}
-
-	/**
-	 * Inlcudes promotional classes.
-	 *
-	 * @return void
-	 */
-	public function include_promotions() {
-		require_once WOPB_PATH . 'classes/class-wow-addons-promotion.php';
-		require_once WOPB_PATH . 'classes/class-wow-revenue-promotion.php';
-		new WowAddonsPromotion();
-		new WowRevenuePromotion();
 	}
 
 	/**
@@ -66,7 +52,7 @@ class Initialization {
 	 * @return void
 	 */
 	public function re_enqueue_wc_scripts() {
-		if ( ! is_product() ) {
+		if ( ! function_exists( 'is_product' ) || ! defined( 'WC_PLUGIN_FILE' ) || ! is_product() ) {
 			return;
 		}
 
@@ -104,18 +90,13 @@ class Initialization {
 	 * @return NULL
 	 */
 	public function wopb_plugin_activation( $plugin ) {
-		if ( wp_doing_ajax() ) {
+		if ( ( defined( 'WP_CLI' ) && WP_CLI ) || wp_doing_ajax() ) {
 			return;
 		}
-		if ( $plugin == 'product-blocks/product-blocks.php' ) {
+		if ( $plugin == WOPB_BASE ) {
 			if ( wp_doing_ajax() || is_network_admin() || isset( $_GET['activate-multi'] ) ) { //phpcs:ignore
 				return;
 			}
-			// if ( get_option( 'wopb_setup_wizard_data', '' ) != 'yes' ) {
-			// 	update_option( 'wopb_setup_wizard_data', 'yes' );
-            //     exit( wp_safe_redirect( admin_url( 'admin.php?page=wopb-initial-setup-wizard' ) ) ); //phpcs:ignore
-			// } else {
-			// }
             exit( wp_safe_redirect( admin_url( 'admin.php?page=wopb-settings#home' ) ) ); //phpcs:ignore
 		}
 	}
@@ -133,7 +114,7 @@ class Initialization {
 		foreach ( $addons_dir as $key => $value ) {
 			$addon_dir_name = str_replace( dirname( $value ) . '/', '', $value );
 			$file_name      = WOPB_PATH . 'addons/' . $addon_dir_name;
-			if ( $is_admin && wopb_function()->get_screen() == 'wopb-settings' ) { // Only include in settings page
+			if ( $is_admin && wopb_function()->get_screen() === 'wopb-settings' ) { // Only include in settings page
 				if ( file_exists( $file_name . '/backend.php' ) ) {
 					include_once $file_name . '/backend.php';
 				}
@@ -151,12 +132,21 @@ class Initialization {
 	 * @return NULL
 	 */
 	public function footer_callback() {
-		$html  = '';
-		$html .= '<div class="wopb-footer-section">';
+		$html                    = '';
+		$html                   .= '<div class="wopb-footer-section">';
+			$wopb_buffer_level_1 = ob_get_level();
 			ob_start();
-				$this->modal_callback();
-				do_action( 'wopb_footer' );
+		try {
+			$this->modal_callback();
+			do_action( 'wopb_footer' );
 			$html .= ob_get_clean();
+		} finally {
+			while ( ob_get_level() > $wopb_buffer_level_1 ) {
+				if ( ! ob_end_clean() ) {
+					break;
+				}
+			}
+		}
 
 		$html        .= '</div>';
 		$content_safe = wopb_function()->wp_kses_safe( $html );
@@ -214,6 +204,35 @@ class Initialization {
 	}
 
 	/**
+	 * Whether the admin screen has WowStore UI that needs the media, select and form assets
+	 *
+	 * @since 4.6.0
+	 * @param string $hook_suffix Hook suffix of the admin page.
+	 * @return bool
+	 */
+	private function is_plugin_admin_screen( $hook_suffix ) {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( ! $screen ) {
+			return true;
+		}
+		$bases      = array( 'post', 'edit', 'edit-tags', 'term', 'plugins', 'site-editor', 'widgets' );
+		$post_types = array( 'product', 'wopb_builder', 'wopb_templates', 'wopb_custom_font', 'wopb-size-chart' );
+		$is_plugin  = in_array( $screen->base, $bases, true )
+			|| in_array( $screen->post_type, $post_types, true )
+			|| false !== strpos( (string) $screen->id, 'wopb' )
+			|| 0 === strpos( (string) wopb_function()->get_screen(), 'wopb' );
+
+		/**
+		 * Filters whether the media, select and form assets load on an admin screen.
+		 *
+		 * @since 4.6.0
+		 * @param bool   $is_plugin   Whether the screen has WowStore UI.
+		 * @param string $hook_suffix Hook suffix of the admin page.
+		 */
+		return (bool) apply_filters( 'wopb_load_admin_page_assets', $is_plugin, $hook_suffix );
+	}
+
+	/**
 	 * Option Panel Enqueue Script
 	 *
 	 * @since v.1.0.0
@@ -221,16 +240,14 @@ class Initialization {
 	 */
 	public function register_scripts_option_panel_callback( $screen ) {
 		global $post;
-		$is_active   = wopb_function()->is_lc_active();
-		$post_id     = isset( $post->ID ) ? $post->ID : '';
-		$post_type   = isset( $post->post_type ) ? $post->post_type : '';
-		$_page       = wopb_function()->get_screen();
-		$license_key = get_option( 'edd_wopb_license_key' );
+		$post_id   = isset( $post->ID ) ? $post->ID : '';
+		$post_type = isset( $post->post_type ) ? $post->post_type : '';
+		$_page     = wopb_function()->get_screen();
 
 		// Custom Font Support Added
 		$font_settings = wopb_function()->get_setting( 'wopb_custom_font' );
 		$custom_fonts  = array();
-		if ( $font_settings == 'true' ) {
+		if ( 'true' === $font_settings ) {
 			$args  = array(
 				'post_type'   => 'wopb_custom_font',
 				'post_status' => 'publish',
@@ -250,25 +267,31 @@ class Initialization {
 			}
 		}
 
-		wp_enqueue_media();
+		// The menu styles and the small option script run on every admin screen. The heavy assets load only where the plugin has UI.
+		$load_page_assets = $this->is_plugin_admin_screen( $screen );
+		wp_enqueue_style( 'wopb-admin-menu-style', WOPB_URL . 'assets/css/wopb-admin-menu.css', array(), WOPB_VER );
+		if ( $load_page_assets ) {
+			wp_enqueue_media();
+		}
 
 		$taxonomy                               = isset( $_GET['taxonomy'] ) ? sanitize_text_field( wp_unslash( $_GET['taxonomy'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$variation_swatches_attribute_poststype = wopb_function()->get_setting( 'wopb_variation_swatches' ) == 'true' && strpos( $taxonomy, 'pa_' ) == 0;
-		if ( $taxonomy == 'pa_color' || $variation_swatches_attribute_poststype ) {
+		$variation_swatches_attribute_poststype = wopb_function()->get_setting( 'wopb_variation_swatches' ) === 'true' && 0 === strpos( $taxonomy, 'pa_' );
+		if ( 'pa_color' === $taxonomy || $variation_swatches_attribute_poststype ) {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_script( 'wp-color-picker' );
 		}
 
-		wp_enqueue_script( 'wc-enhanced-select' );
+		if ( $load_page_assets ) {
+			wp_enqueue_script( 'wc-enhanced-select' );
+			wp_enqueue_style( 'wopb-option-style', WOPB_URL . 'assets/css/wopb-option.css', array(), WOPB_VER );
+		}
 		wp_enqueue_script( 'wopb-option-script', WOPB_URL . 'assets/js/wopb-option.js', array( 'jquery' ), WOPB_VER, true );
-		wp_enqueue_style( 'wopb-option-style', WOPB_URL . 'assets/css/wopb-option.css', array(), WOPB_VER );
 		wp_localize_script(
 			'wopb-option-script',
 			'wopb_option',
 			array(
 				'url'                => WOPB_URL,
 				'version'            => WOPB_VER,
-				'active'             => $is_active,
 				'width'              => wopb_function()->get_setting( 'editor_container' ),
 				'security'           => wp_create_nonce( 'wopb-nonce' ),
 				'ajax'               => admin_url( 'admin-ajax.php' ),
@@ -276,55 +299,46 @@ class Initialization {
 				'post_type'          => $post_type,
 				'saved_template_url' => admin_url( 'admin.php?page=wopb-settings#saved-templates' ),
 				'custom_fonts'       => $custom_fonts,
-				'revenue_active'     => is_plugin_active( 'revenue/revenue.php' ),
-				'revenue_url'        => admin_url( 'admin.php?page=revenue' ),
-				'revenue_campaigns'  => esc_url( admin_url( 'admin.php?page=revenue#/campaigns' ) ),
 			)
 		);
 
-		if ( $_page == 'wopb-settings' || $post_type == 'wopb_builder' ) { // Conditions JS
-			wp_enqueue_script( 'wopb-conditions-script', WOPB_URL . 'addons/builder/assets/js/conditions.min.js', array(), WOPB_VER, true );
+		if ( 'wopb-settings' === $_page || 'wopb_builder' === $post_type ) { // Conditions JS
+			wp_enqueue_script( 'wopb-conditions-script', WOPB_URL . 'addons/builder/assets/js/conditions.min.js', array( 'react', 'react-dom', 'wp-element' ), WOPB_VER, true );
 			wp_localize_script(
 				'wopb-conditions-script',
 				'wopb_condition',
 				array(
-					'url'          => WOPB_URL,
-					'active'       => $is_active,
-					'license'      => $is_active ? $license_key : '',
-					'builder_url'  => admin_url( 'admin.php?page=wopb-settings#builder' ),
-					'builder_type' => $post_id ? get_post_meta( $post_id, '_wopb_builder_type', true ) : '',
+					'url'                => WOPB_URL,
+					'pro_active'         => ! wopb_function()->show_upsell(),
+					'templates_unlocked' => wopb_function()->templates_unlocked(),
+					'builder_url'        => admin_url( 'admin.php?page=wopb-settings#builder' ),
+					'builder_type'       => $post_id ? get_post_meta( $post_id, '_wopb_builder_type', true ) : '',
 				)
 			);
 		}
 
 		/* === Dashboard === */
-		if ( $_page == 'wopb-settings' ) {
+		if ( 'wopb-settings' === $_page ) {
 			$user_info = get_userdata( get_current_user_id() );
-			wp_enqueue_script( 'wopb-dashboard-script', WOPB_URL . 'assets/js/wopb_dashboard_min.js', array( 'wp-i18n', 'wp-api-fetch', 'wp-api-request', 'wp-components', 'wp-blocks' ), WOPB_VER, true );
+			wp_enqueue_script( 'wopb-dashboard-script', WOPB_URL . 'assets/js/wopb_dashboard_min.js', array( 'react', 'react-dom', 'wp-element', 'wp-i18n', 'wp-api-fetch', 'wp-api-request', 'wp-components', 'wp-blocks' ), WOPB_VER, true );
 			wp_localize_script(
 				'wopb-dashboard-script',
 				'wopb_dashboard_pannel',
-				array_merge(
-					array(
-						'url'               => WOPB_URL,
-						'ajax'              => admin_url( 'admin-ajax.php' ),
-						'security'          => wp_create_nonce( 'wopb-nonce' ),
-						'active'            => $is_active,
-						'license'           => Xpo::get_lc_key(),
-						// @wopb-upgrade-renew: renew or upgrade CTA rendered on the React side based on the license expiry status.
-						'is_expired'        => Xpo::is_lc_expired(),
-						'settings'          => wopb_function()->get_setting(),
-						'addons'            => apply_filters( 'wopb_addons_config', array() ),
-						'addons_settings'   => apply_filters( 'wopb_settings', array() ),
-						'version'           => WOPB_VER,
-						'setup_wizard_link' => admin_url( 'admin.php?page=wopb-initial-setup-wizard' ),
-						'helloBar'          => Notice::get_hellobar_config(),
-						'userInfo'          => array(
-							'name'  => $user_info->first_name ? $user_info->first_name . ( $user_info->last_name ? ' ' . $user_info->last_name : '' ) : $user_info->user_login,
-							'email' => $user_info->user_email,
-						),
+				array(
+					'url'                => WOPB_URL,
+					'ajax'               => admin_url( 'admin-ajax.php' ),
+					'security'           => wp_create_nonce( 'wopb-nonce' ),
+					'pro_active'         => ! wopb_function()->show_upsell(),
+					'templates_unlocked' => wopb_function()->templates_unlocked(),
+					'settings'           => wopb_function()->get_setting(),
+					'addons'             => apply_filters( 'wopb_addons_config', array() ),
+					'addons_settings'    => apply_filters( 'wopb_settings', array() ),
+					'version'            => WOPB_VER,
+					'helloBar'           => Notice::get_hellobar_config(),
+					'userInfo'           => array(
+						'name'  => $user_info->first_name ? $user_info->first_name . ( $user_info->last_name ? ' ' . $user_info->last_name : '' ) : $user_info->user_login,
+						'email' => $user_info->user_email,
 					),
-					Xpo::get_wow_products_details()
 				)
 			);
 			wp_set_script_translations( 'wopb-dashboard-script', 'product-blocks', WOPB_PATH . 'languages/' );
@@ -339,15 +353,17 @@ class Initialization {
 	 */
 	public function register_scripts_back_callback() {
 		global $post;
+		if ( ! wopb_function()->get_setting( 'is_wc_ready' ) ) {
+			return;
+		}
 		wopb_function()->register_scripts_common();
 		if ( wopb_function()->get_setting( 'is_wc_ready' ) ) {
 			global $pagenow;
-			$is_active  = wopb_function()->get_setting( 'is_lc_active' );
-			$is_builder = ( isset( $post->post_type ) && $post->post_type == 'wopb_builder' ) ? true : false;
-			if ( $pagenow != 'widgets.php' ) {
+			$is_builder = ( isset( $post->post_type ) && 'wopb_builder' === $post->post_type ) ? true : false;
+			if ( 'widgets.php' !== $pagenow ) {
 				wp_enqueue_script( 'wp-editor' );
 			}
-			wp_enqueue_script( 'wopb-blocks-editor-script', WOPB_URL . 'assets/js/editor.blocks.js', array( 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components' ), WOPB_VER, true );
+			wp_enqueue_script( 'wopb-blocks-editor-script', WOPB_URL . 'assets/js/editor.blocks.js', array( 'react', 'react-dom', 'lodash', 'wp-i18n', 'wp-element', 'wp-blocks', 'wp-components', 'wp-hooks' ), WOPB_VER, true );
 			wp_enqueue_style( 'wopb-blocks-editor-css', WOPB_URL . 'assets/css/blocks.editor.css', array(), WOPB_VER );
 
 			wp_localize_script(
@@ -358,13 +374,9 @@ class Initialization {
 					'security'                => wp_create_nonce( 'wopb-nonce' ),
 					'hide_import_btn'         => wopb_function()->get_setting( 'hide_import_btn' ),
 					'premium_link'            => wopb_function()->get_premium_link(),
-					'license'                 => $is_active ? get_option( 'edd_wopb_license_key' ) : '',
-					'active'                  => $is_active,
-					// @wopb-upgrade-renew: renew or upgrade CTA rendered on the React side based on the license expiry status.
-					'is_expired'              => Xpo::is_lc_expired(),
-					// license key is being used in expired notice.
-					// todo: merge the license key so there is no duplicate.
-					'license_key'             => Xpo::is_lc_expired() ? Xpo::get_lc_key() : '',
+					'pro_features_url'        => admin_url( 'admin.php?page=wopb-settings#pro-features' ),
+					'pro_active'              => ! wopb_function()->show_upsell(),
+					'templates_unlocked'      => wopb_function()->templates_unlocked(),
 					'isBuilder'               => $is_builder,
 					'isVariationSwitchActive' => wopb_function()->get_setting( 'wopb_variation_swatches' ),
 					'settings'                => wopb_function()->get_setting(),
@@ -377,7 +389,7 @@ class Initialization {
 						)
 					),
 					'builder_type'            => $is_builder ? get_post_meta( $post->ID, '_wopb_builder_type', true ) : '',
-					'taxonomyCatUrl'          => admin_url( 'edit-tags.php?taxonomy=category' ),
+					'version'                 => WOPB_VER,
 				)
 			);
 
@@ -430,9 +442,6 @@ class Initialization {
 
 		// Set Metabox Position in Product Edit
 		wopb_function()->builder_metabox_position();
-
-		// Delete Dismiss Options WC install
-		delete_option( 'dismiss_notice' );
 	}
 
 	/**
@@ -455,21 +464,29 @@ class Initialization {
 	public function requires() {
 		require_once WOPB_PATH . 'classes/Dashboard.php';
 		require_once WOPB_PATH . 'classes/Options.php';
-		require_once WOPB_PATH . 'classes/ProPlugins.php';
-		require_once WOPB_PATH . 'classes/SetupWizard.php';
 		new \WOPB\Dashboard();
 		new \WOPB\Options();
-		new \WOPB\ProPlugins();
-		new \WOPB\SetupWizard();
 
-		require_once WOPB_PATH . 'includes/durbin/class-deactive.php';
-		require_once WOPB_PATH . 'includes/durbin/class-durbin-client.php';
-		require_once WOPB_PATH . 'includes/durbin/class-xpo.php';
+		require_once WOPB_PATH . 'includes/class-xpo.php';
 		require_once WOPB_PATH . 'includes/notice/class-notice.php';
-		require_once WOPB_PATH . 'includes/durbin/class-our-plugins.php';
-		new \WOPB\Includes\Durbin\Deactive();
 		new \WOPB\Includes\Notice\Notice();
-		new \WOPB\Includes\Durbin\OurPlugins();
+	}
+
+	/**
+	 * Load the add-ons and the classes that need WooCommerce
+	 *
+	 * Without WooCommerce only the dashboard and the settings add-ons load, and an admin notice says how to fix it.
+	 *
+	 * @since 4.6.0
+	 * @return void
+	 */
+	public function load_woocommerce_features() {
+		// The first `wopb_function()` call loads the saved settings into the global.
+		$is_wc_ready = wopb_function()->is_wc_ready();
+		if ( ! is_array( $GLOBALS['wopb_settings'] ) ) {
+			$GLOBALS['wopb_settings'] = array();
+		}
+		$GLOBALS['wopb_settings']['is_wc_ready'] = $is_wc_ready;
 
 		if ( wopb_function()->get_setting( 'is_wc_ready' ) ) {
 			require_once WOPB_PATH . 'classes/REST_API.php';
@@ -486,7 +503,36 @@ class Initialization {
 			new \WOPB\WooHooks();
 			new \WOPB\ExternalCompatibility();
 			new \WOPB\Compatibility\GermanizedSupport();
+		} else {
+			add_action( 'admin_notices', array( $this, 'woocommerce_missing_notice' ) );
 		}
+		$this->include_addons(); // Include Addons.
+	}
+
+	/**
+	 * Admin notice shown while WooCommerce is not active
+	 *
+	 * @since 4.6.0
+	 * @return void
+	 */
+	public function woocommerce_missing_notice() {
+		if ( ! current_user_can( 'activate_plugins' ) ) {
+			return;
+		}
+		?>
+		<div class="notice notice-error">
+			<p>
+				<?php
+				printf(
+					/* translators: 1: plugin name, 2: link to the Plugins screen. */
+					esc_html__( '%1$s needs WooCommerce to work. Install and activate WooCommerce on the %2$s screen.', 'product-blocks' ),
+					'<strong>WowStore</strong>',
+					'<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">' . esc_html__( 'Plugins', 'product-blocks' ) . '</a>'
+				);
+				?>
+			</p>
+		</div>
+		<?php
 	}
 
 	/**
@@ -523,5 +569,12 @@ class Initialization {
 			),
 		);
 		return array_merge( $attr, $categories );
+	}
+
+	/** Named WordPress hook callback. */
+	public function add_body_classes( $classes ) {
+		$classes[] = 'wopb-front-page';
+
+		return $classes;
 	}
 }

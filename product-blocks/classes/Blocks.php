@@ -27,7 +27,12 @@ class Blocks {
 	 * @since v.1.1.0
 	 */
 	public function __construct() {
-		$this->blocks();
+		// Late enough for add-ons to hook `wopb_blocks`, still before the blocks register on `init`.
+		if ( did_action( 'plugins_loaded' ) && ! doing_action( 'plugins_loaded' ) ) {
+			$this->blocks();
+		} else {
+			add_action( 'plugins_loaded', array( $this, 'blocks' ), 20 );
+		}
 		add_action( 'wc_ajax_wopb_load_more', array( $this, 'wopb_load_more_callback' ) );
 		add_action( 'wp_ajax_nopriv_wopb_load_more', array( $this, 'wopb_load_more_callback' ) );
 		add_action( 'wc_ajax_wopb_filter', array( $this, 'wopb_filter_callback' ) );
@@ -80,17 +85,26 @@ class Blocks {
 		}
 		if ( $product_id ) {
 			global $woocommerce;
-			if ( $cart_type == 'buy_now' ) {
+			if ( 'buy_now' === $cart_type ) {
 				WC()->cart->empty_cart();
 			}
-			$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity );
+			$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity, $variationId, $variation );
 			if ( $passed_validation ) {
 				WC()->cart->add_to_cart( $product_id, $quantity, $variationId, $variation );
 			}
 
+			$wopb_buffer_level_1 = ob_get_level();
 			ob_start();
-			woocommerce_mini_cart();
-			$mini_cart = ob_get_clean();
+			try {
+				woocommerce_mini_cart();
+				$mini_cart = ob_get_clean();
+			} finally {
+				while ( ob_get_level() > $wopb_buffer_level_1 ) {
+					if ( ! ob_end_clean() ) {
+						break;
+					}
+				}
+			}
 
 			$data = array(
 				'message'   => wc_add_to_cart_message( $product_id, $quantity, true ),
@@ -115,14 +129,14 @@ class Blocks {
 	public function blocks() {
         $request = isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : ''; // phpcs:ignore
 		$host        = isset( $_SERVER['HTTP_HOST'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '';
-        $host_url = isset($_SERVER['REQUEST_URI']) ? sanitize_url( $_SERVER['REQUEST_URI'] ) : ''; // phpcs:ignore
+        $host_url = isset($_SERVER['REQUEST_URI']) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : ''; // phpcs:ignore
 		$request_url = ( isset( $_SERVER['HTTPS'] ) && sanitize_text_field( wp_unslash( $_SERVER['HTTPS'] ) ) === 'on' ? 'https' : 'http' ) . '://' . $host . $host_url;
 		if (
 			(
 				is_admin() &&
-				$request != 'et_fb_ajax_render_shortcode' && // Divi Module Check
-				wopb_function()->get_screen( 'action' ) != 'elementor' && // Elementor Widget Check
-				$request != 'elementor_ajax' // Elementor Widget Check
+				'et_fb_ajax_render_shortcode' !== $request && // Divi Module Check
+				wopb_function()->get_screen( 'action' ) !== 'elementor' && // Elementor Widget Check
+				'elementor_ajax' !== $request // Elementor Widget Check
 			) || strpos( $request_url, '/wopb_builder/' ) !== false
 		) {
 			return;
@@ -138,10 +152,6 @@ class Blocks {
 			'product_list_1'                          => 'Product_List_1',
 			'product_category_1'                      => 'Product_Category_1',
 			'product_category_2'                      => 'Product_Category_2',
-			'product_category_3'                      => 'Product_Category_3',
-			'product_filter'                          => 'Filter',
-			'currency_switcher'                       => 'Currency_Switcher',
-			'product_search'                          => 'Product_Search',
 			'product_slider'                          => 'Product_Slider',
 			'menu_wishlist'                           => 'Menu_Wishlist',
 			'menu_compare'                            => 'Menu_Compare',
@@ -177,6 +187,13 @@ class Blocks {
 			'builder_social_share'                    => 'Social_Share',
 		);
 
+		/**
+		 * Filters the blocks free registers.
+		 *
+		 * @param array $blocks Block slug => class name in the `WOPB\blocks` namespace.
+		 */
+		$blocks = apply_filters( 'wopb_blocks', $blocks );
+
 		spl_autoload_register(
 			function ( $class ) {
 				if ( strpos( $class, 'WOPB\blocks' ) === 0 ) {
@@ -194,12 +211,71 @@ class Blocks {
 		);
 
 		foreach ( $blocks as $id => $block ) {
-			if ( isset( $settings[ $id ] ) && $settings[ $id ] != 'yes' ) {
-			} else {
+			if ( ! isset( $settings[ $id ] ) || 'yes' === $settings[ $id ] ) {
 				$obj = '\WOPB\blocks\\' . $block;
-				new $obj();
+				if ( class_exists( $obj ) ) {
+					new $obj();
+				}
 			}
 		}
+	}
+
+	/**
+	 * Blocks a public AJAX request may render: those of a widget block, or of a post the visitor may read
+	 *
+	 * The three callbacks below answer visitors, so a draft, private or password-protected post, a post of a
+	 * type with no public page, an inactive widget, or an ID that doesn't exist, gives nothing.
+	 *
+	 * @since 4.6.0
+	 * @param string|int $post_id         Post that holds the block.
+	 * @param string     $widget_block_id Key of the block in the `widget_block` option, if it is a widget.
+	 * @return array Parsed blocks, empty when there is nothing the visitor may see.
+	 */
+	private function get_ajax_blocks( $post_id, $widget_block_id = '' ) {
+		if ( $widget_block_id ) {
+			$widgets = get_option( 'widget_block' );
+			if ( ! is_array( $widgets ) || ! isset( $widgets[ $widget_block_id ]['content'] ) ) {
+				return array();
+			}
+			if ( ! $this->is_widget_block_active( $widget_block_id ) ) {
+				return array();
+			}
+			return parse_blocks( $widgets[ $widget_block_id ]['content'] );
+		}
+
+		$post = get_post( absint( $post_id ) );
+		if ( ! $post || ! has_blocks( $post->post_content ) ) {
+			return array();
+		}
+		// A post type with no public page, such as a custom one for internal data, has no blocks to show visitors. The Builder renders on public pages, so it stays.
+		if ( 'wopb_builder' !== $post->post_type && ! is_post_type_viewable( $post->post_type ) ) {
+			return array();
+		}
+		if ( 'publish' !== $post->post_status && ! current_user_can( 'edit_post', $post->ID ) ) {
+			return array();
+		}
+		if ( post_password_required( $post ) ) {
+			return array();
+		}
+		return parse_blocks( $post->post_content );
+	}
+
+	/**
+	 * Whether a block widget sits in a widget area, and so shows on the site
+	 *
+	 * @since 4.6.0
+	 * @param string|int $widget_block_id Key of the block in the `widget_block` option.
+	 * @return bool
+	 */
+	private function is_widget_block_active( $widget_block_id ) {
+		$sidebars = wp_get_sidebars_widgets(); //phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- used only in admin metabox to list widget 
+		unset( $sidebars['wp_inactive_widgets'] );
+		foreach ( $sidebars as $widgets ) {
+			if ( is_array( $widgets ) && in_array( 'block-' . $widget_block_id, $widgets, true ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -220,18 +296,14 @@ class Blocks {
 		$blockName     = str_replace( '_', '/', $blockRaw );
 		$widgetBlockId = isset( $_POST['widgetBlockId'] ) ? sanitize_text_field( wp_unslash( $_POST['widgetBlockId'] ) ) : '';
 		if ( $paged && $blockId && $postId && $blockName ) {
-			$post                  = get_post( $postId );
 			$raw_filter_attributes = isset( $_POST['filterAttributes'] ) ? wp_unslash( $_POST['filterAttributes'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$filterAttributes      = wopb_function()->rest_sanitize_params( ! empty( $raw_filter_attributes ) && is_array( $raw_filter_attributes ) ? $raw_filter_attributes : array() );
 			$params                = array(
 				'filterAttributes' => $filterAttributes,
 				'ajax_source'      => 'pagination',
 			);
-			if ( $widgetBlockId ) {
-				$blocks = parse_blocks( get_option( 'widget_block' )[ $widgetBlockId ]['content'] );
-				$this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params );
-			} elseif ( has_blocks( $post->post_content ) ) {
-				$blocks = parse_blocks( $post->post_content );
+			$blocks                = $this->get_ajax_blocks( $postId, $widgetBlockId );
+			if ( $blocks ) {
 				$this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params );
 			}
 		}
@@ -250,6 +322,9 @@ class Blocks {
 				if ( $value['attrs']['blockId'] == $blockId ) {
 					$objName                 = str_replace( ' ', '_', ucwords( join( ' ', explode( '-', explode( '/', $blockName )[1] ) ) ) );
 					$obj                     = '\WOPB\blocks\\' . $objName;
+					if ( ! class_exists( $obj ) ) {
+						continue;
+					}
 					$newObj                  = new $obj();
 					$attr                    = $newObj->get_attributes( true );
 					$value['attrs']['paged'] = $paged;
@@ -286,8 +361,35 @@ class Blocks {
 		foreach ( $blocks as $key => $value ) {
 			if ( $blockName == $value['blockName'] ) {
 				if ( $value['attrs']['blockId'] == $blockId ) {
-					$objName      = str_replace( ' ', '_', ucwords( join( ' ', explode( '-', explode( '/', $blockName )[1] ) ) ) );
-					$obj          = '\WOPB\blocks\\' . $objName;
+					/**
+					 * Filters the re-rendered block HTML of an AJAX source free doesn't render itself.
+					 *
+					 * @param string $html   Block HTML; return a non-empty string to use it instead of free's.
+					 * @param string $source The AJAX source, e.g. `filter`.
+					 * @param array  $params The request params, with `block_id`, `block_name` and `attrs` (the block's saved attributes) added.
+					 */
+					$html = apply_filters(
+						'wopb_ajax_block_content',
+						'',
+						isset( $params['ajax_source'] ) ? $params['ajax_source'] : '',
+						array_merge(
+							$params,
+							array(
+								'block_id'   => $value['attrs']['blockId'],
+								'block_name' => $value['blockName'],
+								'attrs'      => $value['attrs'],
+							)
+						)
+					);
+					if ( is_string( $html ) && '' !== $html ) {
+						echo wopb_function()->wp_kses_safe( $html ); // phpcs:ignore
+						die();
+					}
+					$objName = str_replace( ' ', '_', ucwords( join( ' ', explode( '-', explode( '/', $blockName )[1] ) ) ) );
+					$obj     = '\WOPB\blocks\\' . $objName;
+					if ( ! class_exists( $obj ) ) {
+						continue;
+					}
 					$newObj       = new $obj();
 					$attr         = $newObj->get_attributes( true );
 					$attr         = array_merge( $attr, $params );
@@ -330,10 +432,10 @@ class Blocks {
 			'ajax_source'  => 'filter',
 		);
 
-		if ( $taxtype == 'product_cat' && $taxonomy ) {
+		if ( 'product_cat' === $taxtype && $taxonomy ) {
 			$params['queryCatAction'] = array( $taxonomy );
 		}
-		if ( $taxtype == 'product_tag' && $taxonomy ) {
+		if ( 'product_tag' === $taxtype && $taxonomy ) {
 			$params['queryTagAction'] = array( $taxonomy );
 		}
 		if ( $taxonomy ) {
@@ -342,12 +444,8 @@ class Blocks {
 			}
 		}
 		if ( $taxtype ) {
-			$post = get_post( $postId );
-			if ( $widgetBlockId ) {
-				$blocks = parse_blocks( get_option( 'widget_block' )[ $widgetBlockId ]['content'] );
-				$this->filter_block_return( $blocks, $blockId, $blockRaw, $blockName, $params );
-			} elseif ( has_blocks( $post->post_content ) ) {
-				$blocks = parse_blocks( $post->post_content );
+			$blocks = $this->get_ajax_blocks( $postId, $widgetBlockId );
+			if ( $blocks ) {
 				$this->filter_block_return( $blocks, $blockId, $blockRaw, $blockName, $params );
 			}
 		}
@@ -385,12 +483,8 @@ class Blocks {
 		}
 
 		if ( $paged ) {
-			$post = get_post( $postId );
-			if ( $widgetBlockId ) {
-				$blocks = parse_blocks( get_option( 'widget_block' )[ $widgetBlockId ]['content'] );
-				$this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params, $isSearch, $archive_builder );
-			} elseif ( has_blocks( $post->post_content ) ) {
-				$blocks = parse_blocks( $post->post_content );
+			$blocks = $this->get_ajax_blocks( $postId, $widgetBlockId );
+			if ( $blocks ) {
 				$this->block_return( $blocks, $paged, $blockId, $blockRaw, $blockName, $builder, $params, $isSearch, $archive_builder );
 			}
 		}
@@ -400,81 +494,155 @@ class Blocks {
 	 * Checkout Login
 	 *
 	 * @since v.4.0.0
-	 * @return NULL
+	 * @return void
 	 */
 	public function wopb_checkout_login_callback() {
 		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
-			return;
+			wp_send_json( array( 'default' => __( 'Invalid request. Please reload the page and try again.', 'product-blocks' ) ), 403 );
 		}
 
 		$username = isset( $_POST['username'] ) ? sanitize_text_field( wp_unslash( $_POST['username'] ) ) : '';
-		$password = isset( $_POST['password'] ) ? sanitize_text_field( wp_unslash( $_POST['password'] ) ) : '';
+		$password = isset( $_POST['password'] ) ? wp_unslash( $_POST['password'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- A password must reach wp_signon() unchanged.
 		$remember = isset( $_POST['rememberme'] ) ? sanitize_text_field( wp_unslash( $_POST['rememberme'] ) ) : '';
 
 		$errors = array();
 
-		if ( $username && $password ) {
-			try {
-				$creds = array(
-					'user_login'    => trim( wp_unslash( $username ) ),
-					'user_password' => $password,
-					'remember'      => $remember,
-				);
+		if ( empty( $username ) ) {
+			$errors['username'] = __( 'Username or Email is required.', 'product-blocks' );
+			wp_send_json( $errors, 422 );
+		}
+		if ( empty( $password ) ) {
+			$errors['password'] = __( 'Password is required.', 'product-blocks' );
+			wp_send_json( $errors, 422 );
+		}
 
-				$validation_error = new \WP_Error();
-				$validation_error = apply_filters( 'woocommerce_process_login_errors', $validation_error, $creds['user_login'], $creds['user_password'] );
-				if ( $validation_error->get_error_code() ) {
-					return wp_send_json( $validation_error->get_error_message(), 422 );
-				}
-				if ( empty( $creds['user_login'] ) ) {
-					$errors['username'] = __( 'Username or Email is required.', 'product-blocks' );
-					return wp_send_json( $errors, 422 );
-				}
-				if ( empty( $creds['user_password'] ) ) {
-					$errors['password'] = __( 'Password is required.', 'product-blocks' );
-					return wp_send_json( $errors, 422 );
-				}
+		// The nonce is public, so it does not stop password guessing. Throttle failed attempts
+		// per visitor and account, and per visitor overall, before checking the password.
+		$throttle_keys = $this->get_login_throttle_keys( $username );
+		if ( $this->is_login_throttled( $throttle_keys ) ) {
+			wp_send_json( array( 'default' => __( 'Too many failed login attempts. Please wait a few minutes and try again.', 'product-blocks' ) ), 429 );
+		}
 
-				// On multisite, ensure user exists on current site, if not add them before allowing login.
-				if ( is_multisite() ) {
-					$blog_id   = get_current_blog_id();
-					$user_data = get_user_by( is_email( $creds['user_login'] ) ? 'email' : 'login', $creds['user_login'] );
-					if ( $user_data && ! is_user_member_of_blog( $user_data->ID, $blog_id ) ) {
-						add_user_to_blog( $blog_id, $user_data->ID, 'customer' );
-					}
-				}
+		try {
+			$creds = array(
+				'user_login'    => trim( $username ),
+				'user_password' => $password,
+				'remember'      => $remember,
+			);
 
-				// Perform the login.
-				$user = wp_signon( apply_filters( 'woocommerce_login_credentials', $creds ), is_ssl() );
-
-				if ( is_wp_error( $user ) ) {
-					$errors['default'] = $user->get_error_message();
-					return wp_send_json( $errors, 422 );
-				} else {
-					return wp_send_json_success( array( 'success' => true ) );
-					exit;
-				}
-			} catch ( \Exception $e ) {
-				return wp_send_json( $e->getMessage(), 500 );
-				do_action( 'woocommerce_login_failed' );
+			$validation_error = new \WP_Error();
+			$validation_error = apply_filters( 'woocommerce_process_login_errors', $validation_error, $creds['user_login'], $creds['user_password'] );
+			if ( $validation_error->get_error_code() ) {
+				wp_send_json( array( 'default' => $validation_error->get_error_message() ), 422 );
 			}
+
+			// Perform the login.
+			$user = wp_signon( apply_filters( 'woocommerce_login_credentials', $creds ), is_ssl() );
+
+			if ( is_wp_error( $user ) ) {
+				$this->record_failed_login( $throttle_keys );
+				do_action( 'woocommerce_login_failed' );
+				wp_send_json( array( 'default' => $user->get_error_message() ), 422 );
+			}
+
+			// Match WooCommerce's enrollment flow only after credentials succeed.
+			$blog_id = get_current_blog_id();
+			if ( is_multisite() && ! is_user_member_of_blog( $user->ID, $blog_id ) ) {
+				/**
+				 * Whether an authenticated checkout shopper may join the current site.
+				 *
+				 * @param bool     $allowed Allow enrollment, matching WooCommerce's default.
+				 * @param \WP_User $user    Authenticated user.
+				 * @param int      $blog_id Current site ID.
+				 */
+				if ( ! apply_filters( 'wopb_checkout_login_allow_site_enrollment', true, $user, $blog_id ) ) {
+					wp_clear_auth_cookie();
+					wp_send_json( array( 'default' => __( 'This account cannot join this site through checkout.', 'product-blocks' ) ), 403 );
+				}
+				$membership = add_user_to_blog( $blog_id, $user->ID, 'customer' );
+				if ( is_wp_error( $membership ) ) {
+					wp_clear_auth_cookie();
+					wp_send_json( array( 'default' => __( 'Your account could not be added to this site.', 'product-blocks' ) ), 500 );
+				}
+			}
+
+			$this->clear_failed_logins( $throttle_keys );
+			wp_send_json_success( array( 'success' => true ) );
+		} catch ( \Exception $e ) {
+			wp_send_json( array( 'default' => $e->getMessage() ), 500 );
 		}
 	}
 
 	/**
-	 * share Count callback
+	 * Transient keys that count failed checkout logins: one per visitor and account, one per visitor.
+	 * Only REMOTE_ADDR is used, because forwarded-for headers can be set by the visitor.
+	 *
+	 * @param string $username The login or email that was typed.
+	 * @return array
+	 */
+	private function get_login_throttle_keys( $username ) {
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		return array(
+			'wopb_login_fail_' . md5( $ip . '|' . strtolower( trim( $username ) ) ) => 5,
+			'wopb_login_fail_ip_' . md5( $ip ) => 20,
+		);
+	}
+
+	/**
+	 * Whether any failed-login counter has reached its limit.
+	 *
+	 * @param array $keys Transient key => failed attempts allowed.
+	 * @return bool
+	 */
+	private function is_login_throttled( $keys ) {
+		foreach ( $keys as $key => $limit ) {
+			if ( (int) get_transient( $key ) >= $limit ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Add one failed attempt to every counter.
+	 *
+	 * @param array $keys Transient key => failed attempts allowed.
+	 */
+	private function record_failed_login( $keys ) {
+		foreach ( array_keys( $keys ) as $key ) {
+			set_transient( $key, (int) get_transient( $key ) + 1, 15 * MINUTE_IN_SECONDS );
+		}
+	}
+
+	/**
+	 * A good login clears the account counter, but not the visitor-wide one.
+	 *
+	 * @param array $keys Transient key => failed attempts allowed.
+	 */
+	private function clear_failed_logins( $keys ) {
+		delete_transient( key( $keys ) );
+	}
+
+	/**
+	 * Share count callback
 	 *
 	 * @since v.1.0.0
 	 * @return STRING
 	 */
 	public function wopb_share_count_callback() {
 		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
-			return;
+			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'product-blocks' ) ), 403 );
 		}
 
-		$post_id = isset( $_POST['postId'] ) ? sanitize_text_field( wp_unslash( $_POST['postId'] ) ) : '';
-		$count   = isset( $_POST['shareCount'] ) ? sanitize_text_field( wp_unslash( $_POST['shareCount'] ) ) : '';
-		$count   = (int) $count + 1;
+		// Visitors who are not logged in can share too, so this stays public. The nonce is not
+		// authorization, so only count shares of a product the visitor is allowed to view.
+		$post_id = isset( $_POST['postId'] ) ? absint( wp_unslash( $_POST['postId'] ) ) : 0;
+		if ( ! wopb_function()->can_view_product( $post_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'Invalid product.', 'product-blocks' ) ), 404 );
+		}
+
+		// The count comes from the stored value, never from the browser.
+		$count = absint( get_post_meta( $post_id, 'wopb_share_count', true ) ) + 1;
 		update_post_meta( $post_id, 'wopb_share_count', $count );
 		return wp_send_json_success(
 			array(

@@ -58,20 +58,17 @@ class Product_Stock {
 			}
 			$stock_html = apply_filters( 'woocommerce_get_stock_html', $stock_html, $product );
 
-			// if ( $product->get_manage_stock() ) {
 				$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
 				$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
 					$wraper_before .= '<div class="wopb-product-wrapper">';
 
-			// $content .= wc_get_stock_html( $product );
 			if ( ! empty( $stock_html ) ) {
 				$content .= $stock_html;
 			}
 
 					$wraper_after .= '</div>';
 				$wraper_after     .= '</div>';
-			// }
 		}
 
 		return $wraper_before . $content . $wraper_after;

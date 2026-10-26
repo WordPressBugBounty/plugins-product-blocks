@@ -45,10 +45,19 @@ class Free_Shipping_Progress_Bar {
 					$wraper_before .= '<div class="wopb-product-wrapper">';
 				if ( ! is_admin() ) {
 					if ( isset( WC()->customer ) ) {
+						$wopb_buffer_level_1 = ob_get_level();
 						ob_start();
-						// if cart and customer is set the block should render normally.
-						require_once WOPB_PATH . 'blocks/woo/free_shipping_progress_bar/Template.php';
-						$content .= ob_get_clean();
+						try {
+							// if cart and customer is set the block should render normally.
+							require_once WOPB_PATH . 'blocks/woo/free_shipping_progress_bar/Template.php';
+							$content .= ob_get_clean();
+						} finally {
+							while ( ob_get_level() > $wopb_buffer_level_1 ) {
+								if ( ! ob_end_clean() ) {
+									break;
+								}
+							}
+						}
 					}
 				}
 					$wraper_after .= '</div> ';
@@ -68,7 +77,7 @@ class Free_Shipping_Progress_Bar {
 			$available_methods = \WC_Data_Store::load( 'shipping-zone' )->get_methods( $zone_id, '' );
 
 			foreach ( $available_methods as $method ) {
-				if ( $method->method_id == 'free_shipping' && $method->is_enabled ) {
+				if ( 'free_shipping' === $method->method_id && $method->is_enabled ) {
 					$instance_id = $method->instance_id;
 					break;
 				}

@@ -35,9 +35,6 @@ $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 			</noscript>
 
 			<?php wc_get_template( 'checkout/terms.php' ); ?>
-			<?php
-			// echo '<a href="' . esc_url( get_permalink( wc_privacy_policy_page_id() ) ) . '" class="woocommerce-privacy-policy-link" target="_blank">' . __( 'privacy policyX', 'product-blocks' ) . '</a>'
-			?>
 
 			<?php do_action( 'woocommerce_review_order_before_submit' ); ?>
 

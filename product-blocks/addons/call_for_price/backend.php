@@ -21,7 +21,6 @@ if ( ! function_exists( 'wopb_call_for_price_init' ) ) {
 			'desc'     => __( "Display a calling button instead of the Add to Cart button for the products that don't have prices.", 'product-blocks' ),
 			'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-call-for-price/',
 			'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/call-for-price-addon/',
-			'is_pro'   => false,
 			'type'     => 'sales',
 			'priority' => 30,
 		);
@@ -37,9 +36,8 @@ if ( ! function_exists( 'wopb_call_for_price_init' ) ) {
  * @param ARRAY | Default Filter Congiguration
  * @return ARRAY
  */
-add_filter( 'wopb_settings', 'get_call_price_opt', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_call_price_opt( $config ) {
+add_filter( 'wopb_settings', 'wopb_get_call_price_opt', 10, 1 );
+function wopb_get_call_price_opt( $config ) {
 	$arr = array(
 		'wopb_call_for_price' => array(
 			'label' => __( 'Call for Price', 'product-blocks' ),
@@ -69,18 +67,8 @@ function get_call_price_opt( $config ) {
 											'type'    => 'select',
 											'label'   => __( 'Type', 'product-blocks' ),
 											'options' => array(
-												'phone'    => __( 'Phone Call', 'product-blocks' ),
-												'skype'    => __( 'Skype', 'product-blocks' ),
-												'whatsapp' => __( 'Whatsapp', 'product-blocks' ),
-												'email'    => __( 'Email', 'product-blocks' ),
-												'link'     => __( 'Custom Link', 'product-blocks' ),
-											),
-											'pro'     => array(
-												'phone'    => false,
-												'skype'    => false,
-												'whatsapp' => true,
-												'email'    => true,
-												'link'     => true,
+												'phone' => __( 'Phone Call', 'product-blocks' ),
+												'skype' => __( 'Skype', 'product-blocks' ),
 											),
 											'default' => 'phone',
 										),
@@ -88,14 +76,14 @@ function get_call_price_opt( $config ) {
 											'type'     => 'text',
 											'required' => true,
 											'default'  => '',
-											'label'    => __( 'Recipient Number / ID / Email / Link', 'product-blocks' ),
-											'desc'     => __( '<strong>Note:</strong> Add number with country code for direct calling and WhatsApp. Add ID for skype.', 'product-blocks' ),
+											'label'    => __( 'Recipient Number / ID', 'product-blocks' ),
+											'desc'     => __( '<strong>Note:</strong> Add number with country code for direct calling. Add ID for skype.', 'product-blocks' ),
 										),
 										'call_for_price_text' => array(
 											'type'    => 'text',
 											'label'   => __( 'Button Text', 'product-blocks' ),
 											'default' => __( 'Call for Price', 'product-blocks' ),
-											'desc'    => __( 'Write your preferable text to show on Call/Email For Price button', 'product-blocks' ),
+											'desc'    => __( 'Write your preferable text to show on Call For Price button', 'product-blocks' ),
 										),
 										'call_price_icon_enable' => array(
 											'type'    => 'toggle',

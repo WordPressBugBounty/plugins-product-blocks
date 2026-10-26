@@ -11,7 +11,6 @@ function wopb_name_price_config( $config ) {
 	$configuration             = array(
 		'name'     => __( 'Name Your Price', 'product-blocks' ),
 		'desc'     => __( 'Let customers purchase products at their desired prices. Add Min & Max restrictions if required.', 'product-blocks' ),
-		'is_pro'   => false,
 		'live'     => 'https://www.wpxpo.com/product/wowstore/features/woocommerce-name-your-price/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/name-your-price/',
 		'type'     => 'sales',
@@ -28,9 +27,8 @@ function wopb_name_price_config( $config ) {
  * @param ARRAY | Default Congiguration
  * @return ARRAY
  */
-add_filter( 'wopb_settings', 'get_name_price_settings', 10, 1 );
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
-function get_name_price_settings( $config ) {
+add_filter( 'wopb_settings', 'wopb_get_name_price_settings', 10, 1 );
+function wopb_get_name_price_settings( $config ) {
 	$arr = array(
 		'wopb_name_price' => array(
 			'label' => __( 'Name Your Price Settings', 'product-blocks' ),

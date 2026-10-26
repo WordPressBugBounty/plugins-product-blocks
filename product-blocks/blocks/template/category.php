@@ -5,7 +5,7 @@ defined( 'ABSPATH' ) || exit;
 
 $category = '';
 if ( $attr['catShow'] ) {
-	$category .= '<div class="wopb-category-grid ' . 'wopb-cat-' . esc_attr( $attr['catPosition'] ) . '" >';
+	$category .= '<div class="wopb-category-grid wopb-cat-' . esc_attr( $attr['catPosition'] ) . '" >';
 	$cat       = get_the_terms( $post_id, 'product_cat' );
 	if ( ! empty( $cat ) ) {
 		foreach ( $cat as $val ) {

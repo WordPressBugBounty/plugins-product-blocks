@@ -24,14 +24,12 @@ class Wishlist {
 	private $browse        = '';
 	private $wishlist_page = '';
 	private $action_added  = '';
-	private $require_login = '';
 
 	public function __construct() {
 		$this->button        = wopb_function()->get_setting( 'wishlist_button' );
 		$this->browse        = wopb_function()->get_setting( 'wishlist_browse' );
 		$this->wishlist_page = wopb_function()->get_setting( 'wishlist_page' );
 		$this->action_added  = wopb_function()->get_setting( 'wishlist_action_added' );
-		$this->require_login = wopb_function()->get_setting( 'wishlist_require_login' );
 		$position            = wopb_function()->get_setting( 'wishlist_position' );
 
 		add_action( 'wp_ajax_wopb_wishlist', array( $this, 'wopb_wishlist_callback' ) );
@@ -41,13 +39,11 @@ class Wishlist {
 
 		add_shortcode( 'wopb_wishlist', array( $this, 'wishlist_shortcode_callback' ) );
 
-		if ( wopb_function()->get_setting( 'wishlist_single_enable' ) == 'yes' ) {
-			if ( wopb_function()->get_setting( 'wopb_quickview' ) == 'true' ) {
+		if ( wopb_function()->get_setting( 'wishlist_single_enable' ) === 'yes' ) {
+			if ( wopb_function()->get_setting( 'wopb_quickview' ) === 'true' ) {
 				add_filter(
 					'wopb_quick_view_bottom_cart',
-					function ( $content, $product_id ) {
-						return $content . $this->add_wishlist_html();
-					},
+					array( $this, 'append_quick_view_wishlist' ),
 					11,
 					2
 				);
@@ -55,30 +51,25 @@ class Wishlist {
 			add_action( 'woocommerce_before_single_product', array( $this, 'before_single_product' ) );
 		}
 
-		if ( wopb_function()->get_setting( 'wishlist_shop_enable' ) == 'yes' ) { // wishlist in default WooCommerce pages
-			if ( $position == 'before_cart' ) {
+		if ( wopb_function()->get_setting( 'wishlist_shop_enable' ) === 'yes' ) { // wishlist in default WooCommerce pages
+			if ( 'before_cart' === $position ) {
 				add_filter( 'wopb_top_add_to_cart_loop', array( $this, 'wopb_show_wishlist_in_shop' ), 40, 1 );
-			} elseif ( $position == 'after_cart' ) {
+			} elseif ( 'after_cart' === $position ) {
 				add_filter( 'wopb_bottom_add_to_cart_loop', array( $this, 'wopb_show_wishlist_in_shop' ), 40, 1 );
 			}
 		}
 
-		if ( $this->action_added == 'popup' ) {
+		if ( 'popup' === $this->action_added ) {
 			add_filter(
 				'wopb_active_modal',
-				function ( array $loaders ) {
-					if ( ! in_array( 'loader_1', $loaders ) ) {
-						$loaders[] = 'loader_1';
-					}
-					return $loaders;
-				}
+				array( $this, 'filter_modal_loaders' )
 			);
 		}
 
 		add_filter( 'wopb_grid_wishlist', array( $this, 'get_grid_wishlist_html' ), 10, 3 );
 
-		if ( wopb_function()->get_setting( 'wishlist_nav_enable' ) == 'yes' ) {
-			if ( wopb_function()->get_setting( 'wishlist_nav_shortcode' ) == 'yes' ) {
+		if ( wopb_function()->get_setting( 'wishlist_nav_enable' ) === 'yes' ) {
+			if ( wopb_function()->get_setting( 'wishlist_nav_shortcode' ) === 'yes' ) {
 				add_shortcode( 'wopb_wishlist_nav', array( $this, 'wishlist_nav_menu' ) );
 			} else {
 				add_filter( 'wp_nav_menu_items', array( $this, 'nav_menu_item' ), 10, 2 );
@@ -98,8 +89,8 @@ class Wishlist {
 		$wishlist_page = wopb_function()->get_setting( 'wishlist_page' );
 		$action_added  = wopb_function()->get_setting( 'wishlist_action_added' );
 		$action        = 'add';
-		$redirect      = $wishlist_page && $action_added == 'redirect' ? ( ' data-redirect="' . esc_url( get_permalink( $wishlist_page ) ) . '"' ) : '';
-		if ( ! empty( $data['action'] ) && $data['action'] == 'menu_block' ) {
+		$redirect      = $wishlist_page && 'redirect' === $action_added ? ( ' data-redirect="' . esc_url( get_permalink( $wishlist_page ) ) . '"' ) : '';
+		if ( ! empty( $data['action'] ) && 'menu_block' === $data['action'] ) {
 			$action = 'menu_block';
 		}
 
@@ -123,21 +114,13 @@ class Wishlist {
 	 * @return STRING
 	 */
 	public function get_grid_wishlist_html( $output, $post_id, $tooltipPosition = '' ) {
-		$login_redirect = '';
-		$user_id        = get_current_user_id();
-		$current_uri    = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-
-		if ( $this->require_login == 'yes' && ! $user_id ) {
-			$login_redirect = 'data-login-redirect="' . wp_login_url( home_url( $current_uri ) ) . '"';
-		}
-
-		$wishlist_ids  = $this->get_wishlist_id( $user_id );
+		$wishlist_ids  = $this->get_wishlist_id();
 		$button_class  = 'wopb_meta_svg_con wopb-wishlist-icon wopb-wishlist-add ' . ( in_array( $post_id, $wishlist_ids ) ? 'wopb-wishlist-active' : '' ) . '';
 		$wishlist_data = apply_filters( 'wopb_menu_wishlist_data', array( 'post_id' => get_the_ID() ) );
 
 		$output          = '<div ';
 			$output     .= 'class="' . esc_attr( $button_class ) . '"';
-			$output     .= ( ! empty( $wishlist_data['button_attr'] ) ? $wishlist_data['button_attr'] : '' ) . $login_redirect;
+			$output     .= ! empty( $wishlist_data['button_attr'] ) ? $wishlist_data['button_attr'] : '';
 		$output         .= '>';
 			$output     .= '<span class="wopb-tooltip-text">';
 				$output .= wopb_function()->svg_icon( 'wishlist' );
@@ -167,9 +150,16 @@ class Wishlist {
 				setcookie( 'wopb_wishlist', '', time() - 3600, '/' );
 				unset( $cookie_value );
 			}
-		} elseif ( $this->require_login == 'yes' && $user_id ) {
-			$user_data     = get_user_meta( $user_id, 'wopb_wishlist', true );
-			$wishlist_data = $user_data ? $user_data : array();
+		} else {
+			/**
+			 * Filters the wishlist of a shopper who has no wishlist cookie.
+			 *
+			 * @since 4.6.0
+			 * @param array $wishlist_data Product IDs, empty by default.
+			 * @param int   $user_id       User ID, 0 for a visitor.
+			 */
+			$wishlist_data = apply_filters( 'wopb_wishlist_ids', $wishlist_data, (int) $user_id );
+			$wishlist_data = is_array( $wishlist_data ) ? $wishlist_data : array();
 		}
 		return $wishlist_data;
 	}
@@ -188,10 +178,12 @@ class Wishlist {
 		wp_localize_script(
 			'wopb-wishlist',
 			'wopb_wishlist',
-			array(
-				'ajax'          => admin_url( 'admin-ajax.php' ),
-				'security'      => wp_create_nonce( 'wopb-nonce' ),
-				'emptyWishlist' => wopb_function()->get_setting( 'wishlist_empty' ),
+			apply_filters(
+				'wopb_wishlist_js_data',
+				array(
+					'ajax'     => admin_url( 'admin-ajax.php' ),
+					'security' => wp_create_nonce( 'wopb-nonce' ),
+				)
 			)
 		);
 	}
@@ -203,7 +195,7 @@ class Wishlist {
 	 * @return null
 	 */
 	public function before_single_product() {
-		$filter = wopb_function()->get_setting( 'wishlist_position_single' ) == 'before_cart' ? 'wopb_top_add_to_cart' : 'wopb_bottom_add_to_cart';
+		$filter = wopb_function()->get_setting( 'wishlist_position_single' ) === 'before_cart' ? 'wopb_top_add_to_cart' : 'wopb_bottom_add_to_cart';
 		add_filter( $filter, array( $this, 'add_wishlist_html' ), 100, 1 );
 	}
 
@@ -226,17 +218,12 @@ class Wishlist {
 			$button_class .= ' wopb-wishlist-shop-btn';
 		}
 
-		$login_redirect = '';
-		if ( $this->require_login == 'yes' && ! get_current_user_id() ) {
-			$current_uri    = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-			$login_redirect = 'data-login-redirect="' . esc_url( wp_login_url( home_url( $current_uri ) ) ) . '"';
-		}
 		$wishlist_data = apply_filters( 'wopb_menu_wishlist_data', array( 'post_id' => get_the_ID() ) );
 
 		$html              = '<span class="wopb-wishlist-btn-wrap">';
 			$html         .= '<a ';
 				$html     .= 'class="' . $button_class . '"';
-				$html     .= ( ! empty( $wishlist_data['button_attr'] ) ? $wishlist_data['button_attr'] : '' ) . $login_redirect;
+				$html     .= ! empty( $wishlist_data['button_attr'] ) ? $wishlist_data['button_attr'] : '';
 			$html         .= '>';
 				$html     .= '<span class="wopb-wishlist-text">';
 					$html .= wopb_function()->svg_icon( 'wishlist' ) . esc_html( $this->button );
@@ -291,7 +278,7 @@ class Wishlist {
 						$html     .= '<td class="wopb-wishlist-product-image">';
 						$thumbnail = apply_filters( 'single_product_archive_thumbnail_size', 'woocommerce_thumbnail' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 						if ( $thumbnail ) {
-								$html .= sprintf( '<a href="%s">%s</a>', esc_url( $link ), $product->get_image( 'thumbnail' ) );
+								$html .= sprintf( '<a href="%s">%s</a>', esc_url( $link ), wp_kses_post( $product->get_image( 'thumbnail' ) ) );
 						}
 						$html .= '</td>';
 						$html .= '<td class="wopb-wishlist-product-name"><a href="' . esc_url( $link ) . '">' . esc_html( $product->get_title() ) . '</a></td>';
@@ -313,10 +300,10 @@ class Wishlist {
 								$html .= '<a href="' . esc_url( $wishlist_page ) . '">' . esc_html__( 'Open Wishlist Page', 'product-blocks' ) . '</a>';
 							$html     .= '</span>';
 							$html     .= '<span>';
-								$html .= '<a href="#" class="wopb-wishlist-cart-added" data-action="cart_remove_all" ' . ( $redirect_cart ? 'data-redirect="' . esc_url( wc_get_cart_url() ) . '"' : '' ) . ' data-postid="' . implode( ',', $wishlist_data ) . '">' . esc_html__( 'Add All To Cart', 'product-blocks' ) . '</a>';
+								$html .= '<a href="#" class="wopb-wishlist-cart-added" data-action="cart_remove_all" ' . ( $redirect_cart ? 'data-redirect="' . esc_url( wc_get_cart_url() ) . '"' : '' ) . ' data-postid="' . esc_attr( implode( ',', $wishlist_data ) ) . '">' . esc_html__( 'Add All To Cart', 'product-blocks' ) . '</a>';
 							$html     .= '</span>';
 							$html     .= '<span>';
-								$html .= '<a class="wopb-modal-continue" data-redirect="' . get_permalink( wc_get_page_id( 'shop' ) ) . '">' . esc_html__( 'Continue Shopping', 'product-blocks' ) . '</a>';
+								$html .= '<a class="wopb-modal-continue" data-redirect="' . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . '">' . esc_html__( 'Continue Shopping', 'product-blocks' ) . '</a>';
 							$html     .= '</span>';
 						$html         .= '</div>';
 					$html             .= '</div>';// wopb-modal-content
@@ -325,7 +312,7 @@ class Wishlist {
 		} else {
 			$html     .= '<div class="wopb-empty-wishlist-wrap">';
 				$html .= '<h3>' . esc_html__( 'Your Wishlist is empty.', 'product-blocks' ) . '</h3>';
-				$html .= '<span><a class="wopb-modal-continue" data-redirect="' . get_permalink( wc_get_page_id( 'shop' ) ) . '">' . esc_html__( 'Continue Shopping', 'product-blocks' ) . '</span>';
+				$html .= '<span><a class="wopb-modal-continue" data-redirect="' . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . '">' . esc_html__( 'Continue Shopping', 'product-blocks' ) . '</span>';
 			$html     .= '</div>';
 		}
 		return $html;
@@ -344,8 +331,6 @@ class Wishlist {
 		$initial_data = array(
 			'wishlist_heading'            => 'yes',
 			'wishlist_page'               => '',
-			'wishlist_require_login'      => '',
-			'wishlist_empty'              => '',
 			'wishlist_redirect_cart'      => 'yes',
 			'wishlist_action_added'       => 'popup',
 
@@ -506,33 +491,21 @@ class Wishlist {
 			return;
 		}
 
-		$user_id        = get_current_user_id();
-		$simple_Product = isset( $_POST['simpleProduct'] ) ? sanitize_text_field( wp_unslash( $_POST['simpleProduct'] ) ) : '';
-		$type           = isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : '';
-		$post_id        = isset( $_POST['post_id'] ) ? absint( wp_unslash( $_POST['post_id'] ) ) : 0;
-		$product        = wc_get_product( $post_id );
+		$type    = isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : '';
+		$post_id = isset( $_POST['post_id'] ) ? absint( wp_unslash( $_POST['post_id'] ) ) : 0;
+		$product = wc_get_product( $post_id );
 
 		$user_data = $this->get_wishlist_id();
 
 		if ( $post_id ) {
-			if ( $type == 'add' ) {
+			if ( 'add' === $type ) {
 				if ( ! wopb_function()->can_view_product( $post_id ) ) {
 					wp_send_json_error( __( 'Wishlist Not Added.', 'product-blocks' ) );
 				}
 				if ( ! in_array( $post_id, $user_data ) ) {
 					$user_data[] = $post_id;
 				}
-				if ( $this->require_login == 'yes' && $user_id ) {
-					update_user_meta( $user_id, 'wopb_wishlist', $user_data );
-				} elseif ( $this->require_login == 'yes' && ! $user_id ) {
-					wp_send_json_error(
-						array(
-							'message'  => __( 'You must be logged in.', 'product-blocks' ),
-							'redirect' => wp_login_url(),
-						)
-					);
-				}
-				setcookie( 'wopb_wishlist', wp_json_encode( $user_data ), time() + 604800, '/' );
+				$this->save_wishlist( $user_data );
 				$data = $this->wishlist_shortcode_callback( '', $user_data );
 				wp_send_json_success(
 					array(
@@ -541,10 +514,7 @@ class Wishlist {
 						'message'        => __( 'Wishlist Added.', 'product-blocks' ),
 					)
 				);
-			} elseif ( $type == 'cart_remove' ) {
-				if ( wopb_function()->get_setting( 'wishlist_empty' ) ) {
-					$this->remove_wishlist_product( $post_id, $simple_Product );
-				}
+			} elseif ( 'cart_remove' === $type ) {
 				$product_redirect = '';
 				if ( $product ) {
 					$product_redirect = strpos( $product->add_to_cart_url(), 'add-to-cart=' ) === false ? $product->get_permalink() : '';
@@ -556,17 +526,10 @@ class Wishlist {
 						'message'          => __( 'Wishlist Item Added To Cart.', 'product-blocks' ),
 					)
 				);
-			} elseif ( $type == 'cart_remove_all' ) {
+			} elseif ( 'cart_remove_all' === $type ) {
 				foreach ( $user_data as $key => $val ) {
 					WC()->cart->add_to_cart( $val );
 				}
-				if ( wopb_function()->get_setting( 'wishlist_empty' ) == 'yes' ) {
-					if ( $this->require_login == 'yes' && $user_id ) {
-						update_user_meta( $user_id, 'wopb_wishlist', array() );
-					}
-					setcookie( 'wopb_wishlist', wp_json_encode( array() ), time() + 604800, '/' );
-				}
-
 				wp_send_json_success(
 					array(
 						'wishlist_count' => count( $this->get_wishlist_id() ),
@@ -584,7 +547,7 @@ class Wishlist {
 				}
 				wp_send_json_success( __( 'Wishlist Already Removed.', 'product-blocks' ) );
 			}
-		} elseif ( $type == 'menu_block' ) {
+		} elseif ( 'menu_block' === $type ) {
 			$data = $this->wishlist_shortcode_callback( '', $user_data );
 			wp_send_json_success(
 				array(
@@ -609,18 +572,34 @@ class Wishlist {
 	public function remove_wishlist_product( $post_id, $simple_product = '' ) {
 		$user_data = $this->get_wishlist_id();
 		if ( in_array( $post_id, $user_data ) ) {
-			$user_id = get_current_user_id();
-			$key     = array_search( $post_id, $user_data );
-			if ( $simple_product !== 'false' ) {
+			$key = array_search( $post_id, $user_data );
+			if ( 'false' !== $simple_product ) {
 				unset( $user_data[ $key ] );
 			}
-			if ( $this->require_login == 'yes' && $user_id ) {
-				update_user_meta( $user_id, 'wopb_wishlist', $user_data );
-			}
-			setcookie( 'wopb_wishlist', wp_json_encode( $user_data ), time() + 604800, '/' );
+			$this->save_wishlist( $user_data );
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Save the shopper's wishlist to its cookie
+	 *
+	 * @param array $user_data Product IDs.
+	 * @return void
+	 * @since 4.6.0
+	 */
+	private function save_wishlist( $user_data ) {
+		setcookie( 'wopb_wishlist', wp_json_encode( $user_data ), time() + 604800, '/' );
+
+		/**
+		 * Fires after the shopper's wishlist is saved to its cookie.
+		 *
+		 * @since 4.6.0
+		 * @param array $user_data Product IDs.
+		 * @param int   $user_id   User ID, 0 for a visitor.
+		 */
+		do_action( 'wopb_wishlist_saved', $user_data, get_current_user_id() );
 	}
 
 	/**
@@ -677,20 +656,20 @@ class Wishlist {
 	public function wishlist_nav_menu() {
 		$icon_position    = wopb_function()->get_setting( 'wishlist_nav_icon_position' );
 		$wishlist_text    = wopb_function()->get_setting( 'wishlist_nav_text' );
-		$nav_class        = $icon_position == 'top_text' ? ' wopb-flex-column-dir' : '';
+		$nav_class        = 'top_text' === $icon_position ? ' wopb-flex-column-dir' : '';
 		$nav_click_action = wopb_function()->get_setting( 'wishlist_nav_click_action' );
 		$html             = '<a class="wopb-wishlist-nav-item' . $nav_class . '"';
-			$html        .= 'href="' . esc_url( get_permalink( wopb_function()->get_setting( 'wishlist_page' ) ) ) . '"';
-			$html        .= 'data-action="' . $nav_click_action == 'popup' ? 'nav_popup' : 'redirect' . '"';
-			$html        .= 'data-added-action="' . $nav_click_action == 'popup' ? 'nav_popup' : '' . '"';
-			$html        .= 'data-postid="' . esc_attr( get_the_ID() ) . '"';
-			$html        .= 'data-open-animation="wopb-' . esc_attr( wopb_function()->get_setting( 'compare_modal_open_animation' ) ) . '"';
-			$html        .= 'data-close-animation="wopb-' . esc_attr( wopb_function()->get_setting( 'compare_modal_close_animation' ) ) . '"';
-			$html        .= 'data-modal-loader="' . esc_attr( wopb_function()->get_setting( 'compare_modal_loading' ) ) . '"';
-			$html        .= $nav_click_action == 'redirect' ? 'data-redirect="' . esc_url( get_permalink( wopb_function()->get_setting( 'wishlist_page' ) ) ) : '';
+			$html        .= ' href="' . esc_url( get_permalink( wopb_function()->get_setting( 'wishlist_page' ) ) ) . '"';
+			$html        .= ' data-action="' . esc_attr( 'popup' === $nav_click_action ? 'nav_popup' : 'redirect' ) . '"';
+			$html        .= ' data-added-action="' . esc_attr( 'popup' === $nav_click_action ? 'nav_popup' : '' ) . '"';
+			$html        .= ' data-postid="' . esc_attr( get_the_ID() ) . '"';
+			$html        .= ' data-open-animation="wopb-' . esc_attr( wopb_function()->get_setting( 'compare_modal_open_animation' ) ) . '"';
+			$html        .= ' data-close-animation="wopb-' . esc_attr( wopb_function()->get_setting( 'compare_modal_close_animation' ) ) . '"';
+			$html        .= ' data-modal-loader="' . esc_attr( wopb_function()->get_setting( 'compare_modal_loading' ) ) . '"';
+			$html        .= $nav_click_action === 'redirect' ? ' data-redirect="' . esc_url( get_permalink( wopb_function()->get_setting( 'wishlist_page' ) ) ) . '"' : '';
 		$html            .= '>';
-		if ( $icon_position == 'after_text' ) {
-			$html .= wopb_function()->core_esc_wp( $wishlist_text );
+		if ( 'after_text' === $icon_position ) {
+			$html .= wp_kses_post( $wishlist_text );
 		}
 			$html         .= '<span class="wopb-wishlist-icon">';
 				$html     .= wopb_function()->svg_icon( 'wishlist' );
@@ -698,8 +677,8 @@ class Wishlist {
 					$html .= esc_html( count( $this->get_wishlist_id() ) );
 				$html     .= '</span>';
 			$html         .= '</span>';
-		if ( $icon_position == 'before_text' || $icon_position == 'top_text' ) {
-			$html .= wopb_function()->core_esc_wp( $wishlist_text );
+		if ( 'before_text' === $icon_position || 'top_text' === $icon_position ) {
+			$html .= wp_kses_post( $wishlist_text );
 		}
 		$html .= '</a>';
 
@@ -714,7 +693,7 @@ class Wishlist {
 	 * @since v.4.0.0
 	 */
 	public function generate_css( $key ) {
-		if ( $key == 'wopb_wishlist' ) {
+		if ( 'wopb_wishlist' === $key ) {
 			$settings         = wopb_function()->get_setting();
 			$shop_btn_style   = array_merge( $settings['wishlist_btn_typo_shop'], $settings['wishlist_btn_bg_shop'] );
 			$single_btn_style = array_merge( $settings['wishlist_btn_typo_single'], $settings['wishlist_btn_bg_single'] );
@@ -809,5 +788,18 @@ class Wishlist {
 
 			wopb_function()->update_css( $key, 'add', $css );
 		}
+	}
+
+	/** Named WordPress hook callback. */
+	public function append_quick_view_wishlist( $content, $product_id ) {
+		return $content . $this->add_wishlist_html();
+	}
+
+	/** Named WordPress hook callback. */
+	public function filter_modal_loaders( array $loaders ) {
+		if ( ! in_array( 'loader_1', $loaders ) ) {
+			$loaders[] = 'loader_1';
+		}
+		return $loaders;
 	}
 }

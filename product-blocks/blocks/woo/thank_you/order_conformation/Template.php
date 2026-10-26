@@ -3,8 +3,7 @@ defined( 'ABSPATH' ) || exit;
 
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
 
-$order_id = absint( get_query_var( 'order-received' ) );
-$order    = wc_get_order( $order_id );
+$order = wopb_function()->get_thankyou_order();
 
 if ( $order ) {
 	do_action( 'woocommerce_before_thankyou', $order->get_id() );
@@ -42,8 +41,12 @@ if ( $order ) {
 	</div>
 	<?php
 } else {
-	?>
-	<p class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received"><?php echo apply_filters( 'woocommerce_thankyou_order_received_text', esc_html__( 'Thank you. Your order has been received.', 'product-blocks' ), null ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
-	<?php
+	$order_id = get_query_var( 'order-received' );
+	// Older WooCommerce shortcodes cannot safely handle an array-valued order key.
+	if ( isset( $_GET['key'] ) && is_string( $_GET['key'] ) && is_scalar( $order_id ) && ctype_digit( (string) $order_id ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- The shortcode validates this bearer key before showing any order details.
+		\WC_Shortcode_Checkout::output( array() );
+	} else {
+		wc_get_template( 'checkout/thankyou.php', array( 'order' => false ) );
+	}
 }
 // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

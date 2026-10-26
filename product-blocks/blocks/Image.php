@@ -60,17 +60,17 @@ class Image {
 						// Single Image
 						$img_arr = (array) $attr['imageUpload'];
 		if ( ! empty( $img_arr ) ) {
-			if ( $attr['linkType'] == 'link' && $attr['imgLink'] ) {
+			if ( 'link' === $attr['linkType'] && $attr['imgLink'] ) {
 				$wraper_before .= '<a href="' . esc_url( $attr['imgLink'] ) . '" target="' . esc_attr( $attr['linkTarget'] ) . '"><img class="wopb-image" src="' . esc_url( $img_arr['url'] ) . '" alt="' . esc_attr( $attr['imgAlt'] ) . '" /></a>';
 			} else {
 				$wraper_before .= '<img class="wopb-image" src="' . esc_url( $img_arr['url'] ) . '" alt="' . esc_attr( $attr['imgAlt'] ) . '" />';
 			}
 		}
-		if ( $attr['btnLink'] && ( $attr['linkType'] == 'button' ) ) {
+		if ( $attr['btnLink'] && ( 'button' === $attr['linkType'] ) ) {
 			$wraper_before .= '<div class="wopb-image-button wopb-image-button-' . sanitize_html_class( $attr['btnPosition'] ) . '"><a href="' . esc_url( $attr['btnLink'] ) . '" target="' . esc_attr( $attr['btnTarget'] ) . '">' . $attr['btnText'] . '</a></div>';
 		}
 					$wraper_before .= '</div>';
-		if ( $attr['headingEnable'] == 1 ) {
+		if ( 1 == $attr['headingEnable'] ) {
 			$wraper_before .= '<figcaption class="wopb-image-caption">' . $attr['headingText'] . '</figcaption>';
 		}
 				$wraper_before .= '</figure>';

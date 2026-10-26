@@ -117,17 +117,17 @@ class Product_Grid_1 {
 			$paged         = is_front_page() ? get_query_var( 'page' ) : get_query_var( 'paged' );
 			$attr['paged'] = $paged ? $paged : 1;
 
-			if ( isset( $_COOKIE['productFilters'] ) ) {
-				// Remove extra backslashes.
-				$raw = sanitize_text_field( wp_unslash( $_COOKIE['productFilters'] ?? '' ) );
-
-				// Then decode JSON.
-				$product_filters = json_decode( $raw, true );
-
-				if ( is_array( $product_filters ) ) {
-					$attr['product_filters'] = $product_filters;
-				}
-			}
+			/**
+			 * Filters the attributes of a block on its first render, before the products are queried.
+			 *
+			 * The block's own settings are in `$attr`. Add-ons use it to bring in state kept outside the
+			 * block, such as a visitor's current filter choices.
+			 *
+			 * @since 4.6.0
+			 * @param array  $attr       Block attributes.
+			 * @param string $block_name Block slug, for example 'product-grid-1'.
+			 */
+			$attr = apply_filters( 'wopb_block_render_attributes', $attr, 'product-grid-1' );
 		}
 
 		$wrapper_main_content  = '';

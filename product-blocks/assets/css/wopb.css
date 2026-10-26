@@ -678,10 +678,10 @@ Social Share Addon [START]
 .wopb-social-share-wrapper .wopb-share-item a:hover {
     filter: brightness(120%);
 }
-.wopb-facebook a, .wopb-twitter a, .wopb-messenger a, .wopb-linkedin a, .wopb-pinterest a, .wopb-whatsapp a, .wopb-mail a, .wopb-reddit a, .wopb-skype a {
+.wopb-facebook a, .wopb-twitter a, .wopb-linkedin a, .wopb-pinterest a, .wopb-reddit a, .wopb-skype a {
     color: #fff !important;
 }
-.wopb-facebook svg, .wopb-twitter svg, .wopb-messenger svg, .wopb-linkedin svg, .wopb-pinterest svg, .wopb-whatsapp svg, .wopb-mail svg, .wopb-reddit svg, .wopb-skype svg {
+.wopb-facebook svg, .wopb-twitter svg, .wopb-linkedin svg, .wopb-pinterest svg, .wopb-reddit svg, .wopb-skype svg {
     fill: #fff;
 }
 
@@ -694,20 +694,11 @@ Social Share Addon [START]
 .wopb-social-share-wrapper .wopb-share-item.wopb-twitter a {
     background: #1DA1F2;
 }
-.wopb-social-share-wrapper .wopb-share-item.wopb-messenger a {
-    background: #0084FF;
-}
 .wopb-social-share-wrapper .wopb-share-item.wopb-linkedin a {
     background: #0A66C2;
 }
 .wopb-social-share-wrapper .wopb-share-item.wopb-pinterest a {
     background: #E60023;
-}
-.wopb-social-share-wrapper .wopb-share-item.wopb-whatsapp a {
-    background: #25d366;
-}
-.wopb-social-share-wrapper .wopb-share-item.wopb-mail a {
-    background: #EA4335;
 }
 .wopb-social-share-wrapper .wopb-share-item.wopb-reddit a {
     background: #FF5700;
@@ -946,9 +937,6 @@ Product Video Addon [START]
     box-shadow: none;
     max-width: 100%;
 }
-.wopb-block-loop-video-wrap {
-    position: relative;
-}
 .wopb-video-nav .wopb-video-play-icon {
     width: 50%;
     text-align: center;
@@ -1045,17 +1033,6 @@ Size Chart Addon [START]
     cursor: pointer;
     margin: 10px 0;
     width: fit-content;
-}
-.wopb-chart-tab-close {
-    display: none;
-}
-.wopb-size-chart-image {
-    display: flex;
-    max-height: 410px;
-}
-.wopb-size-chart-image img {
-    width: 100%;
-    box-shadow: none;
 }
 body div.product form.cart .wopb-size-chart-modal .wopb-sc-table td {
     padding: .7em 1em;

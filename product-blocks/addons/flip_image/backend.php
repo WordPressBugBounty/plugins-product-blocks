@@ -11,7 +11,6 @@ function wopb_flipimage_config( $config ) {
 	$configuration = array(
 		'name'     => __( 'Product Image Flipper', 'product-blocks' ),
 		'desc'     => __( 'It allows you to display a different image of products when the shoppers of your store hover over a product.', 'product-blocks' ),
-		'is_pro'   => false,
 		'live'     => 'https://www.wpxpo.com/product/wowstore/features/product-image-flipper/',
 		'docs'     => 'https://wpxpo.com/docs/wowstore/add-ons/flip-image-settings/',
 		'type'     => 'exclusive',
