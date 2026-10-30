@@ -31,8 +31,8 @@ if ( $is_block_theme ) {
 
 do_action( 'wopb_before_content' );
 
-$width = wopb_function()->get_setting( 'container_width' );
-$width = $width ? $width : '1140';
+$width = absint( wopb_function()->get_setting( 'container_width' ) ); // Pixels, printed in the inline style.
+$width = $width ? $width : 1140;
 ?>
 <div 
 	class="wopb-template-container" 

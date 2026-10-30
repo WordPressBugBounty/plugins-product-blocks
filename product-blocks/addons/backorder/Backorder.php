@@ -143,8 +143,7 @@ class Backorder {
 	public function product_options_inventory_product_data() {
 		global $post, $product_object;
 		if ( $product_object->is_type( 'simple' ) ) {
-			$html = $this->generate_field( $product_object );
-            echo $html; //phpcs:ignore
+			echo wp_kses( $this->generate_field( $product_object ), wopb_function()->allowed_html_tags() );
 		}
 	}
 
@@ -155,9 +154,8 @@ class Backorder {
 	 * @since v.1.0.7
 	 */
 	public function product_after_variable_attributes( $loop, $variation_data, $variation ) {
-			$product = wc_get_product( $variation->ID );
-			$html    = $this->generate_field( $product, $loop );
-            echo $html; //phpcs:ignore
+		$product = wc_get_product( $variation->ID );
+		echo wp_kses( $this->generate_field( $product, $loop ), wopb_function()->allowed_html_tags() );
 	}
 
 	/**
@@ -168,17 +166,17 @@ class Backorder {
 	 */
 	public function generate_field( $product, $loop = '' ) {
 		$html  = '';
-		$index = '' !== $loop ? '[' . $loop . ']' : '';
+		$index = '' !== $loop ? '[' . esc_attr( $loop ) . ']' : '';
 
 		$html     .= '<div class="wopb-backorder-field-group">';
-			$html .= '<h4 class="wopb-backorder-title">' . __( 'WowStore Backorder Information', 'product-blocks' ) . '</h4>';
+			$html .= '<h4 class="wopb-backorder-title">' . esc_html__( 'WowStore Backorder Information', 'product-blocks' ) . '</h4>';
 
 			$wopb_buffer_level_1 = ob_get_level();
 			ob_start();
 		try {
 			woocommerce_wp_text_input(
 				array(
-					'id'          => '_wopb_max_backorder' . $index,
+					'id'          => '_wopb_max_backorder' . esc_attr( $index ),
 					'class'       => 'wopb-required w-60',
 					'label'       => __( 'Available Quantity', 'product-blocks' ),
 					'type'        => 'number',
@@ -217,10 +215,22 @@ class Backorder {
 	 * @since v.1.0.7
 	 */
 	public function process_product_meta( $post_id ) {
+		if ( ! isset( $_POST['woocommerce_meta_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['woocommerce_meta_nonce'] ) ), 'woocommerce_save_data' ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
 		$product = wc_get_product( $post_id );
+		if ( ! $product ) {
+			return;
+		}
 		if ( $product->is_on_backorder() || ( ( $product->managing_stock() && $product->get_backorders() === 'yes' ) ) ) {
-			// Nonce already verified by WC_Meta_Box_Product_Data::save() before this hook fires.
-			$product->update_meta_data( '_wopb_max_backorder', isset( $_POST['_wopb_max_backorder'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_backorder'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_max_backorder', isset( $_POST['_wopb_max_backorder'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_backorder'] ) ) : '' );
 
 			/**
 			 * Fires before a product on backorder is saved, so more backorder data can be added.
@@ -241,10 +251,23 @@ class Backorder {
 	 * @since v.1.0.7
 	 */
 	public function save_product_variation( $variation_id, $a ) {
+		// WooCommerce saves variations through its AJAX request, which carries the "save-variations" nonce.
+		if ( ! isset( $_POST['security'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['security'] ) ), 'save-variations' ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_post', $variation_id ) ) {
+			return;
+		}
+
 		$product = wc_get_product( $variation_id );
+		if ( ! $product ) {
+			return;
+		}
 		if ( $product->is_on_backorder() || ( ( $product->managing_stock() && $product->get_backorders() === 'yes' ) ) ) {
-			// Nonce already verified by WooCommerce before woocommerce_save_product_variation fires.
-			$product->update_meta_data( '_wopb_max_backorder', isset( $_POST['_wopb_max_backorder'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_backorder'][ $a ] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_max_backorder', isset( $_POST['_wopb_max_backorder'][ $a ] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_backorder'][ $a ] ) ) : '' );
 
 			/** This action is documented in addons/backorder/Backorder.php */
 			do_action( 'wopb_backorder_saved', $product, $a );
@@ -318,14 +341,14 @@ class Backorder {
 
 			$html      = '<div class="wopb-backorder-wrapper">';
 			$html     .= '<div class="wopb-singlepage-backorder-message">';
-				$html .= $message;
+				$html .= wp_kses_post( $message );
 				$html .= '<input type="hidden" class="wopb-single-variation-backorder-text" value="' . esc_attr( wopb_function()->get_setting( 'backorder_add_to_cart_button_text' ) ) . '">';
 			$html     .= '</div>';
 
 			if ( $remaining_items ) {
 				$html     .= '<div class="wopb-singlepage-backorder-remaining-item">';
-					$html .= '<span class="wopb-backorder-remaining-label">' . __( 'Remaining Item only: ', 'product-blocks' ) . '</span>';
-					$html .= '<span class="wopb-backorder-remaining-count">' . $remaining_items . '</span>';
+					$html .= '<span class="wopb-backorder-remaining-label">' . esc_html__( 'Remaining Item only: ', 'product-blocks' ) . '</span>';
+					$html .= '<span class="wopb-backorder-remaining-count">' . esc_html( $remaining_items ) . '</span>';
 				$html     .= '</div>';
 			}
 			$html .= '</div>';
@@ -348,9 +371,9 @@ class Backorder {
 			/** This filter is documented in addons/backorder/Backorder.php */
 			$message = apply_filters( 'wopb_backorder_available_message', '', $product, 'cart' );
 
-			$html = '<span class="wopb-cart-backorder-badge">' . wopb_function()->get_setting( 'backorder_button_text' ) . '</span>';
+			$html = '<span class="wopb-cart-backorder-badge">' . esc_html( wopb_function()->get_setting( 'backorder_button_text' ) ) . '</span>';
 			if ( $message ) {
-				$html .= '<div class="wopb-cart-backorder-message">' . $message . '</div>';
+				$html .= '<div class="wopb-cart-backorder-message">' . wp_kses_post( $message ) . '</div>';
 			}
 			return $name . $html;
 		}
@@ -383,7 +406,7 @@ class Backorder {
 	public function order_item_get_formatted_meta_data( $formatted_meta, $item ) {
 		foreach ( $formatted_meta as $key => $meta ) {
 			if ( 'wopb_backorder_item' === $meta->key ) {
-				$meta->display_key = '<span class="wopb-cart-backorder-badge">' . wopb_function()->get_setting( 'backorder_button_text' ) . '</span>';
+				$meta->display_key = '<span class="wopb-cart-backorder-badge">' . esc_html( wopb_function()->get_setting( 'backorder_button_text' ) ) . '</span>';
 			}
 		}
 		return $formatted_meta;
@@ -494,7 +517,7 @@ class Backorder {
 		$product_id = absint( $product_id );
 		// Live order totals used to enforce backorder limits; not practical to cache.
 		if ( $variation_id ) {
-			$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- live order totals across WooCommerce's order lookup tables (no WP API) to enforce the backorder limit; a cached value would let the limit be exceeded.
 				$wpdb->prepare(
 					"
                     SELECT sum(order_product.product_qty) as total_order
@@ -511,7 +534,7 @@ class Backorder {
 				)
 			);
 		} else {
-			$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- live order totals across WooCommerce's order lookup tables (no WP API) to enforce the backorder limit; a cached value would let the limit be exceeded.
 				$wpdb->prepare(
 					"
                     SELECT sum(order_product.product_qty) as total_order

@@ -3,8 +3,6 @@ namespace WOPB\blocks;
 
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
-
 class Product_Tab {
 
 	public function __construct() {
@@ -38,16 +36,16 @@ class Product_Tab {
 
 	public function content( $attr ) {
 		global $product;
-		$product       = wc_get_product();
+		$product       = wc_get_product(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 		$block_name    = 'product-tab';
 		$wraper_before = $wraper_after = $content = '';
 		$attr          = wp_parse_args( $attr, $this->get_attributes() );
 
 		if ( ! empty( $product ) ) {
-			global $productx_tab;
-			$productx_tab['desc']   = $attr['showDescription'];
-			$productx_tab['info']   = $attr['showAddInfo'];
-			$productx_tab['review'] = $attr['showReview'];
+			global $wopb_product_tab;
+			$wopb_product_tab['desc']   = $attr['showDescription'];
+			$wopb_product_tab['info']   = $attr['showAddInfo'];
+			$wopb_product_tab['review'] = $attr['showReview'];
 			$hide_description       = array( $this, 'filter_product_tabs' );
 
 			$hide_heading = array( $this, 'hide_tab_heading' );
@@ -64,13 +62,13 @@ class Product_Tab {
 				unset( $product_tabs['reviews'] );
 			}
 
-			$productx_tab['add_text'] = esc_html( $attr['headingText'] );
+			$wopb_product_tab['add_text'] = esc_html( $attr['headingText'] );
 
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 			$attr['align']     = ! empty( $attr['align'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
 			$reviewHeading     = ! ( isset( $attr['reviewHeading'] ) && true == $attr['reviewHeading'] ) ? ' wopb_hide_r_head' : '';
 
-			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . $reviewHeading . '">';
+			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] . $attr['align'] . $reviewHeading ) . '">';
 			$wraper_before .= '<div class="wopb-product-wrapper">';
 			$wraper_before .= '<div class="product">';
 
@@ -113,7 +111,7 @@ class Product_Tab {
 						ob_start();
 						try {
 							echo wp_kses_post( apply_filters( 'woocommerce_product_' . $key . '_tab_title', $tab_title, $key ) );
-							$content .= ob_get_clean();
+							$content .= wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 						} finally {
 							while ( ob_get_level() > $wopb_buffer_level_1 ) {
 								if ( ! ob_end_clean() ) {
@@ -131,20 +129,22 @@ class Product_Tab {
 					if ( isset( $product_tab['callback'] ) ) {
 						if ( 'description' === $key ) {
 							if ( $description = $product->get_description() ) {
-								$content .= wpautop( $description );
+								$content .= wp_kses_post( wpautop( $description ) );
 							}
 						} else {
 							$wopb_buffer_level_2 = ob_get_level();
+							$wopb_nonce_swapped  = wopb_function()->swap_comment_form_nonce();
 							ob_start();
 							try {
 								call_user_func( $product_tab['callback'], $key, $product_tab );
-								$content .= ob_get_clean();
+								$content .= wp_kses( ob_get_clean(), wopb_function()->allowed_form_html( array( 'span' => array( 'aria-level' => true ) ) ) );
 							} finally {
 								while ( ob_get_level() > $wopb_buffer_level_2 ) {
 									if ( ! ob_end_clean() ) {
 										break;
 									}
 								}
+								wopb_function()->restore_comment_form_nonce( $wopb_nonce_swapped );
 							}
 						}
 					}
@@ -155,7 +155,7 @@ class Product_Tab {
 				ob_start();
 				try {
 					do_action( 'woocommerce_product_after_tabs' );
-					$content .= ob_get_clean();
+					$content .= wp_kses( ob_get_clean(), wopb_function()->allowed_form_html() );
 				} finally {
 					while ( ob_get_level() > $wopb_buffer_level_3 ) {
 						if ( ! ob_end_clean() ) {
@@ -218,7 +218,7 @@ class Product_Tab {
 		$wopb_buffer_level_4 = ob_get_level();
 		ob_start();
 		try {
-			do_action( $hook );
+			do_action( $hook ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- fires an existing WooCommerce hook (e.g. woocommerce_after_single_product_summary) passed in by this class; it defines no new hook.
 			$output = ob_get_clean();
 		} finally {
 			while ( ob_get_level() > $wopb_buffer_level_4 ) {
@@ -232,19 +232,19 @@ class Product_Tab {
 			add_filter( $hook, $registered['function'], $registered['priority'], $registered['accepted_args'] );
 		}
 
-		return $output;
+		return wp_kses( $output, wopb_function()->allowed_form_html() );
 	}
 
 	/** Named WordPress hook callback. */
 	public function filter_product_tabs( $tabs ) {
-		global $productx_tab;
-		if ( ! $productx_tab['desc'] ) {
+		global $wopb_product_tab;
+		if ( ! $wopb_product_tab['desc'] ) {
 			unset( $tabs['description'] );
 		}
-		if ( ! $productx_tab['info'] ) {
+		if ( ! $wopb_product_tab['info'] ) {
 			unset( $tabs['additional_information'] );
 		}
-		if ( ! $productx_tab['review'] ) {
+		if ( ! $wopb_product_tab['review'] ) {
 			unset( $tabs['reviews'] );
 		}
 		return $tabs;
@@ -255,4 +255,3 @@ class Product_Tab {
 		return '';
 	}
 }
-// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

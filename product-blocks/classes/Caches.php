@@ -194,7 +194,7 @@ class Caches {
 				$wp_filesystem->mkdir( $dir );
 			}
 			if ( ! file_exists( $dir . $type . '.json' ) ) {
-				$wp_filesystem->put_contents( $dir . $type . '.json', FS_CHMOD_FILE );
+				$wp_filesystem->put_contents( $dir . $type . '.json', '', FS_CHMOD_FILE );
 			}
 			return $dir;
 		} catch ( Exception $e ) {
@@ -227,8 +227,11 @@ class Caches {
 			)
 		);
 		if ( ! is_wp_error( $response ) ) {
-			$path_url = $this->create_directory( $type );
-			$wp_filesystem->put_contents( $path_url . $type . '.json', $response['body'] );
+			// Cache only a catalog the server sent successfully, so an error page isn't kept for 5 days.
+			if ( 200 === wp_remote_retrieve_response_code( $response ) && is_array( json_decode( $response['body'] ) ) ) {
+				$path_url = $this->create_directory( $type );
+				$wp_filesystem->put_contents( $path_url . $type . '.json', $response['body'] );
+			}
 			if ( $output ) {
 				return $response['body'];
 			}

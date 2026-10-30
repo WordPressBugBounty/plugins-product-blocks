@@ -4,13 +4,17 @@
  * over a background image. The only design with a timer.
  *
  * Self-contained: markup, CSS and JS in this one file, every class and storage
- * key built from $prefix so a sibling plugin can copy it as-is.
+ * key built from $prefix so a sibling plugin can copy it as-is. Included twice:
+ * with $part 'assets' it only queues its CSS and JS on $asset_handle; with
+ * 'markup' it prints the notice.
  *
- * @var array  $notice      Promo entry (brand_color, bg_image, left_image,
- *                          right_image, text, countdown_color, countdown_duration, url).
- * @var array  $query_args  Dismiss-link query args.
- * @var string $prefix      Identity slug from config.php.
- * @var string $brand_color Accent color from config.php.
+ * @var array  $notice       Promo entry (brand_color, bg_image, left_image,
+ *                           right_image, text, countdown_color, countdown_duration, url).
+ * @var array  $query_args   Dismiss-link query args.
+ * @var string $prefix       Identity slug from config.php.
+ * @var string $brand_color  Accent color from config.php.
+ * @var string $part         'assets' or 'markup'.
+ * @var string $asset_handle Style/script handle for the 'assets' pass.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -27,8 +31,10 @@ $main_text_class = $prefix . '-banner-main-text';
 $countdown_class = $prefix . '-notice-countdown';
 $close_class     = $prefix . '-banner-notice-close';
 $scope           = '.' . $wrapper_class . '.' . $banner_class;
-?>
-<style type="text/css">
+
+if ( 'assets' === $part ) {
+	ob_start();
+	?>
 	<?php echo esc_html( $scope ); ?> {
 		height: auto !important;
 		padding: 0 !important;
@@ -102,53 +108,12 @@ $scope           = '.' . $wrapper_class . '.' . $banner_class;
 			line-height: 24px;
 		}
 	}
-</style>
-<div
-	class="<?php echo esc_attr( $wrapper_class . ' ' . $banner_class . ' notice' ); ?>"
-	style="
-		border-left: 3px solid <?php echo esc_attr( $notice['brand_color'] ); ?>;
-		background-image: url('<?php echo esc_attr( $notice['bg_image'] ); ?>');
-">
-	<a
-		class="<?php echo esc_attr( $close_class ); ?> dashicons dashicons-no-alt"
-		style="
-			position: absolute;
-			top: 1px;
-			right: 1px;
-			border-radius: 50%;
-			background-color: black;
-			color: white;
-			font-size: 14px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		"
-		aria-label="<?php esc_html_e( 'Close Banner', 'product-blocks' ); ?>"
-		href="<?php echo esc_url( add_query_arg( $query_args ) ); ?>">
-	</a>
+	<?php
+	wp_add_inline_style( $asset_handle, ob_get_clean() );
 
-	<a class="<?php echo esc_attr( $link_class ); ?>" target="_blank" href="<?php echo esc_url( $notice['url'] ); ?>">
-		<div class="<?php echo esc_attr( $content_class ); ?>">
-			<img class="<?php echo esc_attr( $side_img_class ); ?>" loading="lazy" src="<?php echo esc_url( $notice['left_image'] ); ?>" />
-			<div class="<?php echo esc_attr( $main_class ); ?>">
-				<span>
-					<?php echo esc_html( $notice['text'] ); ?>
-				</span>
-				<div
-					class="<?php echo esc_attr( $countdown_class ); ?>"
-					style="
-						color: <?php echo esc_attr( $notice['countdown_color'] ); ?>;
-					"
-					data-notice-key="<?php echo esc_attr( $notice['key'] . '-countdown' ); ?>"
-					data-duration="<?php echo esc_attr( $notice['countdown_duration'] ); ?>">
-					00:00:00:00
-				</div>
-			</div>
-			<img class="<?php echo esc_attr( $side_img_class ); ?>" loading="lazy" src="<?php echo esc_url( $notice['right_image'] ); ?>" />
-		</div>
-	</a>
-</div>
-<script type="text/javascript">
+	wp_enqueue_script( $asset_handle );
+	ob_start();
+	?>
 	jQuery(function($) {
 		'use strict';
 
@@ -243,6 +208,55 @@ $scope           = '.' . $wrapper_class . '.' . $banner_class;
 			window.setInterval(tick, 1000);
 		});
 	});
-</script>
+	<?php
+	wp_add_inline_script( $asset_handle, ob_get_clean() );
+	return;
+}
+?>
+<div
+	class="<?php echo esc_attr( $wrapper_class . ' ' . $banner_class . ' notice' ); ?>"
+	style="
+		border-left: 3px solid <?php echo esc_attr( $notice['brand_color'] ); ?>;
+		background-image: url('<?php echo esc_url( $notice['bg_image'] ); ?>');
+">
+	<a
+		class="<?php echo esc_attr( $close_class ); ?> dashicons dashicons-no-alt"
+		style="
+			position: absolute;
+			top: 1px;
+			right: 1px;
+			border-radius: 50%;
+			background-color: black;
+			color: white;
+			font-size: 14px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		"
+		aria-label="<?php esc_html_e( 'Close Banner', 'product-blocks' ); ?>"
+		href="<?php echo esc_url( add_query_arg( $query_args ) ); ?>">
+	</a>
+
+	<a class="<?php echo esc_attr( $link_class ); ?>" target="_blank" href="<?php echo esc_url( $notice['url'] ); ?>">
+		<div class="<?php echo esc_attr( $content_class ); ?>">
+			<img class="<?php echo esc_attr( $side_img_class ); ?>" loading="lazy" src="<?php echo esc_url( $notice['left_image'] ); ?>" />
+			<div class="<?php echo esc_attr( $main_class ); ?>">
+				<span>
+					<?php echo esc_html( $notice['text'] ); ?>
+				</span>
+				<div
+					class="<?php echo esc_attr( $countdown_class ); ?>"
+					style="
+						color: <?php echo esc_attr( $notice['countdown_color'] ); ?>;
+					"
+					data-notice-key="<?php echo esc_attr( $notice['key'] . '-countdown' ); ?>"
+					data-duration="<?php echo esc_attr( $notice['countdown_duration'] ); ?>">
+					00:00:00:00
+				</div>
+			</div>
+			<img class="<?php echo esc_attr( $side_img_class ); ?>" loading="lazy" src="<?php echo esc_url( $notice['right_image'] ); ?>" />
+		</div>
+	</a>
+</div>
 
 <?php // phpcs:enable WordPress.NamingConventions.PrefixAllGlobals ?>

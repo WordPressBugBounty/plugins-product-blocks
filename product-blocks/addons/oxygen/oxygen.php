@@ -36,8 +36,8 @@ class ProductXElement extends OxyEl {
 		$templates = $options['templates'];
 
 		if ( $templates ) {
-			if ( isset($_GET['action']) && strpos(sanitize_key($_GET['action']), 'oxy_render_oxy') !== false ) { // phpcs:ignore
-                echo wopb_function()->build_css_for_inline_print($templates, true); //phpcs:ignore
+			if ( isset( $_GET['action'] ) && false !== strpos( sanitize_key( wp_unslash( $_GET['action'] ) ), 'oxy_render_oxy' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only check of the builder preview request.
+				echo wopb_function()->build_css_for_inline_print( $templates, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the helper returns a <style> tag whose id is esc_attr()'d and whose CSS has tags stripped; wp_kses() would turn child selectors (>) and & into entities and break the CSS.
 			}
 			$args      = array(
 				'p'         => $templates,
@@ -51,8 +51,7 @@ class ProductXElement extends OxyEl {
 				}
 				wp_reset_postdata();
 			}
-		} elseif ( isset( $_GET['action'] ) && strpos( sanitize_text_field( wp_unslash( $_GET['action'] ) ), 'oxy_render_oxy' ) !== false ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			// phpcs:ignore
+		} elseif ( isset( $_GET['action'] ) && strpos( sanitize_key( wp_unslash( $_GET['action'] ) ), 'oxy_render_oxy' ) !== false ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check of the builder preview request; it only chooses which placeholder text to show.
 				/* translators: %s: is no of template */
 				echo '<p style="text-align:center;">' . sprintf( esc_html__( 'Pick a Template from your saved ones. Or create a template from: %s.', 'product-blocks' ) . ' ', '<strong><i>' . esc_html( 'Dashboard > WowStore > Saved Templates' ) . '</i></strong>' ) . '</p>';
 		}

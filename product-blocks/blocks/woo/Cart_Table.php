@@ -45,7 +45,7 @@ class Cart_Table {
 	public function woocommerce_clear_cart_url() {
 		global $woocommerce;
 		// Empties the visitor's own cart, so the link carries a nonce: a link on another site can't do it.
-		if ( isset( $_GET['empty-cart'] ) && isset( $_GET['_wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_GET['_wpnonce'] ) ), 'wopb-empty-cart' ) ) {
+		if ( isset( $_GET['empty-cart'] ) && isset( $_GET['_wpnonce'] ) && is_string( $_GET['_wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_GET['_wpnonce'] ) ), 'wopb-empty-cart' ) ) {
 			if ( ! empty( $woocommerce->cart ) ) {
 				$woocommerce->cart->empty_cart();
 			}
@@ -64,7 +64,7 @@ class Cart_Table {
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 			$attr['align']     = ! empty( $attr['align'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
 
-			$wraper_before     .= '<div id="' . ( isset( $attr['advanceId'] ) ? sanitize_html_class( $attr['advanceId'] ) : '' ) . '" class="wp-block-product-blocks-' . $block_name . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . '">';
+			$wraper_before     .= '<div id="' . ( isset( $attr['advanceId'] ) ? esc_attr( sanitize_html_class( $attr['advanceId'] ) ) : '' ) . '" class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . esc_attr( $attr['align'] ) . '">';
 				$wraper_before .= '<div class="wopb-product-wrapper wopb-cart-table-wrapper">';
 
 					$wopb_buffer_level_1 = ob_get_level();
@@ -75,7 +75,16 @@ class Cart_Table {
 				} else {
 					require_once WOPB_PATH . 'blocks/woo/cart_table/Template.php';
 				}
-				$content .= ob_get_clean();
+				$content .= wp_kses(
+					ob_get_clean(),
+					wopb_function()->allowed_form_html(
+						array(
+							'noscript'                    => array(),
+							'wc-order-attribution-inputs' => array(),
+							'span'                        => array( 'translate' => true ),
+						)
+					)
+				);
 			} finally {
 				while ( ob_get_level() > $wopb_buffer_level_1 ) {
 					if ( ! ob_end_clean() ) {

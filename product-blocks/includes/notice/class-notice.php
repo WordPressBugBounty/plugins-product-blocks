@@ -1,4 +1,4 @@
-<?php //phpcs:ignore
+<?php
 namespace WOPB\Includes\Notice;
 
 use WOPB\Includes\Xpo;
@@ -36,6 +36,21 @@ class Notice {
 		'plugin-meta' => 'plugin-meta.php',
 	);
 
+	/**
+	 * Notices picked for this request, so the asset and markup passes show the
+	 * same ones. Null until notices_to_show() runs.
+	 *
+	 * @var array|null
+	 */
+	private $notices = null;
+
+	/**
+	 * Whether the notice CSS and JS were already queued for this request.
+	 *
+	 * @var bool
+	 */
+	private $assets_queued = false;
+
 
 	/**
 	 * Notice Constructor
@@ -43,6 +58,7 @@ class Notice {
 	public function __construct() {
 		$this->config = self::config();
 
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_notice_assets' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices_callback' ) );
 		add_action( 'admin_init', array( $this, 'set_dismiss_notice_callback' ) );
 
@@ -124,7 +140,7 @@ class Notice {
 
 	/**
 	 * First live promo on a surface, for the surfaces that show only one thing.
-	 * The notice surface shows one per type, so it loops in render_notices().
+	 * The notice surface shows one per type, so it loops in select_notices().
 	 *
 	 * @param string $surface Surface slug.
 	 * @return array|null Promo entry, or null when nothing is live.
@@ -159,8 +175,9 @@ class Notice {
 	}
 
 	/**
-	 * The one date gate, shared by all three surfaces: dismiss-in-flight
-	 * ($_GET), date window, visibility, dismissed transient.
+	 * The one date gate, shared by all three surfaces: date window, visibility,
+	 * dismissed transient. A dismiss request is handled earlier, on admin_init,
+	 * by set_dismiss_notice_callback(), which stores the transient.
 	 *
 	 * XPO_DEV_MODE forces every start date to 2026-01-01, so upcoming promos
 	 * are visible without editing promos/.
@@ -174,12 +191,7 @@ class Notice {
 		if ( empty( $notice['key'] ) ) {
 			return false;
 		}
-		$notice_key  = $notice['key'];
-		$dismiss_arg = 'disable_' . $config['prefix'] . '_notice';
-
-		if ( isset( $_GET[ $dismiss_arg ] ) && $notice_key === sanitize_text_field( wp_unslash( $_GET[ $dismiss_arg ] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return false;
-		}
+		$notice_key = $notice['key'];
 
 		$current_time = gmdate( 'U' );
 		$start        = defined( 'XPO_DEV_MODE' ) ? '2026-01-01 00:00 Asia/Dhaka' : $notice['start'];
@@ -372,7 +384,7 @@ class Notice {
 	public function set_dismiss_notice_callback() {
 		// Runs on every `admin_init`, including logged-out requests to admin-ajax.php, so it
 		// does nothing unless an administrator carries this action's own nonce.
-		if ( empty( $_GET['wpnonce'] ) || ! current_user_can( 'manage_options' ) ) {
+		if ( empty( $_GET['wpnonce'] ) || ! is_string( $_GET['wpnonce'] ) || ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
@@ -417,32 +429,54 @@ class Notice {
 	 * @return void
 	 */
 	public function admin_notices_callback() {
+		$notices = $this->notices_to_show();
+		if ( $notices ) {
+			// Normally queued on admin_enqueue_scripts already; this only covers a
+			// screen that fires admin_notices without it (the CSS then prints in the footer).
+			$this->enqueue_notice_assets();
+			$this->render_notices( $notices );
+		}
+	}
+
+	/**
+	 * The live promos to show on this request, each with its template.
+	 * Worked out once, so the asset and markup passes agree.
+	 *
+	 * @return array[] Items with `notice` and `template` keys.
+	 */
+	private function notices_to_show() {
+		if ( null !== $this->notices ) {
+			return $this->notices;
+		}
+
+		$this->notices = array();
+
 		// Promos are for the people who run the store.
 		// The WowStore dashboard shows none of them: it has its own hello bar and banner.
 		if ( ! current_user_can( 'manage_options' ) || 'wopb-settings' === wopb_function()->get_screen() ) {
-			return;
+			return $this->notices;
 		}
 
 		// Promos show only where they are relevant: the Plugins screen and
 		// this plugin's own screens.
 		if ( $this->is_available_for_notice() && $this->is_own_or_overview_screen() ) {
-			$this->render_notices( self::get_promos( 'notice' ) );
+			$this->notices = $this->select_notices( self::get_promos( 'notice' ) );
 		}
+
+		return $this->notices;
 	}
 
 	/**
-	 * Render at most one live promo per type (first match wins), each through
-	 * its own template. XPO_DEV_MODE drops the one-per-type limit so every
-	 * design can be checked at once.
+	 * Pick at most one live promo per type (first match wins). XPO_DEV_MODE
+	 * drops the one-per-type limit so every design can be checked at once.
 	 *
 	 * @param array $promos List of promo entries.
-	 * @return void
+	 * @return array[] Items with `notice` and `template` keys.
 	 */
-	private function render_notices( $promos ) {
+	private function select_notices( $promos ) {
+		$selected             = array();
 		$shown                = array();
 		$enforce_one_per_type = ! defined( 'XPO_DEV_MODE' );
-		$prefix               = $this->config['prefix'];
-		$brand_color          = $this->config['brand_color'];
 
 		foreach ( $promos as $notice ) {
 			$type = isset( $notice['type'] ) ? $notice['type'] : '';
@@ -456,6 +490,65 @@ class Notice {
 				continue;
 			}
 
+			$selected[]     = array(
+				'notice'   => $notice,
+				'template' => $template,
+			);
+			$shown[ $type ] = true;
+		}
+
+		return $selected;
+	}
+
+	/**
+	 * Queue the CSS (and JS) of the notices this request shows, as inline
+	 * data on src-less handles. Each template adds its assets once, however
+	 * many of its promos show.
+	 *
+	 * @return void
+	 */
+	public function enqueue_notice_assets() {
+		$notices = $this->notices_to_show();
+		if ( $this->assets_queued || ! $notices ) {
+			return;
+		}
+		$this->assets_queued = true;
+
+		$prefix       = $this->config['prefix'];
+		$brand_color  = $this->config['brand_color'];
+		$asset_handle = $prefix . '-notice';
+		$version      = isset( $this->config['version'] ) ? $this->config['version'] : false;
+
+		wp_register_style( $asset_handle, false, array(), $version );
+		wp_enqueue_style( $asset_handle );
+		wp_register_script( $asset_handle, false, array( 'jquery' ), $version, true );
+
+		$loaded = array();
+		foreach ( $notices as $item ) {
+			if ( isset( $loaded[ $item['template'] ] ) ) {
+				continue;
+			}
+			$loaded[ $item['template'] ] = true;
+
+			// The template only queues its assets in this pass; $prefix, $brand_color
+			// and $asset_handle are in scope for it.
+			$part = 'assets';
+			include $item['template'];
+		}
+	}
+
+	/**
+	 * Render the picked promos, each through its own template.
+	 *
+	 * @param array[] $notices Items from select_notices().
+	 * @return void
+	 */
+	private function render_notices( $notices ) {
+		$prefix      = $this->config['prefix'];
+		$brand_color = $this->config['brand_color'];
+
+		foreach ( $notices as $item ) {
+			$notice     = $item['notice'];
 			$query_args = array(
 				'disable_' . $prefix . '_notice' => $notice['key'],
 				'wpnonce'                        => wp_create_nonce( $prefix . '-dismiss-nonce' ),
@@ -465,9 +558,8 @@ class Notice {
 			}
 
 			// $notice, $query_args, $prefix and $brand_color are in scope for the template.
-			include $template;
-
-			$shown[ $type ] = true;
+			$part = 'markup';
+			include $item['template'];
 		}
 	}
 

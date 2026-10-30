@@ -5,11 +5,15 @@
  * or themeable.
  *
  * Self-contained: markup and CSS in this one file, every class built from
- * $prefix so a sibling plugin can copy it as-is.
+ * $prefix so a sibling plugin can copy it as-is. Included twice: with $part
+ * 'assets' it only queues its CSS on $asset_handle; with 'markup' it prints
+ * the notice.
  *
- * @var array  $notice     Promo entry (banner_src, url, close_color).
- * @var array  $query_args Dismiss-link query args.
- * @var string $prefix     Identity slug from config.php.
+ * @var array  $notice       Promo entry (banner_src, url, close_color).
+ * @var array  $query_args   Dismiss-link query args.
+ * @var string $prefix       Identity slug from config.php.
+ * @var string $part         'assets' or 'markup'.
+ * @var string $asset_handle Style handle for the 'assets' pass.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -23,8 +27,10 @@ $btn_image_class  = $prefix . '-btn-image';
 $close_class      = $prefix . '-content-notice-close';
 $close_icon_class = $prefix . '-content-notice-close-icon';
 $scope            = '.' . $wrapper_class . '.' . $image_wrap_class;
-?>
-<style type="text/css">
+
+if ( 'assets' === $part ) {
+	ob_start();
+	?>
 	<?php echo esc_html( $scope ); ?> {
 		padding: 0 !important;
 		position: relative;
@@ -61,7 +67,11 @@ $scope            = '.' . $wrapper_class . '.' . $image_wrap_class;
 			display: none;
 		}
 	}
-</style>
+	<?php
+	wp_add_inline_style( $asset_handle, ob_get_clean() );
+	return;
+}
+?>
 <div class="<?php echo esc_attr( $wrapper_class . ' ' . $image_wrap_class . ' notice' ); ?>">
 	<div class="<?php echo esc_attr( $banner_class ); ?>">
 		<a class="<?php echo esc_attr( $close_class ); ?>" href="

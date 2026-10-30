@@ -52,7 +52,7 @@ class Product_Cart {
 
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
+			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . '">';
 
 			if (
 				! $attr['showQuantity'] ||
@@ -65,7 +65,7 @@ class Product_Cart {
 			$wopb_buffer_level_1 = ob_get_level();
 			ob_start();
 			try {
-            echo '<div class="wopb-product-wrapper wopb-builder-cart' . esc_attr($cart_class) . '" data-type="'. ( $attr['showQuantity'] && $attr['showQuantityBtn'] ? esc_attr($attr['quantityBtnPosition']) : '' ).'">'; // phpcs:ignores
+				echo '<div class="wopb-product-wrapper wopb-builder-cart' . esc_attr( $cart_class ) . '" data-type="' . ( $attr['showQuantity'] && $attr['showQuantityBtn'] ? esc_attr( $attr['quantityBtnPosition'] ) : '' ) . '">';
 				$this->remove_qty_element();
 				woocommerce_template_single_add_to_cart();
 				do_action( 'wopb_after_builder_add_cart_button' );
@@ -78,12 +78,64 @@ class Product_Cart {
 					}
 				}
 			}
-			$content .= str_replace( 'single_add_to_cart_button', 'single_add_to_cart_button wopb-cart-button', $form );
+			$content .= $this->kses_cart_form( str_replace( 'single_add_to_cart_button', 'single_add_to_cart_button wopb-cart-button', $form ) );
 
 			$wraper_after .= '</div>';
 		}
 
 		return $wraper_before . $content . $wraper_after;
+	}
+
+	/**
+	 * Escape the add to cart form captured from WooCommerce and the extensions hooked into it.
+	 * Beyond the shared form allowlist it keeps the template element WooCommerce clones for the
+	 * variation gallery, the attributes variation swatch and product add-on plugins read, and
+	 * the inline transition of the gallery.
+	 *
+	 * @param string $html Captured add to cart markup.
+	 * @return string
+	 */
+	private function kses_cart_form( $html ) {
+		$allowed = wopb_function()->allowed_form_html(
+			array(
+				'template' => array(
+					'class' => true,
+				),
+				'div'      => array(
+					'aria-relevant' => true,
+					'readonly'      => true,
+					'swatches-attr' => true,
+				),
+				'input'    => array(
+					'hidden' => true,
+				),
+				'img'      => array(
+					'itemprop' => true,
+				),
+				'span'     => array(
+					'translate' => true,
+				),
+				'svg'      => array(
+					'aria-hidden' => true,
+					'focusable'   => true,
+				),
+			)
+		);
+		add_filter( 'safe_style_css', array( $this, 'allow_transition_style' ) );
+		$html = wp_kses( $html, $allowed );
+		remove_filter( 'safe_style_css', array( $this, 'allow_transition_style' ) );
+		return $html;
+	}
+
+	/**
+	 * Let the transition property through the inline style filter while the cart form is escaped.
+	 *
+	 * @param string[] $properties Allowed CSS properties.
+	 * @return string[]
+	 */
+	public function allow_transition_style( $properties ) {
+		$properties[] = 'transition';
+		return $properties;
 	}
 
 	public function remove_qty_element() {
@@ -111,9 +163,18 @@ class Product_Cart {
 	 * @since v.4.1.4
 	 */
 	public function buy_now_submit() {
-		$sanitized_request = wopb_function()->rest_sanitize_params( wp_unslash( $_REQUEST ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- adds a product to the cart only, same trust level as WooCommerce's own add-to-cart form.
+		if ( ! isset( $_REQUEST['wopb-buy-now-nonce'] ) || ! is_string( $_REQUEST['wopb-buy-now-nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['wopb-buy-now-nonce'] ) ), 'wopb-buy-now' ) ) {
+			return;
+		}
+		$sanitized_request = wopb_function()->rest_sanitize_params( wp_unslash( $_REQUEST ) );
 		if ( ! empty( $sanitized_request['wopb-buy-now'] ) ) {
-			$product_id        = $sanitized_request['wopb-buy-now'];
+			$product_id        = is_scalar( $sanitized_request['wopb-buy-now'] ) ? absint( $sanitized_request['wopb-buy-now'] ) : 0;
+			if ( ! $product_id || ! wopb_function()->can_view_product( $product_id ) ) {
+				return;
+			}
 			$qty               = floatval( ! empty( $sanitized_request['quantity'] ) ? $sanitized_request['quantity'] : 1 );
 			$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $qty );
 			if ( $passed_validation ) {
@@ -162,6 +223,7 @@ class ProductCartAppendBuyNowButtonCallback {
 	public function append_buy_now_button( $content ) {
 		$attr    = $this->attr;
 		$product = $this->product;
+		$content .= '<input type="hidden" id="wopb-buy-now-nonce" name="wopb-buy-now-nonce" value="' . esc_attr( wp_create_nonce( 'wopb-buy-now' ) ) . '" />';
 		if ( ! empty( $attr['removeProduct'] ) ) {
 			$content .= '<input type="hidden" name="wopb-remove-product" value="true">';
 		}
@@ -170,10 +232,10 @@ class ProductCartAppendBuyNowButtonCallback {
 		$content .= 'type="submit" ';
 		$content .= 'name="wopb-buy-now" ';
 		$content .= 'class="wopb-buy-button ' . ( $product->is_type( 'variable' ) ? 'wc-variation-selection-needed button disabled' : '' ) . '" ';
-		$content .= 'value="' . $product->get_id() . '" ';
-		$content .= 'data-product_id="' . $product->get_id() . '" ';
+		$content .= 'value="' . esc_attr( $product->get_id() ) . '" ';
+		$content .= 'data-product_id="' . esc_attr( $product->get_id() ) . '" ';
 		$content .= '>';
-		$content .= ! empty( $attr['btnBuyText'] ) ? $attr['btnBuyText'] : esc_html__( 'Buy Now', 'product-blocks' );
+		$content .= ! empty( $attr['btnBuyText'] ) ? esc_html( $attr['btnBuyText'] ) : esc_html__( 'Buy Now', 'product-blocks' );
 		$content .= '</button>';
 		return $content;
 	}

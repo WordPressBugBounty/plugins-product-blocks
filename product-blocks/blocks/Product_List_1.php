@@ -121,6 +121,7 @@ class Product_List_1 {
 		$pageNum               = wopb_function()->get_page_number( $attr, $recent_posts->found_posts );
 		$parsedOverlayMetaList = json_decode( $attr['overlayMetaList'], true );
 		$item_calss            = wopb_function()->loop_item_classes();
+		$allowed_html          = $this->allowed_loop_html();
 
 		$slider_attr = wc_implode_html_attributes(
 			array(
@@ -142,7 +143,7 @@ class Product_List_1 {
 				'cartNoFollow'    => $attr['cartNoFollow'],
 			);
 
-			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . '">';
+			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . esc_attr( $attr['align'] ) . '">';
 				$wraper_before .= '<div class="wopb-block-wrapper' . ( isset( $attr['layout'] ) ? ' wopb-has-gridlay' : '' ) . '">';
 
 			if ( $attr['headingShow'] || $attr['filterShow'] ) {
@@ -182,7 +183,7 @@ class Product_List_1 {
 				include WOPB_PATH . 'blocks/template/category.php';
 				include WOPB_PATH . 'blocks/template/brand.php';
 				if ( $product ) {
-					$post_loop     .= '<div class="wopb-block-item wopb-block-media ' . ( ! empty( $item_calss['wrapper'] ) ? $item_calss['wrapper'] : '' ) . '">';
+					$post_loop     .= '<div class="wopb-block-item wopb-block-media ' . ( ! empty( $item_calss['wrapper'] ) ? esc_attr( $item_calss['wrapper'] ) : '' ) . '">';
 						$post_loop .= '<div class="wopb-block-content-wrap">';
 
 					if ( $attr['showImage'] ) {
@@ -194,18 +195,18 @@ class Product_List_1 {
 							$post_loop .= 'src="' . esc_url( wp_get_attachment_image_url( $post_thumb_id, ( $attr['imgCrop'] ? $attr['imgCrop'] : 'full' ) ) ) . '" ';
 							$post_loop .= 'alt="' . esc_attr( $title ) . '" ';
 							if ( ! empty( $item_calss['image'] ) ) {
-												$post_loop .= 'class=" ' . $item_calss['image'] . '" ';
-												$post_loop .= 'srcset="' . wp_get_attachment_image_srcset( $post_thumb_id ) . '"';
+												$post_loop .= 'class=" ' . esc_attr( $item_calss['image'] ) . '" ';
+												$post_loop .= 'srcset="' . esc_attr( wp_get_attachment_image_srcset( $post_thumb_id ) ) . '"';
 							}
 										$post_loop .= '/>';
 							if ( ! $attr['disableFlip'] ) {
-													$post_loop .= apply_filters( 'wopb_flip_image', '', $product, $attr['imgCrop'] );
+													$post_loop .= wp_kses( (string) apply_filters( 'wopb_flip_image', '', $product, $attr['imgCrop'] ), $allowed_html );
 							}
 											$post_loop .= '</a>';
 						} else {
 							$post_loop         .= '<div class="empty-image">';
 								$post_loop     .= '<a href="' . esc_url( $titlelink ) . '">';
-									$post_loop .= '<img alt=' . esc_attr( $title ) . ' src="' . esc_url( wc_placeholder_img_src( ( $attr['imgCrop'] ? $attr['imgCrop'] : 'full' ) ) ) . '"/>';
+									$post_loop .= '<img alt="' . esc_attr( $title ) . '" src="' . esc_url( wc_placeholder_img_src( ( $attr['imgCrop'] ? $attr['imgCrop'] : 'full' ) ) ) . '"/>';
 								$post_loop     .= '</a>';
 							$post_loop         .= '</div>';
 						}
@@ -216,17 +217,17 @@ class Product_List_1 {
 							$post_loop  .= '<div class="wopb-product-new-meta' . $meta_class . '">';
 							foreach ( $parsedOverlayMetaList as $meta_val ) {
 								if ( '_wishlist' === $meta_val ) {
-									$post_loop .= apply_filters( 'wopb_grid_wishlist', '', $post_id, $attr['tooltipPosition'] );
+									$post_loop .= wp_kses( (string) apply_filters( 'wopb_grid_wishlist', '', $post_id, $attr['tooltipPosition'] ), $allowed_html );
 								}
 								if ( '_qview' === $meta_val ) {
-													$post_loop .= apply_filters( 'wopb_grid_quickview', '', $recent_posts, $post_id, $attr['tooltipPosition'] );
+													$post_loop .= wp_kses( (string) apply_filters( 'wopb_grid_quickview', '', $recent_posts, $post_id, $attr['tooltipPosition'] ), $allowed_html );
 								}
 								if ( '_compare' === $meta_val ) {
-									$post_loop .= apply_filters( 'wopb_grid_compare', '', $post_id, $attr['tooltipPosition'] );
+									$post_loop .= wp_kses( (string) apply_filters( 'wopb_grid_compare', '', $post_id, $attr['tooltipPosition'] ), $allowed_html );
 								}
 								if ( '_cart' === $meta_val ) {
 												$cart_params['isIcon'] = true;
-												$post_loop            .= wopb_function()->get_add_to_cart( $product, $cart_params );
+												$post_loop            .= wp_kses( wopb_function()->get_add_to_cart( $product, $cart_params ), $allowed_html );
 								}
 							}
 							$post_loop .= '</div>';
@@ -261,7 +262,7 @@ class Product_List_1 {
 					$title_data = $above_title . $title_data . $below_title;
 
 					if ( $attr['showShortDesc'] ) {
-						$description_data .= '<div class="wopb-short-description">' . wopb_function()->excerpt( $post_id, $attr['shortDescLimit'] ) . '</div>';
+						$description_data .= '<div class="wopb-short-description">' . wp_kses( wopb_function()->excerpt( $post_id, $attr['shortDescLimit'] ), wopb_function()->allowed_html_tags() ) . '</div>';
 					}
 
 													// Review
@@ -271,17 +272,27 @@ class Product_List_1 {
 
 													// Price
 					if ( $attr['showPrice'] && in_array( 'price', $is_show ) ) {
-						$price_data .= '<div class="wopb-product-price">' . $product->get_price_html() . '</div>';
+						$price_data .= '<div class="wopb-product-price">' . wp_kses( $product->get_price_html(), wopb_function()->allowed_html_tags() ) . '</div>';
 					}
 
 													// Add to Cart URL
 					if ( $attr['showCart'] && in_array( 'cart', $is_show ) ) {
 						$cart_params['isIcon'] = false;
-						$cart_data            .= wopb_function()->get_add_to_cart( $product, $cart_params );
+						$cart_data            .= wp_kses( wopb_function()->get_add_to_cart( $product, $cart_params ), $allowed_html );
 					}
 
+					// Only these sections can be printed; the names come from the block's saved sortSection.
+					$sections = array(
+						'title'       => $title_data,
+						'price'       => $price_data,
+						'review'      => $review_data,
+						'cart'        => $cart_data,
+						'description' => $description_data,
+					);
 					foreach ( $is_show as $value ) {
-						$post_loop .= ${$value . '_data'};
+						if ( is_string( $value ) && isset( $sections[ $value ] ) ) {
+							$post_loop .= $sections[ $value ];
+						}
 					}
 
 													$post_loop .= '</div>';
@@ -320,16 +331,16 @@ class Product_List_1 {
 			wp_reset_postdata();
 		}
 
-		if ( ( $noAjax && 'filter' === $attr['ajax_source'] ) || ! ( $recent_posts->have_posts() ) ) {
+		if ( ( $noAjax && isset( $attr['ajax_source'] ) && 'filter' === $attr['ajax_source'] ) || ! ( $recent_posts->have_posts() ) ) {
 			if ( '' === $post_loop ) {
 				// note: dont remove without proper check. - Shihab.
 				// these before after are necessary for jquery use in filter.js .
 				$wraper_before .= '<div '
-									. ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ?? '' ) . '" ' : '' )
+									. ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ?? '' ) ) . '" ' : '' )
 									. ' class="wp-block-product-blocks-' . esc_attr( $block_name ?? '' )
-									. ' wopb-block-' . sanitize_html_class( $attr['blockId'] ?? '' )
-									. ' ' . ( $attr['className'] ?? '' )
-									. ' ' . ( $attr['align'] ?? '' )
+									. ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ?? '' ) )
+									. ' ' . esc_attr( $attr['className'] ?? '' )
+									. ' ' . esc_attr( $attr['align'] ?? '' )
 									. '">';
 				$wraper_before .= '<div class="wopb-block-wrapper'
 									. ( isset( $attr['layout'] ) ? ' wopb-has-gridlay' : '' )
@@ -351,5 +362,45 @@ class Product_List_1 {
 		}
 
 		return $noAjax ? $post_loop : $wraper_before . $wrapper_main_content . $wraper_after;
+	}
+
+	/**
+	 * Allowed HTML for the markup that add-ons and WooCommerce hook into the product loop.
+	 *
+	 * @return array
+	 */
+	private function allowed_loop_html() {
+		return wopb_function()->allowed_form_html(
+			array(
+				'svg'     => array(
+					'id'        => true,
+					'data-name' => true,
+				),
+				'g'       => array(
+					'transform' => true,
+					'data-name' => true,
+				),
+				'path'    => array(
+					'id'        => true,
+					'class'     => true,
+					'data-name' => true,
+					'fill-rule' => true,
+					'transform' => true,
+				),
+				'rect'    => array(
+					'x'         => true,
+					'y'         => true,
+					'transform' => true,
+				),
+				'circle'  => array(
+					'stroke'       => true,
+					'stroke-width' => true,
+				),
+				'polygon' => array(
+					'points' => true,
+					'fill'   => true,
+				),
+			)
+		);
 	}
 }

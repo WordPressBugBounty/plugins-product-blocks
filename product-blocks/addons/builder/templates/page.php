@@ -58,7 +58,8 @@ do_action( 'wopb_before_content' );
  * Layout settings (container width / sidebar)
  * -----------------------------------------------------------------------
  */
-$width       = $page_id ? get_post_meta( $page_id, '__wopb_container_width', true ) : '1200';
+// Pixels; older saves may hold a string, and 0 or an invalid value opens no container.
+$width       = $page_id ? absint( get_post_meta( $page_id, '__wopb_container_width', true ) ) : 1200;
 $sidebar     = $page_id ? get_post_meta( $page_id, 'wopb-builder-sidebar', true ) : '';
 $widget_area = $page_id ? get_post_meta( $page_id, 'wopb-builder-widget-area', true ) : '';
 $has_widget  = $sidebar && '' !== $widget_area;
@@ -70,11 +71,10 @@ $has_widget  = $sidebar && '' !== $widget_area;
  */
 if ( $width ) {
 	$container_class = 'wopb-builder-container product' . ( $has_widget ? ' wopb-widget-' . $sidebar : '' );
-	$divi_id_attr    = ( 'Divi' === wopb_function()->get_theme_name() ) ? ' id="main-content"' : '';
 
 	printf(
 		'<div%1$s class="%2$s" style="max-width: %3$spx; margin: 0 auto;">',
-		$divi_id_attr, //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static string, not user input.
+		( 'Divi' === wopb_function()->get_theme_name() ) ? ' id="main-content"' : '',
 		esc_attr( $container_class ),
 		esc_attr( $width )
 	);
@@ -142,27 +142,6 @@ if ( $is_shop_archive ) {
  * -----------------------------------------------------------------------
  */
 if ( $page_id ) {
-	// Reserved for future use: allow-list to permit <script> tags through wp_kses_safe()
-	// below, once block output is run through it instead of being echoed raw.
-	$allow_script_tag = array(
-		'allowed' => array(
-			'script' => array(   // Wp.
-				'type'           => true,
-				'src'            => true,
-				'id'             => true,
-				'defer'          => true,
-				'integrity'      => true,
-				'crossorigin'    => true,
-				'referrerpolicy' => true,
-				'async'          => true,
-				'nomodule'       => true,
-				'charset'        => true,
-				'nonce'          => true,
-				'data-*'         => true,
-			),
-		),
-	);
-
 	$content_post = get_post( $page_id );
 	$content      = $content_post->post_content;
 
@@ -170,9 +149,26 @@ if ( $page_id ) {
 		$blocks = parse_blocks( $content );
 		$embed  = new WP_Embed();
 
+		// Shared form list plus the SVG and microdata attributes the blocks print.
+		$allowed_html = wopb_function()->allowed_form_html(
+			array(
+				'svg'    => array(
+					'aria-hidden' => true,
+					'focusable'   => true,
+					'role'        => true,
+				),
+				'g'      => array( 'data-*' => true ),
+				'path'   => array(
+					'data-*'    => true,
+					'fill-rule' => true,
+				),
+				'strong' => array( 'itemprop' => true ),
+			)
+		);
+
 		foreach ( $blocks as $block ) {
 			$contents = $embed->autoembed( do_shortcode( render_block( $block ) ) );
-			echo $contents; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- rendered block/shortcode output; each block's own render callback is responsible for escaping its content.
+			echo wp_kses( $contents, $allowed_html );
 		}
 	}
 } else {

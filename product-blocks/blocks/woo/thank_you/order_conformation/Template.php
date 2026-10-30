@@ -43,7 +43,7 @@ if ( $order ) {
 } else {
 	$order_id = get_query_var( 'order-received' );
 	// Older WooCommerce shortcodes cannot safely handle an array-valued order key.
-	if ( isset( $_GET['key'] ) && is_string( $_GET['key'] ) && is_scalar( $order_id ) && ctype_digit( (string) $order_id ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- The shortcode validates this bearer key before showing any order details.
+	if ( isset( $_GET['key'] ) && is_string( $_GET['key'] ) && is_scalar( $order_id ) && ctype_digit( (string) $order_id ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only emailed order link, which cannot carry a nonce; WooCommerce's shortcode validates this order key (and the shopper) before showing any order details.
 		\WC_Shortcode_Checkout::output( array() );
 	} else {
 		wc_get_template( 'checkout/thankyou.php', array( 'order' => false ) );

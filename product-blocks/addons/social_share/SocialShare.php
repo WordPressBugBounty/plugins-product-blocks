@@ -53,35 +53,34 @@ class SocialShare {
 				$item_style = array_merge( $settings['social_share_typo'], $settings['social_share_bg'] );
 			}
 
-			$css      = '.wopb-social-share-wrapper .wopb-share-items{gap: ' . $settings['social_share_gap'] . 'px;}';
+			$css      = '.wopb-social-share-wrapper .wopb-share-items{gap: ' . wopb_function()->sanitize_css_number( $settings['social_share_gap'] ) . 'px;}';
 			$css     .= ' ' . ( 'inside' === $settings['social_share_position_type'] ? '.product-template-default' : '' ) . ' .wopb-social-share-wrapper .wopb-share-item a{';
 				$css .= wopb_function()->convert_css( 'general', $item_style );
 				$css .= 'padding: ' . wopb_function()->convert_css( 'dimension', $settings['social_share_padding'] ) . ';';
-				$css .= 'border: ' .
-					( ! empty( $settings['social_share_border']['border'] )
-						? $settings['social_share_border']['border']
-						: 0
-					) . 'px solid ' .
-					( ! empty( $settings['social_share_border']['color'] )
-						? $settings['social_share_border']['color']
-						: ''
-					) . ';';
-				$css .= ! empty( $settings['social_share_radius'] ) ? 'border-radius: ' . $settings['social_share_radius'] . 'px;' : '';
+				$css .= wopb_function()->convert_css(
+					'border',
+					array(
+						'border' => $settings['social_share_border']['border'] ?? 0,
+						'color'  => $settings['social_share_border']['color'] ?? '',
+					)
+				);
+				$css .= wopb_function()->convert_css( 'radius', $settings['social_share_radius'] );
 			$css     .= '}';
 			$css     .= ' ' . ( 'inside' === $settings['social_share_position_type'] ? '.product-template-default' : '' ) . ' .wopb-social-share-wrapper .wopb-share-item a:hover{';
 				$css .= wopb_function()->convert_css( 'hover', $item_style );
 			$css     .= '}';
 			$css     .= '.wopb-social-share-wrapper .wopb-share-item svg{';
-				$css .= 'width : ' . ( ! empty( $settings['social_share_icon_size'] ) ? $settings['social_share_icon_size'] : 20 ) . 'px;';
-				$css .= 'height : ' . ( ! empty( $settings['social_share_icon_size'] ) ? $settings['social_share_icon_size'] : 20 ) . 'px;';
+				$icon_size = wopb_function()->sanitize_css_number( $settings['social_share_icon_size'] );
+				$css      .= 'width : ' . ( ! empty( $icon_size ) ? $icon_size : 20 ) . 'px;';
+				$css      .= 'height : ' . ( ! empty( $icon_size ) ? $icon_size : 20 ) . 'px;';
 			$css     .= '}';
 
 			if ( 'yes' !== $settings['social_share_brand_show'] ) {
 				$css     .= '.wopb-social-share-wrapper .wopb-share-item svg, .wopb-social-share-wrapper .wopb-share-item svg path{';
-					$css .= isset( $settings['social_share_typo']['color'] ) ? 'fill: ' . $settings['social_share_typo']['color'] . ';' : '';
+					$css .= isset( $settings['social_share_typo']['color'] ) ? 'fill: ' . wopb_function()->sanitize_css_color( $settings['social_share_typo']['color'] ) . ';' : '';
 				$css     .= '}';
 				$css     .= '.wopb-social-share-wrapper .wopb-share-item svg:hover, .wopb-social-share-wrapper .wopb-share-item svg:hover path{';
-					$css .= isset( $settings['social_share_typo']['hover_color'] ) ? 'fill: ' . $settings['social_share_typo']['hover_color'] . ';' : '';
+					$css .= isset( $settings['social_share_typo']['hover_color'] ) ? 'fill: ' . wopb_function()->sanitize_css_color( $settings['social_share_typo']['hover_color'] ) . ';' : '';
 				$css     .= '}';
 			}
 			wopb_function()->update_css( $key, 'add', $css );
@@ -95,7 +94,6 @@ class SocialShare {
 	 * @since v.4.0.0
 	 */
 	public function social_share_content() {
-		$html = '';
 		if ( is_product() ) {
 			global $product;
 			$position   = wopb_function()->get_setting( 'social_share_position_type' );
@@ -108,34 +106,33 @@ class SocialShare {
 			$total_share = get_post_meta( $product->get_id(), 'wopb_share_count', true );
 			$total_share = absint( $total_share );
 
-			$html     .= '<div class="wopb-social-share-wrapper ' . esc_attr( $wrapper_class ) . '">';
-				$html .= '<div class="wopb-share-items">';
+			echo '<div class="wopb-social-share-wrapper ' . esc_attr( $wrapper_class ) . '">';
+				echo '<div class="wopb-share-items">';
 			if ( wopb_function()->get_setting( 'social_share_count_show' ) === 'yes' ) {
-				$html         .= '<span class="wopb-share-count-section">';
-					$html     .= '<span class="wopb-share-count-inside">';
-						$html .= '<span class="wopb-share-count">' . $total_share . '</span>';
+				echo '<span class="wopb-share-count-section">';
+					echo '<span class="wopb-share-count-inside">';
+						echo '<span class="wopb-share-count">' . esc_html( $total_share ) . '</span>';
 				if ( 'yes' === $label_show ) {
-					$html .= esc_html( wopb_function()->get_setting( 'social_share_count_lvl' ) );
+					echo esc_html( wopb_function()->get_setting( 'social_share_count_lvl' ) );
 				}
-					$html     .= '</span>';
-						$html .= '</span>';
+					echo '</span>';
+						echo '</span>';
 			}
 			foreach ( wopb_function()->get_setting( 'social_share_media' ) as $share_item ) {
-				$html     .= '<span class="wopb-share-item' . ( wopb_function()->get_setting( 'social_share_brand_show' ) === 'yes' ? ' wopb-' . sanitize_html_class( $share_item['key'] ) : '' ) . '" postId="' . absint( $product->get_id() ) . '" count="' . $total_share . '">';
-					$html .= '<a href="javascript:" data-url="' . esc_url( $this->share_link( $share_item['key'], get_permalink( $product->get_id() ) ) ) . '">';
+				echo '<span class="wopb-share-item' . ( wopb_function()->get_setting( 'social_share_brand_show' ) === 'yes' ? ' wopb-' . esc_attr( sanitize_html_class( $share_item['key'] ) ) : '' ) . '" postId="' . absint( $product->get_id() ) . '" count="' . esc_attr( $total_share ) . '">';
+					echo '<a href="javascript:" data-url="' . esc_url( $this->share_link( $share_item['key'], get_permalink( $product->get_id() ) ) ) . '">';
 				if ( wopb_function()->get_setting( 'social_share_icon_show' ) === 'yes' ) {
-					$html .= apply_filters( 'wopb_social_share_icon', wopb_function()->svg_icon( $share_item['key'] ), $share_item['key'] );
+					echo wp_kses( apply_filters( 'wopb_social_share_icon', wopb_function()->svg_icon( $share_item['key'] ), $share_item['key'] ), wopb_function()->allowed_html_tags() );
 				}
 				if ( 'yes' === $label_show ) {
-					$html .= esc_html( $share_item['label'] );
+					echo esc_html( $share_item['label'] );
 				}
-					$html     .= '</a>';
-						$html .= '</span>';
+					echo '</a>';
+						echo '</span>';
 			}
-				$html .= '</div>';
-			$html     .= '</div>';
+				echo '</div>';
+			echo '</div>';
 		}
-		echo $html; //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**

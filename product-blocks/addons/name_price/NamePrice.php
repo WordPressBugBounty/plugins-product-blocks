@@ -114,7 +114,7 @@ class NamePrice {
 				<?php
 				woocommerce_wp_checkbox(
 					array(
-						'id'          => '_wopb_name_price' . $loop,
+						'id'          => '_wopb_name_price' . esc_attr( $loop ),
 						'class'       => 'checkbox wopb-name-price-enable',
 						'value'       => $data['enable'],
 						'label'       => __( 'Name Your Price', 'product-blocks' ),
@@ -128,7 +128,7 @@ class NamePrice {
 				<?php
 				woocommerce_wp_checkbox(
 					array(
-						'id'          => '_wopb_name_hide_price' . $loop,
+						'id'          => '_wopb_name_hide_price' . esc_attr( $loop ),
 						'class'       => 'checkbox',
 						'value'       => isset( $data['hide_price'] ) ? $data['hide_price'] : '',
 						'label'       => __( 'Hide Main Price', 'product-blocks' ),
@@ -140,7 +140,7 @@ class NamePrice {
 				<?php
 				woocommerce_wp_text_input(
 					array(
-						'id'        => '_wopb_name_price_suggested' . $loop,
+						'id'        => '_wopb_name_price_suggested' . esc_attr( $loop ),
 						'type'      => 'number',
 						'label'     => __( 'Suggested Price', 'product-blocks' ) . $currency_symbol,
 						'data_type' => 'price',
@@ -149,7 +149,7 @@ class NamePrice {
 				);
 				woocommerce_wp_checkbox(
 					array(
-						'id'          => '_wopb_name_price_chunk_enable' . $loop,
+						'id'          => '_wopb_name_price_chunk_enable' . esc_attr( $loop ),
 						'value'       => $data['chunk_enable'],
 						'label'       => __( 'Price Chunk', 'product-blocks' ),
 						'description' => __( 'Show Chunked Price Instead of Input Field', 'product-blocks' ),
@@ -158,7 +158,7 @@ class NamePrice {
 				);
 				woocommerce_wp_text_input(
 					array(
-						'id'          => '_wopb_name_price_chunk' . $loop,
+						'id'          => '_wopb_name_price_chunk' . esc_attr( $loop ),
 						'type'        => 'text',
 						'label'       => __( 'Suggested Chunk', 'product-blocks' ),
 						'value'       => $data['chunk'],
@@ -167,7 +167,7 @@ class NamePrice {
 				);
 				woocommerce_wp_text_input(
 					array(
-						'id'                => '_wopb_name_price_min' . $loop,
+						'id'                => '_wopb_name_price_min' . esc_attr( $loop ),
 						'type'              => 'number',
 						'label'             => __( 'Minimum Price', 'product-blocks' ) . $currency_symbol,
 						'data_type'         => 'price',
@@ -177,7 +177,7 @@ class NamePrice {
 				);
 				woocommerce_wp_text_input(
 					array(
-						'id'                => '_wopb_name_price_max' . $loop,
+						'id'                => '_wopb_name_price_max' . esc_attr( $loop ),
 						'type'              => 'number',
 						'label'             => __( 'Maximum Price', 'product-blocks' ) . $currency_symbol,
 						'data_type'         => 'price',
@@ -231,6 +231,20 @@ class NamePrice {
 	 * @since v.4.0.0
 	 */
 	public function save_product_fields( $product_id, $loop = '' ) {
+		// A variation row ($loop is its index) is saved by WooCommerce's AJAX request, a simple product by the product form.
+		$is_variation = '' !== $loop;
+		$nonce_field  = $is_variation ? 'security' : 'woocommerce_meta_nonce';
+		$nonce_action = $is_variation ? 'save-variations' : 'woocommerce_save_data';
+		if ( ! isset( $_POST[ $nonce_field ] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $nonce_field ] ) ), $nonce_action ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_post', $product_id ) ) {
+			return;
+		}
+
 		$data     = $this->def_value;
 		$key_list = array(
 			'enable'       => '_wopb_name_price',
@@ -243,15 +257,16 @@ class NamePrice {
 		);
 		$input    = array();
 		foreach ( $key_list as $key => $val ) {
-			if ( isset( $_POST[ $val ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce authorizes this product-save hook.
-				// loop is coming from woocommcerce and starts from 0.
-				if ( '' !== $loop && 0 <= $loop ) {
-					if ( is_array( $_POST[ $val ] ) && isset( $_POST[ $val ][ $loop ] ) && is_scalar( $_POST[ $val ][ $loop ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
-						$input[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $val ][ $loop ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-					}
-				} elseif ( is_scalar( $_POST[ $val ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
-					$input[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $val ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			if ( ! isset( $_POST[ $val ] ) ) {
+				continue;
+			}
+			// loop is coming from woocommcerce and starts from 0.
+			if ( $is_variation && 0 <= $loop ) {
+				if ( is_array( $_POST[ $val ] ) && isset( $_POST[ $val ][ $loop ] ) && is_scalar( $_POST[ $val ][ $loop ] ) ) {
+					$input[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $val ][ $loop ] ) );
 				}
+			} elseif ( ! $is_variation && is_scalar( $_POST[ $val ] ) ) {
+				$input[ $key ] = sanitize_text_field( wp_unslash( $_POST[ $val ] ) );
 			}
 		}
 		update_post_meta( $product_id, '_wopb_name_price', array_merge( $data, $input ) );
@@ -271,7 +286,7 @@ class NamePrice {
 			ob_start();
 			try {
 				$this->common_data( $product->get_id() );
-				$name_price_data_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+				echo wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 			} finally {
 				while ( ob_get_level() > $wopb_buffer_level_1 ) {
 					if ( ! ob_end_clean() ) {
@@ -279,7 +294,6 @@ class NamePrice {
 					}
 				}
 			}
-            echo $name_price_data_safe; // phpcs:ignore
 		}
 	}
 
@@ -337,7 +351,7 @@ class NamePrice {
 										value="<?php echo esc_attr( wopb_function()->get_price_data( $chunk )['value'] ); ?>"
 										class="wopb-custom-chunk-prices"
 									/>
-									<label class="wopb-chunk-price-label" for="wopb-chunk-<?php echo esc_attr( $key ); ?>"><?php echo wc_price( wopb_function()->get_price_data( $chunk )['value'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></label>
+									<label class="wopb-chunk-price-label" for="wopb-chunk-<?php echo esc_attr( $key ); ?>"><?php echo wp_kses( wc_price( wopb_function()->get_price_data( $chunk )['value'] ), wopb_function()->allowed_html_tags() ); ?></label>
 								</span>
 							<?php } ?>
 						</div>
@@ -348,12 +362,10 @@ class NamePrice {
 				<div class="wopb-min-max-price">
 					<?php
 					if ( $price_min && 'yes' === $label_min ) {
-						$min_safe = wopb_function()->wp_kses_safe( $this->min_max_generate( 'minimum', wopb_function()->get_setting( 'name_price_min' ), $price_min ) );
-						echo $min_safe; // phpcs:ignore
+						echo wp_kses( $this->min_max_generate( 'minimum', wopb_function()->get_setting( 'name_price_min' ), $price_min ), wopb_function()->allowed_html_tags() );
 					}
 					if ( $price_max && 'yes' === $label_max ) {
-						$max_safe = wopb_function()->wp_kses_safe( $this->min_max_generate( 'maximum', wopb_function()->get_setting( 'name_price_max' ), $price_max ) );
-						echo $max_safe; // phpcs:ignore
+						echo wp_kses( $this->min_max_generate( 'maximum', wopb_function()->get_setting( 'name_price_max' ), $price_max ), wopb_function()->allowed_html_tags() );
 					}
 					?>
 				</div>
@@ -372,8 +384,8 @@ class NamePrice {
 	 * @since v.4.0.0
 	 */
 	public function min_max_generate( $class_min_max, $prices_titles, $price_min_max ) {
-		$html      = '<div id="wopb-' . $class_min_max . '-price">';
-			$html .= '<span class="wopb-range-label">' . $prices_titles . '</span> <span class="wopb-range-price">' . wc_price( wopb_function()->get_price_data( $price_min_max )['value'] ) . '</span>';
+		$html      = '<div id="wopb-' . esc_attr( $class_min_max ) . '-price">';
+			$html .= '<span class="wopb-range-label">' . esc_html( $prices_titles ) . '</span> <span class="wopb-range-price">' . wp_kses_post( wc_price( wopb_function()->get_price_data( $price_min_max )['value'] ) ) . '</span>';
 		$html     .= '</div>';
 		return $html;
 	}
@@ -400,7 +412,7 @@ class NamePrice {
 		if ( $name_price && ( $price_suggest || $price_min || $price_max || ! empty( $price_chunk ) ) ) {
 			return str_replace(
 				array( 'href="?add-to-cart=' . $product_id . '"', 'add_to_cart_button', 'ajax_add_to_cart' ),
-				array( 'href="' . get_permalink( $product_id ) . '"', '', '' ),
+				array( 'href="' . esc_url( get_permalink( $product_id ) ) . '"', '', '' ),
 				$link
 			);
 		}
@@ -462,8 +474,7 @@ class NamePrice {
 	 * @return string|int|float|null
 	 */
 	private function get_requested_custom_price() {
-		// WooCommerce's public add-to-cart flow does not require an admin nonce.
-		return isset( $_POST['wopb_custom_prices'] ) && ( is_string( $_POST['wopb_custom_prices'] ) || is_int( $_POST['wopb_custom_prices'] ) || is_float( $_POST['wopb_custom_prices'] ) ) ? wp_unslash( $_POST['wopb_custom_prices'] ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Monetary validation is shared by all price application points below.
+		return isset( $_POST['wopb_custom_prices'] ) && ( is_string( $_POST['wopb_custom_prices'] ) || is_int( $_POST['wopb_custom_prices'] ) || is_float( $_POST['wopb_custom_prices'] ) ) ? sanitize_text_field( wp_unslash( $_POST['wopb_custom_prices'] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Guest add-to-cart is a public, page-cached storefront action with no nonce in WooCommerce core; the amount only becomes a price after get_valid_custom_price() checks it against the product's opt-in, min and max.
 	}
 
 	/**

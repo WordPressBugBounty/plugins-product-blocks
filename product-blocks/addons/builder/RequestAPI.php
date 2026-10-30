@@ -524,7 +524,7 @@ class RequestAPI {
 				if ( ! wp_delete_post( $post_id, true ) ) {
 					return new \WP_Error( 'wopb_delete_failed', __( 'The template could not be deleted.', 'product-blocks' ), array( 'status' => 500 ) );
 				}
-				if ( isset( $post['section'] ) && $post['section'] == 'builder' ) { // phpcs:ignore WordPress.Security
+				if ( isset( $post['section'] ) && $post['section'] == 'builder' ) {
 					$conditions   = get_option( 'wopb_builder_conditions', array() );
 					if ( isset( $conditions[ $builder_type ][ $post_id ] ) ) {
 						unset( $conditions[ $builder_type ][ $post_id ] );
@@ -556,7 +556,8 @@ class RequestAPI {
 					$widget_area = get_post_meta( $post_id, '__builder_widget_area', true );
 
 					update_post_meta( $new_post_id, '_wopb_builder_type', $type );
-					update_post_meta( $new_post_id, '_wopb_css', $css );
+					// update_post_meta() unslashes; keep CSS escapes such as content:"\f101".
+					update_post_meta( $new_post_id, '_wopb_css', wp_slash( $css ) );
 					update_post_meta( $new_post_id, '__container_width', $width );
 					update_post_meta( $new_post_id, '__builder_sidebar', $sidebar );
 					update_post_meta( $new_post_id, '__builder_widget_area', $widget_area );

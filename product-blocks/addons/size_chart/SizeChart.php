@@ -328,7 +328,7 @@ class SizeChart {
 				<?php echo esc_html__( 'Apply On All Products ?', 'product-blocks' ); ?>
 			</label>
 		</p>
-		<div class="wopb-sc-category<?php echo $all_product_selected ? ' wopb-d-none' : ''; ?>">
+		<div class="wopb-sc-category<?php echo ( $all_product_selected ? ' wopb-d-none' : '' ); ?>">
 			<label><?php echo esc_html__( 'Assign Category', 'product-blocks' ); ?></label>
 			<div>
 				<select name="wopb_sc_category[]" class="wopb-select2" multiple>
@@ -385,7 +385,7 @@ class SizeChart {
 		<p class="wopb-sc-products <?php echo esc_attr( $class ); ?>">
 			<label for="<?php echo esc_attr( $key ); ?>">
 				<?php
-					echo esc_html( $label ) . wc_help_tip( __( 'Select Products List To Show Specific Product.', 'product-blocks' ) ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo esc_html( $label ) . wp_kses( wc_help_tip( __( 'Select Products List To Show Specific Product.', 'product-blocks' ) ), wopb_function()->allowed_html_tags( array( 'span' => array( 'tabindex' => true ) ) ) );
 				?>
 			</label>
 			<select
@@ -431,14 +431,16 @@ class SizeChart {
 	 */
 	public function save_meta_fields( int $post_id, object $post ) {
 		$post_id = absint( $post_id );
-		if (
-			empty( $post_id ) ||
-			empty( $post ) ||
-			( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
-			! isset( $_POST['wopb_size_chart_nonce'] ) ||
-			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wopb_size_chart_nonce'] ) ), 'wopb_size_chart_save' ) ||
-			! current_user_can( 'edit_post', $post_id )
-		) {
+		if ( ! $post_id || ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_revision( $post_id ) || $this->size_chart !== get_post_type( $post_id ) ) {
+			return;
+		}
+		if ( ! isset( $_POST['wopb_size_chart_nonce'] ) || ! is_string( $_POST['wopb_size_chart_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wopb_size_chart_nonce'] ) ), 'wopb_size_chart_save' ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
 		if ( isset( $_POST['wopb_sc_column_array'] ) && is_string( $_POST['wopb_sc_column_array'] ) ) {
@@ -576,6 +578,16 @@ class SizeChart {
 	 * @since v.1.0.4
 	 */
 	public function size_chart_admin_fields_save( $post_id ) {
+		if ( ! isset( $_POST['woocommerce_meta_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['woocommerce_meta_nonce'] ) ), 'woocommerce_save_data' ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
 		$args    = array(
 			'post_type'      => $this->size_chart,
 			'posts_per_page' => -1,
@@ -592,8 +604,8 @@ class SizeChart {
 		$results = new \WP_Query( $args );
 
 		$chart_ids = array();
-		if ( isset( $_POST['wopb_size_chart_ids'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verifies the product save nonce before this hook.
-			$chart_ids = array_map( 'absint', array_filter( (array) wp_unslash( $_POST['wopb_size_chart_ids'] ), 'is_scalar' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Each ID is cast with absint(); the nonce is verified by WooCommerce.
+		if ( isset( $_POST['wopb_size_chart_ids'] ) ) {
+			$chart_ids = array_map( 'absint', array_filter( map_deep( wp_unslash( (array) $_POST['wopb_size_chart_ids'] ), 'sanitize_text_field' ), 'is_scalar' ) );
 		}
 		// Only real size charts the user may edit can be linked to or unlinked from the product.
 		$chart_ids          = array_values( array_filter( array_unique( $chart_ids ), array( $this, 'can_link_chart' ) ) );
@@ -688,7 +700,7 @@ class SizeChart {
 				$html     .= '</span>';
 			$html         .= '</div>';
 			$html         .= $table_content;
-			return $html;
+			return wp_kses( $html, wopb_function()->allowed_html_tags() );
 		}
 	}
 
@@ -699,7 +711,7 @@ class SizeChart {
 	 * @since v.3.2.0
 	 */
 	public function size_chart_meta_position() {
-		echo $this->size_chart_position(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_attr()/esc_html()-escaped pieces; contains inline SVG that wp_kses_post would strip.
+		echo wp_kses( (string) $this->size_chart_position(), wopb_function()->allowed_html_tags() );
 	}
 
 	/**
@@ -869,7 +881,7 @@ class SizeChart {
 		 * @param string $html     Chart table markup, or '' when the chart has no rows.
 		 * @param int    $chart_id Size chart post ID.
 		 */
-		return (string) apply_filters( 'wopb_size_chart_content', $html, $chart_id );
+		return wp_kses( apply_filters( 'wopb_size_chart_content', $html, $chart_id ), wopb_function()->allowed_html_tags() );
 	}
 
 	/**
@@ -927,63 +939,64 @@ class SizeChart {
 			$css      = '#wopb-chart-modal-btn {';
 				$css .= wopb_function()->convert_css( 'general', $btn_style );
 				$css .= 'padding: ' . wopb_function()->convert_css( 'dimension', $settings['size_chart_btn_padding'] ) . ';';
-				$css .= 'border: ' .
-					( ! empty( $settings['size_chart_btn_border']['border'] )
-						? $settings['size_chart_btn_border']['border']
-						: 0
-					) . 'px solid ' .
-					( ! empty( $settings['size_chart_btn_border']['color'] )
-						? $settings['size_chart_btn_border']['color']
-						: ''
-					) . ';';
-				$css .= ! empty( $settings['size_chart_btn_radius'] ) ? 'border-radius: ' . $settings['size_chart_btn_radius'] . 'px;' : '';
+				$css .= wopb_function()->convert_css(
+					'border',
+					array(
+						'border' => $settings['size_chart_btn_border']['border'] ?? 0,
+						'color'  => $settings['size_chart_btn_border']['color'] ?? '',
+					)
+				);
+				$css .= wopb_function()->convert_css( 'radius', $settings['size_chart_btn_radius'] ?? '' );
 			$css     .= '}';
 			$css     .= '#wopb-chart-modal-btn:hover {';
 				$css .= wopb_function()->convert_css( 'hover', $btn_style );
 			$css     .= '}';
 			$css     .= '#wopb-chart-modal-btn svg{';
-				$css .= isset( $settings['size_chart_btn_icon_size']['color'] ) ? 'fill: ' . $settings['size_chart_btn_icon_size']['color'] . ';' : '';
-				$css .= 'width : ' . ( ! empty( $settings['size_chart_btn_icon_size'] ) ? $settings['size_chart_btn_icon_size'] : 20 ) . 'px;';
-				$css .= 'height : ' . ( ! empty( $settings['size_chart_btn_icon_size'] ) ? $settings['size_chart_btn_icon_size'] : 20 ) . 'px;';
+				$css      .= isset( $settings['size_chart_btn_icon_size']['color'] ) ? 'fill: ' . wopb_function()->sanitize_css_color( $settings['size_chart_btn_icon_size']['color'] ) . ';' : '';
+				$icon_size = wopb_function()->sanitize_css_number( $settings['size_chart_btn_icon_size'] ?? '' );
+				$css      .= 'width : ' . ( ! empty( $icon_size ) ? $icon_size : 20 ) . 'px;';
+				$css      .= 'height : ' . ( ! empty( $icon_size ) ? $icon_size : 20 ) . 'px;';
 			$css     .= '}';
 
 			$css     .= '.wopb-size-chart-wrapper .wopb-sc-table th, .wopb-size-chart-wrapper .wopb-sc-table td {';
-				$css .= 'border: ' .
-					( ! empty( $settings['size_chart_table_border']['border'] )
-						? $settings['size_chart_table_border']['border']
+				$table_border = wopb_function()->sanitize_css_number( $settings['size_chart_table_border']['border'] ?? '' );
+				$table_color  = wopb_function()->sanitize_css_color( $settings['size_chart_table_border']['color'] ?? '' );
+				$css         .= 'border: ' .
+					( ! empty( $table_border )
+						? $table_border
 						: 1
 					) . 'px solid ' .
-					( ! empty( $settings['size_chart_table_border']['color'] )
-						? $settings['size_chart_table_border']['color']
+					( ! empty( $table_color )
+						? $table_color
 						: '#646464'
 					) . ';';
 			$css     .= '}';
 
 			$css     .= '.wopb-size-chart-wrapper .wopb-sc-table .wopb-sc-head-col {';
-				$css .= isset( $settings['size_chart_heading_bg']['bg'] ) ? 'background-color: ' . $settings['size_chart_heading_bg']['bg'] . ';' : '';
-				$css .= isset( $settings['size_chart_heading_color']['color'] ) ? 'color: ' . $settings['size_chart_heading_color']['color'] . ';' : '';
+				$css .= isset( $settings['size_chart_heading_bg']['bg'] ) ? 'background-color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_heading_bg']['bg'] ) . ';' : '';
+				$css .= isset( $settings['size_chart_heading_color']['color'] ) ? 'color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_heading_color']['color'] ) . ';' : '';
 			$css     .= '}';
 			$css     .= '.wopb-size-chart-wrapper .wopb-sc-table .wopb-sc-head-col:hover {';
-				$css .= isset( $settings['size_chart_heading_bg']['hover_bg'] ) ? 'background-color: ' . $settings['size_chart_heading_bg']['hover_bg'] . ';' : '';
-				$css .= isset( $settings['size_chart_heading_color']['hover_color'] ) ? 'color: ' . $settings['size_chart_heading_color']['hover_color'] . ';' : '';
+				$css .= isset( $settings['size_chart_heading_bg']['hover_bg'] ) ? 'background-color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_heading_bg']['hover_bg'] ) . ';' : '';
+				$css .= isset( $settings['size_chart_heading_color']['hover_color'] ) ? 'color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_heading_color']['hover_color'] ) . ';' : '';
 			$css     .= '}';
 
 			$css     .= '.wopb-sc-table-row:nth-child(even) {';
-				$css .= isset( $settings['size_chart_even_row_bg']['bg'] ) ? 'background-color: ' . $settings['size_chart_even_row_bg']['bg'] . ';' : '';
-				$css .= isset( $settings['size_chart_even_row_color']['color'] ) ? 'color: ' . $settings['size_chart_even_row_color']['color'] . ';' : '';
+				$css .= isset( $settings['size_chart_even_row_bg']['bg'] ) ? 'background-color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_even_row_bg']['bg'] ) . ';' : '';
+				$css .= isset( $settings['size_chart_even_row_color']['color'] ) ? 'color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_even_row_color']['color'] ) . ';' : '';
 			$css     .= '}';
 			$css     .= '.wopb-sc-table-row:nth-child(even):hover {';
-				$css .= isset( $settings['size_chart_even_row_bg']['hover_bg'] ) ? 'background-color: ' . $settings['size_chart_even_row_bg']['hover_bg'] . ';' : '';
-				$css .= isset( $settings['size_chart_even_row_color']['hover_color'] ) ? 'color: ' . $settings['size_chart_even_row_color']['hover_color'] . ';' : '';
+				$css .= isset( $settings['size_chart_even_row_bg']['hover_bg'] ) ? 'background-color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_even_row_bg']['hover_bg'] ) . ';' : '';
+				$css .= isset( $settings['size_chart_even_row_color']['hover_color'] ) ? 'color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_even_row_color']['hover_color'] ) . ';' : '';
 			$css     .= '}';
 
 			$css     .= '.wopb-sc-table-row:nth-child(odd) {';
-				$css .= isset( $settings['size_chart_odd_row_bg']['bg'] ) ? 'background-color: ' . $settings['size_chart_odd_row_bg']['bg'] . ';' : '';
-				$css .= isset( $settings['size_chart_odd_row_color']['color'] ) ? 'color: ' . $settings['size_chart_odd_row_color']['color'] . ';' : '';
+				$css .= isset( $settings['size_chart_odd_row_bg']['bg'] ) ? 'background-color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_odd_row_bg']['bg'] ) . ';' : '';
+				$css .= isset( $settings['size_chart_odd_row_color']['color'] ) ? 'color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_odd_row_color']['color'] ) . ';' : '';
 			$css     .= '}';
 			$css     .= '.wopb-sc-table-row:nth-child(odd):hover {';
-				$css .= isset( $settings['size_chart_odd_row_bg']['hover_bg'] ) ? 'background-color: ' . $settings['size_chart_odd_row_bg']['hover_bg'] . ';' : '';
-				$css .= isset( $settings['size_chart_odd_row_color']['hover_color'] ) ? 'color: ' . $settings['size_chart_odd_row_color']['hover_color'] . ';' : '';
+				$css .= isset( $settings['size_chart_odd_row_bg']['hover_bg'] ) ? 'background-color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_odd_row_bg']['hover_bg'] ) . ';' : '';
+				$css .= isset( $settings['size_chart_odd_row_color']['hover_color'] ) ? 'color: ' . wopb_function()->sanitize_css_color( $settings['size_chart_odd_row_color']['hover_color'] ) . ';' : '';
 			$css     .= '}';
 
 			wopb_function()->update_css( $key, 'add', $css );

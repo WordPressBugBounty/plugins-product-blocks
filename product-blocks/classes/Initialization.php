@@ -94,10 +94,11 @@ class Initialization {
 			return;
 		}
 		if ( $plugin == WOPB_BASE ) {
-			if ( wp_doing_ajax() || is_network_admin() || isset( $_GET['activate-multi'] ) ) { //phpcs:ignore
+			if ( wp_doing_ajax() || is_network_admin() || isset( $_GET['activate-multi'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: WordPress adds this flag itself when several plugins are activated at once; it only skips the welcome redirect.
 				return;
 			}
-            exit( wp_safe_redirect( admin_url( 'admin.php?page=wopb-settings#home' ) ) ); //phpcs:ignore
+			wp_safe_redirect( admin_url( 'admin.php?page=wopb-settings#home' ) );
+			exit;
 		}
 	}
 
@@ -149,8 +150,7 @@ class Initialization {
 		}
 
 		$html        .= '</div>';
-		$content_safe = wopb_function()->wp_kses_safe( $html );
-        echo $content_safe; // phpcs:ignore
+		echo wp_kses( $html, wopb_function()->allowed_html_tags() );
 	}
 
 	/**
@@ -274,7 +274,8 @@ class Initialization {
 			wp_enqueue_media();
 		}
 
-		$taxonomy                               = isset( $_GET['taxonomy'] ) ? sanitize_text_field( wp_unslash( $_GET['taxonomy'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$current_screen                         = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$taxonomy                               = $current_screen && ! empty( $current_screen->taxonomy ) ? $current_screen->taxonomy : '';
 		$variation_swatches_attribute_poststype = wopb_function()->get_setting( 'wopb_variation_swatches' ) === 'true' && 0 === strpos( $taxonomy, 'pa_' );
 		if ( 'pa_color' === $taxonomy || $variation_swatches_attribute_poststype ) {
 			wp_enqueue_style( 'wp-color-picker' );

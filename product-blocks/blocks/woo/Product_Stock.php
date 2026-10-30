@@ -3,8 +3,6 @@ namespace WOPB\blocks;
 
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
-
 class Product_Stock {
 
 	public function __construct() {
@@ -24,7 +22,7 @@ class Product_Stock {
 
 	public function content( $attr ) {
 		global $product;
-		$product       = wc_get_product();
+		$product       = wc_get_product(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 		$block_name    = 'product-stock';
 		$wraper_before = $wraper_after = $content = '';
 
@@ -60,11 +58,11 @@ class Product_Stock {
 
 				$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-				$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
+				$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . '">';
 					$wraper_before .= '<div class="wopb-product-wrapper">';
 
 			if ( ! empty( $stock_html ) ) {
-				$content .= $stock_html;
+				$content .= wp_kses( $stock_html, $allowed_html_tags );
 			}
 
 					$wraper_after .= '</div>';
@@ -74,4 +72,3 @@ class Product_Stock {
 		return $wraper_before . $content . $wraper_after;
 	}
 }
-// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

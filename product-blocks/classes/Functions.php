@@ -51,7 +51,7 @@ class Functions {
 	}
 
 	public static function get_screen( $type = 'page' ) {
-        return isset( $_GET[$type] ) ? sanitize_text_field( wp_unslash( $_GET[ $type ] ) ) : ''; // phpcs:ignore
+		return isset( $_GET[ $type ] ) ? sanitize_text_field( wp_unslash( $_GET[ $type ] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only screen lookup (?page=, ?action=); callers only compare it with known slugs and never change state from it.
 	}
 
 
@@ -202,11 +202,17 @@ class Functions {
 			return false;
 		}
 		$order_id = apply_filters( 'woocommerce_thankyou_order_id', absint( $order_id ) );
+		if ( ! is_scalar( $order_id ) || ! ctype_digit( (string) $order_id ) || absint( $order_id ) < 1 ) {
+			return false;
+		}
 		// Order keys authorize emailed links; a WordPress nonce cannot replace them.
-		$order_key = isset( $_GET['key'] ) && is_string( $_GET['key'] ) ? sanitize_text_field( wp_unslash( $_GET['key'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$order_key = isset( $_GET['key'] ) && is_string( $_GET['key'] ) ? sanitize_text_field( wp_unslash( $_GET['key'] ) ) : '';
 		$order_key = apply_filters( 'woocommerce_thankyou_order_key', $order_key );
-		$order     = $order_id > 0 ? wc_get_order( $order_id ) : false;
-		if ( ! $order instanceof \WC_Order || ! is_string( $order_key ) || '' === $order_key || ! hash_equals( $order->get_order_key(), $order_key ) ) {
+		if ( ! is_string( $order_key ) || '' === $order_key ) {
+			return false;
+		}
+		$order = wc_get_order( absint( $order_id ) );
+		if ( ! $order instanceof \WC_Order || ! hash_equals( $order->get_order_key(), $order_key ) ) {
 			return false;
 		}
 
@@ -216,8 +222,17 @@ class Functions {
 		}
 
 		$supplied_email = null;
-		if ( isset( $_POST['check_submission'], $_POST['email'] ) && is_string( $_POST['check_submission'] ) && is_string( $_POST['email'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['check_submission'] ) ), 'wc_verify_email' ) ) {
+		if ( isset( $_POST['check_submission'] ) ) {
+			if ( ! is_string( $_POST['check_submission'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['check_submission'] ) ), 'wc_verify_email' ) ) {
+				return false;
+			}
+			if ( ! isset( $_POST['email'] ) || ! is_string( $_POST['email'] ) ) {
+				return false;
+			}
 			$supplied_email = sanitize_email( wp_unslash( $_POST['email'] ) );
+			if ( '' === $supplied_email ) {
+				return false;
+			}
 		}
 		if ( is_callable( array( '\Automattic\WooCommerce\Internal\Utilities\Users', 'should_user_verify_order_email' ) ) ) {
 			return \Automattic\WooCommerce\Internal\Utilities\Users::should_user_verify_order_email( $order->get_id(), $supplied_email, 'order-received' ) ? false : $order;
@@ -240,6 +255,35 @@ class Functions {
 		$email_match   = is_string( $supplied_email ) && '' !== $supplied_email && 0 === strcasecmp( $supplied_email, $billing_email );
 		$verify_email  = ! $session_match && ! $email_match && ! current_user_can( 'read_private_shop_orders' ); // phpcs:ignore WordPress.WP.Capabilities.Unknown -- WooCommerce registers this shop-order capability.
 		return apply_filters( 'woocommerce_order_email_verification_required', $verify_email, $order, 'order-received' ) ? false : $order;
+	}
+
+	/**
+	 * Process the shopper's shipping calculator only with WooCommerce's form nonce.
+	 *
+	 * @return void
+	 */
+	public function maybe_calculate_shipping() {
+		if ( ! isset( $_POST['calc_shipping_country'] ) ) {
+			return;
+		}
+		if ( isset( $_REQUEST['woocommerce-shipping-calculator-nonce'] ) && is_string( $_REQUEST['woocommerce-shipping-calculator-nonce'] ) ) {
+			$nonce = sanitize_text_field( wp_unslash( $_REQUEST['woocommerce-shipping-calculator-nonce'] ) );
+		} elseif ( ! isset( $_REQUEST['woocommerce-shipping-calculator-nonce'] ) && isset( $_REQUEST['_wpnonce'] ) && is_string( $_REQUEST['_wpnonce'] ) ) {
+			$nonce = sanitize_text_field( wp_unslash( $_REQUEST['_wpnonce'] ) );
+		} else {
+			return;
+		}
+		if ( ! wp_verify_nonce( $nonce, 'woocommerce-shipping-calculator' ) && ! wp_verify_nonce( $nonce, 'woocommerce-cart' ) ) {
+			return;
+		}
+		foreach ( array( 'country', 'state', 'postcode', 'city' ) as $field ) {
+			if ( isset( $_POST[ 'calc_shipping_' . $field ] ) && ! is_string( $_POST[ 'calc_shipping_' . $field ] ) ) {
+				return;
+			}
+		}
+		if ( class_exists( '\WC_Shortcode_Cart' ) ) {
+			\WC_Shortcode_Cart::calculate_shipping();
+		}
 	}
 
 	/**
@@ -519,7 +563,7 @@ class Functions {
 			'paged'          => isset( $attr['paged'] ) ? $attr['paged'] : 1,
 		);
 
-        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- hides products set to "Hidden" in the catalog, the same visibility rule WooCommerce's own product queries apply.
 		$query_args['tax_query'] = array(
 			'relation' => 'AND',
 			array(
@@ -543,7 +587,7 @@ class Functions {
 				if ( isset( $str[0] ) ) {
 					if ( 'taxonomy' === $str[0] ) {
 						if ( isset( $str[1] ) && isset( $str[2] ) ) {
-                            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+							// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- an archive template lists the products of the archive's own term.
 							$query_args['tax_query'] = array(
 								array(
 									'taxonomy' => $str[1],
@@ -583,7 +627,7 @@ class Functions {
 
 				case 'price_low':
 				case 'price_high':
-					$query_args['meta_key'] = '_price'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					$query_args['meta_key'] = '_price'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- sorting by price needs WooCommerce's _price meta.
 					$query_args['orderby']  = 'meta_value_num';
 					break;
 
@@ -592,16 +636,16 @@ class Functions {
 					break;
 
 				case 'price':
-					$query_args['meta_key'] = '_price'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					$query_args['meta_key'] = '_price'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- sorting by price needs WooCommerce's _price meta.
 					$query_args['orderby']  = 'meta_value_num';
 					break;
 
 				case 'sku':
-					$query_args['meta_key'] = '_sku'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					$query_args['meta_key'] = '_sku'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- sorting by SKU needs WooCommerce's _sku meta.
 					break;
 
 				case 'stock_status':
-					$query_args['meta_key'] = '_stock_status'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					$query_args['meta_key'] = '_stock_status'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- sorting by stock status needs WooCommerce's _stock_status meta.
 					$query_args['orderby']  = 'meta_value';
 					break;
 
@@ -623,14 +667,13 @@ class Functions {
 		}
 
 		if ( ! empty( $attr['queryExclude'] ) ) {
-            // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
 			$query_exclude = ( substr( $attr['queryExclude'], 0, 1 ) === '[' ) ? $this->get_value( json_decode( $attr['queryExclude'] ) ) : explode( ',', $attr['queryExclude'] );
 			if ( is_array( $query_exclude ) && count( $query_exclude ) ) {
-				$query_args['post__not_in'] = $query_exclude; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+				$query_args['post__not_in'] = $query_exclude; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- the block's own "Exclude" setting (or the current product) has to be left out; the list is short and set by the site owner.
 			}
 		}
 		if ( isset( $query_vars['post__not_in'] ) && ! empty( $query_vars['post__not_in'] ) ) {
-            // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+			// phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- keeps the main query's own exclusions.
 			$query_args['post__not_in'] = isset( $query_args['post__not_in'] ) ? array_merge( $query_vars['post__not_in'], $query_args['post__not_in'] ) : $query_vars['post__not_in'];
 		}
 
@@ -731,7 +774,7 @@ class Functions {
 						);
 					}
 				}
-					$query_args['tax_query'] = $var; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+					$query_args['tax_query'] = $var; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- the block's own category/tag/attribute filter settings.
 			} elseif ( 'product_tag' === $attr['filterType'] ) {
 					$var     = array( 'relation' => 'OR' );
 					$showTag = isset( $attr['queryTagAction'] ) ? $attr['queryTagAction'] : $showTag;
@@ -745,21 +788,21 @@ class Functions {
 						);
 					}
 				}
-					$query_args['tax_query'] = $var; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+					$query_args['tax_query'] = $var; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- the block's own category/tag/attribute filter settings.
 
 			}
 		}
 
 		if ( isset( $query_args['post__in'] ) && isset( $query_args['post__not_in'] ) ) {
 			$had_ids                = ! empty( $query_args['post__in'] );
-			$query_args['post__in'] = array_values( array_diff( $query_args['post__in'], $query_args['post__not_in'] ) ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+			$query_args['post__in'] = array_values( array_diff( $query_args['post__in'], $query_args['post__not_in'] ) );
 			if ( $had_ids && empty( $query_args['post__in'] ) ) {
 				// Every listed product is excluded; an empty post__in would list them all instead.
 				$query_args['post__in'] = array( 0 );
 			}
 		}
 		if ( isset( $attr['post__not_in'] ) && $attr['post__not_in'] ) {
-			// phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+			// phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- keeps the exclusions that a load-more or pagination request carried over from the main query.
 			$query_args['post__not_in'] = isset( $query_args['post__not_in'] ) ? array_merge( $attr['post__not_in'], $query_args['post__not_in'] ) : $attr['post__not_in'];
 		}
 
@@ -819,7 +862,7 @@ class Functions {
 				$args['post__in'] = array_merge( array( 0 ), wc_get_product_ids_on_sale() );
 				break;
 			case 'most_rated':
-				$args['meta_key'] = '_wc_review_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				$args['meta_key'] = '_wc_review_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- sorting by review count needs WooCommerce's _wc_review_count meta.
 				$args['orderby']  = 'meta_value meta_value_num';
 				$args['order']    = 'DESC';
 				break;
@@ -862,19 +905,19 @@ class Functions {
 				$args = $this->best_selling_query_args( $args, '-90 days' );
 				break;
 			case 'sales_day_all':
-				$args['meta_key'] = 'total_sales'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				$args['meta_key'] = 'total_sales'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- sorting by sales needs WooCommerce's total_sales meta.
 				$args['orderby']  = 'meta_value_num';
 				break;
 			case 'view_day_all':
-				$args['meta_key'] = '__product_views_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				$args['meta_key'] = '__product_views_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- sorting by views needs the plugin's own view-count meta.
 				$args['orderby']  = 'meta_value meta_value_num';
 				break;
 			case 'most_rated':
-				$args['meta_key'] = '_wc_review_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				$args['meta_key'] = '_wc_review_count'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- sorting by review count needs WooCommerce's _wc_review_count meta.
 				$args['orderby']  = 'meta_value meta_value_num';
 				break;
 			case 'top_rated':
-				$args['meta_key'] = '_wc_average_rating'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				$args['meta_key'] = '_wc_average_rating'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- sorting by rating needs WooCommerce's _wc_average_rating meta.
 				$args['orderby']  = 'meta_value meta_value_num';
 				break;
 			case 'random_post':
@@ -893,7 +936,7 @@ class Functions {
 			case 'related_tag':
 				global $post;
 				if ( isset( $post->ID ) ) {
-                    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- related products share the viewed product's category or tag.
 					$args['tax_query']    = array(
 						array(
 							'taxonomy' => 'product_tag',
@@ -901,13 +944,13 @@ class Functions {
 							'field'    => 'term_id',
 						),
 					);
-					$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+					$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- leaves out the product being viewed (a single ID).
 				}
 				break;
 			case 'related_category':
 				global $post;
 				if ( isset( $post->ID ) ) {
-                    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- related products share the viewed product's category or tag.
 					$args['tax_query']    = array(
 						array(
 							'taxonomy' => 'product_cat',
@@ -915,13 +958,13 @@ class Functions {
 							'field'    => 'term_id',
 						),
 					);
-					$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+					$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- leaves out the product being viewed (a single ID).
 				}
 				break;
 			case 'related_cat_tag':
 				global $post;
 				if ( isset( $post->ID ) ) {
-                    // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- related products share the viewed product's category or tag.
 					$args['tax_query']    = array(
 						array(
 							'taxonomy' => 'product_tag',
@@ -934,13 +977,13 @@ class Functions {
 							'field'    => 'term_id',
 						),
 					);
-					$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+					$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- leaves out the product being viewed (a single ID).
 				}
 				break;
 			case 'upsells':
 				global $post;
 				global $product;
-				$backend = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$backend = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: only tells the admin edit screen apart from a front-end query; nothing is saved.
 				if ( 'edit' !== $backend && isset( $post->ID ) ) {
 					if ( ! $product ) {
 						$product = wc_get_product( $post->ID ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
@@ -950,7 +993,7 @@ class Functions {
 						$args['ignore_sticky_posts'] = 1;
 						if ( $upsells ) {
 							$args['post__in']     = $upsells;
-							$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+							$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- leaves out the product being viewed (a single ID).
 						} else {
 							$args['post__in'] = array( 999999 );
 						}
@@ -960,7 +1003,7 @@ class Functions {
 			case 'crosssell':
 				global $post;
 				global $product;
-				$backend = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				$backend = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: only tells the admin edit screen apart from a front-end query; nothing is saved.
 				if ( 'edit' !== $backend && isset( $post->ID ) ) {
 					if ( ! $product ) {
 						$product = wc_get_product( $post->ID ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
@@ -977,7 +1020,7 @@ class Functions {
 						$args['ignore_sticky_posts'] = 1;
 						if ( $crosssell ) {
 							$args['post__in']     = $crosssell;
-							$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+							$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- leaves out the product being viewed (a single ID).
 						} else {
 							$args['post__in'] = array( 999999 );
 						}
@@ -990,7 +1033,7 @@ class Functions {
 				$args['ignore_sticky_posts'] = 1;
 				if ( ! empty( $viewed_products ) ) {
 					$args['post__in']     = $viewed_products;
-					$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+					$args['post__not_in'] = array( $post->ID ); // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- leaves out the product being viewed (a single ID).
 				} else {
 					$args['post__in'] = array( 999999 );
 				}
@@ -1054,7 +1097,7 @@ class Functions {
 			$date = get_gmt_from_date( $date );
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- best sellers for a period, summed across WooCommerce's order item tables (no WP API); the totals change with every order.
 		$result = (array) $wpdb->get_results(
 			$wpdb->prepare(
 				"
@@ -1191,7 +1234,7 @@ class Functions {
 
 			if ( $pages > 3 ) {
 				$last_class = ( $paged == $pages ) ? ' pagination-active' : '';
-				$html      .= '<li class="wopb-last-pages' . $last_class . '" data-current="' . esc_attr( $pages ) . '">
+				$html      .= '<li class="wopb-last-pages' . esc_attr( $last_class ) . '" data-current="' . esc_attr( $pages ) . '">
                             <a href="' . esc_url( $this->get_pagenum_link( $pages, $attr ) ) . '">' . esc_html( $pages ) . '</a>
                         </li>';
 			}
@@ -1220,11 +1263,16 @@ class Functions {
 	 */
 	public function get_page_post_id( $page_post_id, $blockId ) {
 		global $wpdb;
-		$post_meta = $wpdb->get_row( $wpdb->prepare( 'SELECT post_id FROM ' . $wpdb->prefix . 'postmeta WHERE meta_key=%s AND meta_value LIKE %s', '_wopb_css', '%.wopb-block-' . $blockId . '%' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		// Block IDs are printed as a class name, so only class-name characters can match.
+		$blockId = is_scalar( $blockId ) ? sanitize_html_class( (string) $blockId ) : '';
+		if ( '' === $blockId ) {
+			return $page_post_id;
+		}
+		$post_meta = $wpdb->get_row( $wpdb->prepare( 'SELECT post_id FROM ' . $wpdb->prefix . 'postmeta WHERE meta_key=%s AND meta_value LIKE %s', '_wopb_css', '%' . $wpdb->esc_like( '.wopb-block-' . $blockId ) . '%' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- finds the post that holds a block ID inside stored CSS (LIKE on meta_value; no WP API); runs only when the block's own request lacks a post ID.
 		// For FSE theme
 		if ( ! $post_meta ) {
 			if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
-				$template = $wpdb->get_row( $wpdb->prepare( 'SELECT ID FROM ' . $wpdb->prefix . 'posts WHERE post_content LIKE %s', '%"blockId":"' . $blockId . '"%' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+				$template = $wpdb->get_row( $wpdb->prepare( 'SELECT ID FROM ' . $wpdb->prefix . 'posts WHERE post_content LIKE %s', '%' . $wpdb->esc_like( '"blockId":"' . $blockId . '"' ) . '%' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- finds the block-theme template that holds a block ID (LIKE on post_content; no WP API); fallback for the lookup above.
 				if ( isset( $template->ID ) ) {
 					return $template->ID;
 				}
@@ -1265,8 +1313,6 @@ class Functions {
 		}
 		return $data;
 	}
-
-	// phpcs:disable
 
 	/**
 	 * Filter HTML Generator
@@ -1411,6 +1457,9 @@ class Functions {
 	 * @return string SVG icon content
 	 */
 	public function svg_icon( $icon_name = '', $is_full_path = false ) {
+		if ( ! is_string( $icon_name ) || '' === $icon_name ) {
+			return '';
+		}
 		global $wp_filesystem;
 		if ( empty( $wp_filesystem ) ) {
 			require_once ABSPATH . '/wp-admin/includes/file.php';
@@ -1420,7 +1469,11 @@ class Functions {
 			}
 		}
 
-		$icon_path = $is_full_path ? WOPB_PATH . $icon_name : WOPB_PATH . 'assets/img/svg/' . $icon_name . '.svg';
+		$icon_base = realpath( $is_full_path ? WOPB_PATH : WOPB_PATH . 'assets/img/svg/' );
+		$icon_path = realpath( $is_full_path ? WOPB_PATH . $icon_name : WOPB_PATH . 'assets/img/svg/' . $icon_name . '.svg' );
+		if ( false === $icon_base || false === $icon_path || 0 !== strpos( $icon_path, $icon_base . DIRECTORY_SEPARATOR ) || 'svg' !== strtolower( pathinfo( $icon_path, PATHINFO_EXTENSION ) ) ) {
+			return '';
+		}
 
 		if ( ! $icon_name || ! $wp_filesystem->exists( $icon_path ) ) {
 			return '';
@@ -1489,7 +1542,7 @@ class Functions {
 	public function conditions( $type = 'return', $condition = '' ) {
 		$page_id           = '';
 		$conditions        = $condition ? $condition : get_option( 'wopb_builder_conditions', array() );
-		$post_type         = isset( $_GET['post_type'] ) ? sanitize_key( $_GET['post_type'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$post_type         = isset( $_GET['post_type'] ) ? sanitize_key( wp_unslash( $_GET['post_type'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: the product search URL (?s=&post_type=product) picks which template conditions match; the value is only compared with 'product'.
 		$not_header_footer = 'header' !== $type && 'footer' !== $type;
 		$is_shop           = is_shop();
 
@@ -2125,26 +2178,31 @@ class Functions {
 			'strong'   => array(),
 			'b'        => array(),
 			'input'    => array(
-				'data-*'       => true,
-				'area-*'       => true,
-				'type'         => true,
-				'value'        => true,
-				'placeholder'  => true,
-				'name'         => true,
-				'id'           => true,
-				'min'          => true,
-				'max'          => true,
-				'format'       => true,
-				'class'        => true,
-				'step'         => true,
-				'disabled'     => true,
-				'readonly'     => true,
-				'required'     => true,
-				'maxlength'    => true,
-				'minlength'    => true,
-				'pattern'      => true,
-				'autocomplete' => true,
-				'accept'       => true,
+				'data-*'           => true,
+				'aria-label'       => true,
+				'aria-labelledby'  => true,
+				'aria-describedby' => true,
+				'aria-invalid'     => true,
+				'aria-required'    => true,
+				'checked'          => true,
+				'type'             => true,
+				'value'            => true,
+				'placeholder'      => true,
+				'name'             => true,
+				'id'               => true,
+				'min'              => true,
+				'max'              => true,
+				'format'           => true,
+				'class'            => true,
+				'step'             => true,
+				'disabled'         => true,
+				'readonly'         => true,
+				'required'         => true,
+				'maxlength'        => true,
+				'minlength'        => true,
+				'pattern'          => true,
+				'autocomplete'     => true,
+				'accept'           => true,
 			),
 			'textarea' => array(
 				'data-*'       => true,
@@ -2175,7 +2233,7 @@ class Functions {
 				'fill'         => true,
 				'stroke'       => true,
 				'stroke-width' => true,
-				'class' => true,
+				'class'        => true,
 			),
 			'g'        => array(
 				'fill'            => true,
@@ -2220,7 +2278,7 @@ class Functions {
 				'class'         => true,
 				'action'        => true,
 				'method'        => true,
-				'enctyoe'       => true,
+				'enctype'       => true,
 				'data-*'        => true,
 				'current-image' => true,
 			),
@@ -2280,6 +2338,170 @@ class Functions {
 		return $allow_merged;
 	}
 
+
+	/**
+	 * Allowed HTML for WooCommerce form templates (checkout, cart, my-account, pay order).
+	 * Extends allowed_html_tags() with the form attributes WooCommerce prints.
+	 *
+	 * @param array $extras Extra tags/attributes merged on top.
+	 * @return array
+	 *
+	 * @since v.4.6.1
+	 */
+	public function allowed_form_html( $extras = array() ) {
+		$aria  = array(
+			'aria-label'       => true,
+			'aria-labelledby'  => true,
+			'aria-describedby' => true,
+			'aria-invalid'     => true,
+			'aria-required'    => true,
+			'aria-hidden'      => true,
+			'aria-live'        => true,
+			'aria-controls'    => true,
+			'aria-expanded'    => true,
+		);
+		$field = array(
+			'id'           => true,
+			'class'        => true,
+			'name'         => true,
+			'data-*'       => true,
+			'disabled'     => true,
+			'required'     => true,
+			'autocomplete' => true,
+			'form'         => true,
+			'tabindex'     => true,
+			'title'        => true,
+		);
+		$form  = array(
+			'form'                        => array(
+				'name'           => true,
+				'target'         => true,
+				'novalidate'     => true,
+				'accept-charset' => true,
+			),
+			'input'                       => $field + $aria + array(
+				'size'           => true,
+				'inputmode'      => true,
+				'autocapitalize' => true,
+				'spellcheck'     => true,
+				'list'           => true,
+				'multiple'       => true,
+				'for'            => true,
+			),
+			'select'                      => $field + $aria + array(
+				'multiple' => true,
+				'size'     => true,
+			),
+			'option'                      => array(
+				'value'    => true,
+				'selected' => true,
+				'disabled' => true,
+				'label'    => true,
+				'class'    => true,
+				'data-*'   => true,
+			),
+			'optgroup'                    => array(
+				'label'    => true,
+				'disabled' => true,
+			),
+			'textarea'                    => $field + $aria + array(
+				'rows'        => true,
+				'cols'        => true,
+				'placeholder' => true,
+				'maxlength'   => true,
+				'readonly'    => true,
+			),
+			'button'                      => $field + $aria + array(
+				'type'  => true,
+				'value' => true,
+			),
+			'label'                       => array(
+				'for'    => true,
+				'id'     => true,
+				'class'  => true,
+				'data-*' => true,
+			),
+			'fieldset'                    => array(
+				'id'       => true,
+				'class'    => true,
+				'disabled' => true,
+				'data-*'   => true,
+			),
+			'legend'                      => array(
+				'class' => true,
+			),
+			'bdi'                         => array(),
+			'mark'                        => array(
+				'class' => true,
+			),
+			'noscript'                    => array(),
+			'wc-order-attribution-inputs' => array(),
+			'span'                        => array(
+				'translate'  => true,
+				'aria-level' => true,
+			),
+		);
+
+		return array_replace_recursive(
+			$this->allowed_html_tags(),
+			$form,
+			(array) $extras
+		);
+	}
+
+	/**
+	 * Swap core's unfiltered-HTML comment nonce for a version that survives wp_kses().
+	 *
+	 * Core prints an inline <script> inside the comment form. A block that captures the
+	 * form and escapes it with wp_kses() would strip the tag and leave its code as visible
+	 * text. Call this before capturing and restore_comment_form_nonce() after.
+	 *
+	 * @return int|false Priority of core's callback that was swapped, or false.
+	 */
+	public function swap_comment_form_nonce() {
+		$priority = has_action( 'comment_form', 'wp_comment_form_unfiltered_html_nonce' );
+		if ( false === $priority ) {
+			return false;
+		}
+		remove_action( 'comment_form', 'wp_comment_form_unfiltered_html_nonce', $priority );
+		add_action( 'comment_form', array( $this, 'comment_form_unfiltered_html_nonce' ), $priority );
+		return $priority;
+	}
+
+	/**
+	 * Put core's comment nonce callback back after swap_comment_form_nonce().
+	 *
+	 * @param int|false $priority Value returned by swap_comment_form_nonce().
+	 * @return void
+	 */
+	public function restore_comment_form_nonce( $priority ) {
+		if ( false === $priority ) {
+			return;
+		}
+		remove_action( 'comment_form', array( $this, 'comment_form_unfiltered_html_nonce' ), $priority );
+		add_action( 'comment_form', 'wp_comment_form_unfiltered_html_nonce', $priority );
+	}
+
+	/**
+	 * Same as wp_comment_form_unfiltered_html_nonce(), with the script enqueued for the footer
+	 * instead of printed inside the form.
+	 *
+	 * @return void
+	 */
+	public function comment_form_unfiltered_html_nonce() {
+		$post    = get_post();
+		$post_id = $post ? $post->ID : 0;
+
+		if ( ! current_user_can( 'unfiltered_html' ) ) {
+			return;
+		}
+		wp_nonce_field( 'unfiltered-html-comment_' . $post_id, '_wp_unfiltered_html_comment_disabled', false );
+		if ( ! wp_script_is( 'wopb-comment-form-nonce', 'enqueued' ) ) {
+			wp_register_script( 'wopb-comment-form-nonce', false, array(), WOPB_VER, true );
+			wp_enqueue_script( 'wopb-comment-form-nonce' );
+			wp_add_inline_script( 'wopb-comment-form-nonce', "(function(){var f=document.getElementById('_wp_unfiltered_html_comment_disabled');if(f&&window===window.parent){f.name='_wp_unfiltered_html_comment';}})();" );
+		}
+	}
 
 	public function get_builder_attr() {
 		$builder_data = '';
@@ -2381,6 +2603,26 @@ class Functions {
 		} else {
 			return sanitize_text_field( $params );
 		}
+	}
+
+	/**
+	 * Payment Gateway List
+	 *
+	 * Unused by this plugin, but WowStore Pro 2.0.0 to 2.1.6 call it from the Currency Switcher settings, so it stays.
+	 *
+	 * @return array Enabled gateway titles, keyed by gateway ID.
+	 */
+	public function payment_gateway_list() {
+		$active_gateways = array();
+		if ( ! function_exists( 'WC' ) || ! WC()->payment_gateways() ) {
+			return $active_gateways;
+		}
+		foreach ( WC()->payment_gateways()->payment_gateways() as $id => $gateway ) {
+			if ( 'yes' === $gateway->enabled ) {
+				$active_gateways[ $id ] = $gateway->title;
+			}
+		}
+		return $active_gateways;
 	}
 
 	/**
@@ -2623,7 +2865,7 @@ class Functions {
 				ob_start();
 				try {
 					wc_display_product_attributes( $product );
-				$additional               = ob_get_clean();
+					$additional               = ob_get_clean();
 				} finally {
 					while ( ob_get_level() > $wopb_buffer_level_1 ) {
 						if ( ! ob_end_clean() ) {
@@ -2631,13 +2873,13 @@ class Functions {
 						}
 					}
 				}
-				$var['title']             = isset( $params['search'] ) ? $this->highlightSearchKey( get_the_title(), $params['search'] ) : $product->get_title();
+				$var['title']             = isset( $params['search'] ) ? $this->highlightSearchKey( get_the_title(), $params['search'] ) : wp_kses_post( $product->get_title() );
 				$var['type']              = $product->get_type();
 				$var['permalink']         = $product->get_permalink();
-				$var['price_html']        = $product->get_price_html();
+				$var['price_html']        = wp_kses( (string) $product->get_price_html(), $this->allowed_html_tags() );
 				$var['rating_average']    = $product->get_average_rating();
 				$var['rating_count']      = $product->get_rating_count();
-				$var['short_description'] = $product->get_short_description();
+				$var['short_description'] = wp_kses_post( $product->get_short_description() );
 				$var['stock_qty']         = $product->get_stock_quantity();
 				$var['stock_status']      = $stock_status;
 				$var['additional']        = $additional;
@@ -2731,7 +2973,7 @@ class Functions {
 	 */
 	public function highlightSearchKey( $content, $search ) {
 		if ( trim( (string) $search ) === '' ) {
-			return $content;
+			return wp_kses_post( $content );
 		}
 
 		// Create a new DOMDocument object and load the HTML
@@ -2761,7 +3003,7 @@ class Functions {
 		libxml_clear_errors();
 		libxml_use_internal_errors( $useErrors );
 
-		return $html;
+		return wp_kses_post( $html );
 	}
 
 	/**
@@ -2893,19 +3135,19 @@ class Functions {
 			$tooltip_html = '';
 		if ( $is_icon ) {
 			$inner_html   .= $this->svg_icon( 'cart' );
-			$tooltip_html .= '<span class="wopb-cart-tooltip wopb-tooltip-text-' . $tooltip_position . '">' . esc_html( $cart_text && $product->is_type( 'simple' ) ? $cart_text : $product->add_to_cart_text() ) . '</span>';
+			$tooltip_html .= '<span class="wopb-cart-tooltip wopb-tooltip-text-' . esc_attr( $tooltip_position ) . '">' . esc_html( $cart_text && $product->is_type( 'simple' ) ? $cart_text : $product->add_to_cart_text() ) . '</span>';
 		} else {
 			$inner_html .= $cart_text && $product->is_type( 'simple' ) ? esc_html( $cart_text ) : esc_html( $product->add_to_cart_text() );
 		}
 		if ( $product->is_type( 'variable' ) ) {
 			$data .= apply_filters(
-				'woocommerce_loop_product_link', // WPCS: XSS ok.
+				'woocommerce_loop_product_link', // Escaped by every caller with the block's allowlist.
 				sprintf(
 					'<a href="%s" class="%s" data-stock="%s" data-add-to-cart-text="%s" %s>%s</a>',
 					esc_url( $product->add_to_cart_url() ),
 					( ! empty( $args['class'] ) ? esc_attr( $args['class'] ) : '' ),
 					esc_attr( $product->get_stock_quantity() ),
-					$cart_text,
+					esc_attr( $cart_text ),
 					wc_implode_html_attributes( $attributes ),
 					$inner_html
 				),
@@ -2919,8 +3161,8 @@ class Functions {
 				$wopb_buffer_level_2 = ob_get_level();
 				ob_start();
 				try {
-					do_shortcode( '[wvs_show_archive_variation product_id="' . $product->get_id() . '"]' );
-				$woo_swatch = ob_get_clean();
+					do_shortcode( '[wvs_show_archive_variation product_id="' . esc_attr( $product->get_id() ) . '"]' );
+					$woo_swatch = ob_get_clean();
 				} finally {
 					while ( ob_get_level() > $wopb_buffer_level_2 ) {
 						if ( ! ob_end_clean() ) {
@@ -2936,7 +3178,7 @@ class Functions {
 			}
 		} else {
 			$data .= apply_filters(
-				'woocommerce_loop_add_to_cart_link', // WPCS: XSS ok.
+				'woocommerce_loop_add_to_cart_link', // Escaped by every caller with the block's allowlist.
 				sprintf(
 					'<a href="%s" class="%s" data-stock="%s" %s>%s</a>',
 					esc_url( $product->add_to_cart_url() ),
@@ -2953,7 +3195,7 @@ class Functions {
 			$data .= '<a href="' . esc_url( wc_get_cart_url() ) . '" class="wopb-cart-active">';
 		if ( $is_icon ) {
 			$data .= $this->svg_icon( 'viewCart' );
-			$data .= '<span class="wopb-tooltip-text-' . $tooltip_position . '">' . ( $cart_active ? esc_html( $cart_active ) : esc_html__( 'View Cart', 'product-blocks' ) ) . '</span>';
+			$data .= '<span class="wopb-tooltip-text-' . esc_attr( $tooltip_position ) . '">' . ( $cart_active ? esc_html( $cart_active ) : esc_html__( 'View Cart', 'product-blocks' ) ) . '</span>';
 		} else {
 			$data .= $cart_active ? esc_html( $cart_active ) : esc_html__( 'View Cart', 'product-blocks' );
 		}
@@ -2967,84 +3209,151 @@ class Functions {
 	/**
 	 * Get Value And Convert to CSS
 	 *
-	 * @param $type
-	 * @param $value
+	 * Every saved value is checked by type before it is added: sizes and widths must be
+	 * numbers, colors must be colors and the font weight must be a known weight. A value
+	 * that fails the check is handled like an empty field, so it can't add other CSS.
+	 *
+	 * @param string $type  general, hover, dimension, border or radius.
+	 * @param mixed  $value Saved style values (an array, or a number for radius).
 	 * @return string
 	 * @since v.4.0.0
 	 */
 	public function convert_css( $type, $value ) {
 		$css = '';
-		if ( ! empty( $value ) ) {
-			switch ( $type ) {
-				case 'general':
-					$css .= ! empty( $value['size'] ) ? 'font-size: ' . $value['size'] . 'px;' : '';
-					$css .= 'font-weight: ' .
-						( ! empty( $value['bold'] )
-							? ( 1 == $value['bold'] ? 'bold' : $value['bold'] )
-							: 'normal'
-						) . ' !important;';
-					$css .= ! empty( $value['italic'] ) ? 'font-style: ' . 'italic;' : '';
-					$css .= 'text-decoration: ' . ( ! empty( $value['underline'] ) ? 'underline;' : 'none' ) . ';';
-					if ( isset( $value['color'] ) ) {
-						$css .= 'color: ' . (
-							! empty( $value['color'] )
-								? $value['color']
-								: 'unset'
-							) . ';';
-					}
-					if ( isset( $value['bg'] ) ) {
-						$css .= 'background-color: ' . (
-							! empty( $value['bg'] )
-								? $value['bg']
-								: 'unset'
-							) . ';';
-					}
-					break;
+		if ( empty( $value ) ) {
+			return $css;
+		}
+		if ( 'radius' === $type ) {
+			$radius = $this->sanitize_css_number( $value );
+			return '' !== $radius ? 'border-radius: ' . $radius . 'px;' : '';
+		}
+		if ( ! is_array( $value ) ) {
+			return $css;
+		}
+		switch ( $type ) {
+			case 'general':
+				$size = ! empty( $value['size'] ) ? $this->sanitize_css_number( $value['size'] ) : '';
+				$css .= '' !== $size ? 'font-size: ' . $size . 'px;' : '';
+				$css .= 'font-weight: ' . $this->sanitize_css_font_weight( isset( $value['bold'] ) ? $value['bold'] : '' ) . ' !important;';
+				$css .= ! empty( $value['italic'] ) ? 'font-style: italic;' : '';
+				$css .= 'text-decoration: ' . ( ! empty( $value['underline'] ) ? 'underline;' : 'none' ) . ';';
+				if ( isset( $value['color'] ) ) {
+					$color = $this->sanitize_css_color( $value['color'] );
+					$css  .= 'color: ' . ( '' !== $color ? $color : 'unset' ) . ';';
+				}
+				if ( isset( $value['bg'] ) ) {
+					$color = $this->sanitize_css_color( $value['bg'] );
+					$css  .= 'background-color: ' . ( '' !== $color ? $color : 'unset' ) . ';';
+				}
+				break;
 
-				case 'hover':
-					if ( isset( $value['hover_color'] ) ) {
-						$css .= 'color: ' . (
-							! empty( $value['hover_color'] )
-								? $value['hover_color']
-								: ( ! empty( $value['color'] ) ? $value['color'] : 'unset' )
-							) . ';';
+			case 'hover':
+				if ( isset( $value['hover_color'] ) ) {
+					$color = $this->sanitize_css_color( $value['hover_color'] );
+					if ( '' === $color && isset( $value['color'] ) ) {
+						$color = $this->sanitize_css_color( $value['color'] );
 					}
-					if ( isset( $value['hover_bg'] ) ) {
-						$css .= 'background-color: ' . (
-							! empty( $value['hover_bg'] )
-								? $value['hover_bg']
-								: ( ! empty( $value['bg'] ) ? $value['bg'] : 'unset' )
-							) . ';';
+					$css .= 'color: ' . ( '' !== $color ? $color : 'unset' ) . ';';
+				}
+				if ( isset( $value['hover_bg'] ) ) {
+					$color = $this->sanitize_css_color( $value['hover_bg'] );
+					if ( '' === $color && isset( $value['bg'] ) ) {
+						$color = $this->sanitize_css_color( $value['bg'] );
 					}
-					break;
+					$css .= 'background-color: ' . ( '' !== $color ? $color : 'unset' ) . ';';
+				}
+				break;
 
-				case 'dimension':
-					foreach ( array( 'top', 'right', 'bottom', 'left' ) as $direction ) {
-						$css .= ( ! empty( $value[ $direction ] ) ? $value[ $direction ] : 0 ) . 'px ';
-					}
-					break;
+			case 'dimension':
+				foreach ( array( 'top', 'right', 'bottom', 'left' ) as $direction ) {
+					$size = ! empty( $value[ $direction ] ) ? $this->sanitize_css_number( $value[ $direction ] ) : '';
+					$css .= ( '' !== $size ? $size : 0 ) . 'px ';
+				}
+				break;
 
-				case 'border':
-					$css .= 'border: ' .
-						( ! empty( $value['border'] )
-							? $value['border']
-							: 0
-						) . 'px solid ' .
-						( ! empty( $value['color'] )
-							? $value['color']
-							: ''
-						) . ';';
-					break;
+			case 'border':
+				$width = ! empty( $value['border'] ) ? $this->sanitize_css_number( $value['border'] ) : '';
+				$color = isset( $value['color'] ) ? $this->sanitize_css_color( $value['color'] ) : '';
+				$css  .= 'border: ' . ( '' !== $width ? $width : 0 ) . 'px solid ' . $color . ';';
+				break;
 
-				case 'radius':
-					$css .= 'border-radius: ' . $value . 'px;';
-					break;
-
-				default:
-					break;
-			}
+			default:
+				break;
 		}
 		return $css;
+	}
+
+	/**
+	 * Return a style setting's color, or '' when it is empty or not a color.
+	 *
+	 * Accepts hex (#rgb, #rgba, #rrggbb and #rrggbbaa, which older settings panels saved),
+	 * rgb() and rgba() with 0-255 channels, and color keywords such as `transparent`.
+	 *
+	 * @param mixed $value Saved color.
+	 * @return string
+	 * @since 4.6.1
+	 */
+	public function sanitize_css_color( $value ) {
+		if ( ! is_string( $value ) || strlen( $value ) > 100 ) {
+			return '';
+		}
+		$value = trim( $value );
+		if ( preg_match( '/^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/D', $value ) || preg_match( '/^[a-zA-Z]{1,30}$/D', $value ) ) {
+			return $value;
+		}
+		if ( preg_match( '/^rgba?\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})(?:\s*,\s*(0(?:\.[0-9]+)?|1(?:\.0+)?|\.[0-9]+))?\s*\)$/D', $value, $matches ) && (int) $matches[1] <= 255 && (int) $matches[2] <= 255 && (int) $matches[3] <= 255 && ( ( 0 === strpos( $value, 'rgba(' ) ) === isset( $matches[4] ) ) ) {
+			return $value;
+		}
+		return '';
+	}
+
+	/**
+	 * Return a style setting's number unchanged, or '' when it is not a plain number.
+	 *
+	 * The unit (px) is added by the caller, so only digits, one dot and a leading minus pass.
+	 *
+	 * @param mixed $value Saved size, width or spacing.
+	 * @return int|float|string
+	 * @since 4.6.1
+	 */
+	public function sanitize_css_number( $value ) {
+		if ( is_int( $value ) || ( is_float( $value ) && is_finite( $value ) ) ) {
+			return $value;
+		}
+		if ( is_string( $value ) && preg_match( '/^-?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)$/D', $value ) ) {
+			return $value;
+		}
+		return '';
+	}
+
+	/**
+	 * Return a style setting's value when it is one of the allowed keywords.
+	 *
+	 * @param mixed  $value    Saved option, such as an alignment.
+	 * @param array  $allowed  Allowed values.
+	 * @param string $fallback Returned when the value is not allowed.
+	 * @return string
+	 * @since 4.6.1
+	 */
+	public function sanitize_css_keyword( $value, $allowed, $fallback = '' ) {
+		return is_string( $value ) && in_array( $value, $allowed, true ) ? $value : $fallback;
+	}
+
+	/**
+	 * Font weight for a typography setting's "bold" value.
+	 *
+	 * The bold toggle saves true/'1' (bold) or a weight such as 500. Anything else is
+	 * treated as not bold.
+	 *
+	 * @param mixed $bold Saved bold value.
+	 * @return string
+	 */
+	private function sanitize_css_font_weight( $bold ) {
+		if ( empty( $bold ) || ! is_scalar( $bold ) ) {
+			return 'normal';
+		}
+		$weight = 1 == $bold ? 'bold' : (string) $bold; // Loose on purpose: saved as true, 1 or '1'.
+		return in_array( $weight, array( 'normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900' ), true ) ? $weight : 'normal';
 	}
 
 	/**
@@ -3130,7 +3439,8 @@ class Functions {
 	 * @since v.4.0.4
 	 */
 	public function build_css_for_inline_print( $post_id, $call_common = true ) {
-		if ( $post_id ) {
+		$post_id = is_numeric( $post_id ) ? absint( $post_id ) : 0;
+		if ( $post_id && $this->can_print_post_css( $post_id ) ) {
 			$upload_dir_url     = wp_get_upload_dir();
 			$upload_css_dir_url = trailingslashit( $upload_dir_url['basedir'] );
 
@@ -3142,6 +3452,11 @@ class Functions {
 			$reusable_id  = $this->get_reusable_ids( $post_id );
 			if ( ! empty( $reusable_id ) ) {
 				foreach ( $reusable_id as $id ) {
+					// Only real reusable blocks (wp_block) the visitor may see; the ref is free text in post content.
+					$id = is_numeric( $id ) ? absint( $id ) : 0;
+					if ( ! $id || 'wp_block' !== get_post_type( $id ) || ! $this->can_print_post_css( $id ) ) {
+						continue;
+					}
 					$reusable_dir_path = $upload_css_dir_url . "product-blocks/wopb-css-{$id}.css";
 					if ( file_exists( $reusable_dir_path ) ) {
 						$reusable_css .= $this->get_path_file_contents( $reusable_dir_path );
@@ -3168,6 +3483,24 @@ class Functions {
 		return '';
 	}
 
+	/**
+	 * Whether the current visitor may get a post's stored block CSS: the post is published
+	 * without a password, or the visitor can read it.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return bool
+	 */
+	private function can_print_post_css( $post_id ) {
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return false;
+		}
+		if ( 'publish' === $post->post_status && '' === $post->post_password ) {
+			return true;
+		}
+		return current_user_can( 'read_post', $post->ID );
+	}
+
 	public function loop_item_classes() {
 		$elements = array();
 		if (
@@ -3180,6 +3513,16 @@ class Functions {
 		return $elements;
 	}
 
+	/**
+	 * Filter HTML through wp_kses() with allowed_html_tags().
+	 *
+	 * Free calls wp_kses() directly instead, so the escaping is visible where the value is printed.
+	 * Kept for WowStore Pro and other callers.
+	 *
+	 * @param string $content      HTML.
+	 * @param array  $extra_params Optional `allowed` key with extra tags for allowed_html_tags().
+	 * @return string
+	 */
 	public function wp_kses_safe( $content = '', $extra_params = array() ) {
 		if ( empty( $content ) ) {
 			return '';

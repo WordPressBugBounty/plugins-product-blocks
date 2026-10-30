@@ -63,21 +63,26 @@ class Builder {
 
 	// Save Meta Box Data
 	public function metabox_save_data( $post_id ) {
-		if (
-			( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
-			! isset( $_POST['container_meta_box_nonce'] ) ||
-			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['container_meta_box_nonce'] ) ), 'container_meta_box' ) ||
-			! current_user_can( 'edit_post', $post_id )
-		) {
+		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_revision( $post_id ) || 'wopb_builder' !== get_post_type( $post_id ) ) {
 			return;
 		}
-        if ( ! isset( $_POST['container-width'] ) ) { //phpcs:ignore
+		if ( ! isset( $_POST['container_meta_box_nonce'] ) || ! is_string( $_POST['container_meta_box_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['container_meta_box_nonce'] ) ), 'container_meta_box' ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+		if ( ! isset( $_POST['container-width'] ) ) {
 			return;
 		}
 
-        $width  = isset( $_POST['container-width'] ) ? sanitize_text_field( wp_unslash( $_POST['container-width'] ) ) : '1140'; //phpcs:ignore
-        $sidebar= isset( $_POST['wopb-builder-sidebar'] ) ? sanitize_text_field( wp_unslash( $_POST['wopb-builder-sidebar'] ) ) : ''; //phpcs:ignore
-        $widget = isset( $_POST['wopb-builder-widget-area'] ) ? sanitize_text_field( wp_unslash( $_POST['wopb-builder-widget-area'] ) ) : ''; //phpcs:ignore
+		// A width in pixels; it is printed into the page's inline style.
+		$width   = is_scalar( $_POST['container-width'] ) ? absint( wp_unslash( $_POST['container-width'] ) ) : 0;
+		$sidebar = isset( $_POST['wopb-builder-sidebar'] ) ? sanitize_text_field( wp_unslash( $_POST['wopb-builder-sidebar'] ) ) : '';
+		$widget  = isset( $_POST['wopb-builder-widget-area'] ) ? sanitize_text_field( wp_unslash( $_POST['wopb-builder-widget-area'] ) ) : '';
 
 		update_post_meta( $post_id, '__wopb_container_width', $width );
 		update_post_meta( $post_id, 'wopb-builder-sidebar', $sidebar );

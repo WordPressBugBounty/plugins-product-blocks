@@ -3,8 +3,6 @@ namespace WOPB\blocks;
 
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
-
 class Product_Meta {
 
 	public function __construct() {
@@ -42,10 +40,17 @@ class Product_Meta {
 		$content = '';
 		foreach ( $terms as $term_id ) {
 			$term = get_term_by( 'id', $term_id, $type );
+			if ( ! $term || is_wp_error( $term ) ) {
+				continue;
+			}
+			$term_link = get_term_link( $term, $type );
+			if ( is_wp_error( $term_link ) ) {
+				continue;
+			}
 			if ( $inc > 1 ) {
 				$content .= ', ';
 			}
-			$content .= '<a class="wopb-meta-list-sku meta-block__value" href="' . get_term_link( $term->slug, $type ) . '">' . esc_html( $term->name ) . '</a>';
+			$content .= '<a class="wopb-meta-list-sku meta-block__value" href="' . esc_url( $term_link ) . '">' . esc_html( $term->name ) . '</a>';
 			++$inc;
 		}
 		return $content;
@@ -53,7 +58,7 @@ class Product_Meta {
 
 	public function content( $attr ) {
 		global $product;
-		$product       = wc_get_product();
+		$product       = wc_get_product(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 		$block_name    = 'product-meta';
 		$wraper_before = $wraper_after = $content = '';
 		$attr          = wp_parse_args( $attr, $this->get_attributes() );
@@ -61,13 +66,13 @@ class Product_Meta {
 		if ( ! empty( $product ) ) {
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-			$wraper_before              .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
+			$wraper_before              .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . '">';
 				$content                .= '<div class="wopb-product-wrapper">';
 					$wopb_buffer_level_1 = ob_get_level();
 					ob_start();
 			try {
 				do_action( 'woocommerce_product_meta_start' );
-				$content .= ob_get_clean();
+				$content .= wp_kses( ob_get_clean(), wopb_function()->allowed_form_html() );
 			} finally {
 				while ( ob_get_level() > $wopb_buffer_level_1 ) {
 					if ( ! ob_end_clean() ) {
@@ -78,7 +83,7 @@ class Product_Meta {
 			if ( $attr['metaSku'] ) {
 				$content .= '<div class="wopb-meta-sku"><div class="product_meta" style="display: contents !important;">';
 				if ( $attr['metaLabelShow'] ) {
-						$content .= '<span class="wopb-meta-label-sku meta-block__label">' . esc_attr( $attr['labelSku'] ) . '</span>';
+						$content .= '<span class="wopb-meta-label-sku meta-block__label">' . esc_html( $attr['labelSku'] ) . '</span>';
 				}
 					$content     .= '<span class="wopb-meta-list-sku meta-block__value sku">' . esc_html( $product->get_sku() ) . '</span>';
 						$content .= '</div></div>';
@@ -91,7 +96,7 @@ class Product_Meta {
 							$content .= '<div class="wopb-meta-label-cat meta-block__label">' . esc_html( $attr['labelCat'] ) . '</div>';
 					}
 						$content     .= '<div class="wopb-meta-list-cat meta-block__value">';
-							$content .= $this->list_items( $terms, 'product_cat' );
+							$content .= wp_kses( $this->list_items( $terms, 'product_cat' ), wopb_function()->allowed_html_tags() );
 						$content     .= '</div>';
 							$content .= '</div>';
 				}
@@ -108,7 +113,7 @@ class Product_Meta {
 							$content .= '<div class="wopb-meta-label-brand meta-block__label">' . esc_html( $attr['labelBrand'] ) . '</div>';
 					}
 						$content     .= '<div class="wopb-meta-list-brand meta-block__value">';
-							$content .= $this->list_items( $brand_terms, 'product_brand' );
+							$content .= wp_kses( $this->list_items( $brand_terms, 'product_brand' ), wopb_function()->allowed_html_tags() );
 						$content     .= '</div>';
 							$content .= '</div>';
 				}
@@ -121,7 +126,7 @@ class Product_Meta {
 							$content .= '<span class="wopb-meta-label-tag meta-block__label">' . esc_html( $attr['labelTag'] ) . '</span>';
 					}
 						$content     .= '<div class="wopb-meta-list-tag">';
-							$content .= $this->list_items( $tag_terms, 'product_tag' );
+							$content .= wp_kses( $this->list_items( $tag_terms, 'product_tag' ), wopb_function()->allowed_html_tags() );
 						$content     .= '</div>';
 							$content .= '</div>';
 				}
@@ -132,7 +137,7 @@ class Product_Meta {
 			try {
 				do_action( 'woocommerce_product_meta_end' );
 				do_action( 'wopb_product_meta_end' );
-				$content .= ob_get_clean();
+				$content .= wp_kses( ob_get_clean(), wopb_function()->allowed_form_html() );
 			} finally {
 				while ( ob_get_level() > $wopb_buffer_level_2 ) {
 					if ( ! ob_end_clean() ) {
@@ -148,4 +153,3 @@ class Product_Meta {
 		return $wraper_before . $content . $wraper_after;
 	}
 }
-// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

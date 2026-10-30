@@ -36,7 +36,10 @@ class Saved_Templates {
 	 * @return NULL
 	 */
 	public function templates_table_content( $column_name, $post_id ) {
-		echo '<code class="wopb-shortcode-copy">[product_blocks id="' . esc_attr( $post_id ) . '"]</code>';
+		echo wp_kses(
+			'<code class="wopb-shortcode-copy">[product_blocks id="' . absint( $post_id ) . '"]</code>',
+			array( 'code' => array( 'class' => true ) )
+		);
 	}
 
 	/**

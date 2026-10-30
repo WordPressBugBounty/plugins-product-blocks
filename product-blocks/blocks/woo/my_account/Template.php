@@ -15,7 +15,7 @@ if ( is_user_logged_in() && $attr['showProfile'] ) { ?>
 }
 ?>
 
-<div class="wopb-my-account-container<?php echo ! is_user_logged_in() ? esc_attr( ' wopb-guest-account-container' ) : ''; ?>">
+<div class="wopb-my-account-container<?php echo esc_attr( ! is_user_logged_in() ? ' wopb-guest-account-container' : '' ); ?>">
 	<?php
 	if ( class_exists( 'WC_Shortcode_My_Account' ) ) {
 		WC_Shortcode_My_Account::output( array() );

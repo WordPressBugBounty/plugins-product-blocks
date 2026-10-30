@@ -22,8 +22,9 @@ defined( 'ABSPATH' ) || exit;
 if ( is_user_logged_in() || 'no' === get_option( 'woocommerce_enable_checkout_login_reminder' ) ) {
 	return;
 }
-$hidden  = true;
-$message = esc_html__( 'If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing section.', 'product-blocks' );
+$hidden   = true;
+$redirect = wc_get_checkout_url();
+$message  = esc_html__( 'If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing section.', 'product-blocks' );
 
 ?>
 <div class="wopb-checkout-login-container">
@@ -31,10 +32,10 @@ $message = esc_html__( 'If you have shopped with us before, please enter your de
 		<?php wc_print_notice( apply_filters( 'woocommerce_checkout_login_message', esc_html__( 'Returning customer?', 'product-blocks' ) ) . ' <a href="#" class="showlogin">' . esc_html__( 'Click here to login', 'product-blocks' ) . '</a>', 'notice' ); ?>
 	</div>
 
-	<div class="woocommerce-form woocommerce-form-login login" <?php echo ( $hidden ) ? 'style="display:none;"' : ''; ?>>
+	<div class="woocommerce-form woocommerce-form-login login" <?php echo $hidden ? 'style="' . esc_attr( 'display:none;' ) . '"' : ''; ?>>
 
 		<?php do_action( 'woocommerce_login_form_start' ); ?>
-		<?php echo ( $message ) ? wpautop( wptexturize( $message ) ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<?php echo wp_kses( $message ? wpautop( wptexturize( $message ) ) : '', wopb_function()->allowed_html_tags() ); ?>
 
 		<span class="wopb-form-error"></span>
 		<p class="form-row form-row-first">

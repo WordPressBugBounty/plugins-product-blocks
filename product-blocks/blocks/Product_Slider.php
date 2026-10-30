@@ -97,7 +97,7 @@ class Product_Slider {
 				$wopb_buffer_level_1 = ob_get_level();
 				ob_start();
 				try {
-					echo '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( $attr['blockId'] ) . ' ' . esc_attr( $attr['className'] ) . ' ' . esc_attr( $attr['align'] ) . ' wopb-product-slider-block">';
+					echo '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( $attr['blockId'] ) . ' ' . esc_attr( $attr['className'] ) . ' ' . esc_attr( $attr['align'] ) . ' wopb-product-slider-block">';
 					?>
 						<div class="wopb-block-wrapper">
 							<div class="wopb-slider-section">
@@ -117,7 +117,7 @@ class Product_Slider {
 														ob_start();
 													try {
 														$this->content_section( $product, $attr );
-														$section_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+														echo wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 													} finally {
 														while ( ob_get_level() > $wopb_buffer_level_2 ) {
 															if ( ! ob_end_clean() ) {
@@ -125,13 +125,12 @@ class Product_Slider {
 															}
 														}
 													}
-														echo $section_content_safe; // phpcs:ignore
 													if ( $attr['showImage'] ) {
 														$wopb_buffer_level_3 = ob_get_level();
 														ob_start();
 														try {
 															$this->image_section( $product, $_discount, $attr );
-															$section_image_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+															echo wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 														} finally {
 															while ( ob_get_level() > $wopb_buffer_level_3 ) {
 																if ( ! ob_end_clean() ) {
@@ -139,7 +138,6 @@ class Product_Slider {
 																}
 															}
 														}
-														echo $section_image_safe; // phpcs:ignore
 													}
 													?>
 													</div>
@@ -159,14 +157,14 @@ class Product_Slider {
 										<div class="wopb-slick-prev">
 											<div class="slick-arrow slick-prev">
 											<?php
-												echo wp_kses( wopb_function()->svg_icon( $nav[0] ), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+												echo wp_kses( wopb_function()->svg_icon( $nav[0] ), $this->allowed_html_tags );
 											?>
 											</div>
 										</div>
 										<div class="wopb-slick-next">
 											<div class="slick-arrow slick-next">
 											<?php
-												echo wp_kses( wopb_function()->svg_icon( $nav[1] ), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+												echo wp_kses( wopb_function()->svg_icon( $nav[1] ), $this->allowed_html_tags );
 											?>
 											</div>
 										</div>
@@ -179,7 +177,7 @@ class Product_Slider {
 						</div>
 					</div>
 					<?php
-					return ob_get_clean();
+					return wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 				} finally {
 					while ( ob_get_level() > $wopb_buffer_level_1 ) {
 						if ( ! ob_end_clean() ) {
@@ -202,7 +200,7 @@ class Product_Slider {
 				ob_start();
 				try {
 					$this->taxonomyContent( $product, $attr );
-					$tax_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+					echo wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 				} finally {
 					while ( ob_get_level() > $wopb_buffer_level_4 ) {
 						if ( ! ob_end_clean() ) {
@@ -210,7 +208,6 @@ class Product_Slider {
 						}
 					}
 				}
-				echo $tax_content_safe; // phpcs:ignore
 			}
 			if ( $attr['showTitle'] ) {
 				?>
@@ -231,7 +228,7 @@ class Product_Slider {
 				ob_start();
 				try {
 					$this->taxonomyContent( $product, $attr );
-					$tax_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+					echo wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 				} finally {
 					while ( ob_get_level() > $wopb_buffer_level_5 ) {
 						if ( ! ob_end_clean() ) {
@@ -239,14 +236,13 @@ class Product_Slider {
 						}
 					}
 				}
-				echo $tax_content_safe; // phpcs:ignore
 			}
 			if ( $attr['priceOverDescription'] ) {
 				$wopb_buffer_level_6 = ob_get_level();
 				ob_start();
 				try {
 					$this->priceContent( $product, $attr );
-					$price_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+					echo wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 				} finally {
 					while ( ob_get_level() > $wopb_buffer_level_6 ) {
 						if ( ! ob_end_clean() ) {
@@ -254,13 +250,12 @@ class Product_Slider {
 						}
 					}
 				}
-				echo $price_content_safe; // phpcs:ignore
 			}
 			if ( $attr['showDescription'] ) {
 				?>
 				<div class="wopb-product-excerpt">
 				<?php
-					echo wopb_function()->excerpt( $product->get_short_description(), $attr['descriptionLimit'] ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo wp_kses( wopb_function()->excerpt( $product->get_short_description(), $attr['descriptionLimit'] ), wopb_function()->allowed_html_tags() );
 				?>
 				</div>
 				<?php
@@ -270,7 +265,7 @@ class Product_Slider {
 				ob_start();
 				try {
 					$this->priceContent( $product, $attr );
-					$price_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+					echo wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 				} finally {
 					while ( ob_get_level() > $wopb_buffer_level_7 ) {
 						if ( ! ob_end_clean() ) {
@@ -278,13 +273,12 @@ class Product_Slider {
 						}
 					}
 				}
-				echo $price_content_safe; // phpcs:ignore
 			}
 				$wopb_buffer_level_8 = ob_get_level();
 				ob_start();
 			try {
 				$this->cartContent( $product, $attr );
-				$cart_content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+				echo wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 			} finally {
 				while ( ob_get_level() > $wopb_buffer_level_8 ) {
 					if ( ! ob_end_clean() ) {
@@ -292,7 +286,6 @@ class Product_Slider {
 					}
 				}
 			}
-                echo $cart_content_safe; // phpcs:ignore
 			?>
 		</div>
 
@@ -328,13 +321,12 @@ class Product_Slider {
 						?>
 								<span class="wopb-sale-shape">
 							<?php
-								$shape_safe = wopb_function()->wp_kses_safe( $shape );
-								echo $shape_safe; // phpcs:ignore
+								echo wp_kses( $shape, wopb_function()->allowed_html_tags() );
 								$wopb_buffer_level_9 = ob_get_level();
 								ob_start();
 							try {
 								$this->saleStyle( $_discount, $attr );
-								$sale_style_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+								echo wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 							} finally {
 								while ( ob_get_level() > $wopb_buffer_level_9 ) {
 									if ( ! ob_end_clean() ) {
@@ -342,7 +334,6 @@ class Product_Slider {
 									}
 								}
 							}
-								echo $sale_style_safe; // phpcs:ignore
 							?>
 								</span>
 						<?php
@@ -351,7 +342,7 @@ class Product_Slider {
 						ob_start();
 						try {
 							$this->saleStyle( $_discount, $attr );
-							$sale_style_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+							echo wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 						} finally {
 							while ( ob_get_level() > $wopb_buffer_level_10 ) {
 								if ( ! ob_end_clean() ) {
@@ -359,7 +350,6 @@ class Product_Slider {
 								}
 							}
 						}
-						echo $sale_style_safe; // phpcs:ignore
 					}
 					?>
 					</div>
@@ -407,7 +397,7 @@ class Product_Slider {
 				if ( 'product_cat' === $attr['taxonomyType'] && $categories ) {
 					foreach ( $categories as $category ) {
 						?>
-							<a href="<?php echo esc_url( get_term_link( $category->term_id ) ); ?>" class="wopb-taxonomy"><?php echo esc_attr( $category->name ); ?></a>
+							<a href="<?php echo esc_url( get_term_link( $category->term_id ) ); ?>" class="wopb-taxonomy"><?php echo esc_html( $category->name ); ?></a>
 						<?php
 					}
 				}
@@ -415,7 +405,7 @@ class Product_Slider {
 				if ( 'product_tag' === $attr['taxonomyType'] && $tags ) {
 					foreach ( $tags as $tag ) {
 						?>
-							<a href="<?php echo esc_url( get_term_link( $tag->term_id ) ); ?>" class="wopb-taxonomy"><?php echo esc_attr( $tag->name ); ?></a>
+							<a href="<?php echo esc_url( get_term_link( $tag->term_id ) ); ?>" class="wopb-taxonomy"><?php echo esc_html( $tag->name ); ?></a>
 						<?php
 					}
 				}
@@ -441,7 +431,7 @@ class Product_Slider {
 					?>
 					<span class="wopb-prices wopb-<?php echo esc_attr( $product->get_type() ); ?>-price">
 						<?php
-							echo wp_kses( $product->get_price_html(), $this->allowed_html_tags ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							echo wp_kses( $product->get_price_html(), $this->allowed_html_tags );
 						?>
 					</span>
 				</span>
@@ -458,11 +448,11 @@ class Product_Slider {
 					<?php if ( $attr['showQty'] && $product->is_type( 'simple' ) ) { ?>
 						<div class="quantity wopb-qty-wrap">
 							<?php if ( $attr['showPlusMinus'] && 'both' === $attr['plusMinusPosition'] ) { ?>
-								<span class="wopb-cart-minus wopb-add-to-cart-minus"><?php echo wp_kses( wopb_function()->svg_icon( 'minus' ), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+								<span class="wopb-cart-minus wopb-add-to-cart-minus"><?php echo wp_kses( wopb_function()->svg_icon( 'minus' ), $this->allowed_html_tags ); ?></span>
 						<?php } ?>
 							<input type="number" class="wopb-qty" step="1" min="1" max="" name="quantity" value="1" title="Qty" size="4" placeholder="" inputMode="numeric"/>
 						<?php if ( $attr['showPlusMinus'] && 'both' === $attr['plusMinusPosition'] ) { ?>
-							<span class="wopb-cart-plus wopb-add-to-cart-plus"><?php echo wp_kses( wopb_function()->svg_icon( 'plus' ), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+							<span class="wopb-cart-plus wopb-add-to-cart-plus"><?php echo wp_kses( wopb_function()->svg_icon( 'plus' ), $this->allowed_html_tags ); ?></span>
 							<?php
 						}
 						if ( $attr['showPlusMinus'] && ( 'left' === $attr['plusMinusPosition'] || 'right' === $attr['plusMinusPosition'] ) ) {
@@ -473,7 +463,7 @@ class Product_Slider {
 								ob_start();
 							try {
 								$this->plusMinusContent();
-								$plus_Minus_Content_safe = wopb_function()->wp_kses_safe( ob_get_clean() );
+								echo wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 							} finally {
 								while ( ob_get_level() > $wopb_buffer_level_11 ) {
 									if ( ! ob_end_clean() ) {
@@ -481,7 +471,6 @@ class Product_Slider {
 									}
 								}
 							}
-								echo $plus_Minus_Content_safe; // phpcs:ignore
 							?>
 							</span>
 							<?php
@@ -500,7 +489,7 @@ class Product_Slider {
 						<a
 							href="<?php echo esc_url( $product->add_to_cart_url() ); ?>"
 							data-product_id="<?php echo esc_attr( $product->get_id() ); ?>"
-							class="wopb-product-cart add_to_cart_button <?php echo esc_html( $cart_btn_class ); ?>"
+							class="wopb-product-cart add_to_cart_button <?php echo esc_attr( $cart_btn_class ); ?>"
 							data-postid="<?php echo esc_attr( $product->get_id() ); ?>"
 						>
 							<?php echo esc_html( $cart_text ); ?>
@@ -514,8 +503,7 @@ class Product_Slider {
 				</form>
 				<?php
 				if ( $after_loop = apply_filters( 'wopb_after_loop_item', $content = '' ) ) {
-					$after_loop_safe = wopb_function()->wp_kses_safe( $after_loop );
-					echo '<div class="wopb-after-loop-item">' . $after_loop_safe . '</div>'; // phpcs:ignore
+					echo '<div class="wopb-after-loop-item">' . wp_kses( $after_loop, wopb_function()->allowed_html_tags() ) . '</div>';
 				}
 				?>
 			</div>
@@ -525,8 +513,8 @@ class Product_Slider {
 
 	public function plusMinusContent() {
 		?>
-		<span class="wopb-cart-plus wopb-add-to-cart-plus"><?php echo wp_kses( wopb_function()->svg_icon( 'plus' ), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
-		<span class="wopb-cart-minus wopb-add-to-cart-minus"><?php echo wp_kses( wopb_function()->svg_icon( 'minus' ), $this->allowed_html_tags ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></span>
+		<span class="wopb-cart-plus wopb-add-to-cart-plus"><?php echo wp_kses( wopb_function()->svg_icon( 'plus' ), $this->allowed_html_tags ); ?></span>
+		<span class="wopb-cart-minus wopb-add-to-cart-minus"><?php echo wp_kses( wopb_function()->svg_icon( 'minus' ), $this->allowed_html_tags ); ?></span>
 		<?php
 	}
 }

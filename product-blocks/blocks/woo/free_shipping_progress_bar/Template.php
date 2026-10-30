@@ -37,8 +37,7 @@ function wopb_free_shipping_progress_bar( $free_shipping_progress, $attr ) {
 <div class="wopb-progress-bar wopb-free-progress-bar-section">
 	<?php
 	if ( $attr['progressTop'] ) {
-		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo wopb_free_shipping_progress_bar( $free_shipping_progress, $attr );
+		echo wp_kses( wopb_free_shipping_progress_bar( $free_shipping_progress, $attr ), wopb_function()->allowed_html_tags() );
 	}
 	?>
 	<div class="wopb-progress-msg">
@@ -49,7 +48,7 @@ function wopb_free_shipping_progress_bar( $free_shipping_progress, $attr ) {
 			<strong>
 				<span class="woocommerce-Price-amount amount wopb-shippingRemainingAmount">
 					<?php
-						echo wc_price( $free_shipping_cart_due ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo wp_kses( wc_price( $free_shipping_cart_due ), wopb_function()->allowed_html_tags() );
 					?>
 				</span>
 			</strong>
@@ -58,7 +57,7 @@ function wopb_free_shipping_progress_bar( $free_shipping_progress, $attr ) {
 	</div>
 	<?php
 	if ( ! $attr['progressTop'] ) {
-		echo wopb_free_shipping_progress_bar( $free_shipping_progress, $attr ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wp_kses( wopb_free_shipping_progress_bar( $free_shipping_progress, $attr ), wopb_function()->allowed_html_tags() );
 	}
 	?>
 </div>

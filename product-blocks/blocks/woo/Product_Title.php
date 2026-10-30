@@ -3,8 +3,6 @@ namespace WOPB\blocks;
 
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
-
 class Product_Title {
 
 	public function __construct() {
@@ -28,20 +26,20 @@ class Product_Title {
 		$block_name    = 'product-title';
 		$wraper_before = $wraper_after = $content = '';
 
-		$product = wc_get_product();
+		$product = wc_get_product(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 
 		if ( ! empty( $product ) ) {
 			$title_tag         = isset( $attr['titleTag'] ) && in_array( $attr['titleTag'], wopb_function()->allowed_block_tags(), true ) ? $attr['titleTag'] : 'h1';
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-			$wraper_before              .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
+			$wraper_before              .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . '">';
 				$wraper_before          .= '<div class="wopb-product-wrapper">';
 					$content            .= '<' . esc_attr( $title_tag ) . ' class="product_title entry-title wopb-builder-product-title">' . wp_kses_post( $product->get_title() ) . '</' . esc_attr( $title_tag ) . '>';
 					$wopb_buffer_level_1 = ob_get_level();
 					ob_start();
 			try {
 				do_action( 'wopb_after_single_product_title' );
-				$content .= ob_get_clean();
+				$content .= wp_kses( ob_get_clean(), wopb_function()->allowed_form_html() );
 			} finally {
 				while ( ob_get_level() > $wopb_buffer_level_1 ) {
 					if ( ! ob_end_clean() ) {
@@ -56,4 +54,3 @@ class Product_Title {
 		return $wraper_before . $content . $wraper_after;
 	}
 }
-// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

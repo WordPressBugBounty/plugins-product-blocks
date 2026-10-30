@@ -46,7 +46,7 @@ class Heading {
 		$attr['className']   = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 		$attr['align']       = ! empty( $attr['align'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
 
-		$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( $attr['blockId'] ) . ' ' . ( isset( $attr['className'] ) ? $attr['className'] : '' ) . ( isset( $attr['align'] ) ? ' align' . $attr['align'] : '' ) . '">';
+		$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( $attr['blockId'] ) . ' ' . ( isset( $attr['className'] ) ? esc_attr( $attr['className'] ) : '' ) . ( isset( $attr['align'] ) ? ' align' . esc_attr( $attr['align'] ) : '' ) . '">';
 			$wraper_before .= '<div class="wopb-block-wrapper">';
 				include WOPB_PATH . 'blocks/template/heading.php';
 			$wraper_before .= '</div>';

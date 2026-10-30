@@ -20,7 +20,7 @@ $id = $settings->template;
 			}
 			wp_reset_postdata();
 		}
-	} elseif ( isset( $_GET['fl_builder'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	} elseif ( isset( $_GET['fl_builder'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: the builder URL flag only chooses whether to show the editor placeholder; nothing is saved.
 			echo '<p style="text-align:center;">' . sprintf(
 					/* translators: %s: is no of template */
 				esc_html__(

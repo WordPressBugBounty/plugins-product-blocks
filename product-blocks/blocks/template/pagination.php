@@ -38,13 +38,13 @@ if ( is_product_taxonomy() && ! $has_extra_filters ) {
 	);
 }
 if ( isset( $query_vars['post__not_in'] ) ) {
-	$filter_attributes['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+	$filter_attributes['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- passes the main query's own exclusions on to the pagination request; not a query here.
 }
 
 $data_filter_attributes = ' data-filter-attributes="' . esc_attr( wp_json_encode( $filter_attributes ) ) . '"';
 $wrapper_main_content  .= '<div data-archive-builder="'
-							. ( ( is_archive() || is_search() || is_product_taxonomy() || is_product_tag() ) && ! is_shop() ) . '"
-							 data-search-block="' . is_search() . '"
+							. esc_attr( ( is_archive() || is_search() || is_product_taxonomy() || is_product_tag() ) && ! is_shop() ) . '"
+							 data-search-block="' . esc_attr( is_search() ) . '"
 							 class="wopb-pagination-wrap' . ( $attr['paginationAjax'] ? ' wopb-pagination-ajax-action' : '' ) . '"
 							 data-paged="1"
 							 data-blockid="' . esc_attr( $attr['blockId'] ) . '"

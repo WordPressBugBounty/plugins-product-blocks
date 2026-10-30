@@ -53,10 +53,10 @@ class Image {
 		$attr['btnText']     = wp_kses( $attr['btnText'], $allowed_html_tags );
 		$attr['headingText'] = wp_kses( $attr['headingText'], $allowed_html_tags );
 
-		$wraper_before             .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . ( isset( $attr['align'] ) ? ' align' . $attr['align'] : '' ) . '">';
+		$wraper_before             .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . ( isset( $attr['align'] ) ? ' align' . esc_attr( $attr['align'] ) : '' ) . '">';
 			$wraper_before         .= '<div class="wopb-block-wrapper">';
 				$wraper_before     .= '<figure class="wopb-image-block-wrapper">';
-					$wraper_before .= '<div class="wopb-image-block wopb-image-block-' . sanitize_html_class( $attr['imgAnimation'] ) . ( $attr['imgOverlay'] ? ' wopb-image-block-overlay wopb-image-block-' . sanitize_html_class( $attr['imgOverlayType'] ) : '' ) . '">';
+					$wraper_before .= '<div class="wopb-image-block wopb-image-block-' . esc_attr( sanitize_html_class( $attr['imgAnimation'] ) ) . ( $attr['imgOverlay'] ? ' wopb-image-block-overlay wopb-image-block-' . esc_attr( sanitize_html_class( $attr['imgOverlayType'] ) ) : '' ) . '">';
 						// Single Image
 						$img_arr = (array) $attr['imageUpload'];
 		if ( ! empty( $img_arr ) ) {
@@ -67,11 +67,11 @@ class Image {
 			}
 		}
 		if ( $attr['btnLink'] && ( 'button' === $attr['linkType'] ) ) {
-			$wraper_before .= '<div class="wopb-image-button wopb-image-button-' . sanitize_html_class( $attr['btnPosition'] ) . '"><a href="' . esc_url( $attr['btnLink'] ) . '" target="' . esc_attr( $attr['btnTarget'] ) . '">' . $attr['btnText'] . '</a></div>';
+			$wraper_before .= '<div class="wopb-image-button wopb-image-button-' . esc_attr( sanitize_html_class( $attr['btnPosition'] ) ) . '"><a href="' . esc_url( $attr['btnLink'] ) . '" target="' . esc_attr( $attr['btnTarget'] ) . '">' . esc_html( $attr['btnText'] ) . '</a></div>';
 		}
 					$wraper_before .= '</div>';
 		if ( 1 == $attr['headingEnable'] ) {
-			$wraper_before .= '<figcaption class="wopb-image-caption">' . $attr['headingText'] . '</figcaption>';
+			$wraper_before .= '<figcaption class="wopb-image-caption">' . esc_html( $attr['headingText'] ) . '</figcaption>';
 		}
 				$wraper_before .= '</figure>';
 			$wraper_before     .= '</div>';

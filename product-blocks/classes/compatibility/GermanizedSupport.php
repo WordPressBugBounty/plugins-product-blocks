@@ -79,16 +79,13 @@ class GermanizedSupport {
 					ob_start();
 					try {
 						$func();
-						$output = ob_get_clean();
+						echo wp_kses( ob_get_clean(), wopb_function()->allowed_form_html() );
 					} finally {
 						while ( ob_get_level() > $wopb_buffer_level_2 ) {
 							if ( ! ob_end_clean() ) {
 								break;
 							}
 						}
-					}
-					if ( trim( $output ) !== '' ) {
-						echo $output; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 					}
 				}
 			}
@@ -123,7 +120,10 @@ class GermanizedSupport {
 		 * @param string      $content Output HTML
 		 * @param \WC_Product $product Current product
 		 */
-		return apply_filters( 'wopb_germanized_contents_output', wopb_function()->wp_kses_safe( $content ), $product );
+		return wp_kses(
+			apply_filters( 'wopb_germanized_contents_output', wp_kses( $content, wopb_function()->allowed_form_html() ), $product ),
+			wopb_function()->allowed_form_html()
+		);
 	}
 
 	/**
@@ -134,7 +134,7 @@ class GermanizedSupport {
 	 * @return string
 	 */
 	public function shortcode_return() {
-		return wopb_function()->wp_kses_safe( self::get_content() );
+		return wp_kses( self::get_content(), wopb_function()->allowed_form_html() );
 	}
 
 	/**
@@ -143,6 +143,6 @@ class GermanizedSupport {
 	 * Usage: [wopb_germanized_contents_echo]
 	 */
 	public function shortcode_echo() {
-		echo wopb_function()->wp_kses_safe( self::get_content() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wp_kses( self::get_content(), wopb_function()->allowed_form_html() );
 	}
 }

@@ -38,7 +38,7 @@ if ( is_product_taxonomy() && ! $has_extra_filters ) {
 	);
 }
 if ( isset( $query_vars['post__not_in'] ) ) {
-	$filter_attributes['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in
+	$filter_attributes['post__not_in'] = $query_vars['post__not_in']; // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_post__not_in -- passes the main query's own exclusions on to the load-more request; not a query here.
 }
 $data_filter_attributes = ' data-filter-attributes="' . esc_attr( wp_json_encode( $filter_attributes ) ) . '"';
 if ( $pageNum > 1 ) {

@@ -106,8 +106,7 @@ class Condition {
 			?> 
 				<header id="wopb-header-template">
 					<?php
-						$header_safe = wopb_function()->wp_kses_safe( wopb_function()->content( $this->header_id ) );
-						echo $header_safe; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo wp_kses( wopb_function()->content( $this->header_id ), $this->allowed_template_html() );
 					?>
 				</header> 
 			<?php
@@ -142,14 +141,36 @@ class Condition {
 				}
 			}
 			?>
-							<footer id="wopb-footer-template" class="<?php echo esc_attr( 'wopb-builderid-' . $this->footer_id ); ?>" role="contentinfo">
+							<footer id="wopb-footer-template" class="<?php echo 'wopb-builderid-' . esc_attr( $this->footer_id ); ?>" role="contentinfo">
 					<?php
-						$footer_safe = wopb_function()->wp_kses_safe( wopb_function()->content( $this->footer_id ) );
-						echo $footer_safe; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo wp_kses( wopb_function()->content( $this->footer_id ), $this->allowed_template_html() );
 					?>
 				</footer> 
 			<?php
 		}
+	}
+
+	/**
+	 * Allowed HTML for rendered template content: the shared form list plus the SVG and microdata attributes the blocks print.
+	 *
+	 * @return array
+	 */
+	private function allowed_template_html() {
+		return wopb_function()->allowed_form_html(
+			array(
+				'svg'    => array(
+					'aria-hidden' => true,
+					'focusable'   => true,
+					'role'        => true,
+				),
+				'g'      => array( 'data-*' => true ),
+				'path'   => array(
+					'data-*'    => true,
+					'fill-rule' => true,
+				),
+				'strong' => array( 'itemprop' => true ),
+			)
+		);
 	}
 
 	public function include_builder_files( $template ) {

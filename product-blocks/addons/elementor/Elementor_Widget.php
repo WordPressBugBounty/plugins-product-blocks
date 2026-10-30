@@ -54,14 +54,31 @@ class ProductX_Widget extends \Elementor\Widget_Base {
 	}
 
 
+	/**
+	 * Whether Elementor is rendering for its editor or its live preview
+	 *
+	 * @return bool
+	 */
+	private function wopb_is_editor_request() {
+		if ( ! class_exists( '\Elementor\Plugin' ) || ! isset( \Elementor\Plugin::$instance ) ) {
+			return false;
+		}
+		$elementor = \Elementor\Plugin::$instance;
+		if ( isset( $elementor->editor ) && $elementor->editor->is_edit_mode() ) {
+			return true;
+		}
+		return isset( $elementor->preview ) && $elementor->preview->is_preview_mode();
+	}
+
 	protected function render() {
 		$settings   = $this->get_settings_for_display();
 		$body_class = get_body_class();
 		$id         = $settings['saved_template'];
 
 		if ( $id ) {
-            if ( isset($_GET['action']) || isset($_POST['action']) ) { //phpcs:ignore
-				echo wopb_function()->build_css_for_inline_print( $id, true ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			// The editor renders widgets through admin-ajax.php; its preview also needs the template CSS inline.
+			if ( wp_doing_ajax() || $this->wopb_is_editor_request() ) {
+				echo wopb_function()->build_css_for_inline_print( $id, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the helper returns a <style> tag whose id is esc_attr()'d and whose CSS has tags stripped; wp_kses() would turn child selectors (>) and & into entities and break the CSS.
 			}
 			echo '<div class="wopb-shortcode" data-postid="' . esc_attr( $id ) . '">';
 				$args      = array(
@@ -77,7 +94,7 @@ class ProductX_Widget extends \Elementor\Widget_Base {
 					wp_reset_postdata();
 				}
 				echo '</div>';
-		} elseif ( isset( $_GET['action'] ) && sanitize_text_field( wp_unslash( $_GET['action'] ) ) === 'elementor' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		} elseif ( $this->wopb_is_editor_request() ) {
 				/* translators: %s: is no of template */
 				echo '<p style="text-align:center;">' . sprintf( esc_html__( 'Pick a Template from your saved ones. Or create a template from: %s.', 'product-blocks' ) . ' ', '<strong><i>' . esc_html( 'Dashboard > WowStore > Saved Templates' ) . '</i></strong>' ) . '</p>';
 		}

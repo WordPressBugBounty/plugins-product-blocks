@@ -3,8 +3,6 @@ namespace WOPB\blocks;
 
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
-
 class Product_Short {
 
 	public function __construct() {
@@ -24,21 +22,21 @@ class Product_Short {
 
 	public function content( $attr ) {
 		global $product;
-		$product       = wc_get_product();
+		$product       = wc_get_product(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 		$block_name    = 'product-short';
 		$wraper_before = $wraper_after = $content = '';
 
 		if ( ! empty( $product ) ) {
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
+			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . '">';
 				$wraper_before .= '<div class="wopb-product-wrapper">';
 
 				$wopb_buffer_level_1 = ob_get_level();
 				ob_start();
 			try {
 				wc_get_template( 'single-product/short-description.php' );
-				$content .= ob_get_clean();
+				$content .= wp_kses( ob_get_clean(), wopb_function()->allowed_form_html() );
 			} finally {
 				while ( ob_get_level() > $wopb_buffer_level_1 ) {
 					if ( ! ob_end_clean() ) {
@@ -54,4 +52,3 @@ class Product_Short {
 		return $wraper_before . $content . $wraper_after;
 	}
 }
-// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

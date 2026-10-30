@@ -90,9 +90,9 @@ class CallForPrices {
 		) {
 			$html = $this->product_price_html( $product );
 			if ( is_product() ) {
-				echo wopb_function()->wp_kses_safe( $html ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo wp_kses( $html, wopb_function()->allowed_html_tags() );
 			} else {
-				return $html;
+				return wp_kses( $html, wopb_function()->allowed_html_tags() );
 			}
 		}
 		return $price;
@@ -252,11 +252,11 @@ class CallForPrices {
 			}
 			$html = '<a target="' . esc_attr( $target ) . '" class="' . esc_attr( $button_class ) . '" href="' . esc_url( $link ) . '">';
 			if ( wopb_function()->get_setting( 'call_icon_position' ) === 'before' ) {
-				$html .= $icon;
+				$html .= wp_kses( $icon, wopb_function()->allowed_html_tags() );
 			}
-			$html .= wopb_function()->get_setting( 'call_for_price_text' );
+			$html .= esc_html( wopb_function()->get_setting( 'call_for_price_text' ) );
 			if ( wopb_function()->get_setting( 'call_icon_position' ) === 'after' ) {
-				$html .= $icon;
+				$html .= wp_kses( $icon, wopb_function()->allowed_html_tags() );
 			}
 			$html .= '</a>';
 			return $html;
@@ -276,7 +276,7 @@ class CallForPrices {
 		$wopb_buffer_level_2 = ob_get_level();
 		ob_start();
 		try {
-			echo wopb_function()->wp_kses_safe( $this->price_condition_callback( '', $product ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo wp_kses( $this->price_condition_callback( '', $product ), wopb_function()->allowed_html_tags() );
 			$call_html = ob_get_clean();
 		} finally {
 			while ( ob_get_level() > $wopb_buffer_level_2 ) {
@@ -331,14 +331,17 @@ class CallForPrices {
 				$css .= wopb_function()->convert_css( 'hover', $single_btn_style );
 			$css     .= '}';
 			$css     .= '.wopb-call-to-action.wopb-call-price-single-btn svg{';
-				$css .= 'height: ' . ( ! empty( $settings['call_icon_size_single'] ) ? $settings['call_icon_size_single'] : '16' ) . 'px;';
-				$css .= 'width: ' . ( ! empty( $settings['call_icon_size_single'] ) ? $settings['call_icon_size_single'] : '16' ) . 'px;';
+				$icon_size = wopb_function()->sanitize_css_number( $settings['call_icon_size_single'] ?? '' );
+				$css      .= 'height: ' . ( ! empty( $icon_size ) ? $icon_size : '16' ) . 'px;';
+				$css      .= 'width: ' . ( ! empty( $icon_size ) ? $icon_size : '16' ) . 'px;';
 			$css     .= '}';
 			$css     .= '.wopb-call-to-action.wopb-call-price-single-btn svg path{';
-				$css .= 'fill: ' . ( ! empty( $settings['call_icon_color_single']['color'] ) ? $settings['call_icon_color_single']['color'] : '#5A5A5A' ) . ';';
+				$fill = wopb_function()->sanitize_css_color( $settings['call_icon_color_single']['color'] ?? '' );
+				$css .= 'fill: ' . ( '' !== $fill ? $fill : '#5A5A5A' ) . ';';
 			$css     .= '}';
 			$css     .= '.wopb-call-to-action.wopb-call-price-single-btn:hover svg path{';
-				$css .= 'fill: ' . ( ! empty( $settings['call_icon_color_single']['hover_color'] ) ? $settings['call_icon_color_single']['hover_color'] : '#5A5A5A' ) . ';';
+				$fill = wopb_function()->sanitize_css_color( $settings['call_icon_color_single']['hover_color'] ?? '' );
+				$css .= 'fill: ' . ( '' !== $fill ? $fill : '#5A5A5A' ) . ';';
 			$css     .= '}';
 			/* Single product page button style */
 
@@ -354,14 +357,17 @@ class CallForPrices {
 				$css .= wopb_function()->convert_css( 'hover', $shop_btn_style );
 			$css     .= '}';
 				$css .= '.wopb-call-to-action.wopb-call-price-shop-btn svg{';
-				$css .= 'height: ' . ( ! empty( $settings['call_icon_size_shop'] ) ? $settings['call_icon_size_shop'] : '16' ) . 'px;';
-				$css .= 'width: ' . ( ! empty( $settings['call_icon_size_shop'] ) ? $settings['call_icon_size_shop'] : '16' ) . 'px;';
+				$icon_size = wopb_function()->sanitize_css_number( $settings['call_icon_size_shop'] ?? '' );
+				$css      .= 'height: ' . ( ! empty( $icon_size ) ? $icon_size : '16' ) . 'px;';
+				$css      .= 'width: ' . ( ! empty( $icon_size ) ? $icon_size : '16' ) . 'px;';
 			$css     .= '}';
 			$css     .= '.wopb-call-to-action.wopb-call-price-shop-btn svg path{';
-				$css .= 'fill: ' . ( ! empty( $settings['call_icon_color_shop']['color'] ) ? $settings['call_icon_color_shop']['color'] : '#5A5A5A' ) . ';';
+				$fill = wopb_function()->sanitize_css_color( $settings['call_icon_color_shop']['color'] ?? '' );
+				$css .= 'fill: ' . ( '' !== $fill ? $fill : '#5A5A5A' ) . ';';
 			$css     .= '}';
 			$css     .= '.wopb-call-to-action.wopb-call-price-shop-btn:hover svg path{';
-				$css .= 'fill: ' . ( ! empty( $settings['call_icon_color_shop']['hover_color'] ) ? $settings['call_icon_color_shop']['hover_color'] : '#5A5A5A' ) . ';';
+				$fill = wopb_function()->sanitize_css_color( $settings['call_icon_color_shop']['hover_color'] ?? '' );
+				$css .= 'fill: ' . ( '' !== $fill ? $fill : '#5A5A5A' ) . ';';
 			$css     .= '}';
 			/* Shop page button style */
 
@@ -375,7 +381,7 @@ class CallForPrices {
 		ob_start();
 		try {
 			$this->price_condition_callback();
-			return $content . ob_get_clean();
+			return $content . wp_kses( ob_get_clean(), wopb_function()->allowed_html_tags() );
 		} finally {
 			while ( ob_get_level() > $wopb_buffer_level_1 ) {
 				if ( ! ob_end_clean() ) {

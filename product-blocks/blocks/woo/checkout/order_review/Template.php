@@ -3,17 +3,13 @@ defined( 'ABSPATH' ) || exit;
 
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
 
-if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- read-only shipping recalculation, mirrors WC_Shortcode_Cart::calculate_shipping() in WooCommerce core, which handles the same $_POST key without a nonce check.
-	if ( class_exists( 'WC_Shortcode_Cart' ) ) {
-		WC_Shortcode_Cart::calculate_shipping();
-	}
-}
+wopb_function()->maybe_calculate_shipping();
 WC()->cart->calculate_totals();
 WC()->cart->calculate_shipping();
 ?>
 
 <div class="wopb-checkout-review-order">
-	<h2 class="wopb-order-section-title"><?php echo ( $attr['showTitle'] ? esc_attr( $attr['sectionTitle'] ) : '' ); ?></h2>
+	<h2 class="wopb-order-section-title"><?php echo esc_html( $attr['showTitle'] ? $attr['sectionTitle'] : '' ); ?></h2>
 	<?php do_action( 'woocommerce_checkout_before_order_review' ); ?>
 	<div id="order_review" class="woocommerce-checkout-review-order">
 		<table class="shop_table wopb-checkout-review-table">
@@ -37,18 +33,18 @@ WC()->cart->calculate_shipping();
 								<div class="wopb-product-info">
 									<?php
 									if ( $attr['enableImage'] ) {
-										echo apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key ); //phpcs:ignore
+										echo wp_kses( apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key ), wopb_function()->allowed_html_tags() );
 									}
 									?>
 									<span class="wopb-product-name">
-										<?php echo wp_kses_post( apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key ) ) . '&nbsp;'; ?>
-                                        <?php echo apply_filters( 'woocommerce_checkout_cart_item_quantity', ' <strong class="product-quantity">' . sprintf( '&times;&nbsp;%s', $cart_item['quantity'] ) . '</strong>', $cart_item, $cart_item_key ); //phpcs:ignore  ?>
-                                        <?php echo wc_get_formatted_cart_item_data( $cart_item ); //phpcs:ignore ?>
+										<?php echo wp_kses( apply_filters( 'woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key ) . '&nbsp;', wopb_function()->allowed_html_tags() ); ?>
+									<?php echo wp_kses( apply_filters( 'woocommerce_checkout_cart_item_quantity', ' <strong class="product-quantity">' . sprintf( '&times;&nbsp;%s', $cart_item['quantity'] ) . '</strong>', $cart_item, $cart_item_key ), wopb_function()->allowed_html_tags() ); ?>
+									<?php echo wp_kses( wc_get_formatted_cart_item_data( $cart_item ), wopb_function()->allowed_html_tags() ); ?>
 									</span>
 								</div>
 							</td>
 							<td class="product-total">
-								<?php echo apply_filters( 'woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ), $cart_item, $cart_item_key ); //phpcs:ignore  ?>
+								<?php echo wp_kses( apply_filters( 'woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ), $cart_item, $cart_item_key ), wopb_function()->allowed_html_tags() ); ?>
 							</td>
 						</tr>
 						<?php

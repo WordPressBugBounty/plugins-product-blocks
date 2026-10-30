@@ -233,12 +233,14 @@ class VariationSwatches {
 			return $columns;
 		}
 
-        $attribute = $this->get_taxonomy_attribute( isset($_REQUEST['taxonomy'])? sanitize_text_field( wp_unslash( $_REQUEST['taxonomy'] ) ):'' ); // phpcs:ignore
+		// The taxonomy comes from the term itself, not from the request.
+		$term      = get_term( $term_id );
+		$attribute = $this->get_taxonomy_attribute( $term instanceof \WP_Term ? $term->taxonomy : '' );
 		$attribute_value = get_term_meta( $term_id, $attribute->attribute_type, true );
 
 		switch ( $attribute->attribute_type ) {
 			case self::COLOR:
-				echo '<div class="wopb-attribute-swatch-color" style="background-color:' . esc_attr( $attribute_value ) . ';"></div>';
+				echo '<div class="wopb-attribute-swatch-color" style="background-color:' . esc_attr( sanitize_hex_color( $attribute_value ) ) . ';"></div>';
 				break;
 			case self::IMAGE:
 				$image = $attribute_value ? wp_get_attachment_image_src( $attribute_value ) : '';
@@ -283,13 +285,24 @@ class VariationSwatches {
 	 * @since v.2.2.7
 	 */
 	public function save_term_meta( $term_id, $tt_id ) {
+		// The add-term form sends "_wpnonce_add-tag"; the edit-term form sends "_wpnonce" for "update-tag_{term_id}".
+		$add_nonce  = isset( $_POST['_wpnonce_add-tag'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce_add-tag'] ) ) : '';
+		$edit_nonce = isset( $_POST['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $add_nonce, 'add-tag' ) && ! wp_verify_nonce( $edit_nonce, 'update-tag_' . absint( $term_id ) ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_term', $term_id ) ) {
+			return;
+		}
+
 		foreach ( $this->attribute_types as $key => $value ) {
-            if (isset($_POST[$key])) { // phpcs:ignore
-				if ( $key == self::COLOR ) {
-                    update_term_meta($term_id, $key, sanitize_hex_color( wp_unslash( $_POST[$key] ) )); // phpcs:ignore
-				} else {
-                    update_term_meta($term_id, $key, sanitize_text_field( wp_unslash( $_POST[$key] ) )); // phpcs:ignore
-				}
+			if ( ! isset( $_POST[ $key ] ) ) {
+				continue;
+			}
+			if ( $key == self::COLOR ) {
+				update_term_meta( $term_id, $key, sanitize_hex_color( wp_unslash( $_POST[ $key ] ) ) );
+			} else {
+				update_term_meta( $term_id, $key, sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) );
 			}
 		}
 	}
@@ -306,14 +319,15 @@ class VariationSwatches {
 			return;
 		}
 
-		printf(
-			'<%s class="form-field form-required">%s<label for="term-%s">%s</label>%s',
-			'edit' === $form_type ? 'tr' : 'div',
-			'edit' === $form_type ? '<th>' : '',
-			esc_attr( $attribute_type ),
-			esc_html( $attribute_types[ $attribute_type ] ),
-			'edit' === $form_type ? '</th><td>' : ''
-		);
+		$is_edit_form = 'edit' === $form_type;
+		echo '<' . tag_escape( $is_edit_form ? 'tr' : 'div' ) . ' class="form-field form-required">';
+		if ( $is_edit_form ) {
+			echo '<th>';
+		}
+		echo '<label for="term-' . esc_attr( $attribute_type ) . '">' . esc_html( $attribute_types[ $attribute_type ] ) . '</label>';
+		if ( $is_edit_form ) {
+			echo '</th><td>';
+		}
 
 		switch ( $attribute_type ) {
 			case self::COLOR:
@@ -334,7 +348,7 @@ class VariationSwatches {
 					<a class="button" id="wopb-term-upload-img-btn">
 						<?php esc_html_e( 'Upload Image', 'product-blocks' ); ?>
 					</a>
-					<a class="button <?php echo empty( $attribute_value ) ? 'wopb-d-none' : ''; ?>" id="wopb-term-img-remove-btn">
+					<a class="button <?php echo esc_attr( empty( $attribute_value ) ? 'wopb-d-none' : '' ); ?>" id="wopb-term-img-remove-btn">
 						<?php esc_html_e( 'Remove', 'product-blocks' ); ?>
 					</a>
 				</div>
@@ -349,7 +363,7 @@ class VariationSwatches {
 			default:
 		}
 
-		if ( 'edit' === $form_type ) {
+		if ( $is_edit_form ) {
 			echo '</td></tr>';
 		} else {
 			echo '</div>';
@@ -367,7 +381,12 @@ class VariationSwatches {
 			return;
 		}
 		global $thepostid;
-        $product_id = isset($_POST['post_id']) ? absint( sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) ) : $thepostid; // phpcs:ignore
+		$product_id = $thepostid;
+		// WooCommerce re-renders the attribute rows through its "save-attributes" AJAX request, which names the product in "post_id".
+		$security = isset( $_POST['security'] ) ? sanitize_text_field( wp_unslash( $_POST['security'] ) ) : '';
+		if ( isset( $_POST['post_id'] ) && wp_verify_nonce( $security, 'save-attributes' ) ) {
+			$product_id = absint( sanitize_text_field( wp_unslash( $_POST['post_id'] ) ) );
+		}
 		$all_terms  = get_terms(
 			array(
 				'taxonomy'   => $attribute->get_taxonomy(),
@@ -396,7 +415,7 @@ class VariationSwatches {
 
 		<button class="button plus select_all_attributes"><?php esc_html_e( 'Select all', 'product-blocks' ); ?></button>
 		<button class="button minus select_no_attributes"><?php esc_html_e( 'Select none', 'product-blocks' ); ?></button>
-		<button class="button fr plus add_new_attribute" data-type="<?php echo esc_html( $taxonomy->attribute_type ); ?>">
+		<button class="button fr plus add_new_attribute" data-type="<?php echo esc_attr( $taxonomy->attribute_type ); ?>">
 			<?php esc_html_e( 'Add new', 'product-blocks' ); ?>
 		</button>
 		<?php
@@ -442,7 +461,7 @@ class VariationSwatches {
 						$name     = apply_filters( 'woocommerce_variation_option_name', $term->name );
 						$tooltip  = '';
 						if ( wopb_function()->get_setting( 'variation_switch_tooltip_enable' ) === 'yes' ) {
-							$tooltip .= '<span class="wopb-variation-swatch-tooltip">' . ( $term->description ? $term->description : $name ) . '</span>';
+							$tooltip .= '<span class="wopb-variation-swatch-tooltip">' . wp_kses_post( $term->description ? $term->description : $name ) . '</span>';
 						}
 
 						$variation_enable = self::variation_enable_check( $get_variation_product, $term, $attribute, $taxonomy_attribute );
@@ -457,17 +476,22 @@ class VariationSwatches {
 
 						switch ( $taxonomy_attribute->attribute_type ) {
 							case self::COLOR:
-								$bg_color            = get_term_meta( $term->term_id, $taxonomy_attribute->attribute_type, true );
-								list($r, $g, $b)     = sscanf( $bg_color, '#%02x%02x%02x' );
+								$bg_color            = sanitize_hex_color( get_term_meta( $term->term_id, $taxonomy_attribute->attribute_type, true ) );
+								$bg_color            = $bg_color ? $bg_color : '#000000';
+								$hex_color           = ltrim( $bg_color, '#' );
+								if ( 3 === strlen( $hex_color ) ) {
+									$hex_color = $hex_color[0] . $hex_color[0] . $hex_color[1] . $hex_color[1] . $hex_color[2] . $hex_color[2];
+								}
+								list($r, $g, $b)     = sscanf( $hex_color, '%02x%02x%02x' );
 								$color               = "rgba($r,$g,$b,0.5)";
-								$custom_style       .= "background-color: $bg_color; color: $color;";
+								$swatch_style        = $custom_style . "background-color: $bg_color; color: $color;";
 								$variation_swatches .= sprintf(
 									'<span class="wopb-swatch wopb-swatch-color wopb-swatch-%s %s" style="%s" data-value="%s" data-name="%s" data-variation_id="%s">%s</span>',
 									esc_attr( $term->slug ),
 									esc_attr( $selected ),
-									$custom_style,
+									esc_attr( safecss_filter_attr( $swatch_style ) ),
 									esc_attr( $term->slug ),
-									esc_html( $name ),
+									esc_attr( $name ),
 									esc_attr( $data_variation_id ),
 									wp_kses_post( $tooltip )
 								);
@@ -495,10 +519,10 @@ class VariationSwatches {
 									esc_attr( $term->slug ),
 									esc_attr( $selected ),
 									esc_attr( $term->slug ),
-									esc_html( $name ),
+									esc_attr( $name ),
 									esc_attr( $data_variation_id ),
 									esc_url( $image ),
-									esc_html( $name ),
+									esc_attr( $name ),
 									wp_kses_post( $tooltip )
 								);
 								break;
@@ -518,9 +542,9 @@ class VariationSwatches {
 									'<span class="wopb-swatch wopb-swatch-label' . $label_class . ' swatch-%s %s" style="%s" data-value="%s" data-name="%s" data-variation_id="%s">%s%s</span>%s',
 									esc_attr( $term->slug ),
 									esc_attr( $selected ),
-									$custom_style,
+									esc_attr( safecss_filter_attr( $custom_style ) ),
 									esc_attr( $term->slug ),
-									esc_html( $name ),
+									esc_attr( $name ),
 									esc_attr( $data_variation_id ),
 									esc_html( $label ),
 									wp_kses_post( $tooltip ),
@@ -565,7 +589,7 @@ class VariationSwatches {
 					'<span class="wopb-swatch wopb-swatch-label' . $label_class . ' swatch-%s %s" style="%s" data-value="%s" data-name="%s">%s%s</span>%s',
 					esc_attr( $option ),
 					$selected,
-					$custom_style,
+					esc_attr( safecss_filter_attr( $custom_style ) ),
 					esc_attr( $option ),
 					esc_attr( $option ),
 					esc_html( $label ),
@@ -637,8 +661,18 @@ class VariationSwatches {
 				$content = $this->loop_variation_form( '', $product );
 			}
 		}
-		$content_safe = wopb_function()->wp_kses_safe( $content );
-        echo $content_safe; // phpcs:ignore
+		echo wp_kses(
+			$content,
+			wopb_function()->allowed_html_tags(
+				array(
+					'select' => array(
+						'id'         => true,
+						'required'   => true,
+						'aria-label' => true,
+					),
+				)
+			)
+		);
 	}
 
 	/**
@@ -697,7 +731,7 @@ class VariationSwatches {
 			$attribute_keys       = array_keys( $attributes );
 			$data_variation       = '';
 			if ( ! is_admin() ) {
-				$data_variation = 'data-product_variations="' . htmlspecialchars( wp_json_encode( $available_variations ) ) . '"';
+				$data_variation = 'data-product_variations="' . esc_attr( wp_json_encode( $available_variations ) ) . '"';
 			}
 			$html         .= '<div class="' . esc_attr( $variation_class ) . '" data-product_id="' . esc_attr( $product->get_id() ) . '" ' . $data_variation . '>';
 				$html     .= '<table class="variations" cellspacing="0">';
@@ -752,16 +786,20 @@ class VariationSwatches {
 	public function wopb_loop_add_to_cart_ajax() {
 		if ( ! isset( $_POST['product_id'] ) ||
 			! isset( $_POST['wopb_nonce'] ) ||
+			! is_string( $_POST['wopb_nonce'] ) ||
 			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wopb_nonce'] ) ), 'wopb-nonce' )
 		) {
 			return;
 		}
 
-        $product_id        = apply_filters( 'woocommerce_add_to_cart_product_id', absint( sanitize_text_field( wp_unslash( $_POST['product_id'] ) ) ) ); // phpcs:ignore
-        $quantity          = ! empty( $_POST['quantity'] ) ? wc_stock_amount( absint( sanitize_text_field( wp_unslash( $_POST['quantity'] ) ) ) ) : 1; // phpcs:ignore
+		$product_id        = apply_filters( 'woocommerce_add_to_cart_product_id', absint( sanitize_text_field( wp_unslash( $_POST['product_id'] ) ) ) );
+		if ( ! $product_id || ! wopb_function()->can_view_product( $product_id ) ) {
+			return;
+		}
+		$quantity          = ! empty( $_POST['quantity'] ) ? wc_stock_amount( absint( sanitize_text_field( wp_unslash( $_POST['quantity'] ) ) ) ) : 1;
 		$product_status    = get_post_status( $product_id );
-        $variation_id      = ! empty( $_POST['variation_id'] ) ? absint( sanitize_text_field( wp_unslash( $_POST['variation_id'] ) ) ) : 0; // phpcs:ignore
-        $variation         = ! empty( $_POST['variation'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['variation'] ) ) : array(); // phpcs:ignore
+		$variation_id      = ! empty( $_POST['variation_id'] ) ? absint( sanitize_text_field( wp_unslash( $_POST['variation_id'] ) ) ) : 0;
+		$variation         = ! empty( $_POST['variation'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['variation'] ) ) : array();
 		$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity, $variation_id, $variation );
 
 		if ( $passed_validation && false !== WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation ) && 'publish' === $product_status ) {
@@ -797,7 +835,7 @@ class VariationSwatches {
 			return self::$tax_cache[ $attribute ];
 		}
 
-		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . $wpdb->prefix . 'woocommerce_attribute_taxonomies WHERE attribute_name = %s', $attribute ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . $wpdb->prefix . 'woocommerce_attribute_taxonomies WHERE attribute_name = %s', $attribute ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one prepared read of the swatch attribute's row (its type) from WooCommerce's attribute table; cached in self::$tax_cache for the request.
 
 		if ( null !== $row ) {
 			self::$tax_cache[ $attribute ] = $row;
@@ -863,14 +901,14 @@ class VariationSwatches {
 		if ( 'wopb_variation_swatches' === $key ) {
 			$settings = wopb_function()->get_setting();
 			$css      = '.variations_form .wopb-variation-swatches .wopb-swatch {';
-				$css .= 'min-width: ' . esc_attr( $settings['variation_switch_width'] ) . 'px;';
-				$css .= 'min-height: ' . esc_attr( $settings['variation_switch_height'] ) . 'px;';
+				$css .= 'min-width: ' . absint( $settings['variation_switch_width'] ?? 16 ) . 'px;';
+				$css .= 'min-height: ' . absint( $settings['variation_switch_height'] ?? 16 ) . 'px;';
 			$css     .= '}';
 			$css     .= '.variations_form .wopb-variation-swatches .wopb-swatch img {';
-				$css .= 'width: ' . esc_attr( $settings['variation_image_width'] ) . 'px;';
-				$css .= 'height: ' . esc_attr( $settings['variation_image_height'] ) . 'px;';
+				$css .= 'width: ' . absint( $settings['variation_image_width'] ?? 28 ) . 'px;';
+				$css .= 'height: ' . absint( $settings['variation_image_height'] ?? 28 ) . 'px;';
 			$css     .= '}';
-			if ( ! empty( $settings['variation_align_shop'] ) ) {
+			if ( isset( $settings['variation_align_shop'] ) && in_array( $settings['variation_align_shop'], array( 'flex-start', 'center', 'flex-end' ), true ) ) {
 				$css     .= '.wopb-loop-variations-form.wopb-woo-default {';
 					$css .= 'justify-content: ' . $settings['variation_align_shop'] . ';';
 				$css     .= '}';

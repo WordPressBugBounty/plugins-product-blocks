@@ -177,12 +177,16 @@ class FlipImage {
 	 * @since v.1.1.0
 	 */
 	public function feature_image_save( $post_id ) {
-		if (
-			( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
-			! isset( $_POST['wopb_flip_image_nonce'] ) ||
-			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['wopb_flip_image_nonce'] ) ), 'wopb_flip_image_save' ) ||
-			! current_user_can( 'edit_post', $post_id )
-		) {
+		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_revision( $post_id ) || 'product' !== get_post_type( $post_id ) ) {
+			return;
+		}
+		if ( ! isset( $_POST['wopb_flip_image_nonce'] ) || ! is_string( $_POST['wopb_flip_image_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['wopb_flip_image_nonce'] ) ), 'wopb_flip_image_save' ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
 		if ( isset( $_POST['_flip_image'] ) ) {

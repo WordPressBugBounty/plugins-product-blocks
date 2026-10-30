@@ -42,7 +42,7 @@ class Product_Price {
 			if ( ! empty( $product ) ) {
 				$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-				$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
+				$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . '">';
 				$wraper_before .= '<div class="wopb-product-wrapper">';
 
 				if ( $attr['salesLabel'] ) {
@@ -53,7 +53,7 @@ class Product_Price {
 				ob_start();
 				try {
 					woocommerce_template_single_price();
-					$content .= ob_get_clean();
+					$content .= wp_kses( ob_get_clean(), wopb_function()->allowed_form_html( array( 'span' => array( 'translate' => true ) ) ) );
 				} finally {
 					while ( ob_get_level() > $wopb_buffer_level_1 ) {
 						if ( ! ob_end_clean() ) {
@@ -64,9 +64,9 @@ class Product_Price {
 
 				if ( $product->get_sale_price() && (float) $product->get_regular_price() > 0 && $attr['salesBadge'] ) {
 					$percentage = 100 - ( $product->get_sale_price() / $product->get_regular_price() * 100 );
-					$content   .= '<div class="woocommerce-discount-badge">' . round( $percentage, 2 ) . '% ' . esc_html( $attr['badgeLabel'] ) . '</div>';
+					$content   .= '<div class="woocommerce-discount-badge">' . esc_html( round( $percentage, 2 ) ) . '% ' . esc_html( $attr['badgeLabel'] ) . '</div>';
 				}
-				$content = apply_filters( 'wopb_after_single_product_price', $content, $product );
+				$content = wp_kses( apply_filters( 'wopb_after_single_product_price', $content, $product ), wopb_function()->allowed_form_html( array( 'span' => array( 'translate' => true ) ) ) );
 
 				$wraper_after .= '</div>';
 				$wraper_after .= '</div>';

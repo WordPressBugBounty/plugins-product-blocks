@@ -70,7 +70,7 @@ class ProductVideo {
 	 */
 	public function video_in_thumbnails() {
 		global $product;
-		echo $this->product_video_thumbnail( '', $product, '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built from esc_url()/esc_attr()-escaped pieces; contains <video>/<iframe> markup that wp_kses_post would strip.
+		echo wp_kses( $this->product_video_thumbnail( '', $product, '' ), wopb_function()->allowed_html_tags() );
 	}
 
 	/**
@@ -172,7 +172,7 @@ class ProductVideo {
 			}
 		}
 
-		return $output;
+		return wp_kses( $output, wopb_function()->allowed_html_tags() );
 	}
 
 	/**
@@ -239,7 +239,7 @@ class ProductVideo {
 	 * @since v.4.0.0
 	 */
 	public function init_metabox_callback() {
-		$title = '<div class="wopb-single-product-meta-box"><img src="' . WOPB_URL . 'assets/img/logo-sm.svg" /><span>' . __( 'Product Video', 'product-blocks' ) . '</span></div>';
+		$title = '<div class="wopb-single-product-meta-box"><img src="' . esc_url( WOPB_URL . 'assets/img/logo-sm.svg' ) . '" /><span>' . esc_html__( 'Product Video', 'product-blocks' ) . '</span></div>';
 		add_meta_box(
 			'wowstore-product-video-metabox',
 			$title,
@@ -258,7 +258,7 @@ class ProductVideo {
 	 */
 	public function video_metabox_fields() {
 		global $post;
-		$data_value         = $this->get_data( $post->ID );
+		$data_value         = $this->get_player_settings( $post->ID );
 		$type_depend_class  = ' wopb-media-depend';
 		$type_depend_class .= $data_value['type'] !== 'media' ? ' wopb-d-none' : '';
 		$single_positions   = array(
@@ -269,11 +269,11 @@ class ProductVideo {
 		?>
 		<div class="wopb-video-meta-fields">
 			<div class="wopb-video-type-tabs">
-				<label class="wopb-video-type-tab<?php echo $data_value['type'] !== 'media' ? ' wopb-active' : ''; ?>">
+				<label class="wopb-video-type-tab<?php echo esc_attr( $data_value['type'] !== 'media' ? ' wopb-active' : '' ); ?>">
 					<input name="wopb_video_type" value="youtube" type="radio">
 					<?php echo esc_html__( 'Youtube / Vimeo', 'product-blocks' ); ?>
 				</label>
-				<label class="wopb-video-type-tab<?php echo $data_value['type'] === 'media' ? ' wopb-active' : ''; ?>">
+				<label class="wopb-video-type-tab<?php echo esc_attr( $data_value['type'] === 'media' ? ' wopb-active' : '' ); ?>">
 					<input name="wopb_video_type" value="media" type="radio">
 					<?php echo esc_html__( 'Media Library', 'product-blocks' ); ?>
 				</label>
@@ -310,10 +310,10 @@ class ProductVideo {
 						<option
 							value="<?php echo esc_attr( $key ); ?>"
 						<?php
-							echo ! empty( $data_value['single_position'] ) && $key == $data_value['single_position'] ? 'selected' : '';
+							selected( $data_value['single_position'] ?? '', $key );
 						?>
 						>
-						<?php echo esc_attr( $value ); ?>
+						<?php echo esc_html( $value ); ?>
 						</option>
 					<?php } ?>
 				</select>
@@ -340,25 +340,35 @@ class ProductVideo {
 	 * @since v.3.2.0
 	 */
 	public function product_meta_save( $post_id ) {
-		// Nonce already verified by WC_Meta_Box_Product_Data::save() before this hook fires.
-		if ( $post_id ) {
-			$data = $this->get_data( $post_id );
-			if ( isset( $_POST['wopb_video_type'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
-				$data['type'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_type'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			}
-			if ( isset( $_POST['wopb_video_url'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
-				$data['url'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_url'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			}
-			if ( isset( $_POST['wopb_video_image'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
-				$data['img'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_image'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			}
-			if ( isset( $_POST['wopb_video_image_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
-				$data['img_id'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_image_id'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			}
-			if ( isset( $_POST['wopb_video_single_position'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified upstream by WC_Meta_Box_Product_Data::save() before woocommerce_process_product_meta fires.
-				$data['single_position'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_single_position'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			}
-			update_post_meta( $post_id, '__wopb_product_video', $data );
+		if ( ! $post_id ) {
+			return;
 		}
+		if ( ! isset( $_POST['woocommerce_meta_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['woocommerce_meta_nonce'] ) ), 'woocommerce_save_data' ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+
+		$data = $this->get_data( $post_id );
+		if ( isset( $_POST['wopb_video_type'] ) ) {
+			$data['type'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_type'] ) );
+		}
+		if ( isset( $_POST['wopb_video_url'] ) ) {
+			$data['url'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_url'] ) );
+		}
+		if ( isset( $_POST['wopb_video_image'] ) ) {
+			$data['img'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_image'] ) );
+		}
+		if ( isset( $_POST['wopb_video_image_id'] ) ) {
+			$data['img_id'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_image_id'] ) );
+		}
+		if ( isset( $_POST['wopb_video_single_position'] ) ) {
+			$data['single_position'] = sanitize_text_field( wp_unslash( $_POST['wopb_video_single_position'] ) );
+		}
+		update_post_meta( $post_id, '__wopb_product_video', $data );
 	}
 }

@@ -79,28 +79,42 @@ class Custom_Font {
 	// Get Font Face
 	public function get_font_face( $settings, $font_name ) {
 		$font_src = array();
-		if ( $settings['woff'] ) {
-			array_push( $font_src, 'url(' . esc_url( $settings['woff'] ) . ') format("woff")' );
+		$formats  = array(
+			'woff'  => 'woff',
+			'woff2' => 'woff2',
+			'ttf'   => 'TrueType',
+			'svg'   => 'svg',
+			'eot'   => 'eot',
+		);
+		foreach ( $formats as $key => $format ) {
+			$url = isset( $settings[ $key ] ) && is_string( $settings[ $key ] ) ? esc_url_raw( $settings[ $key ] ) : '';
+			if ( $url ) {
+				$font_src[] = 'url(' . wp_json_encode( $url, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . ') format("' . $format . '")';
+			}
 		}
-		if ( $settings['woff2'] ) {
-			array_push( $font_src, 'url(' . esc_url( $settings['woff2'] ) . ') format("woff2")' );
-		}
-		if ( $settings['ttf'] ) {
-			array_push( $font_src, 'url(' . esc_url( $settings['ttf'] ) . ') format("TrueType")' );
-		}
-		if ( $settings['svg'] ) {
-			array_push( $font_src, 'url(' . esc_url( $settings['svg'] ) . ') format("svg")' );
-		}
-		if ( $settings['eot'] ) {
-			array_push( $font_src, 'url(' . esc_url( $settings['eot'] ) . ') format("eot")' );
-		}
-		$font_face = '@font-face {
-            font-family: "' . esc_attr( $font_name ) . '";
-            font-weight: ' . esc_attr( $settings['weight'] ) . ';
-            src: ' . implode( ', ', $font_src ) . ';
-        }';
+		$weight = $this->get_font_weight( $settings );
+		$font_name = wp_json_encode( sanitize_text_field( $font_name ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 
-		return $font_face;
+		return '@font-face {font-family: ' . $font_name . '; font-weight: ' . $weight . '; src: ' . implode( ', ', $font_src ) . ';}';
+	}
+
+
+	/**
+	 * The `<style>` tag of a font face.
+	 *
+	 * wp_kses() turns a raw `&` into `&amp;`, which CSS does not read back, so it is written as the CSS escape `\26 `, which means the same.
+	 *
+	 * @param string $font_face CSS from get_font_face().
+	 * @return string
+	 */
+	private function font_face_style( $font_face ) {
+		return str_replace( '&', '\\26 ', wopb_function()->esc_inline( $font_face ) );
+	}
+
+
+	private function get_font_weight( $settings ) {
+		$weight = isset( $settings['weight'] ) && is_scalar( $settings['weight'] ) ? trim( (string) $settings['weight'] ) : 'normal';
+		return preg_match( '/^(?:normal|bold|[1-9][0-9]{0,2}|1000)$/', $weight ) ? $weight : 'normal';
 	}
 
 
@@ -123,26 +137,26 @@ class Custom_Font {
 					$eot = true; }
 			}
 			$font_face = $this->get_font_face( $settings[0], get_the_title( $post_id ) );
-			echo wopb_function()->esc_inline( $font_face ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo wp_kses( $this->font_face_style( $font_face ), array( 'style' => array( 'type' => true ) ) );
 
 			switch ( $column_id ) {
 				case 0:
 					echo '<span class="wopb-custom-font-preview" style="font-family: ' . esc_attr( get_the_title( $post_id ) ) . '">' . esc_html__( 'The quick brown fox jumps over the lazy dog.', 'product-blocks' ) . '</span>';
 					break;
 				case 1:
-					echo '<span class="dashicons ' . ( $woff ? 'dashicons-yes' : 'dashicons-no-alt' ) . '"></span>';
+					echo '<span class="dashicons ' . esc_attr( $woff ? 'dashicons-yes' : 'dashicons-no-alt' ) . '"></span>';
 					break;
 				case 2:
-					echo '<span class="dashicons ' . ( $woff2 ? 'dashicons-yes' : 'dashicons-no-alt' ) . '"></span>';
+					echo '<span class="dashicons ' . esc_attr( $woff2 ? 'dashicons-yes' : 'dashicons-no-alt' ) . '"></span>';
 					break;
 				case 3:
-					echo '<span class="dashicons ' . ( $ttf ? 'dashicons-yes' : 'dashicons-no-alt' ) . '"></span>';
+					echo '<span class="dashicons ' . esc_attr( $ttf ? 'dashicons-yes' : 'dashicons-no-alt' ) . '"></span>';
 					break;
 				case 4:
-					echo '<span class="dashicons ' . ( $svg ? 'dashicons-yes' : 'dashicons-no-alt' ) . '"></span>';
+					echo '<span class="dashicons ' . esc_attr( $svg ? 'dashicons-yes' : 'dashicons-no-alt' ) . '"></span>';
 					break;
 				case 5:
-					echo '<span class="dashicons ' . ( $eot ? 'dashicons-yes' : 'dashicons-no-alt' ) . '"></span>';
+					echo '<span class="dashicons ' . esc_attr( $eot ? 'dashicons-yes' : 'dashicons-no-alt' ) . '"></span>';
 					break;
 				default:
 					break;
@@ -164,7 +178,7 @@ class Custom_Font {
 
 	public function set_data( $arr = array(), $font_name = '' ) {
 		?>
-		<div class="wopb-custom-font-container wopb-custom-font<?php echo esc_attr( empty( $arr ) ) ? '-copy' : ''; ?>">
+		<div class="wopb-custom-font-container wopb-custom-font<?php echo esc_attr( empty( $arr ) ? '-copy' : '' ); ?>">
 			<div class="wopb-custom-font-heading">
 				<div>
 					<label class="font-label"><?php echo esc_html__( 'Weight:  ', 'product-blocks' ); ?> <span class="wopb-custom-font-weight"> <?php echo esc_html( isset( $arr['weight'] ) ? $arr['weight'] : '' ); ?> </span></label>
@@ -186,16 +200,11 @@ class Custom_Font {
 					$styles = '';
 				if ( ! empty( $arr ) ) {
 					$font_face = $this->get_font_face( $arr, $font_name );
-					echo wopb_function()->esc_inline( $font_face ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-					$styles = 'style="font-family: ' . esc_attr( $font_name ) . '; font-weight: ' . esc_attr( $arr['weight'] ) . ' "';
+					echo wp_kses( $this->font_face_style( $font_face ), array( 'style' => array( 'type' => true ) ) );
+					$styles = 'font-family: ' . wp_json_encode( sanitize_text_field( $font_name ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '; font-weight: ' . $this->get_font_weight( $arr );
 				}
 				?>
-				<span 
-					<?php
-						$styles_safe = wopb_function()->wp_kses_safe( $styles );
-						echo $styles_safe;
-					?>
-										class="wopb-custom-font-preview"><?php echo esc_html__( 'The quick brown fox jumps over the lazy dog', 'product-blocks' ); ?>
+				<span style="<?php echo esc_attr( $styles ); ?>" class="wopb-custom-font-preview"><?php echo esc_html__( 'The quick brown fox jumps over the lazy dog', 'product-blocks' ); ?>
 				</span>
 				<div class="wopb-custom-font-actions">
 					<span class="wopb-custom-font-edit"><span class="dashicons dashicons-edit"></span><?php echo esc_html__( 'Edit', 'product-blocks' ); ?></span>
@@ -206,27 +215,27 @@ class Custom_Font {
 			<div class="wopb-custom-font-content">
 				<div class="wopb-font-file-list">
 					<label><?php echo esc_html__( 'WOFF File', 'product-blocks' ); ?></label>
-					<input type="text" name="woff[]" value="<?php echo isset( $arr['woff'] ) ? esc_attr( $arr['woff'] ) : ''; ?>" placeholder="<?php echo esc_html__( 'The web open Font Format, Used by Modern Browsers', 'product-blocks' ); ?>"/>
+					<input type="text" name="woff[]" value="<?php echo esc_attr( isset( $arr['woff'] ) ? $arr['woff'] : '' ); ?>" placeholder="<?php echo esc_attr__( 'The web open Font Format, Used by Modern Browsers', 'product-blocks' ); ?>"/>
 					<span class="button wopb-font-upload" type="font/woff" extension="woff"><span class="dashicons dashicons-upload"></span><?php echo esc_html__( 'Upload', 'product-blocks' ); ?></span>
 				</div>
 				<div class="wopb-font-file-list">
 					<label><?php echo esc_html__( 'WOFF2 File', 'product-blocks' ); ?></label>
-					<input type="text" name="woff2[]" value="<?php echo isset( $arr['woff2'] ) ? esc_attr( $arr['woff2'] ) : ''; ?>" placeholder="<?php echo esc_html__( 'The web open Font Format 2, Used by Super Modern Browsers', 'product-blocks' ); ?>"/>
+					<input type="text" name="woff2[]" value="<?php echo esc_attr( isset( $arr['woff2'] ) ? $arr['woff2'] : '' ); ?>" placeholder="<?php echo esc_attr__( 'The web open Font Format 2, Used by Super Modern Browsers', 'product-blocks' ); ?>"/>
 					<span class="button wopb-font-upload" type="font/woff2" extension="woff2"><span class="dashicons dashicons-upload"></span><?php echo esc_html__( 'Upload', 'product-blocks' ); ?></span>
 				</div>
 				<div class="wopb-font-file-list">
 					<label><?php echo esc_html__( 'TTF File', 'product-blocks' ); ?></label>
-					<input type="text" name="ttf[]" value="<?php echo isset( $arr['ttf'] ) ? esc_attr( $arr['ttf'] ) : ''; ?>" placeholder="<?php echo esc_html__( 'TrueType Fonts, Used for better supporting Safari, Android, iOS', 'product-blocks' ); ?>"/>
+					<input type="text" name="ttf[]" value="<?php echo esc_attr( isset( $arr['ttf'] ) ? $arr['ttf'] : '' ); ?>" placeholder="<?php echo esc_attr__( 'TrueType Fonts, Used for better supporting Safari, Android, iOS', 'product-blocks' ); ?>"/>
 					<span class="button wopb-font-upload" type="font/ttf" extension="ttf"><span class="dashicons dashicons-upload"></span><?php echo esc_html__( 'Upload', 'product-blocks' ); ?></span>
 				</div>
 				<div class="wopb-font-file-list">
 					<label><?php echo esc_html__( 'SVG File', 'product-blocks' ); ?></label>
-					<input type="text" name="svg[]" value="<?php echo isset( $arr['svg'] ) ? esc_attr( $arr['svg'] ) : ''; ?>" placeholder="<?php echo esc_html__( 'SVG font allow SVG to be used as glyphs when displaying text, Used by Legacy iOS', 'product-blocks' ); ?>"/>
+					<input type="text" name="svg[]" value="<?php echo esc_attr( isset( $arr['svg'] ) ? $arr['svg'] : '' ); ?>" placeholder="<?php echo esc_attr__( 'SVG font allow SVG to be used as glyphs when displaying text, Used by Legacy iOS', 'product-blocks' ); ?>"/>
 					<span class="button wopb-font-upload" type="image/svg+xml" extension="svg"><span class="dashicons dashicons-upload"></span><?php echo esc_html__( 'Upload', 'product-blocks' ); ?></span>
 				</div>
 				<div class="wopb-font-file-list">
 					<label><?php echo esc_html__( 'EOT File', 'product-blocks' ); ?></label>
-					<input type="text" name="eot[]" value="<?php echo isset( $arr['eot'] ) ? esc_attr( $arr['eot'] ) : ''; ?>" placeholder="<?php echo esc_html__( 'Embedded OpenType, Used by IE6-IE9 Browsers', 'product-blocks' ); ?>"/>
+					<input type="text" name="eot[]" value="<?php echo esc_attr( isset( $arr['eot'] ) ? $arr['eot'] : '' ); ?>" placeholder="<?php echo esc_attr__( 'Embedded OpenType, Used by IE6-IE9 Browsers', 'product-blocks' ); ?>"/>
 					<span class="button wopb-font-upload" type="application/vnd.ms-fontobject" extension="eot"><span class="dashicons dashicons-upload"></span><?php echo esc_html__( 'Upload', 'product-blocks' ); ?></span>
 				</div>
 			</div>
@@ -251,13 +260,16 @@ class Custom_Font {
 
 
 	public function metabox_save_data( $post_id ) {
-		if (
-			( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) ||
-			'wopb_custom_font' !== get_post_type( $post_id ) ||
-			! isset( $_POST['custom_font_nonce'] ) ||
-			! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['custom_font_nonce'] ) ), 'font_meta_box' ) ||
-			! current_user_can( 'edit_post', $post_id )
-		) {
+		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_revision( $post_id ) || 'wopb_custom_font' !== get_post_type( $post_id ) ) {
+			return;
+		}
+		if ( ! isset( $_POST['custom_font_nonce'] ) || ! is_string( $_POST['custom_font_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['custom_font_nonce'] ) ), 'font_meta_box' ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
 

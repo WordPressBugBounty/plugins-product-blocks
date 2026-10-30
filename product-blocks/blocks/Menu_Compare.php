@@ -63,17 +63,17 @@ class Menu_Compare {
 			$btn_class .= ' wopb-menu-compare-btn';
 		}
 
-		$wrapper_before         .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( $attr['blockId'] ) . ' ' . ( $attr['className'] ) . ( $attr['align'] ? ' align' . $attr['align'] : '' ) . '">';
+		$wrapper_before         .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( $attr['blockId'] ) . ' ' . esc_attr( $attr['className'] ) . ( $attr['align'] ? ' align' . esc_attr( $attr['align'] ) : '' ) . '">';
 			$wrapper_before     .= '<a ';
 				$wrapper_before .= $href_link;
-				$wrapper_before .= 'class="' . $btn_class . '"';
-				$wrapper_before .= ! empty( $compare_data['button_attr'] ) ? $compare_data['button_attr'] : '';
+				$wrapper_before .= 'class="' . esc_attr( $btn_class ) . '"';
+				$wrapper_before .= $this->sanitize_button_attributes( $compare_data['button_attr'] ?? '' );
 			$wrapper_before     .= '>';
 				$wrapper_before .= '<div class="wopb-menu-compare-icon">';
 		if ( 'icon' === $attr['iconType'] ) {
-			$wrapper_before .= wopb_function()->svg_icon( $attr['iconSvg'] );
+			$wrapper_before .= wp_kses( wopb_function()->svg_icon( $attr['iconSvg'] ), $this->allowed_icon_html() );
 		} else {
-			$wrapper_before .= '<img src=' . esc_url( isset( $attr['iconImage'] ) && $attr['iconImage']['url'] ? $attr['iconImage']['url'] : WOPB_URL . 'assets/img/wopb_fallback.jpg' ) . ' />';
+			$wrapper_before .= '<img src="' . esc_url( isset( $attr['iconImage'] ) && $attr['iconImage']['url'] ? $attr['iconImage']['url'] : WOPB_URL . 'assets/img/wopb_fallback.jpg' ) . '" />';
 		}
 		if ( $attr['showCount'] ) {
 			$wrapper_before     .= '<div class="wopb-menu-compare-count">';
@@ -82,7 +82,7 @@ class Menu_Compare {
 		}
 				$wrapper_before .= '</div>';
 		if ( $attr['showLabel'] && $attr['labelText'] ) {
-			$wrapper_before .= '<div class="wopb-menu-compare-label">' . $attr['labelText'];
+			$wrapper_before .= '<div class="wopb-menu-compare-label">' . esc_html( $attr['labelText'] );
 			$wrapper_before .= '</div>';
 		}
 
@@ -90,5 +90,59 @@ class Menu_Compare {
 		$wrapper_before     .= '</div>';
 
 		return $wrapper_before;
+	}
+
+	/**
+	 * Allowed HTML for the bundled SVG icons: the shared list plus the SVG attributes some icons use.
+	 *
+	 * @return array
+	 */
+	private function allowed_icon_html() {
+		return wopb_function()->allowed_html_tags(
+			array(
+				'svg'    => array(
+					'id'        => true,
+					'data-name' => true,
+				),
+				'g'      => array( 'data-name' => true ),
+				'path'   => array(
+					'id'        => true,
+					'data-name' => true,
+					'fill-rule' => true,
+					'transform' => true,
+				),
+				'rect'   => array(
+					'x' => true,
+					'y' => true,
+				),
+				'circle' => array(
+					'stroke'       => true,
+					'stroke-width' => true,
+				),
+			)
+		);
+	}
+
+	/**
+	 * Escape the button attributes returned by the menu data filter, including URLs read by JavaScript.
+	 *
+	 * @param mixed $attributes Button attribute markup.
+	 * @return string
+	 */
+	private function sanitize_button_attributes( $attributes ) {
+		if ( ! is_string( $attributes ) ) {
+			return '';
+		}
+		$output = '';
+		foreach ( wp_kses_hair( $attributes, wp_allowed_protocols() ) as $attribute ) {
+			$name = strtolower( $attribute['name'] );
+			if ( ! preg_match( '/^(?:data-[a-z0-9_-]+|aria-[a-z-]+|title|role|tabindex|href)$/D', $name ) ) {
+				continue;
+			}
+			$value   = wp_specialchars_decode( $attribute['value'], ENT_QUOTES );
+			$value   = in_array( $name, array( 'href', 'data-redirect', 'data-login-redirect' ), true ) ? esc_url( $value ) : esc_attr( $value );
+			$output .= ' ' . $name . '="' . $value . '"';
+		}
+		return $output;
 	}
 }

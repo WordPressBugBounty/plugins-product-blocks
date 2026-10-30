@@ -130,7 +130,7 @@ class Options {
 		if ( wopb_function()->show_upsell() ) {
 			// Evergreen default. Not a promo, so it stays here rather than in
 			// includes/notice/promos/ — a live entry there simply overrides it.
-			$text = esc_html__( 'Upgrade to Pro', 'product-blocks' );
+			$text = __( 'Upgrade to Pro', 'product-blocks' );
 			$url  = Xpo::generate_utm_link();
 
 			$promo = Notice::get_active_promo( 'plugin-meta' );
@@ -269,12 +269,11 @@ class Options {
 
 
 	public static function handle_external_redirects() {
-		if ( empty( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return;
-		}
-		if ( wopb_function()->get_screen() === 'wopb-pro' ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		// WordPress sets $plugin_page from the requested admin page before it runs this page callback.
+		global $plugin_page;
+		if ( 'wopb-pro' === $plugin_page ) {
 			$redirect_url = self::$go_pro_url ? self::$go_pro_url : wopb_function()->get_premium_link( '', 'main_menu_go_pro' );
-			wp_redirect( $redirect_url ); //phpcs:ignore
+			wp_redirect( $redirect_url ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect -- the highlighted WowStore menu item (free's upgrade link, or the URL Pro passes to add_go_pro_submenu()) goes to the plugin's own wpxpo.com page, an external host wp_safe_redirect() would refuse.
 			die();
 		}
 	}

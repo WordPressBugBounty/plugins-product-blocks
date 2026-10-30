@@ -69,7 +69,7 @@ class Blocks {
 	}
 
 	public function wopb_addcart_callback() {
-		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
 		$product_id  = isset( $_POST['postid'] ) ? sanitize_text_field( wp_unslash( $_POST['postid'] ) ) : '';
@@ -127,9 +127,10 @@ class Blocks {
 	 * @return NULL
 	 */
 	public function blocks() {
-        $request = isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : ''; // phpcs:ignore
+		// Divi and Elementor render their previews through admin-ajax.php, which carries no WowStore nonce. The action is read only on AJAX requests and only compared with those two builders' action names.
+		$request     = wp_doing_ajax() && isset( $_POST['action'] ) ? sanitize_text_field( wp_unslash( $_POST['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only: only compared with known builder action names to decide whether blocks register; nothing is saved.
 		$host        = isset( $_SERVER['HTTP_HOST'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '';
-        $host_url = isset($_SERVER['REQUEST_URI']) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : ''; // phpcs:ignore
+		$host_url    = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
 		$request_url = ( isset( $_SERVER['HTTPS'] ) && sanitize_text_field( wp_unslash( $_SERVER['HTTPS'] ) ) === 'on' ? 'https' : 'http' ) . '://' . $host . $host_url;
 		if (
 			(
@@ -268,7 +269,7 @@ class Blocks {
 	 * @return bool
 	 */
 	private function is_widget_block_active( $widget_block_id ) {
-		$sidebars = wp_get_sidebars_widgets(); //phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- used only in admin metabox to list widget 
+		$sidebars = wp_get_sidebars_widgets(); // phpcs:ignore Generic.PHP.ForbiddenFunctions.Found -- read-only: WordPress has no public function that says which widget area holds a block widget.
 		unset( $sidebars['wp_inactive_widgets'] );
 		foreach ( $sidebars as $widgets ) {
 			if ( is_array( $widgets ) && in_array( 'block-' . $widget_block_id, $widgets, true ) ) {
@@ -285,7 +286,7 @@ class Blocks {
 	 * @return NULL
 	 */
 	public function wopb_load_more_callback() {
-		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
 		$paged         = isset( $_POST['paged'] ) ? sanitize_text_field( wp_unslash( $_POST['paged'] ) ) : '';
@@ -296,7 +297,7 @@ class Blocks {
 		$blockName     = str_replace( '_', '/', $blockRaw );
 		$widgetBlockId = isset( $_POST['widgetBlockId'] ) ? sanitize_text_field( wp_unslash( $_POST['widgetBlockId'] ) ) : '';
 		if ( $paged && $blockId && $postId && $blockName ) {
-			$raw_filter_attributes = isset( $_POST['filterAttributes'] ) ? wp_unslash( $_POST['filterAttributes'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$raw_filter_attributes = isset( $_POST['filterAttributes'] ) ? map_deep( wp_unslash( $_POST['filterAttributes'] ), 'sanitize_text_field' ) : array();
 			$filterAttributes      = wopb_function()->rest_sanitize_params( ! empty( $raw_filter_attributes ) && is_array( $raw_filter_attributes ) ? $raw_filter_attributes : array() );
 			$params                = array(
 				'filterAttributes' => $filterAttributes,
@@ -345,8 +346,7 @@ class Blocks {
 					if ( $params['ajax_source'] ) {
 						$attr['ajax_source'] = $params['ajax_source'];
 					}
-					$new_content_safe = wopb_function()->wp_kses_safe( $newObj->content( $attr, true ) );
-                    echo $new_content_safe; // phpcs:ignore
+					echo wp_kses( $newObj->content( $attr, true ), wopb_function()->allowed_html_tags() );
 					die();
 				}
 			}
@@ -382,7 +382,7 @@ class Blocks {
 						)
 					);
 					if ( is_string( $html ) && '' !== $html ) {
-						echo wopb_function()->wp_kses_safe( $html ); // phpcs:ignore
+						echo wp_kses( $html, wopb_function()->allowed_html_tags() );
 						die();
 					}
 					$objName = str_replace( ' ', '_', ucwords( join( ' ', explode( '-', explode( '/', $blockName )[1] ) ) ) );
@@ -394,8 +394,7 @@ class Blocks {
 					$attr         = $newObj->get_attributes( true );
 					$attr         = array_merge( $attr, $params );
 					$attr         = array_merge( $attr, $value['attrs'] );
-					$content_safe = wopb_function()->wp_kses_safe( $newObj->content( $attr, true ) );
-					echo $content_safe; // phpcs:ignore
+					echo wp_kses( $newObj->content( $attr, true ), wopb_function()->allowed_html_tags() );
 					die();
 				}
 			}
@@ -412,7 +411,7 @@ class Blocks {
 	 * @return NULL
 	 */
 	public function wopb_filter_callback() {
-		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
 		$taxtype = isset( $_POST['taxtype'] ) ? sanitize_text_field( wp_unslash( $_POST['taxtype'] ) ) : '';
@@ -458,7 +457,7 @@ class Blocks {
 	 * @return NULL
 	 */
 	public function wopb_pagination_callback() {
-		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
 
@@ -478,7 +477,8 @@ class Blocks {
 			'ajax_source' => 'pagination',
 		);
 
-		if ( isset( $_POST['filterAttributes'] ) ) {
+		// The browser sends an array; anything else would fatal in array_merge() later.
+		if ( isset( $_POST['filterAttributes'] ) && is_array( $_POST['filterAttributes'] ) ) {
 			$params['filterAttributes'] = map_deep( wp_unslash( $_POST['filterAttributes'] ), 'sanitize_text_field' );
 		}
 
@@ -497,7 +497,7 @@ class Blocks {
 	 * @return void
 	 */
 	public function wopb_checkout_login_callback() {
-		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			wp_send_json( array( 'default' => __( 'Invalid request. Please reload the page and try again.', 'product-blocks' ) ), 403 );
 		}
 
@@ -533,7 +533,7 @@ class Blocks {
 			$validation_error = new \WP_Error();
 			$validation_error = apply_filters( 'woocommerce_process_login_errors', $validation_error, $creds['user_login'], $creds['user_password'] );
 			if ( $validation_error->get_error_code() ) {
-				wp_send_json( array( 'default' => $validation_error->get_error_message() ), 422 );
+				wp_send_json( array( 'default' => wp_kses_post( $validation_error->get_error_message() ) ), 422 );
 			}
 
 			// Perform the login.
@@ -542,7 +542,7 @@ class Blocks {
 			if ( is_wp_error( $user ) ) {
 				$this->record_failed_login( $throttle_keys );
 				do_action( 'woocommerce_login_failed' );
-				wp_send_json( array( 'default' => $user->get_error_message() ), 422 );
+				wp_send_json( array( 'default' => wp_kses_post( $user->get_error_message() ) ), 422 );
 			}
 
 			// Match WooCommerce's enrollment flow only after credentials succeed.
@@ -569,7 +569,7 @@ class Blocks {
 			$this->clear_failed_logins( $throttle_keys );
 			wp_send_json_success( array( 'success' => true ) );
 		} catch ( \Exception $e ) {
-			wp_send_json( array( 'default' => $e->getMessage() ), 500 );
+			wp_send_json( array( 'default' => wp_kses_post( $e->getMessage() ) ), 500 );
 		}
 	}
 
@@ -630,7 +630,7 @@ class Blocks {
 	 * @return STRING
 	 */
 	public function wopb_share_count_callback() {
-		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Invalid request.', 'product-blocks' ) ), 403 );
 		}
 

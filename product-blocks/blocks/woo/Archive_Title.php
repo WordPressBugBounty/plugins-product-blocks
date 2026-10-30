@@ -124,7 +124,7 @@ class Archive_Title {
 		$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 		$attr['align']     = ! empty( $attr['align'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
 
-		$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . '' . $attr['align'] . '' . $attr['className'] . '">';
+		$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . '' . esc_attr( $attr['align'] ) . '' . esc_attr( $attr['className'] ) . '">';
 			$wraper_before .= '<div class="wopb-block-wrapper">';
 			$wraper_before .= '<div class="wopb-block-archive-title wopb-archive-layout-' . esc_attr( $attr['layout'] ) . '">';
 
@@ -144,17 +144,20 @@ class Archive_Title {
 			 * @param array  $attr       Block attributes.
 			 * @param array  $parts      Escaped pieces of the markup and the unescaped `data` they came from.
 			 */
-			$post_loop .= apply_filters(
-				'wopb_block_layout_html',
-				$img . $name . $excerpt,
-				$block_name,
-				$attr,
-				array(
-					'data'    => $data,
-					'image'   => $img,
-					'name'    => $name,
-					'excerpt' => $excerpt,
-				)
+			$post_loop .= wp_kses(
+				apply_filters(
+					'wopb_block_layout_html',
+					$img . $name . $excerpt,
+					$block_name,
+					$attr,
+					array(
+						'data'    => $data,
+						'image'   => $img,
+						'name'    => $name,
+						'excerpt' => $excerpt,
+					)
+				),
+				wopb_function()->allowed_html_tags()
 			);
 
 			$wraper_after .= '</div>';

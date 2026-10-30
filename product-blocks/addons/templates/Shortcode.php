@@ -57,7 +57,7 @@ class Shortcode {
 
 				// Breakdance builder support for its shortcode render
 				$current_url            = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-                $_breakdance_doing_ajax = isset( $_GET['_breakdance_doing_ajax'] ) ? sanitize_text_field( wp_unslash( $_GET['_breakdance_doing_ajax'] ) ) : ''; // phpcs:ignore
+				$_breakdance_doing_ajax = isset( $_GET['_breakdance_doing_ajax'] ) ? sanitize_text_field( wp_unslash( $_GET['_breakdance_doing_ajax'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: Breakdance's preview request flag only decides whether the template CSS is printed inline; builder preview URLs cannot carry a nonce.
 				if ( ! empty( $_breakdance_doing_ajax ) ||
 					strpos( $current_url, 'bricks/v1/render_element' ) !== false
 				) {
@@ -65,6 +65,7 @@ class Shortcode {
 					if ( ! empty( $_breakdance_doing_ajax ) && get_template() === 'bricks' ) {
 						get_header();
 					}
+					// A <style> tag whose id is esc_attr()'d and whose CSS has tags stripped; wp_kses() would turn child selectors (>) and & into entities and break the CSS.
 					$pre_content .= wopb_function()->build_css_for_inline_print( $id, true );
 				}
 				self::$rendering[] = $id;
@@ -77,10 +78,33 @@ class Shortcode {
 				$content = str_replace( ']]>', ']]&gt;', $content );
 				$content = preg_replace( '%<p>&nbsp;\s*</p>%', '', $content );
 				$content = preg_replace( '/^(?:<br\s*\/?>\s*)+/', '', $content );
-				return $pre_content . '<div class="wopb-shortcode" data-postid="' . esc_attr( $id ) . '">' . wopb_function()->wp_kses_safe( $content ) . '</div>';
+				return $pre_content . '<div class="wopb-shortcode" data-postid="' . esc_attr( $id ) . '">' . wp_kses( $content, $this->allowed_template_html() ) . '</div>';
 			}
 		}
 		return '';
+	}
+
+	/**
+	 * Allowed HTML for rendered template content: the shared form list plus the SVG and microdata attributes the blocks print.
+	 *
+	 * @return array
+	 */
+	private function allowed_template_html() {
+		return wopb_function()->allowed_form_html(
+			array(
+				'svg'    => array(
+					'aria-hidden' => true,
+					'focusable'   => true,
+					'role'        => true,
+				),
+				'g'      => array( 'data-*' => true ),
+				'path'   => array(
+					'data-*'    => true,
+					'fill-rule' => true,
+				),
+				'strong' => array( 'itemprop' => true ),
+			)
+		);
 	}
 
 	/**

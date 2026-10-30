@@ -37,7 +37,7 @@ class Order_Payment {
 			$attr              = wp_parse_args( $attr, $this->get_attributes() );
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . $block_name . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
+			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . '">';
 				$wraper_before .= '<div class="wopb-product-wrapper">';
 			if ( ! is_admin() ) {
 				if ( isset( WC()->customer ) ) {
@@ -45,7 +45,16 @@ class Order_Payment {
 					ob_start();
 					try {
 						require_once WOPB_PATH . 'blocks/woo/thank_you/order_payment/Template.php';
-						$content .= ob_get_clean();
+						$content .= wp_kses(
+							ob_get_clean(),
+							wopb_function()->allowed_form_html(
+								array(
+									'noscript' => array(),
+									'wc-order-attribution-inputs' => array(),
+									'span'     => array( 'translate' => true ),
+								)
+							)
+						);
 					} finally {
 						while ( ob_get_level() > $wopb_buffer_level_1 ) {
 							if ( ! ob_end_clean() ) {

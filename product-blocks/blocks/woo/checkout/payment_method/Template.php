@@ -20,7 +20,7 @@ $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 						wc_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway ) );
 					}
 				} else {
-					echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . apply_filters( 'woocommerce_no_available_payment_methods_message', WC()->customer->get_billing_country() ? esc_html__( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'product-blocks' ) : esc_html__( 'Please fill in your details above to see available payment methods.', 'product-blocks' ) ) . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . wp_kses_post( apply_filters( 'woocommerce_no_available_payment_methods_message', WC()->customer->get_billing_country() ? esc_html__( 'Sorry, it seems that there are no available payment methods for your state. Please contact us if you require assistance or wish to make alternate arrangements.', 'product-blocks' ) : esc_html__( 'Please fill in your details above to see available payment methods.', 'product-blocks' ) ) ) . '</li>';
 				}
 				?>
 			</ul>
@@ -38,7 +38,7 @@ $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
 			<?php do_action( 'woocommerce_review_order_before_submit' ); ?>
 
-			<?php echo apply_filters( 'woocommerce_order_button_html', '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Place order" data-value="Place order">' . esc_html__( 'Place order', 'product-blocks' ) . '</button>' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo wp_kses( apply_filters( 'woocommerce_order_button_html', '<button type="submit" class="button alt" name="woocommerce_checkout_place_order" id="place_order" value="Place order" data-value="Place order">' . esc_html__( 'Place order', 'product-blocks' ) . '</button>' ), wopb_function()->allowed_form_html() ); ?>
 
 			<?php do_action( 'woocommerce_review_order_after_submit' ); ?>
 

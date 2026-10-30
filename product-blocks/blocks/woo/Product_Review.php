@@ -30,20 +30,22 @@ class Product_Review {
 		if ( ! empty( $product ) ) {
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
+			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . '">';
 				$wraper_before .= '<div class="wopb-product-wrapper">';
 
 				$wopb_buffer_level_1 = ob_get_level();
+				$wopb_nonce_swapped  = wopb_function()->swap_comment_form_nonce();
 				ob_start();
 			try {
 				comments_template();
-				$content .= ob_get_clean();
+				$content .= wp_kses( ob_get_clean(), wopb_function()->allowed_form_html( array( 'span' => array( 'aria-level' => true ) ) ) );
 			} finally {
 				while ( ob_get_level() > $wopb_buffer_level_1 ) {
 					if ( ! ob_end_clean() ) {
 						break;
 					}
 				}
+				wopb_function()->restore_comment_form_nonce( $wopb_nonce_swapped );
 			}
 
 				$wraper_after .= '</div>';

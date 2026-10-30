@@ -50,7 +50,7 @@ function wopb_productx_template_divi_modules() {
 						ob_start();
 						try {
 							if ( in_array( 'et-fb', $body_class ) ) {
-								echo wopb_function()->build_css_for_inline_print( $templates, true ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								echo wopb_function()->build_css_for_inline_print( $templates, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the helper returns a <style> tag whose id is esc_attr()'d and whose CSS has tags stripped; wp_kses() would turn child selectors (>) and & into entities and break the CSS.
 							}
 							the_content();
 							$content = ob_get_clean();

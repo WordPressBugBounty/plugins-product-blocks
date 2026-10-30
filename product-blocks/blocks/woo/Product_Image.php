@@ -3,8 +3,6 @@ namespace WOPB\blocks;
 
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
-
 class Product_Image {
 
 	public function __construct() {
@@ -45,7 +43,7 @@ class Product_Image {
 
 	public function content( $attr ) {
 		global $product;
-		$product       = wc_get_product();
+		$product       = wc_get_product(); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- WooCommerce's own $product global, not plugin-defined.
 		$block_name    = 'product-image';
 		$wraper_before = $wraper_after = $content = '';
 		$attr          = wp_parse_args( $attr, $this->get_attributes() );
@@ -54,16 +52,16 @@ class Product_Image {
 			global $productx_settings;
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
-			$wraper_before .= '<div class="wopb-product-wrapper wopb-product-gallery-' . sanitize_html_class( $attr['galleryPosition'] ) . '">';
+			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . '">';
+			$wraper_before .= '<div class="wopb-product-wrapper wopb-product-gallery-' . esc_attr( sanitize_html_class( $attr['galleryPosition'] ) ) . '">';
 
 			global $productx_sales;
-			global $productx_sales_text;
+			global $wopb_sales_text;
 			$sales      = $product->get_sale_price();
 			$regular    = $product->get_regular_price();
 			$percentage = ( $sales && (float) $regular > 0 ) ? round( ( ( $regular - $sales ) / $regular ) * 100 ) : 0;
 			if ( $attr['showSale'] && $percentage ) {
-				$productx_sales_text = 'textDigit' === $attr['saleDesign'] ? '-' . esc_attr( $percentage ) . '% ' . esc_attr( $attr['saleText'] ) : ( 'digit' === $attr['saleDesign'] ? '-' . esc_attr( $percentage ) . '%' : esc_attr( $attr['saleText'] ) );
+				$wopb_sales_text = 'textDigit' === $attr['saleDesign'] ? '-' . esc_attr( $percentage ) . '% ' . esc_attr( $attr['saleText'] ) : ( 'digit' === $attr['saleDesign'] ? '-' . esc_attr( $percentage ) . '%' : esc_attr( $attr['saleText'] ) );
 				$flash_sale          = array( $this, 'sale_flash_html' );
 				add_filter( 'woocommerce_sale_flash', $flash_sale );
 				$wopb_buffer_level_1 = ob_get_level();
@@ -111,7 +109,9 @@ class Product_Image {
 			ob_start();
 			try {
 				woocommerce_show_product_images();
-				$content .= ob_get_clean();
+				add_filter( 'safe_style_css', array( $this, 'allow_transition_style' ) );
+				$content .= wp_kses( ob_get_clean(), wopb_function()->allowed_form_html( $this->gallery_allowed_extras() ) );
+				remove_filter( 'safe_style_css', array( $this, 'allow_transition_style' ) );
 			} finally {
 				while ( ob_get_level() > $wopb_buffer_level_3 ) {
 					if ( ! ob_end_clean() ) {
@@ -132,10 +132,36 @@ class Product_Image {
 		return $wraper_before . $content . $wraper_after;
 	}
 
+	/**
+	 * Let the transition property through the inline style filter while the gallery is escaped.
+	 *
+	 * @param string[] $properties Allowed CSS properties.
+	 * @return string[]
+	 */
+	public function allow_transition_style( $properties ) {
+		$properties[] = 'transition';
+		return $properties;
+	}
+
+	/**
+	 * Extra tags/attributes the product gallery markup prints on top of the shared allowlist.
+	 *
+	 * @return array
+	 */
+	private function gallery_allowed_extras() {
+		return array(
+			'svg' => array(
+				'enable-background' => true,
+				'version'           => true,
+				'xml:space'         => true,
+			),
+		);
+	}
+
 	/** Named WordPress hook callback. */
 	public function sale_flash_html() {
-		global $productx_sales_text;
-		return '<div class="wopb-product-gallery-sale-tag">' . esc_html( $productx_sales_text ) . '</div>';
+		global $wopb_sales_text;
+		return '<div class="wopb-product-gallery-sale-tag">' . esc_html( $wopb_sales_text ) . '</div>';
 	}
 
 	/** Named WordPress hook callback. */
@@ -188,7 +214,7 @@ class Product_Image {
 			$wopb_buffer_level_2 = ob_get_level();
 			ob_start();
 			try {
-		    echo apply_filters('wopb_product_video', '', $product, $all_id[0]); // phpcs:ignore
+				echo wp_kses( apply_filters( 'wopb_product_video', '', $product, $all_id[0] ), wopb_function()->allowed_html_tags() );
 				$video_thumb = ob_get_clean();
 			} finally {
 				while ( ob_get_level() > $wopb_buffer_level_2 ) {
@@ -239,7 +265,7 @@ class Product_Image {
 			}
 		} else {
 			$image_full     .= '<div class="wopb-main-image">';
-				$image_full .= '<img src="' . esc_url( wc_placeholder_img_src( 'woocommerce_single' ) ) . '" alt="' . esc_html__( 'Awaiting product image', 'product-blocks' ) . '"/>';
+				$image_full .= '<img src="' . esc_url( wc_placeholder_img_src( 'woocommerce_single' ) ) . '" alt="' . esc_attr__( 'Awaiting product image', 'product-blocks' ) . '"/>';
 			$image_full     .= '</div>';
 		}
 
@@ -252,8 +278,7 @@ class Product_Image {
 		}
 			echo '<div class="wopb-builder-slider-for" data-arrow="' . esc_attr( $productx_settings['showArrow'] ) . '">';
 		if ( $image_full ) {
-			$image_full_safe = wopb_function()->wp_kses_safe( $image_full );
-		    echo $image_full_safe; // phpcs:ignore
+			echo wp_kses( $image_full, wopb_function()->allowed_html_tags() );
 		}
 			echo '</div>';
 		echo '</div>';
@@ -280,4 +305,3 @@ class Product_Image {
 		return $template;
 	}
 }
-// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

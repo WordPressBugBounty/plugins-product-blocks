@@ -279,7 +279,7 @@ class REST_API {
 		}
 
 		$params = $server->get_params();
-		if ( ! isset( $params['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $params['wpnonce'] ) || ! is_string( $params['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $params['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			die();
 		}
 		$post_id = absint( $params['postID'] );
@@ -314,7 +314,7 @@ class REST_API {
 			return new \WP_Error( 'rest_forbidden', __( 'You cannot access this resource.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
-		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return rest_ensure_response( array() );
 		}
 
@@ -388,7 +388,7 @@ class REST_API {
 			return new \WP_Error( 'rest_forbidden', __( 'You cannot access this resource.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
-		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return rest_ensure_response( array() );
 		}
 
@@ -402,13 +402,13 @@ class REST_API {
 			}
 			switch ( $prams['type'] ) {
 				case 'title':
-					$post_data['title'] = $products->get_title();
+					$post_data['title'] = wp_kses_post( $products->get_title() );
 					break;
 				case 'description':
-					$post_data['description'] = $products->get_description();
+					$post_data['description'] = wp_kses_post( $products->get_description() );
 					break;
 				case 'short':
-					$post_data['short'] = $products->get_short_description();
+					$post_data['short'] = wp_kses_post( $products->get_short_description() );
 					break;
 				case 'image':
 					$images        = array();
@@ -441,7 +441,7 @@ class REST_API {
 					$regular                    = $products->get_regular_price();
 					$post_data['sales_price']   = $sales;
 					$post_data['regular_price'] = $regular;
-					$post_data['range_price']   = ! $regular && ! $sales ? $products->get_price_html() : '';
+					$post_data['range_price']   = ! $regular && ! $sales ? wp_kses( (string) $products->get_price_html(), wopb_function()->allowed_html_tags() ) : '';
 					$post_data['percentage']    = ( $sales && (float) $regular > 0 ) ? round( ( ( $regular - $sales ) / $regular ) * 100 ) : 0;
 					$post_data['symbol']        = get_woocommerce_currency_symbol();
 					break;
@@ -487,6 +487,9 @@ class REST_API {
 		$content = '';
 		foreach ( $terms as $term_id ) {
 			$term = get_term_by( 'id', $term_id, $type );
+			if ( ! $term || is_wp_error( $term ) ) {
+				continue;
+			}
 			if ( $inc > 1 ) {
 				$content .= ', ';
 			}
@@ -509,7 +512,7 @@ class REST_API {
 			return new \WP_Error( 'rest_forbidden', __( 'You cannot access this resource.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
-		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return rest_ensure_response( array() );
 		}
 
@@ -542,7 +545,7 @@ class REST_API {
 			return new \WP_Error( 'rest_forbidden', __( 'You cannot access this resource.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
 		}
 
-		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
 
@@ -562,15 +565,15 @@ class REST_API {
 				$product               = wc_get_product( $post_id );
 				$user_id               = get_the_author_meta( 'ID' );
 				$var['post_id']        = $post_id;
-				$var['title']          = get_the_title();
+				$var['title']          = wp_kses_post( get_the_title() );
 				$var['permalink']      = get_permalink();
-				$var['excerpt']        = $product->get_short_description();
+				$var['excerpt']        = wp_kses_post( $product->get_short_description() );
 				$var['time']           = get_the_date();
 				$var['price_sale']     = $product->get_sale_price();
 				$var['price_regular']  = $product->get_regular_price();
 				$var['discount']       = ( $var['price_sale'] && (float) $var['price_regular'] > 0 ) ? round( ( $var['price_regular'] - $var['price_sale'] ) / $var['price_regular'] * 100 ) . '%' : '';
 				$var['sale']           = $product->is_on_sale();
-				$var['price_html']     = $product->get_price_html();
+				$var['price_html']     = wp_kses( (string) $product->get_price_html(), wopb_function()->allowed_html_tags() );
 				$var['stock']          = $product->get_stock_status();
 				$var['featured']       = $product->is_featured();
 				$var['rating_count']   = $product->get_rating_count();
@@ -787,7 +790,7 @@ class REST_API {
 				// The block editor only needs names to pick an author. Matching on the email address is for
 				// users who may list users, so a contributor can't probe which addresses exist.
 				if ( current_user_can( 'list_users' ) ) {
-					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- editor author search (LIMIT 10, prepared); WP_User_Query can't match ID and display name with LIKE in one query, and results must be live.
 					$post_results = $wpdb->get_results(
 						$wpdb->prepare(
 							"SELECT ID, display_name
@@ -801,7 +804,7 @@ class REST_API {
 						)
 					);
 				} else {
-					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- editor author search (LIMIT 10, prepared); WP_User_Query can't match ID and display name with LIKE in one query, and results must be live.
 					$post_results = $wpdb->get_results(
 						$wpdb->prepare(
 							"SELECT ID, display_name

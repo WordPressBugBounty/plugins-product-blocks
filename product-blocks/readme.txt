@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, woocommerce wishlist, variation s
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 4.6.0
+Stable tag: 4.6.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -234,7 +234,7 @@ WowStore uses these external services, including services operated by WPXPO. Bro
 
 Free library content requires no WPXPO account. Pro library content requires the separate licensed WowStore Pro plugin. Public fonts and avatars require no provider account. Video and social services may require an account depending on the content or action. Configure external media and fonts only if you accept the provider's terms and privacy policy; use locally hosted media and system fonts to avoid those provider requests.
 
-* **WPXPO template and design library:** Supplies presets, designs, and templates from wopb.wpxpo.com/wp-json/restapi/v2/. Opening library features downloads missing or expired catalogs through wopbdata; resetting refreshes them. Selecting a design or template for import contacts single-design, single-template, or single-premade through the browser or your server. Requests send the catalog type, design_id, template_id, or section_id, and the license key only when the WowStore Pro plugin is active and supplies one. Displaying catalog previews or imported remote images also contacts the image hosts specified by that content. The library lists every design and template of the catalog, as described under "Pro designs in the library" below. [Terms](https://www.wpxpo.com/terms-and-conditions/) | [Privacy Policy](https://www.wpxpo.com/policy/privacy/)
+* **WPXPO template and design library:** Supplies presets, designs, and templates from wopb.wpxpo.com/wp-json/restapi/v2/. Catalogs are cached on your site for 5 days. When a cached catalog is missing or older than that, your server downloads it through wopbdata as soon as one of these opens: the Woo Builder or Template kits tab of the WowStore dashboard, the block library or a block's design picker in the editor, or a block settings panel that lists designs. The Synchronize button downloads every catalog again. Selecting a design or template for import contacts single-design, single-template, or single-premade through the browser or your server. Requests send the catalog type, design_id, template_id, or section_id, and the license key only when the WowStore Pro plugin is active and supplies one. Displaying catalog previews or imported remote images also contacts the image hosts specified by that content. The library lists every design and template of the catalog, as described under "Pro designs in the library" below. [Terms](https://www.wpxpo.com/terms-and-conditions/) | [Privacy Policy](https://www.wpxpo.com/policy/privacy/)
 
 * **Gravatar (Automattic):** Displays My Account and Archive Title avatars, unless replaced by another avatar provider. Image requests to gravatar.com send an email-derived hash, image size, and default-image settings when displayed, without a plain email address. [Terms](https://wordpress.com/tos/) | [Privacy Policy](https://automattic.com/privacy/)
 
@@ -284,6 +284,14 @@ WowStore includes open source libraries (React, Slick, flexMenu and others) unde
 9. WooCommerce Compare
 
 == Changelog ==
+= 4.6.1 - 30 October 2026 =
+* Fix: Security hardening: output escaping across blocks, shortcodes and templates, and nonce and permission checks on WooCommerce product data saves (product video, Name Your Price, Pre-Order, Backorder, Size Chart, Variation Swatches).
+* Fix: Security hardening of block CSS saving, preview and inline CSS output, and add-on style settings validation.
+* Fix: Checkout Login block used an undefined redirect value.
+* Fix: Compare shortcode now keeps the saved "added action", and the "Additional" column prints again.
+* Fix: Product Review and Product Tab blocks keep the comment form working for users who can post unfiltered HTML.
+* Fix: Fatal error in pagination when the filter attributes are not an array.
+
 = 4.6.0 - 22 October 2026 =
 * Update: Product Filter, Product Search, Product Category 3 and Currency Switcher blocks, the Partial Payments, Currency Switcher, Stock Progress Bar and Sticky Add to Cart add-ons, and the advanced options of several add-ons and blocks are now part of WowStore Pro.
 * Update: Sales Push Notification shows recently purchased products; the Name setting picks the buyer name shown, or No Name (default).

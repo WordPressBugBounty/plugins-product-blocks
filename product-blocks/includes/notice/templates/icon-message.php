@@ -4,32 +4,32 @@
  * is markup and follows $brand_color.
  *
  * Self-contained: markup and CSS in this one file, every class built from
- * $prefix so a sibling plugin can copy it as-is.
+ * $prefix so a sibling plugin can copy it as-is. Included twice: with $part
+ * 'assets' it only queues its CSS on $asset_handle; with 'markup' it prints
+ * the notice.
  *
  * The logo vs discount-SVG flavors are the same template — only `icon` and
  * `is_discount_logo` differ.
  *
- * @var array  $notice      Promo entry (border_color, icon, is_discount_logo,
- *                          content_heading, content_subheading, discount_content,
- *                          button_text, url, background_color).
- * @var array  $query_args  Dismiss-link query args.
- * @var string $prefix      Identity slug from config.php.
- * @var string $brand_color Accent color from config.php.
+ * @var array  $notice       Promo entry (border_color, icon, is_discount_logo,
+ *                           content_heading, content_subheading, discount_content,
+ *                           button_text, url, background_color).
+ * @var array  $query_args   Dismiss-link query args.
+ * @var string $prefix       Identity slug from config.php.
+ * @var string $brand_color  Accent color from config.php.
+ * @var string $part         'assets' or 'markup'.
+ * @var string $asset_handle Style/script handle for the 'assets' pass.
  */
 
 defined( 'ABSPATH' ) || exit;
 
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
 
-$border_color = $notice['border_color'];
-$url          = $notice['url'];
-
 // Faint wash of the brand color behind the notice. Derived, not a literal, so
 // it follows config.php instead of staying green in a copied plugin.
 $tint = sscanf( ltrim( $brand_color, '#' ), '%2x%2x%2x' );
 $tint = $tint ? sprintf( 'rgba(%d, %d, %d, 0.04)', $tint[0], $tint[1], $tint[2] ) : 'transparent';
 
-$style_id            = $prefix . '-notice-css';
 $wrapper_class       = $prefix . '-content-notice-wrapper';
 $icon_class          = $prefix . '-content-notice-icon';
 $discount_icon_class = $prefix . '-content-notice-discout-icon';
@@ -39,8 +39,10 @@ $btn_class           = $prefix . '-content-notice-btn';
 $discount_btn_class  = $prefix . '-content-discount_btn';
 $close_class         = $prefix . '-content-notice-close';
 $close_icon_class    = $prefix . '-content-notice-close-icon';
-?>
-<style id="<?php echo esc_attr( $style_id ); ?>" type="text/css">
+
+if ( 'assets' === $part ) {
+	ob_start();
+	?>
 	.<?php echo esc_html( $wrapper_class ); ?> {
 		border: 1px solid #c3c4c7;
 		border-left: 3px solid <?php echo esc_attr( $brand_color ); ?>;
@@ -129,7 +131,14 @@ $close_icon_class    = $prefix . '-content-notice-close-icon';
 	.<?php echo esc_html( $close_icon_class ); ?> {
 		font-size: 14px;
 	}
-</style>
+	<?php
+	wp_add_inline_style( $asset_handle, ob_get_clean() );
+	return;
+}
+
+$border_color = $notice['border_color'];
+$url          = $notice['url'];
+?>
 <div class="<?php echo esc_attr( $wrapper_class ); ?> notice"
 	style="border-left: 3px solid <?php echo esc_attr( $border_color ); ?>;"
 >

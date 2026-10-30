@@ -45,10 +45,10 @@ class Compare {
 		add_shortcode(
 			'wopb_compare_button',
 			function () {
-				return $this->get_compare( get_the_ID(), 'default' );
+				return wp_kses( $this->get_compare( get_the_ID(), 'default' ), $this->allowed_html() );
 			}
 		);
-		add_shortcode( 'wopb_compare', array( $this, 'compare_wrapper' ) );
+		add_shortcode( 'wopb_compare', array( $this, 'compare_shortcode' ) );
 
 		if ( 'yes' === wopb_function()->get_setting( 'compare_single_enable' ) ) {
 			if ( 'true' === wopb_function()->get_setting( 'wopb_quickview' ) ) {
@@ -122,7 +122,7 @@ class Compare {
 
 		return array(
 			'button_attr' => '
-                data-action="' . $action . '"
+                data-action="' . esc_attr( $action ) . '"
                 data-added-action="' . esc_attr( $action_added ) . '"' .
 				$redirect . '
                 data-postid="' . esc_attr( ! empty( $data['post_id'] ) ? $data['post_id'] : '' ) . '"
@@ -157,7 +157,7 @@ class Compare {
 			$output         .= ! empty( $compare_data['button_attr'] ) ? $compare_data['button_attr'] : '';
 		$output             .= '>';
 			$output         .= '<span class="wopb-tooltip-text">';
-				$output     .= wopb_function()->svg_icon( wopb_function()->get_setting( 'compare_button_icon' ) );
+				$output     .= wp_kses( wopb_function()->svg_icon( wopb_function()->get_setting( 'compare_button_icon' ) ), $this->allowed_html() );
 				$output     .= '<span class="wopb-tooltip-text-' . esc_attr( $tooltip ) . '">';
 					$output .= '<span>' . esc_html( $compare_text ) . '</span>';
 					$output .= '<span>' . esc_html( $browse ) . '</span>';
@@ -165,7 +165,7 @@ class Compare {
 			$output         .= '</span>';
 		$output             .= '</div>';
 
-		return $output;
+		return wp_kses( $output, $this->allowed_html() );
 	}
 
 	/**
@@ -199,7 +199,7 @@ class Compare {
 			$button_icon_enable = $icon_enable_single;
 			$icon_position      = $icon_position_single ? $icon_position_single : $icon_position;
 		}
-		$compare_icon = wopb_function()->svg_icon( $icon );
+		$compare_icon = wp_kses( wopb_function()->svg_icon( $icon ), $this->allowed_html() );
 
 		if ( 'default' === $source ) {
 			$button_class .= $is_product ? ' wopb-compare-single-btn' : ' wopb-compare-shop-btn';
@@ -213,7 +213,7 @@ class Compare {
 		if ( 'default' === $source ) {
 			$output .= ( 'yes' === $button_icon_enable && 'before_text' === $icon_position )
 				? $compare_icon
-				: ''; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+				: '';
 			if ( $compare_text ) {
 				$output .= '<span class="wopb-compare-btn-text">' . esc_html( $compare_text ) . '</span>';
 			}
@@ -222,7 +222,7 @@ class Compare {
 			}
 			$output .= ( 'yes' === $button_icon_enable && 'after_text' === $icon_position )
 				? $compare_icon
-				: ''; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+				: '';
 		} else {
 			$layout          = isset( $params['layout'] ) ? $params['layout'] : '';
 			$position        = isset( $params['position'] ) ? $params['position'] : '';
@@ -237,7 +237,7 @@ class Compare {
 			$output .= '</span>';
 		$output     .= '</span>';
 
-		return $output;
+		return wp_kses( $output, $this->allowed_html() );
 	}
 
 	/**
@@ -250,7 +250,7 @@ class Compare {
 		$clear_cookie = false;
 		if ( isset( $_COOKIE['wopb_compare'] ) ) {
 			$cookie_data = wopb_function()->rest_sanitize_params(
-				json_decode( wp_unslash( $_COOKIE['wopb_compare'] ?? '' ) ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized after decoding via rest_sanitize_params(); sanitizing the raw string first would corrupt the JSON.
+				json_decode( sanitize_text_field( wp_unslash( $_COOKIE['wopb_compare'] ) ) )
 			);
 			if ( is_object( $cookie_data ) ) {
 				$cookie_data = (array) $cookie_data;
@@ -533,7 +533,7 @@ class Compare {
 	 * @return void|null
 	 */
 	public function wopb_compare_callback() {
-		if ( empty( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( empty( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
 
@@ -547,7 +547,7 @@ class Compare {
 		$params = array(
 			'source'       => 'ajax',
 			'postid'       => $postId,
-            'added_action'  => isset($_POST['added_action']) ? sanitize_text_field( wp_unslash( $_POST['added_action'] ) ) : '', // phpcs:ignore
+			'added_action' => isset( $_POST['added_action'] ) ? sanitize_text_field( wp_unslash( $_POST['added_action'] ) ) : '',
 			'action_type'  => $action_type,
 		);
 
@@ -593,6 +593,70 @@ class Compare {
 	}
 
 	/**
+	 * Allowed HTML for the compare markup: the shared list plus the SVG attributes the bundled icons use.
+	 *
+	 * @since v.4.6.1
+	 * @return array
+	 */
+	public function allowed_html() {
+		return wopb_function()->allowed_html_tags(
+			array(
+				'g'       => array(
+					'transform' => true,
+					'data-name' => true,
+				),
+				'path'    => array(
+					'fill-rule' => true,
+					'transform' => true,
+					'class'     => true,
+					'id'        => true,
+				),
+				'rect'    => array(
+					'x'         => true,
+					'y'         => true,
+					'transform' => true,
+				),
+				'circle'  => array(
+					'stroke'       => true,
+					'stroke-width' => true,
+				),
+				'polygon' => array(
+					'points' => true,
+					'fill'   => true,
+				),
+			)
+		);
+	}
+
+	/**
+	 * Shortcode callback for [wopb_compare]. Reads only the attributes it supports.
+	 *
+	 * @since v.4.6.1
+	 * @param array|string $atts Shortcode attributes.
+	 * @return string
+	 */
+	public function compare_shortcode( $atts = array() ) {
+		$atts = shortcode_atts(
+			array(
+				'added_action' => '',
+				'postid'       => 0,
+			),
+			is_array( $atts ) ? $atts : array(),
+			'wopb_compare'
+		);
+
+		$params = array();
+		if ( '' !== $atts['added_action'] ) {
+			$params['added_action'] = sanitize_key( $atts['added_action'] );
+		}
+		if ( absint( $atts['postid'] ) ) {
+			$params['postid'] = absint( $atts['postid'] );
+		}
+
+		return $this->compare_wrapper( $params );
+	}
+
+	/**
 	 * Compare Wrapper
 	 *
 	 * @since v.3.1.7
@@ -624,7 +688,7 @@ class Compare {
 			$output .= $content;
 		$output     .= '</div>';
 
-		return $output;
+		return wp_kses( $output, $this->allowed_html() );
 	}
 
 	/**
@@ -640,7 +704,7 @@ class Compare {
 			$html     .= '</span>';
 		if ( 'yes' === wopb_function()->get_setting( 'compare_close_button' ) ) {
 			$html     .= '<a class="wopb-modal-close">';
-				$html .= wopb_function()->svg_icon( 'close' );
+				$html .= wp_kses( wopb_function()->svg_icon( 'close' ), $this->allowed_html() );
 			$html     .= '</a>';
 		}
 		$html .= '</div>';
@@ -692,10 +756,10 @@ class Compare {
 	 * @return array
 	 */
 	public function wopb_product_list_callback() {
-		if ( empty( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( empty( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
-        $params = ['s' => isset($_POST['search']) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : '']; // phpcs:ignore
+		$params = array( 's' => isset( $_POST['search'] ) ? sanitize_text_field( wp_unslash( $_POST['search'] ) ) : '' );
 		return wp_send_json_success( array( 'html' => $this->product_list( $params ) ) );
 		die();
 	}
@@ -728,7 +792,7 @@ class Compare {
 					$output                     .= '<div class="wopb-compare-item wopb-compare-item-' . esc_attr( $product->get_id() ) . '">';
 						$output                 .= '<div class="wopb-compare-product-details">';
 							$output             .= '<a href="' . esc_url( $product->get_permalink() ) . '" class="wopb-product-image">';
-								$output         .= $product->get_image( 'shop_thumbnail' );
+								$output         .= wp_kses_post( $product->get_image( 'shop_thumbnail' ) );
 							$output             .= '</a>';
 							$output             .= '<div class="wopb-compare-product-content">';
 								$output         .= '<div class="wopb-compare-product-name">' . esc_html( $product->get_title() ) . '</div>';
@@ -746,7 +810,7 @@ class Compare {
 							$output             .= '</div>';
 						$output                 .= '</div>';
 						$output                 .= '<a class="wopb-add-to-compare-btn" data-action="add" data-added-action="product_list" data-postid="' . esc_attr( $product->get_id() ) . '">';
-						$output                 .= wopb_function()->svg_icon( 'plus_3' );
+						$output                 .= wp_kses( wopb_function()->svg_icon( 'plus_3' ), $this->allowed_html() );
 						$output                 .= '</a>';
 					$output                     .= '</div>';
 				}
@@ -764,7 +828,7 @@ class Compare {
 	public function nav_menu_item( $items, $args ) {
 		$nav_location = wopb_function()->get_setting( 'compare_nav_menu_location' );
 		if ( $nav_location ) {
-			$nav_menu = '<li class="menu-item">' . $this->compare_nav_menu() . '</li>';
+			$nav_menu = '<li class="menu-item">' . $this->compare_nav_menu() . '</li>'; // Note: Escaped inside functions
 			if ( $args->theme_location ) {
 				if ( $args->theme_location == $nav_location ) {
 					$items .= $nav_menu;
@@ -807,7 +871,7 @@ class Compare {
 			$output .= wp_kses_post( $compare_text );
 		}
 			$output     .= '<span class="wopb-compare-icon">';
-				$output .= wopb_function()->svg_icon( wopb_function()->get_setting( 'compare_nav_icon' ) );
+				$output .= wp_kses( wopb_function()->svg_icon( wopb_function()->get_setting( 'compare_nav_icon' ) ), $this->allowed_html() );
 				$output .= '<span class="wopb-compare-count">' . esc_html( count( $this->compare_id ) ) . '</span>';
 			$output     .= '</span>';
 		if ( 'before_text' === $icon_position || 'top_text' === $icon_position ) {
@@ -815,7 +879,7 @@ class Compare {
 		}
 		$output .= '</a>';
 
-		return $output;
+		return wp_kses( $output, $this->allowed_html() );
 	}
 
 
@@ -828,7 +892,7 @@ class Compare {
 	 */
 	public function compare_modal_content( $params = array() ) {
 		$compare_data        = isset( $params['source'] ) && 'ajax' === $params['source'] ? $params['data_id'] : $this->compare_id;
-		$allowed_html_tag    = wopb_function()->allowed_html_tags();
+		$allowed_html_tag    = $this->allowed_html();
 		$wopb_buffer_level_2 = ob_get_level();
 		ob_start();
 		try {
@@ -839,8 +903,7 @@ class Compare {
 		>
 			<?php
 			if ( 0 === count( $compare_data ) && 'yes' === wopb_function()->get_setting( 'compare_hide_empty_table' ) ) {
-				$product_message_safe = wopb_function()->wp_kses_safe( $this->empty_product_message( $params ) );
-				echo $product_message_safe;
+				echo wp_kses( $this->empty_product_message( $params ), $allowed_html_tag );
 			}
 			if ( ! ( 'yes' === wopb_function()->get_setting( 'compare_hide_empty_table' ) && 0 === count( $compare_data ) ) ) {
 				$demo_column  = count( $compare_data ) < $this->demo_column ? $this->demo_column - count( $compare_data ) : 0;
@@ -1004,7 +1067,11 @@ class Compare {
 											}
 											?>
 													<span class="wopb-additional">
-											<?php echo $additional ? wopb_function()->wp_kses_safe( $additional ) : 'N/A'; ?>
+														<?php
+														if ( $additional ) {
+															echo wp_kses( $additional, wopb_function()->allowed_form_html() );
+														}
+														?>
 													</span>
 												<?php
 											break;
@@ -1034,7 +1101,7 @@ class Compare {
 									$demo_column_class = ' image';
 									$demo_content      = wopb_function()->svg_icon( 'placeholder' );
 								}
-								echo '<td class="wopb-demo-column' . esc_attr( $demo_column_class ) . '"><span>' . wopb_function()->wp_kses_safe( $demo_content ) . '</span></td>';
+								echo '<td class="wopb-demo-column' . esc_attr( $demo_column_class ) . '"><span>' . wp_kses( $demo_content, $allowed_html_tag ) . '</span></td>';
 							}
 							if ( 'yes' === $compare_add_product_button ) {
 								?>
@@ -1069,7 +1136,7 @@ class Compare {
 		$output                 .= '<div class="wopb-compare-product-list-modal wopb-d-none">';
 			$output             .= '<div class="wopb-product-list-content">';
 				$output         .= '<a class="wopb-product-list-close">';
-					$output     .= wopb_function()->svg_icon( 'close' );
+					$output     .= wp_kses( wopb_function()->svg_icon( 'close' ), $this->allowed_html() );
 				$output         .= '</a>';
 				$output         .= '<div class="wopb-product-list-body">';
 					$output     .= '<div class="wopb-product-search">';
@@ -1078,7 +1145,7 @@ class Compare {
 							. '">';
 
 						$output     .= '<a class="wopb-search-icon">';
-							$output .= wopb_function()->svg_icon( 'search2' );
+							$output .= wp_kses( wopb_function()->svg_icon( 'search2' ), $this->allowed_html() );
 						$output     .= '</a>';
 					$output         .= '</div>';
 					$output         .= '<div class="wopb-product-list">';
@@ -1113,20 +1180,20 @@ class Compare {
 					$output             .= '<div class="wopb-compare-item wopb-compare-item-' . esc_attr( $product->get_id() ) . '">';
 						$output         .= '<div class="wopb-compare-product-details">';
 							$output     .= '<a href="' . esc_url( $product->get_permalink() ) . '" class="wopb-product-image">';
-								$output .= $product->get_image( 'woocommerce_thumbnail' );
+								$output .= wp_kses_post( $product->get_image( 'woocommerce_thumbnail' ) );
 							$output     .= '</a>';
 							$output     .= '<a class="wopb-compare-product-name" href="'
 								. esc_url( $product->get_permalink() )
 								. '" data-action="remove">';
 
-								$output .= $product->get_title();
+								$output .= esc_html( $product->get_title() );
 							$output     .= '</a>';
 						$output         .= '</div>';
 						$output         .= '<a class="wopb-compare-remove" data-action="remove" data-added-action="sidebar" data-postid="'
 							. esc_attr( $product->get_id() )
 							. '">';
 
-							$output .= wopb_function()->svg_icon( 'delete' );
+							$output .= wp_kses( wopb_function()->svg_icon( 'delete' ), $this->allowed_html() );
 						$output     .= '</a>';
 					$output         .= '</div>';
 				}
@@ -1154,7 +1221,7 @@ class Compare {
 				. esc_html__( 'No products were added to compare list', 'product-blocks' )
 				. '</div>';
 			$output .= '<a href="' .
-				wc_get_page_permalink( 'shop' ) .
+				esc_url( wc_get_page_permalink( 'shop' ) ) .
 				'" class="wopb-retun-shop">' .
 				esc_html__( 'Return to Shop', 'product-blocks' ) .
 				'</a>';
@@ -1179,10 +1246,10 @@ class Compare {
 			if ( $product && wopb_function()->can_view_product( $post_id ) ) {
 				$output         .= '<div class="wopb-compare-item wopb-compare-item-' . esc_attr( $product->get_id() ) . '">';
 					$output     .= '<span class="wopb-compare-image">';
-						$output .= $product->get_image( 'shop_thumbnail' );
+						$output .= wp_kses_post( $product->get_image( 'shop_thumbnail' ) );
 					$output     .= '</span>';
 					$output     .= '<div class="wopb-compare-product-name"><span>'
-						. $product->get_title()
+						. esc_html( $product->get_title() )
 						. '</span> '
 						. esc_html__( 'has been added on compare list.', 'product-blocks' )
 						. '</div>';
@@ -1226,7 +1293,7 @@ class Compare {
 	 */
 	public function compare_button_in_cart( $content ) {
 		if ( ! wopb_function()->is_builder() && ( is_shop() || is_archive() ) ) {
-			return $content . $this->get_compare( get_the_ID(), 'default' );
+			return $content . wp_kses( $this->get_compare( get_the_ID(), 'default' ), $this->allowed_html() );
 		}
 	}
 
@@ -1419,10 +1486,11 @@ class Compare {
 			$css              = '';
 
 			/* Shop page button style */
-			if ( ! empty( $settings['compare_align_shop'] ) ) {
+			$align_shop = wopb_function()->sanitize_css_keyword( $settings['compare_align_shop'] ?? '', array( 'flex-start', 'center', 'flex-end' ) );
+			if ( ! empty( $align_shop ) ) {
 				$css .= '.wopb-compare-btn-wrap{';
 				$css .= 'display: inline-flex;';
-				$css .= 'justify-content: ' . $settings['compare_align_shop'] . ';';
+				$css .= 'justify-content: ' . $align_shop . ';';
 				$css .= '}';
 			}
 			$css .= '.wopb-compare-btn.wopb-compare-shop-btn{';
@@ -1435,8 +1503,9 @@ class Compare {
 			$css .= wopb_function()->convert_css( 'hover', $shop_btn_style );
 			$css .= '}';
 			$css .= '.wopb-compare-btn.wopb-compare-shop-btn svg{';
-			$css .= 'height: ' . ( ! empty( $settings['compare_icon_size_shop'] ) ? $settings['compare_icon_size_shop'] : '16' ) . 'px;';
-			$css .= 'width: ' . ( ! empty( $settings['compare_icon_size_shop'] ) ? $settings['compare_icon_size_shop'] : '16' ) . 'px;';
+			$icon_size = wopb_function()->sanitize_css_number( $settings['compare_icon_size_shop'] ?? '' );
+			$css      .= 'height: ' . ( ! empty( $icon_size ) ? $icon_size : '16' ) . 'px;';
+			$css      .= 'width: ' . ( ! empty( $icon_size ) ? $icon_size : '16' ) . 'px;';
 			$css .= '}';
 			/* Shop page button style */
 
@@ -1451,8 +1520,9 @@ class Compare {
 			$css .= wopb_function()->convert_css( 'hover', $single_btn_style );
 			$css .= '}';
 			$css .= '.wopb-compare-btn.wopb-compare-single-btn svg{';
-			$css .= 'height: ' . ( ! empty( $settings['compare_icon_size_single'] ) ? $settings['compare_icon_size_single'] : '16' ) . 'px;';
-			$css .= 'width: ' . ( ! empty( $settings['compare_icon_size_single'] ) ? $settings['compare_icon_size_single'] : '16' ) . 'px;';
+			$icon_size = wopb_function()->sanitize_css_number( $settings['compare_icon_size_single'] ?? '' );
+			$css      .= 'height: ' . ( ! empty( $icon_size ) ? $icon_size : '16' ) . 'px;';
+			$css      .= 'width: ' . ( ! empty( $icon_size ) ? $icon_size : '16' ) . 'px;';
 			if ( ! empty( $settings['compare_text_single'] ) ) {
 				$css .= 'margin-bottom: -2px;';
 			}
@@ -1470,8 +1540,9 @@ class Compare {
 			$css .= wopb_function()->convert_css( 'hover', $nav_btn_style );
 			$css .= '}';
 			$css .= '.wopb-compare-nav-item .wopb-compare-icon svg{';
-			$css .= 'height: ' . ( ! empty( $settings['compare_icon_size_nav'] ) ? $settings['compare_icon_size_nav'] : '18' ) . 'px;';
-			$css .= 'width: ' . ( ! empty( $settings['compare_icon_size_nav'] ) ? $settings['compare_icon_size_nav'] : '18' ) . 'px;';
+			$icon_size = wopb_function()->sanitize_css_number( $settings['compare_icon_size_nav'] ?? '' );
+			$css      .= 'height: ' . ( ! empty( $icon_size ) ? $icon_size : '18' ) . 'px;';
+			$css      .= 'width: ' . ( ! empty( $icon_size ) ? $icon_size : '18' ) . 'px;';
 			if ( ! empty( $settings['compare_nav_text'] ) ) {
 				$css .= 'margin-bottom: -2px;';
 			}
@@ -1502,9 +1573,10 @@ class Compare {
 			$css .= wopb_function()->convert_css( 'hover', $settings['compare_body_text_typo'] );
 			$css .= '}';
 			$css .= '.wopb-compare-table{';
-			if ( ! empty( $settings['compare_column_space'] ) ) {
+			$column_space = wopb_function()->sanitize_css_number( $settings['compare_column_space'] ?? '' );
+			if ( ! empty( $column_space ) ) {
 				$css .= 'border-collapse: separate;';
-				$css .= 'border-spacing: ' . $settings['compare_column_space'] . 'px;';
+				$css .= 'border-spacing: ' . $column_space . 'px;';
 			} else {
 				$css .= 'border-collapse: collapse;';
 			}
@@ -1521,13 +1593,12 @@ class Compare {
 
 	/** Named WordPress hook callback. */
 	public function append_quick_view_compare( $content, $product_id ) {
-		return $content . $this->get_compare( $product_id, 'default' );
+		return $content . wp_kses( $this->get_compare( $product_id, 'default' ), $this->allowed_html() );
 	}
 
 	/** Named WordPress hook callback. */
 	public function render_account_compare() {
-		$compare_wrapper_safe = wopb_function()->wp_kses_safe( $this->compare_wrapper() );
-		echo $compare_wrapper_safe; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wp_kses( $this->compare_wrapper(), $this->allowed_html() );
 	}
 
 	/** Named WordPress hook callback. */
@@ -1540,6 +1611,6 @@ class Compare {
 
 	/** Named WordPress hook callback. */
 	public function append_compare_button( $content ) {
-		return $content . $this->get_compare( get_the_ID(), 'default' );
+		return $content . wp_kses( $this->get_compare( get_the_ID(), 'default' ), $this->allowed_html() );
 	}
 }

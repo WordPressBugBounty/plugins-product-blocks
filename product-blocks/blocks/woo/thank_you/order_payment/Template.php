@@ -1,8 +1,6 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
-
 $order = wopb_function()->get_thankyou_order();
 
 if ( $order && ! ( $order->has_status( 'failed' ) ) ) {
@@ -12,27 +10,27 @@ if ( $order && ! ( $order->has_status( 'failed' ) ) ) {
 
 			<li class="woocommerce-order-overview__order order">
 				<?php echo esc_html( $attr['orderText'] ); ?>
-				<strong><?php echo esc_html( $order->get_order_number() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
+				<strong><?php echo esc_html( $order->get_order_number() ); ?></strong>
 			</li>
 			<div class="wopb-separator"></div>
 
 			<li class="woocommerce-order-overview__date date">
 				<?php echo esc_html( $attr['dateText'] ); ?>
-				<strong><?php echo wc_format_datetime( $order->get_date_created() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
+				<strong><?php echo esc_html( wc_format_datetime( $order->get_date_created() ) ); ?></strong>
 			</li>
 			<div class="wopb-separator"></div>
 
 			<?php if ( is_user_logged_in() && $order->get_user_id() === get_current_user_id() && $order->get_billing_email() ) : ?>
 				<li class="woocommerce-order-overview__email email">
 					<?php echo esc_html( $attr['emailText'] ); ?>
-					<strong><?php echo esc_html( $order->get_billing_email() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
+					<strong><?php echo esc_html( $order->get_billing_email() ); ?></strong>
 				</li>
 				<div class="wopb-separator"></div>
 			<?php endif; ?>
 
 			<li class="woocommerce-order-overview__total total">
 				<?php echo esc_html( $attr['totalText'] ); ?>
-				<strong><?php echo wp_kses_post( $order->get_formatted_order_total() ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?></strong>
+				<strong><?php echo wp_kses( $order->get_formatted_order_total(), wopb_function()->allowed_html_tags() ); ?></strong>
 			</li>
 			<div class="wopb-separator"></div>
 			<?php if ( $order->get_payment_method_title() ) : ?>
@@ -45,4 +43,3 @@ if ( $order && ! ( $order->has_status( 'failed' ) ) ) {
 	</div>
 	<?php
 }
-// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals

@@ -71,7 +71,7 @@ class Product_Category_2 {
 			$attr['align']     = ! empty( $attr['align'] ) ? 'align' . preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['align'] ) : '';
 			$attr['titleTag']  = in_array( $attr['titleTag'], wopb_function()->allowed_block_tags(), true ) ? $attr['titleTag'] : 'h3';
 
-			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . '">';
+			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . esc_attr( $attr['align'] ) . '">';
 				$wraper_before .= '<div class="wopb-block-wrapper">';
 
 			if ( $attr['headingShow'] ) {
@@ -85,9 +85,9 @@ class Product_Category_2 {
 			foreach ( $recent_posts as $value ) {
 				$post_loop         .= '<div class="wopb-block-item">';
 					$post_loop     .= '<div class="wopb-block-content-wrap wopb-category-wrap">';
-						$post_loop .= '<div class="wopb-block-image wopb-block-image-' . sanitize_html_class( $attr['imgAnimation'] ) . '"><a href="' . esc_url( $value['url'] ) . '" class="wopb-product-cat-img"><img src="' . esc_url( $value['image'] ? $value['image'][ $image_size ] : WOPB_URL . 'assets/img/wopb_fallback.jpg' ) . '" alt="' . esc_attr( $value['name'] ) . '"/></a></div>';
+						$post_loop .= '<div class="wopb-block-image wopb-block-image-' . esc_attr( sanitize_html_class( $attr['imgAnimation'] ) ) . '"><a href="' . esc_url( $value['url'] ) . '" class="wopb-product-cat-img"><img src="' . esc_url( $value['image'] ? $value['image'][ $image_size ] : WOPB_URL . 'assets/img/wopb_fallback.jpg' ) . '" alt="' . esc_attr( $value['name'] ) . '"/></a></div>';
 				if ( $attr['titleShow'] || $attr['countShow'] || $attr['descShow'] || $attr['readMore'] ) {
-						$post_loop     .= '<div class="wopb-category-content-items wopb-category-content-' . sanitize_html_class( $attr['contentVerticalPosition'] ) . ' wopb-category-content-' . sanitize_html_class( $attr['contentHorizontalPosition'] ) . '">';
+						$post_loop     .= '<div class="wopb-category-content-items wopb-category-content-' . esc_attr( sanitize_html_class( $attr['contentVerticalPosition'] ) ) . ' wopb-category-content-' . esc_attr( sanitize_html_class( $attr['contentHorizontalPosition'] ) ) . '">';
 							$post_loop .= '<div class="wopb-category-content-item">';
 					if ( $attr['titleShow'] ) {
 						$post_loop .= '<' . esc_attr( $attr['titleTag'] ) . ' class="wopb-product-cat-title"><a href="' . esc_url( $value['url'] ) . '">' . esc_html( $value['name'] ) . '</a></' . esc_attr( $attr['titleTag'] ) . '>';

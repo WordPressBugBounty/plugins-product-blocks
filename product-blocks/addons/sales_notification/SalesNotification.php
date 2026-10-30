@@ -36,12 +36,12 @@ class SalesNotification {
 	public function generate_css( $key ) {
 		if ( 'wopb_sales_notification' === $key ) {
 			$settings = wopb_function()->get_setting();
-			$css      = '.wopb-notification-wrap { ' . $settings['sales_push_display_position'] . ': 20px; }';
+			$css      = '.wopb-notification-wrap { ' . wopb_function()->sanitize_css_keyword( $settings['sales_push_display_position'] ?? '', array( 'left', 'right' ), 'left' ) . ': 20px; }';
 			$css     .= '.wopb-notification .wopb-notification-wrap {';
-				$css .= isset( $settings['sales_bg_color']['bg'] ) ? ( 'background-color: ' . $settings['sales_bg_color']['bg'] . ';' ) : '';
+				$css .= isset( $settings['sales_bg_color']['bg'] ) ? ( 'background-color: ' . wopb_function()->sanitize_css_color( $settings['sales_bg_color']['bg'] ) . ';' ) : '';
 			$css     .= '}';
 			$css     .= '.wopb-notification .wopb-notification-wrap:hover {';
-				$css .= isset( $settings['sales_bg_color']['hover_bg'] ) ? ( 'background-color: ' . $settings['sales_bg_color']['hover_bg'] . ';' ) : '';
+				$css .= isset( $settings['sales_bg_color']['hover_bg'] ) ? ( 'background-color: ' . wopb_function()->sanitize_css_color( $settings['sales_bg_color']['hover_bg'] ) . ';' ) : '';
 			$css     .= '}';
 
 			$css .= '.wopb-notification-name {' . wopb_function()->convert_css( 'general', $settings['sales_name_typo'] ) . '}';
@@ -55,13 +55,13 @@ class SalesNotification {
 			$css .= '.wopb-notification-time {' . wopb_function()->convert_css( 'general', $settings['sales_time_typo'] ) . '}';
 			$css .= '.wopb-notification-time:hover {' . wopb_function()->convert_css( 'hover', $settings['sales_time_typo'] ) . '}';
 
-			$css .= '.wopb-notification-wrap { border-radius: ' . $settings['sales_radius'] . 'px; }';
-			$css .= '.wopb-notification-wrap .wopb-img-wrap img { border-radius: ' . $settings['sales_image_radius'] . 'px; }';
+			$css .= '.wopb-notification-wrap { border-radius: ' . wopb_function()->sanitize_css_number( $settings['sales_radius'] ?? '' ) . 'px; }';
+			$css .= '.wopb-notification-wrap .wopb-img-wrap img { border-radius: ' . wopb_function()->sanitize_css_number( $settings['sales_image_radius'] ?? '' ) . 'px; }';
 
-			$css .= '.wopb-notification-close {' . ( isset( $settings['sales_close_bg']['bg'] ) ? ( 'background-color: ' . $settings['sales_close_bg']['bg'] . ';' ) : '' ) . '}';
-			$css .= '.wopb-notification-close:hover {' . ( isset( $settings['sales_close_bg']['hover_bg'] ) ? ( 'background-color: ' . $settings['sales_close_bg']['hover_bg'] . ';' ) : '' ) . '}';
-			$css .= '.wopb-notification-close::after {' . ( isset( $settings['sales_close_color']['color'] ) ? ( 'color: ' . $settings['sales_close_color']['color'] . ';' ) : '' ) . '}';
-			$css .= '.wopb-notification-close:hover::after {' . ( isset( $settings['sales_close_color']['hover_color'] ) ? ( 'color: ' . $settings['sales_close_color']['hover_color'] . ';' ) : '' ) . '}';
+			$css .= '.wopb-notification-close {' . ( isset( $settings['sales_close_bg']['bg'] ) ? ( 'background-color: ' . wopb_function()->sanitize_css_color( $settings['sales_close_bg']['bg'] ) . ';' ) : '' ) . '}';
+			$css .= '.wopb-notification-close:hover {' . ( isset( $settings['sales_close_bg']['hover_bg'] ) ? ( 'background-color: ' . wopb_function()->sanitize_css_color( $settings['sales_close_bg']['hover_bg'] ) . ';' ) : '' ) . '}';
+			$css .= '.wopb-notification-close::after {' . ( isset( $settings['sales_close_color']['color'] ) ? ( 'color: ' . wopb_function()->sanitize_css_color( $settings['sales_close_color']['color'] ) . ';' ) : '' ) . '}';
+			$css .= '.wopb-notification-close:hover::after {' . ( isset( $settings['sales_close_color']['hover_color'] ) ? ( 'color: ' . wopb_function()->sanitize_css_color( $settings['sales_close_color']['hover_color'] ) . ';' ) : '' ) . '}';
 
 			wopb_function()->update_css( $key, 'add', $css );
 		}

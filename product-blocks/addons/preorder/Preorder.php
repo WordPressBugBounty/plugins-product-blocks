@@ -114,21 +114,21 @@ class Preorder {
 	public function wopb_wowstore_custom_field_simple() {
 		$html = '';
 		global $post;
-		$html                 .= '<div class="panel woocommerce_options_panel hidden" id="productx_tab_data">';
-			$html             .= '<div class="wopb-productx-options-tab-wrap">';
-				$html         .= '<div class="wopb-woocommerce-preorder-field-group" id="wopb-woocommerce-preorder-field-group">';
-					$html     .= $this->generate_field( $post->ID, '' );
-				$html         .= '</div>';
-				$html         .= '<div id="wopb-preorder-select-instruction">';
-					$html     .= '<h2 class="wopb-preorder-select-instruction-title">';
+		$html .= '<div class="panel woocommerce_options_panel hidden" id="productx_tab_data">';
+			$html .= '<div class="wopb-productx-options-tab-wrap">';
+				$html .= '<div class="wopb-woocommerce-preorder-field-group" id="wopb-woocommerce-preorder-field-group">';
+					$html .= $this->generate_field( $post->ID, '' );
+				$html .= '</div>';
+				$html .= '<div id="wopb-preorder-select-instruction">';
+					$html .= '<h2 class="wopb-preorder-select-instruction-title">';
 						$html .= '<span class="dashicons dashicons-warning"></span>';
-						$html .= __( 'For giving pre-order information please select Pre-Order Checkbox', 'product-blocks' );
-					$html     .= '</h2>';
-				$html         .= '</div>';
-			$html             .= '</div>';
-		$html                 .= '</div>';
+						$html .= esc_html__( 'For giving pre-order information please select Pre-Order Checkbox', 'product-blocks' );
+					$html .= '</h2>';
+				$html .= '</div>';
+			$html .= '</div>';
+		$html .= '</div>';
 
-		echo wopb_function()->wp_kses_safe( $html ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wp_kses( $html, wopb_function()->allowed_html_tags() );
 	}
 
 	/**
@@ -262,13 +262,25 @@ class Preorder {
 	 * @since v.1.0.4
 	 */
 	public function pre_order_woocommerce_fields_save( $post_id ) {
-		$product = wc_get_product( $post_id );
+		if ( ! isset( $_POST['woocommerce_meta_nonce'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['woocommerce_meta_nonce'] ) ), 'woocommerce_save_data' ) ) {
+			return;
+		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
 
-		// Nonce already verified by WC_Meta_Box_Product_Data::save() before this hook fires.
-		if ( isset( $_POST['_wopb_preorder_simple'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+		$product = wc_get_product( $post_id );
+		if ( ! $product ) {
+			return;
+		}
+
+		if ( isset( $_POST['_wopb_preorder_simple'] ) ) {
 			$product->update_meta_data( '_wopb_preorder_simple', 'yes' );
-			$product->update_meta_data( '_wopb_max_preorder', isset( $_POST['_wopb_max_preorder'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_preorder'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			$product->update_meta_data( '_wopb_preorder_coming_soon', isset( $_POST['_wopb_preorder_coming_soon'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_coming_soon'] ) ) : '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$product->update_meta_data( '_wopb_max_preorder', isset( $_POST['_wopb_max_preorder'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_max_preorder'] ) ) : '' );
+			$product->update_meta_data( '_wopb_preorder_coming_soon', isset( $_POST['_wopb_preorder_coming_soon'] ) ? sanitize_text_field( wp_unslash( $_POST['_wopb_preorder_coming_soon'] ) ) : '' );
 
 			/**
 			 * Fires before a simple product set to pre-order is saved, so more pre-order data can be added.
@@ -296,13 +308,13 @@ class Preorder {
 
 		$coming_soon_message         = $product->get_meta( '_wopb_preorder_coming_soon' );
 		$default_coming_soon_message = wopb_function()->get_setting( 'preorder_coming_soon_text' );
-		$html                       .= '<h4 class="wopb-woocommerce-preorder-title">' . __( 'WowStore Pre-order information', 'product-blocks' ) . '</h4>';
+		$html                       .= '<h4 class="wopb-woocommerce-preorder-title">' . esc_html__( 'WowStore Pre-order information', 'product-blocks' ) . '</h4>';
 		$wopb_buffer_level_1         = ob_get_level();
 		ob_start();
 		try {
 			woocommerce_wp_text_input(
 				array(
-					'id'          => '_wopb_max_preorder' . $loop,
+					'id'          => '_wopb_max_preorder' . esc_attr( $loop ),
 					'class'       => 'wopb_required',
 					'label'       => __( 'Available Quantity', 'product-blocks' ),
 					'type'        => 'number',
@@ -314,7 +326,7 @@ class Preorder {
 
 			woocommerce_wp_text_input(
 				array(
-					'id'                => '_wopb_preorder_coming_soon' . $loop,
+					'id'                => '_wopb_preorder_coming_soon' . esc_attr( $loop ),
 					'class'             => 'wopb_required',
 					'label'             => __( 'Pre-Release Message', 'product-blocks' ),
 					'type'              => 'text',
@@ -380,7 +392,7 @@ class Preorder {
 		 */
 		$html = apply_filters( 'wopb_preorder_content', $html, $product, $price );
 
-		return "<span class='wopb-single-product-preorder'>{$price}{$html}</span>";
+		return '<span class="wopb-single-product-preorder">' . wp_kses( $price . $html, wopb_function()->allowed_html_tags() ) . '</span>';
 	}
 
 
@@ -404,10 +416,10 @@ class Preorder {
 		$message = apply_filters( 'wopb_preorder_available_message', '', $product, 'product' );
 
 		if ( $message ) {
-			$html .= '<span class="wopb-singlepage-preorder-message">' . $message . '</span>';
+			$html .= '<span class="wopb-singlepage-preorder-message">' . wp_kses_post( $message ) . '</span>';
 		} else {
 			$html     .= '<span class="wopb-singlepage-no-date">';
-				$html .= '<span class="wopb-no-date-message">' . $product->get_meta( '_wopb_preorder_coming_soon' ) . '</span>';
+				$html .= '<span class="wopb-no-date-message">' . wp_kses_post( $product->get_meta( '_wopb_preorder_coming_soon' ) ) . '</span>';
 			$html     .= '</span>';
 		}
 		return $html;
@@ -424,8 +436,8 @@ class Preorder {
 		$remaining_items = $this->remaining_item_count( $product );
 		if ( $remaining_items ) {
 			$html     .= '<span class="wopb-singlepage-preorder-remaining-item">';
-				$html .= '<span class="wopb-preorder-remaining-label">' . __( 'Remaining Item only: ', 'product-blocks' ) . '</span>';
-				$html .= '<span class="wopb-preorder-remaining-count">' . $remaining_items . '</span>';
+				$html .= '<span class="wopb-preorder-remaining-label">' . esc_html__( 'Remaining Item only: ', 'product-blocks' ) . '</span>';
+				$html .= '<span class="wopb-preorder-remaining-count">' . esc_html( $remaining_items ) . '</span>';
 			$html     .= '</span>';
 		}
 		return $html;
@@ -458,9 +470,9 @@ class Preorder {
 			/** This filter is documented in addons/preorder/Preorder.php */
 			$message = apply_filters( 'wopb_preorder_available_message', '', $product, 'cart' );
 
-			$pre_order_content = '<span class="wopb-cart-preorder-badge">' . wopb_function()->get_setting( 'preorder_button_text' ) . '</span>';
+			$pre_order_content = '<span class="wopb-cart-preorder-badge">' . esc_html( wopb_function()->get_setting( 'preorder_button_text' ) ) . '</span>';
 			if ( $message ) {
-				$pre_order_content .= '<div class="wopb-cart-preorder-message">' . $message . '</div>';
+				$pre_order_content .= '<div class="wopb-cart-preorder-message">' . wp_kses_post( $message ) . '</div>';
 			}
 			return $name . $pre_order_content;
 		}
@@ -491,7 +503,7 @@ class Preorder {
 	public function woocommerce_re_format_order_item_meta( $formatted_meta, $item ) {
 		foreach ( $formatted_meta as $key => $meta ) {
 			if ( 'wopb_pre_order_item' === $meta->key ) {
-				$meta->display_key = '<span class="wopb-cart-preorder-badge">' . wopb_function()->get_setting( 'preorder_button_text' ) . '</span>';
+				$meta->display_key = '<span class="wopb-cart-preorder-badge">' . esc_html( wopb_function()->get_setting( 'preorder_button_text' ) ) . '</span>';
 			}
 		}
 		return $formatted_meta;
@@ -549,7 +561,7 @@ class Preorder {
 		global $wpdb;
 		$product_id = absint( $product_id );
 		// Live order totals used to enforce pre-order limits; not practical to cache.
-		$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- live order totals across WooCommerce's order lookup tables (no WP API) to enforce the pre-order limit; a cached value would let the limit be exceeded.
 			$wpdb->prepare(
 				"
                 SELECT sum(order_product.product_qty) as total_order

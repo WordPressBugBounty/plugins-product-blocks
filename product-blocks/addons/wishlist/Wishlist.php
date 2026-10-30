@@ -120,7 +120,7 @@ class Wishlist {
 
 		$output          = '<div ';
 			$output     .= 'class="' . esc_attr( $button_class ) . '"';
-			$output     .= ! empty( $wishlist_data['button_attr'] ) ? $wishlist_data['button_attr'] : '';
+			$output     .= $this->sanitize_button_attributes( $wishlist_data['button_attr'] ?? '' );
 		$output         .= '>';
 			$output     .= '<span class="wopb-tooltip-text">';
 				$output .= wopb_function()->svg_icon( 'wishlist' );
@@ -129,7 +129,7 @@ class Wishlist {
 			$output     .= '</span>';
 		$output         .= '</div>';
 
-		return $output;
+		return wp_kses( $output, wopb_function()->allowed_html_tags() );
 	}
 
 	/**
@@ -142,12 +142,14 @@ class Wishlist {
 		$wishlist_data = array();
 		$user_id       = $user_id ? $user_id : get_current_user_id();
 		if ( isset( $_COOKIE['wopb_wishlist'] ) ) {
-			$cookie_value = isset( $_COOKIE['wopb_wishlist'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['wopb_wishlist'] ) ) : '';
+			$cookie_value = is_string( $_COOKIE['wopb_wishlist'] ) ? sanitize_text_field( wp_unslash( $_COOKIE['wopb_wishlist'] ) ) : ''; // The JSON is decoded next and every product ID is validated.
 			$data         = json_decode( $cookie_value, true );
 			if ( is_array( $data ) ) {
-				return $data;
+				return $this->sanitize_wishlist_ids( $data );
 			} else {
-				setcookie( 'wopb_wishlist', '', time() - 3600, '/' );
+				if ( ! headers_sent() ) {
+					setcookie( 'wopb_wishlist', '', time() - 3600, '/' );
+				}
 				unset( $cookie_value );
 			}
 		} else {
@@ -161,7 +163,46 @@ class Wishlist {
 			$wishlist_data = apply_filters( 'wopb_wishlist_ids', $wishlist_data, (int) $user_id );
 			$wishlist_data = is_array( $wishlist_data ) ? $wishlist_data : array();
 		}
-		return $wishlist_data;
+		return $this->sanitize_wishlist_ids( $wishlist_data );
+	}
+
+	/**
+	 * Validate product IDs from cookies, saved lists and callers.
+	 *
+	 * @param mixed $ids Product ID list.
+	 * @return array
+	 */
+	private function sanitize_wishlist_ids( $ids ) {
+		$valid_ids = array();
+		foreach ( is_array( $ids ) ? $ids : array() as $id ) {
+			if ( ( is_int( $id ) || is_string( $id ) ) && preg_match( '/^[0-9]+$/D', (string) $id ) && absint( $id ) > 0 ) {
+				$valid_ids[] = absint( $id );
+			}
+		}
+		return array_values( array_unique( $valid_ids ) );
+	}
+
+	/**
+	 * Escape filtered button attributes, including URLs consumed by JavaScript.
+	 *
+	 * @param mixed $attributes Button attribute markup.
+	 * @return string
+	 */
+	private function sanitize_button_attributes( $attributes ) {
+		if ( ! is_string( $attributes ) ) {
+			return '';
+		}
+		$output = '';
+		foreach ( wp_kses_hair( $attributes, wp_allowed_protocols() ) as $attribute ) {
+			$name = strtolower( $attribute['name'] );
+			if ( ! preg_match( '/^(?:data-[a-z0-9_-]+|aria-[a-z-]+|title|role|tabindex|href)$/D', $name ) ) {
+				continue;
+			}
+			$value   = wp_specialchars_decode( $attribute['value'], ENT_QUOTES );
+			$value   = in_array( $name, array( 'href', 'data-redirect', 'data-login-redirect' ), true ) ? esc_url( $value ) : esc_attr( $value );
+			$output .= ' ' . $name . '="' . $value . '"';
+		}
+		return $output;
 	}
 
 	/**
@@ -222,8 +263,8 @@ class Wishlist {
 
 		$html              = '<span class="wopb-wishlist-btn-wrap">';
 			$html         .= '<a ';
-				$html     .= 'class="' . $button_class . '"';
-				$html     .= ! empty( $wishlist_data['button_attr'] ) ? $wishlist_data['button_attr'] : '';
+				$html     .= 'class="' . esc_attr( $button_class ) . '"';
+				$html     .= $this->sanitize_button_attributes( $wishlist_data['button_attr'] ?? '' );
 			$html         .= '>';
 				$html     .= '<span class="wopb-wishlist-text">';
 					$html .= wopb_function()->svg_icon( 'wishlist' ) . esc_html( $this->button );
@@ -233,7 +274,7 @@ class Wishlist {
 				$html     .= '</span>';
 			$html         .= '</a>';
 		$html             .= '</span>';
-		return $content . $html;
+		return $content . wp_kses( $html, wopb_function()->allowed_html_tags() );
 	}
 
 
@@ -245,7 +286,8 @@ class Wishlist {
 	 */
 	public function wishlist_shortcode_callback( $message = '', $ids = array() ) {
 		$html          = '';
-		$wishlist_data = empty( $ids ) ? $this->get_wishlist_id() : $ids;
+		$message       = is_scalar( $message ) ? (string) $message : '';
+		$wishlist_data = empty( $ids ) ? $this->get_wishlist_id() : $this->sanitize_wishlist_ids( $ids );
 
 		if ( count( $wishlist_data ) > 0 ) {
 			$wishlist_page = $this->wishlist_page ? get_permalink( $this->wishlist_page ) : '#';
@@ -276,7 +318,7 @@ class Wishlist {
 						$html     .= '<tr>';
 						$html     .= '<td><a class="wopb-wishlist-remove" data-action="remove" href="#" data-postid="' . esc_attr( $product->get_id() ) . '">×</a></td>';
 						$html     .= '<td class="wopb-wishlist-product-image">';
-						$thumbnail = apply_filters( 'single_product_archive_thumbnail_size', 'woocommerce_thumbnail' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+						$thumbnail = apply_filters( 'single_product_archive_thumbnail_size', 'woocommerce_thumbnail' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WooCommerce core's own filter for the loop thumbnail size.
 						if ( $thumbnail ) {
 								$html .= sprintf( '<a href="%s">%s</a>', esc_url( $link ), wp_kses_post( $product->get_image( 'thumbnail' ) ) );
 						}
@@ -284,9 +326,9 @@ class Wishlist {
 						$html .= '<td class="wopb-wishlist-product-name"><a href="' . esc_url( $link ) . '">' . esc_html( $product->get_title() ) . '</a></td>';
 						$html .= '<td class="wopb-wishlist-product-price">' . wp_kses_post( $product->get_price_html() ) . '</td>';
 						if ( $product->is_in_stock() ) {
-										$html .= '<td class="wopb-wishlist-product-action"><div class="wopb-wishlist-product-stock">' . ( $product->is_in_stock() ? esc_html__( 'In Stock', 'product-blocks' ) : esc_html__( 'Stock', 'product-blocks' ) ) . '</div><span class="wopb-wishlist-cart-added" data-action="cart_remove" ' . ( $redirect_cart ? 'data-redirect="' . esc_url( wc_get_cart_url() ) . '"' : '' ) . ' data-postid="' . esc_attr( $product->get_id() ) . '">' . do_shortcode( '[add_to_cart id="' . esc_attr( $val ) . '" show_price="false"]' ) . '</span></td>';
+										$html .= '<td class="wopb-wishlist-product-action"><div class="wopb-wishlist-product-stock">' . ( $product->is_in_stock() ? esc_html__( 'In Stock', 'product-blocks' ) : esc_html__( 'Stock', 'product-blocks' ) ) . '</div><span class="wopb-wishlist-cart-added" data-action="cart_remove" ' . ( $redirect_cart ? 'data-redirect="' . esc_url( wc_get_cart_url() ) . '"' : '' ) . ' data-postid="' . esc_attr( $product->get_id() ) . '">' . wp_kses( do_shortcode( '[add_to_cart id="' . absint( $val ) . '" show_price="false"]' ), wopb_function()->allowed_html_tags() ) . '</span></td>';
 						} else {
-														$html .= '<td class="wopb-wishlist-product-action"><div class="wopb-wishlist-product-stock">' . ( $product->is_in_stock() ? esc_html__( 'In Stock', 'product-blocks' ) : esc_html__( 'Stock', 'product-blocks' ) ) . '</div>' . do_shortcode( '[add_to_cart id="' . esc_attr( $val ) . '" show_price="false"]' ) . '</td>';
+														$html .= '<td class="wopb-wishlist-product-action"><div class="wopb-wishlist-product-stock">' . ( $product->is_in_stock() ? esc_html__( 'In Stock', 'product-blocks' ) : esc_html__( 'Stock', 'product-blocks' ) ) . '</div>' . wp_kses( do_shortcode( '[add_to_cart id="' . absint( $val ) . '" show_price="false"]' ), wopb_function()->allowed_html_tags() ) . '</td>';
 						}
 											$html .= '</tr>';
 					}
@@ -312,10 +354,10 @@ class Wishlist {
 		} else {
 			$html     .= '<div class="wopb-empty-wishlist-wrap">';
 				$html .= '<h3>' . esc_html__( 'Your Wishlist is empty.', 'product-blocks' ) . '</h3>';
-				$html .= '<span><a class="wopb-modal-continue" data-redirect="' . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . '">' . esc_html__( 'Continue Shopping', 'product-blocks' ) . '</span>';
+				$html .= '<span><a class="wopb-modal-continue" data-redirect="' . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . '">' . esc_html__( 'Continue Shopping', 'product-blocks' ) . '</a></span>';
 			$html     .= '</div>';
 		}
-		return $html;
+		return wp_kses( $html, wopb_function()->allowed_html_tags() );
 	}
 
 
@@ -487,19 +529,19 @@ class Wishlist {
 	 * @return ARRAY | With Custom Message
 	 */
 	public function wopb_wishlist_callback() {
-		if ( ! isset( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
+		if ( ! isset( $_REQUEST['wpnonce'] ) || ! is_string( $_REQUEST['wpnonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['wpnonce'] ) ), 'wopb-nonce' ) ) {
 			return;
 		}
 
-		$type    = isset( $_POST['type'] ) ? sanitize_text_field( wp_unslash( $_POST['type'] ) ) : '';
-		$post_id = isset( $_POST['post_id'] ) ? absint( wp_unslash( $_POST['post_id'] ) ) : 0;
+		$type    = isset( $_POST['type'] ) && is_string( $_POST['type'] ) ? sanitize_key( wp_unslash( $_POST['type'] ) ) : '';
+		$post_id = isset( $_POST['post_id'] ) && is_scalar( $_POST['post_id'] ) ? absint( wp_unslash( $_POST['post_id'] ) ) : 0;
 		$product = wc_get_product( $post_id );
 
 		$user_data = $this->get_wishlist_id();
 
 		if ( $post_id ) {
 			if ( 'add' === $type ) {
-				if ( ! wopb_function()->can_view_product( $post_id ) ) {
+				if ( ! $product || ! wopb_function()->can_view_product( $post_id ) ) {
 					wp_send_json_error( __( 'Wishlist Not Added.', 'product-blocks' ) );
 				}
 				if ( ! in_array( $post_id, $user_data ) ) {
@@ -517,7 +559,7 @@ class Wishlist {
 			} elseif ( 'cart_remove' === $type ) {
 				$product_redirect = '';
 				if ( $product ) {
-					$product_redirect = strpos( $product->add_to_cart_url(), 'add-to-cart=' ) === false ? $product->get_permalink() : '';
+					$product_redirect = strpos( $product->add_to_cart_url(), 'add-to-cart=' ) === false ? esc_url_raw( $product->get_permalink() ) : '';
 				}
 				wp_send_json_success(
 					array(
@@ -590,6 +632,7 @@ class Wishlist {
 	 * @since 4.6.0
 	 */
 	private function save_wishlist( $user_data ) {
+		$user_data = $this->sanitize_wishlist_ids( $user_data );
 		setcookie( 'wopb_wishlist', wp_json_encode( $user_data ), time() + 604800, '/' );
 
 		/**
@@ -682,7 +725,34 @@ class Wishlist {
 		}
 		$html .= '</a>';
 
-		return $html;
+		return wp_kses( $html, wopb_function()->allowed_html_tags() );
+	}
+
+	/**
+	 * Validate CSS values before passing them to the shared converter.
+	 *
+	 * @param string $type  Style group.
+	 * @param mixed  $value Saved style values.
+	 * @return string
+	 */
+	private function convert_css( $type, $value ) {
+		if ( 'radius' === $type ) {
+			$value = is_scalar( $value ) ? absint( $value ) : 0;
+		} else {
+			$value = is_array( $value ) ? $value : array();
+			foreach ( array( 'size', 'bold', 'border', 'top', 'right', 'bottom', 'left' ) as $key ) {
+				if ( isset( $value[ $key ] ) ) {
+					$value[ $key ] = is_scalar( $value[ $key ] ) ? absint( $value[ $key ] ) : 0;
+				}
+			}
+			foreach ( array( 'color', 'hover_color', 'bg', 'hover_bg' ) as $key ) {
+				if ( isset( $value[ $key ] ) ) {
+					$color         = is_string( $value[ $key ] ) ? trim( $value[ $key ] ) : '';
+					$value[ $key ] = preg_match( '/^(?:\#[a-f0-9]{3,8}|[a-z]+|(?:rgba?|hsla?)\([0-9.,%\s+-]+\))$/iD', $color ) ? $color : '';
+				}
+			}
+		}
+		return wopb_function()->convert_css( $type, $value );
 	}
 
 	/**
@@ -695,94 +765,94 @@ class Wishlist {
 	public function generate_css( $key ) {
 		if ( 'wopb_wishlist' === $key ) {
 			$settings         = wopb_function()->get_setting();
-			$shop_btn_style   = array_merge( $settings['wishlist_btn_typo_shop'], $settings['wishlist_btn_bg_shop'] );
-			$single_btn_style = array_merge( $settings['wishlist_btn_typo_single'], $settings['wishlist_btn_bg_single'] );
-			$nav_btn_style    = array_merge( $settings['wishlist_btn_typo_nav'], $settings['wishlist_btn_bg_nav'] );
+			$shop_btn_style   = array_merge( (array) ( $settings['wishlist_btn_typo_shop'] ?? array() ), (array) ( $settings['wishlist_btn_bg_shop'] ?? array() ) );
+			$single_btn_style = array_merge( (array) ( $settings['wishlist_btn_typo_single'] ?? array() ), (array) ( $settings['wishlist_btn_bg_single'] ?? array() ) );
+			$nav_btn_style    = array_merge( (array) ( $settings['wishlist_btn_typo_nav'] ?? array() ), (array) ( $settings['wishlist_btn_bg_nav'] ?? array() ) );
 			$css              = '';
 
 			/* Shop page button style */
-			if ( ! empty( $settings['wishlist_align_shop'] ) ) {
+			if ( isset( $settings['wishlist_align_shop'] ) && in_array( $settings['wishlist_align_shop'], array( 'flex-start', 'center', 'flex-end' ), true ) ) {
 				$css     .= '.wopb-wishlist-btn-wrap{';
 					$css .= 'display: inline-flex;';
 					$css .= 'justify-content: ' . $settings['wishlist_align_shop'] . ';';
 				$css     .= '}';
 			}
 			$css     .= '.wopb-wishlist-add.wopb-wishlist-shop-btn{';
-				$css .= wopb_function()->convert_css( 'general', $shop_btn_style );
-				$css .= wopb_function()->convert_css( 'border', $settings['wishlist_btn_border_shop'] );
-				$css .= wopb_function()->convert_css( 'radius', $settings['wishlist_btn_radius_shop'] );
-				$css .= 'padding: ' . wopb_function()->convert_css( 'dimension', $settings['wishlist_btn_padding_shop'] ) . ';';
+				$css .= $this->convert_css( 'general', $shop_btn_style );
+				$css .= $this->convert_css( 'border', $settings['wishlist_btn_border_shop'] ?? array() );
+				$css .= $this->convert_css( 'radius', $settings['wishlist_btn_radius_shop'] ?? array() );
+				$css .= 'padding: ' . $this->convert_css( 'dimension', $settings['wishlist_btn_padding_shop'] ?? array() ) . ';';
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-add.wopb-wishlist-shop-btn:hover{';
-				$css .= wopb_function()->convert_css( 'hover', $shop_btn_style );
+				$css .= $this->convert_css( 'hover', $shop_btn_style );
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-add.wopb-wishlist-shop-btn svg{';
-				$css .= 'height: ' . ( ! empty( $settings['wishlist_icon_size_shop'] ) ? $settings['wishlist_icon_size_shop'] : '16' ) . 'px;';
-				$css .= 'width: ' . ( ! empty( $settings['wishlist_icon_size_shop'] ) ? $settings['wishlist_icon_size_shop'] : '16' ) . 'px;';
+				$css .= 'height: ' . absint( ! empty( $settings['wishlist_icon_size_shop'] ) ? $settings['wishlist_icon_size_shop'] : 16 ) . 'px;';
+				$css .= 'width: ' . absint( ! empty( $settings['wishlist_icon_size_shop'] ) ? $settings['wishlist_icon_size_shop'] : 16 ) . 'px;';
 			$css     .= '}';
 			/* Shop page button style */
 
 			/* Single product page button style */
 			$css     .= '.wopb-wishlist-add.wopb-wishlist-single-btn{';
-				$css .= wopb_function()->convert_css( 'general', $single_btn_style );
-				$css .= wopb_function()->convert_css( 'border', $settings['wishlist_btn_border_single'] );
-				$css .= 'padding: ' . wopb_function()->convert_css( 'dimension', $settings['wishlist_btn_padding_single'] ) . ';';
-				$css .= wopb_function()->convert_css( 'radius', $settings['wishlist_btn_radius_single'] );
+				$css .= $this->convert_css( 'general', $single_btn_style );
+				$css .= $this->convert_css( 'border', $settings['wishlist_btn_border_single'] ?? array() );
+				$css .= 'padding: ' . $this->convert_css( 'dimension', $settings['wishlist_btn_padding_single'] ?? array() ) . ';';
+				$css .= $this->convert_css( 'radius', $settings['wishlist_btn_radius_single'] ?? array() );
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-add.wopb-wishlist-single-btn:hover{';
-				$css .= wopb_function()->convert_css( 'hover', $single_btn_style );
+				$css .= $this->convert_css( 'hover', $single_btn_style );
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-add.wopb-wishlist-single-btn svg{';
-				$css .= 'height: ' . ( ! empty( $settings['wishlist_icon_size_single'] ) ? $settings['wishlist_icon_size_single'] : '16' ) . 'px;';
-				$css .= 'width: ' . ( ! empty( $settings['wishlist_icon_size_single'] ) ? $settings['wishlist_icon_size_single'] : '16' ) . 'px;';
+				$css .= 'height: ' . absint( ! empty( $settings['wishlist_icon_size_single'] ) ? $settings['wishlist_icon_size_single'] : 16 ) . 'px;';
+				$css .= 'width: ' . absint( ! empty( $settings['wishlist_icon_size_single'] ) ? $settings['wishlist_icon_size_single'] : 16 ) . 'px;';
 			$css     .= '}';
 			/* Single product page button style */
 
 			/* Navbar style */
 			$css     .= '.wopb-wishlist-nav-item{';
-				$css .= wopb_function()->convert_css( 'general', $nav_btn_style );
-				$css .= wopb_function()->convert_css( 'border', $settings['wishlist_btn_border_nav'] );
-				$css .= wopb_function()->convert_css( 'radius', $settings['wishlist_btn_radius_nav'] );
-				$css .= 'padding: ' . wopb_function()->convert_css( 'dimension', $settings['wishlist_btn_padding_nav'] ) . ';';
+				$css .= $this->convert_css( 'general', $nav_btn_style );
+				$css .= $this->convert_css( 'border', $settings['wishlist_btn_border_nav'] ?? array() );
+				$css .= $this->convert_css( 'radius', $settings['wishlist_btn_radius_nav'] ?? array() );
+				$css .= 'padding: ' . $this->convert_css( 'dimension', $settings['wishlist_btn_padding_nav'] ?? array() ) . ';';
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-nav-item:hover{';
-				$css .= wopb_function()->convert_css( 'hover', $nav_btn_style );
+				$css .= $this->convert_css( 'hover', $nav_btn_style );
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-nav-item .wopb-wishlist-icon svg{';
-				$css .= 'height: ' . ( ! empty( $settings['wishlist_icon_size_nav'] ) ? $settings['wishlist_icon_size_nav'] : '18' ) . 'px;';
-				$css .= 'width: ' . ( ! empty( $settings['wishlist_icon_size_nav'] ) ? $settings['wishlist_icon_size_nav'] : '18' ) . 'px;';
+				$css .= 'height: ' . absint( ! empty( $settings['wishlist_icon_size_nav'] ) ? $settings['wishlist_icon_size_nav'] : 18 ) . 'px;';
+				$css .= 'width: ' . absint( ! empty( $settings['wishlist_icon_size_nav'] ) ? $settings['wishlist_icon_size_nav'] : 18 ) . 'px;';
 			$css     .= '}';
 			/* Navbar style */
 
 			/* Table style */
 			$css     .= '.wopb-wishlist-modal .wopb-wishlist-table-body table thead{';
-				$css .= wopb_function()->convert_css( 'general', $settings['wishlist_heading_bg'] );
+				$css .= $this->convert_css( 'general', $settings['wishlist_heading_bg'] ?? array() );
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-modal .wopb-wishlist-table-body table thead:hover{';
-				$css .= wopb_function()->convert_css( 'hover', $settings['wishlist_heading_bg'] );
+				$css .= $this->convert_css( 'hover', $settings['wishlist_heading_bg'] ?? array() );
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-table-body thead th{';
-				$css .= wopb_function()->convert_css( 'general', $settings['wishlist_heading_typo'] );
+				$css .= $this->convert_css( 'general', $settings['wishlist_heading_typo'] ?? array() );
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-table-body thead th:hover{';
-				$css .= wopb_function()->convert_css( 'hover', $settings['wishlist_heading_typo'] );
+				$css .= $this->convert_css( 'hover', $settings['wishlist_heading_typo'] ?? array() );
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-table-body tbody td{';
-				$css .= wopb_function()->convert_css( 'general', $settings['wishlist_body_text_typo'] );
+				$css .= $this->convert_css( 'general', $settings['wishlist_body_text_typo'] ?? array() );
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-table-body tbody td:hover{';
-				$css .= wopb_function()->convert_css( 'hover', $settings['wishlist_body_text_typo'] );
+				$css .= $this->convert_css( 'hover', $settings['wishlist_body_text_typo'] ?? array() );
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-modal table{';
 			if ( ! empty( $settings['wishlist_column_space'] ) ) {
 				$css .= 'border-collapse: separate;';
-				$css .= 'border-spacing: ' . $settings['wishlist_column_space'] . 'px;';
+				$css .= 'border-spacing: ' . absint( $settings['wishlist_column_space'] ) . 'px;';
 			} else {
 				$css .= 'border-collapse: collapse;';
 			}
 			$css     .= '}';
 			$css     .= '.wopb-wishlist-table-body th, .wopb-wishlist-table-body td{';
-				$css .= wopb_function()->convert_css( 'border', $settings['wishlist_column_border'] );
+				$css .= $this->convert_css( 'border', $settings['wishlist_column_border'] ?? array() );
 			$css     .= '}';
 			/* Table style */
 

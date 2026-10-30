@@ -54,7 +54,7 @@ class CartReserved {
 	public function cart_reserved_action() {
 		if ( wc_get_page_id( 'cart' ) == get_the_ID() ) {
 			if ( ! WC()->cart->is_empty() && wopb_function()->get_setting( 'wopb_cart_reserved' ) === 'true' ) {
-				add_filter( 'productx_common_script', '__return_true' );
+				add_filter( 'wopb_common_script', '__return_true' );
 			}
 			if ( wc_post_content_has_shortcode( 'woocommerce_cart' ) || wopb_function()->is_builder() ) {
 				add_action( 'woocommerce_before_cart_contents', array( $this, 'cart_content_hook' ) );
@@ -81,7 +81,7 @@ class CartReserved {
 	 * @since v.3.2.0
 	 */
 	public function cart_content_hook() {
-		echo $this->content();  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo wp_kses( $this->content(), wopb_function()->allowed_html_tags() );
 	}
 
 	/**
@@ -123,10 +123,10 @@ class CartReserved {
 				$html     .= '<div class="wopb-cart-reserved-icon"> ' . esc_html( isset( $cart_icon[ $cart_reversed_icons ] ) ? $cart_icon[ $cart_reversed_icons ] : '' ) . ' </div>';
 				$html     .= '<div class="wopb-cart-reserved-content">';
 					$html .= '<div class="wopb-cart-reserved-message">' . wp_kses_post( wopb_function()->get_setting( 'cart_reserved_msg' ) ) . '</div>';
-					$html .= '<div class="wopb-cart-reserved-timer"> ' . ( isset( $timer_message[0] ) ? wp_kses_post( $timer_message[0] ) : '' ) . ' <div class="wopb-cart-time">' . ( $hours > 0 ? ( $hours > 9 ? $hours . ':' : '0' . $hours . ':' ) : '' ) . ( $minutes > 9 ? $minutes : '0' . $minutes ) . ':' . ( $seconds > 9 ? $seconds : '0' . $seconds ) . '</div> ' . ( isset( $timer_message[1] ) ? wp_kses_post( $timer_message[1] ) : '' ) . ' </div>';
+					$html .= '<div class="wopb-cart-reserved-timer"> ' . ( isset( $timer_message[0] ) ? wp_kses_post( $timer_message[0] ) : '' ) . ' <div class="wopb-cart-time">' . ( $hours > 0 ? ( $hours > 9 ? esc_attr( $hours ) . ':' : '0' . $hours . ':' ) : '' ) . esc_attr( $minutes > 9 ? $minutes : '0' . $minutes ) . ':' . esc_attr( $seconds > 9 ? $seconds : '0' . $seconds ) . '</div> ' . ( isset( $timer_message[1] ) ? wp_kses_post( $timer_message[1] ) : '' ) . ' </div>';
 				$html     .= '</div>';
 			$html         .= '</div>';
-			return $html . $content;
+			return wp_kses( $html, wopb_function()->allowed_html_tags() ) . $content;
 		}
 	}
 
@@ -141,21 +141,21 @@ class CartReserved {
 		if ( 'wopb_cart_reserved' === $key && method_exists( wopb_function(), 'convert_css' ) ) {
 			$settings = wopb_function()->get_setting();
 			$css      = '.wopb-cart-reserved {';
-				$css .= 'background-color: ' . ( ! empty( $settings['cart_reserved_bg']['bg'] ) ? $settings['cart_reserved_bg']['bg'] : '#e2e2e2' ) . ';';
-				$css .= isset( $settings['cart_reserved_padding'] ) ? 'padding: ' . $settings['cart_reserved_padding'] . 'px;' : '';
-				$css .= 'border: ' .
-					( ! empty( $settings['cart_reserved_border']['border'] )
-						? $settings['cart_reserved_border']['border']
+				$bg           = wopb_function()->sanitize_css_color( $settings['cart_reserved_bg']['bg'] ?? '' );
+				$border_width = wopb_function()->sanitize_css_number( $settings['cart_reserved_border']['border'] ?? '' );
+				$css         .= 'background-color: ' . ( ! empty( $bg ) ? $bg : '#e2e2e2' ) . ';';
+				$css         .= isset( $settings['cart_reserved_padding'] ) ? 'padding: ' . wopb_function()->sanitize_css_number( $settings['cart_reserved_padding'] ) . 'px;' : '';
+				$css         .= 'border: ' .
+					( ! empty( $border_width )
+						? $border_width
 						: 0
 					) . 'px dashed ' .
-					( ! empty( $settings['cart_reserved_border']['color'] )
-						? $settings['cart_reserved_border']['color']
-						: ''
-					) . ';';
-				$css .= ! empty( $settings['cart_reserved_radius'] ) ? 'border-radius: ' . $settings['cart_reserved_radius'] . 'px;' : '';
+					wopb_function()->sanitize_css_color( $settings['cart_reserved_border']['color'] ?? '' ) . ';';
+				$css .= wopb_function()->convert_css( 'radius', $settings['cart_reserved_radius'] ?? '' );
 			$css     .= '}';
 			$css     .= '.wopb-cart-reserved:hover {';
-				$css .= ! empty( $settings['cart_reserved_bg']['hover_bg'] ) ? 'background-color: ' . $settings['cart_reserved_bg']['hover_bg'] . ';' : '';
+				$hover_bg = wopb_function()->sanitize_css_color( $settings['cart_reserved_bg']['hover_bg'] ?? '' );
+				$css     .= ! empty( $hover_bg ) ? 'background-color: ' . $hover_bg . ';' : '';
 			$css     .= '}';
 
 			$css     .= '.wopb-cart-reserved-message {';
@@ -172,13 +172,14 @@ class CartReserved {
 				$css .= wopb_function()->convert_css( 'hover', $settings['cart_reserved_typo'] );
 			$css     .= '}';
 			$css     .= '.wopb-cart-time {';
-				$css .= isset( $settings['cart_reserved_timer_color']['color'] ) ? 'color: ' . $settings['cart_reserved_timer_color']['color'] . ';' : '';
+				$css .= isset( $settings['cart_reserved_timer_color']['color'] ) ? 'color: ' . wopb_function()->sanitize_css_color( $settings['cart_reserved_timer_color']['color'] ) . ';' : '';
 			$css     .= '}';
 			$css     .= '.wopb-cart-time:hover {';
-				$css .= isset( $settings['cart_reserved_timer_color']['hover_color'] ) ? 'color: ' . $settings['cart_reserved_timer_color']['hover_color'] . ';' : '';
+				$css .= isset( $settings['cart_reserved_timer_color']['hover_color'] ) ? 'color: ' . wopb_function()->sanitize_css_color( $settings['cart_reserved_timer_color']['hover_color'] ) . ';' : '';
 			$css     .= '}';
 			$css     .= '.wopb-cart-reserved-icon {';
-				$css .= 'font-size: ' . ( ! empty( $settings['cart_reserved_icon_size'] ) ? $settings['cart_reserved_icon_size'] : 25 ) . 'px;';
+				$icon_size = wopb_function()->sanitize_css_number( $settings['cart_reserved_icon_size'] ?? '' );
+				$css      .= 'font-size: ' . ( ! empty( $icon_size ) ? $icon_size : 25 ) . 'px;';
 			$css     .= '}';
 
 			wopb_function()->update_css( $key, 'add', $css );

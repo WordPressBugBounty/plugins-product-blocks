@@ -137,6 +137,7 @@ class Product_Grid_1 {
 		$pageNum               = wopb_function()->get_page_number( $attr, $recent_posts->found_posts );
 		$parsedOverlayMetaList = json_decode( $attr['overlayMetaList'], true );
 		$item_calss            = wopb_function()->loop_item_classes();
+		$allowed_html          = $this->allowed_loop_html();
 
 		$slider_attr = wc_implode_html_attributes(
 			array(
@@ -159,7 +160,7 @@ class Product_Grid_1 {
 				'cartWidth'       => isset( $attr['cartWidth'] ) ? $attr['cartWidth'] : 'content',
 			);
 
-			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . $attr['align'] . '">';
+			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . esc_attr( $attr['align'] ) . '">';
 			$wraper_before .= '<div class="wopb-block-wrapper' . ( isset( $attr['layout'] ) ? ' wopb-has-gridlay' : '' ) . '">';
 
 			if ( $attr['headingShow'] || $attr['filterShow'] ) {
@@ -207,7 +208,7 @@ class Product_Grid_1 {
 				include WOPB_PATH . 'blocks/template/brand.php';
 
 				if ( $product ) {
-					$post_loop .= '<div class="wopb-block-item ' . ( ! empty( $item_calss['wrapper'] ) ? $item_calss['wrapper'] : '' ) . '">';
+					$post_loop .= '<div class="wopb-block-item ' . ( ! empty( $item_calss['wrapper'] ) ? esc_attr( $item_calss['wrapper'] ) : '' ) . '">';
 					$post_loop .= '<div class="wopb-block-content-wrap">';
 
 					// Image.
@@ -243,24 +244,24 @@ class Product_Grid_1 {
 							$image_data .= '<div class="wopb-product-new-meta' . $meta_class . '">';
 							foreach ( $parsedOverlayMetaList as $meta_val ) {
 								if ( '_wishlist' === $meta_val ) {
-									$image_data .= apply_filters( 'wopb_grid_wishlist', '', $post_id, $attr['tooltipPosition'] );
+									$image_data .= wp_kses( (string) apply_filters( 'wopb_grid_wishlist', '', $post_id, $attr['tooltipPosition'] ), $allowed_html );
 								}
 								if ( '_qview' === $meta_val ) {
-									$image_data .= apply_filters( 'wopb_grid_quickview', '', $recent_posts, $post_id, $attr['tooltipPosition'] );
+									$image_data .= wp_kses( (string) apply_filters( 'wopb_grid_quickview', '', $recent_posts, $post_id, $attr['tooltipPosition'] ), $allowed_html );
 								}
 								if ( '_compare' === $meta_val ) {
-									$image_data .= apply_filters( 'wopb_grid_compare', '', $post_id, $attr['tooltipPosition'] );
+									$image_data .= wp_kses( (string) apply_filters( 'wopb_grid_compare', '', $post_id, $attr['tooltipPosition'] ), $allowed_html );
 								}
 								if ( '_cart' === $meta_val ) {
 									$cart_params['isIcon'] = true;
-									$image_data           .= wopb_function()->get_add_to_cart( $product, $cart_params );
+									$image_data           .= wp_kses( wopb_function()->get_add_to_cart( $product, $cart_params ), $allowed_html );
 								}
 							}
 							$image_data .= '</div>';
 						}
 
 						if ( $attr['showDeal'] ) {
-							$image_data .= wopb_function()->get_deals( $product, $attr['dealText'] );
+							$image_data .= wp_kses( wopb_function()->get_deals( $product, $attr['dealText'] ), $allowed_html );
 						}
 
 						if ( 'none' !== $attr['catPosition'] && $attr['catShow'] && in_array( 'category', $is_show ) ) {
@@ -287,24 +288,24 @@ class Product_Grid_1 {
 							$image_url = wp_get_attachment_image_url( $post_thumb_id, ( $attr['imgCrop'] ? $attr['imgCrop'] : 'full' ) );
 						} else {
 							$empty_image = true;
-							$image_url   = esc_url( wc_placeholder_img_src( ( $attr['imgCrop'] ? $attr['imgCrop'] : 'full' ) ) );
+							$image_url   = wc_placeholder_img_src( ( $attr['imgCrop'] ? $attr['imgCrop'] : 'full' ) );
 						}
 						$image_data .= $empty_image ? '<div class="empty-image">' : '';
 						$image_data .= '<a href="' . esc_url( $titlelink ) . '">';
 						$image_data .= '<img ';
-						$image_data .= 'src="' . $image_url . '" ';
+						$image_data .= 'src="' . esc_url( $image_url ) . '" ';
 						$image_data .= 'alt="' . esc_attr( $title ) . '" ';
 						if ( ! empty( $item_calss['image'] ) ) {
-							$image_data .= 'class=" ' . $item_calss['image'] . '" ';
-							$image_data .= 'srcset="' . wp_get_attachment_image_srcset( $post_thumb_id ) . '"';
+							$image_data .= 'class=" ' . esc_attr( $item_calss['image'] ) . '" ';
+							$image_data .= 'srcset="' . esc_attr( wp_get_attachment_image_srcset( $post_thumb_id ) ) . '"';
 						}
 						$image_data .= '/>';
-						$image_data .= apply_filters( 'wopb_after_loop_image', '', $product, $post_thumb_id );
+						$image_data .= wp_kses( (string) apply_filters( 'wopb_after_loop_image', '', $product, $post_thumb_id ), $allowed_html );
 						if ( $attr['showVideo'] && ! $empty_image ) {
-							$image_data .= apply_filters( 'wopb_product_video', '', $product, $post_thumb_id );
+							$image_data .= wp_kses( (string) apply_filters( 'wopb_product_video', '', $product, $post_thumb_id ), $allowed_html );
 						}
 						if ( ! $attr['disableFlip'] && ! $empty_image ) {
-							$image_data .= apply_filters( 'wopb_flip_image', '', $product, $attr['imgCrop'] );
+							$image_data .= wp_kses( (string) apply_filters( 'wopb_flip_image', '', $product, $attr['imgCrop'] ), $allowed_html );
 						}
 						$image_data .= '</a>';
 						$image_data .= $empty_image ? '</div>' : '';
@@ -328,7 +329,7 @@ class Product_Grid_1 {
 
 					// Price.
 					if ( $attr['showPrice'] && in_array( 'price', $is_show ) ) {
-						$price_data .= '<div class="wopb-product-price">' . $product->get_price_html() . '</div>';
+						$price_data .= '<div class="wopb-product-price">' . wp_kses( $product->get_price_html(), wopb_function()->allowed_html_tags() ) . '</div>';
 					}
 
 					// Review.
@@ -337,27 +338,41 @@ class Product_Grid_1 {
 					}
 
 					if ( $attr['showShortDesc'] ) {
-						$description_data .= '<div class="wopb-short-description">' . wopb_function()->excerpt( $post_id, $attr['shortDescLimit'] ) . '</div>';
+						$description_data .= '<div class="wopb-short-description">' . wp_kses( wopb_function()->excerpt( $post_id, $attr['shortDescLimit'] ), wopb_function()->allowed_html_tags() ) . '</div>';
 					}
 
 					// Variation Switcher.
 					if ( $attr['showVariationSwitch'] && in_array( 'variationSwitcher', $is_show ) ) {
-						$cart_data = apply_filters( 'wopb_variation_switcher', '', $product );
+						$cart_data = wp_kses( (string) apply_filters( 'wopb_variation_switcher', '', $product ), $allowed_html );
 					}
 					// Add to Cart URL.
 					if ( $attr['showCart'] && in_array( 'cart', $is_show ) ) {
 						$cart_params['isIcon'] = false;
 						$cart_data            .= '<div class="wopb-product-btn">';
-						$cart_data            .= wopb_function()->get_add_to_cart( $product, $cart_params );
+						$cart_data            .= wp_kses( wopb_function()->get_add_to_cart( $product, $cart_params ), $allowed_html );
 						$cart_data            .= '</div>';
 					}
 
+					// Only these sections can be printed; the names come from the block's saved sortSection.
+					$sections = array(
+						'image'             => $image_data,
+						'category'          => $category_data,
+						'brand'             => $brand_data,
+						'title'             => $title_data,
+						'price'             => $price_data,
+						'review'            => $review_data,
+						'cart'              => $cart_data,
+						'description'       => $description_data,
+						'variationSwitcher' => $variationSwitcher_data,
+					);
 					foreach ( $is_show as $value ) {
-						$post_loop .= ${$value . '_data'};
+						if ( is_string( $value ) && isset( $sections[ $value ] ) ) {
+							$post_loop .= $sections[ $value ];
+						}
 					}
 
 					if ( $after_loop = apply_filters( 'wopb_after_loop_item', $content = '' ) ) {
-						$post_loop .= '<div class="wopb-after-loop-item">' . $after_loop . '</div>';
+						$post_loop .= '<div class="wopb-after-loop-item">' . wp_kses( $after_loop, wopb_function()->allowed_html_tags() ) . '</div>';
 					}
 					$post_loop .= '</div>';
 					$post_loop .= '</div>';
@@ -392,16 +407,16 @@ class Product_Grid_1 {
 			wp_reset_postdata();
 		}
 
-		if ( ( $noAjax && 'filter' === $attr['ajax_source'] ) || ! ( $recent_posts->have_posts() ) ) {
+		if ( ( $noAjax && isset( $attr['ajax_source'] ) && 'filter' === $attr['ajax_source'] ) || ! ( $recent_posts->have_posts() ) ) {
 			if ( '' === $post_loop ) {
 				// note: dont remove without proper check. - Shihab.
 				// these before after are necessary for jquery use in filter.js .
 				$wraper_before .= '<div '
-					. ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ?? '' ) . '" ' : '' )
+					. ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ?? '' ) ) . '" ' : '' )
 					. ' class="wp-block-product-blocks-' . esc_attr( $block_name ?? '' )
-					. ' wopb-block-' . sanitize_html_class( $attr['blockId'] ?? '' )
-					. ' ' . ( $attr['className'] ?? '' )
-					. ' ' . ( $attr['align'] ?? '' )
+					. ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ?? '' ) )
+					. ' ' . esc_attr( $attr['className'] ?? '' )
+					. ' ' . esc_attr( $attr['align'] ?? '' )
 					. '">';
 				$wraper_before .= '<div class="wopb-block-wrapper'
 					. ( isset( $attr['layout'] ) ? ' wopb-has-gridlay' : '' )
@@ -426,5 +441,45 @@ class Product_Grid_1 {
 		}
 
 		return $noAjax ? $post_loop : $wraper_before . $wrapper_main_content . $wraper_after;
+	}
+
+	/**
+	 * Allowed HTML for the markup that add-ons and WooCommerce hook into the product loop.
+	 *
+	 * @return array
+	 */
+	private function allowed_loop_html() {
+		return wopb_function()->allowed_form_html(
+			array(
+				'svg'     => array(
+					'id'        => true,
+					'data-name' => true,
+				),
+				'g'       => array(
+					'transform' => true,
+					'data-name' => true,
+				),
+				'path'    => array(
+					'id'        => true,
+					'class'     => true,
+					'data-name' => true,
+					'fill-rule' => true,
+					'transform' => true,
+				),
+				'rect'    => array(
+					'x'         => true,
+					'y'         => true,
+					'transform' => true,
+				),
+				'circle'  => array(
+					'stroke'       => true,
+					'stroke-width' => true,
+				),
+				'polygon' => array(
+					'points' => true,
+					'fill'   => true,
+				),
+			)
+		);
 	}
 }

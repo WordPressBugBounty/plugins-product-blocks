@@ -257,6 +257,9 @@ class Dashboard {
 	 * @return bool
 	 */
 	private function can_bulk_edit_post( $post_id, $capability ) {
+		if ( ! ( is_int( $post_id ) || is_string( $post_id ) ) || ! ctype_digit( (string) $post_id ) ) {
+			return false;
+		}
 		$post_id = absint( $post_id );
 		return $post_id && in_array( get_post_type( $post_id ), $this->get_dashboard_post_types(), true ) && current_user_can( $capability, $post_id );
 	}
@@ -352,6 +355,12 @@ class Dashboard {
 							if ( ! $this->can_bulk_edit_post( $id, 'edit_post' ) ) {
 								continue;
 							}
+							if ( 'action_publish' === $type ) {
+								$post_type = get_post_type_object( get_post_type( absint( $id ) ) );
+								if ( ! $post_type || ! current_user_can( $post_type->cap->publish_posts ) ) {
+									continue;
+								}
+							}
 							wp_update_post(
 								array(
 									'ID'          => absint( $id ),
@@ -415,20 +424,20 @@ class Dashboard {
 									)
 								);
 								if ( ! empty( $categories ) ) {
-									$category = implode( ', ', wp_list_pluck( $categories, 'name' ) ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+									$category = implode( ', ', wp_list_pluck( $categories, 'name' ) );
 								}
 							}
 
 							$include_ids      = get_post_meta( $post_id, 'wopb_sc_include_products', true );
 							$include_products = 'N/A';
 							if ( ! empty( $include_ids ) ) {
-								$include_products = $this->product_names_by_ids( $include_ids ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								$include_products = $this->product_names_by_ids( $include_ids );
 							}
 
 							$exclude_ids      = get_post_meta( $post_id, 'wopb_sc_exclude_products', true );
 							$exclude_products = 'N/A';
 							if ( ! empty( $exclude_ids ) ) {
-								$exclude_products = $this->product_names_by_ids( $exclude_ids ); //phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								$exclude_products = $this->product_names_by_ids( $exclude_ids );
 							}
 							$final  = array(
 								'id'               => $post_id,

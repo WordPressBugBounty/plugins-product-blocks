@@ -31,6 +31,62 @@ class Styles {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_the_wowstore_block_css' ) );
 		add_action( 'wopb_enqueue_wowstore_block_css', array( $this, 'wopb_enqueue_wowstore_block_css_callback' ), 10, 1 ); // action to enqueue the block css
 		add_filter( 'render_block', array( $this, 'render_block_callback' ), 10, 2 ); // render block to enqueue corresponding css
+		add_action( 'wp_loaded', array( $this, 'maybe_regenerate_addon_css' ), 20 ); // After the add-ons load on `wp_loaded` (10).
+	}
+
+	/**
+	 * Rebuild the add-on CSS once after the plugin is updated.
+	 *
+	 * The `wopb_generated_css` option is only rebuilt when add-on settings are saved, so CSS
+	 * stored by an older version would keep values saved before they were checked by type.
+	 * This runs each enabled add-on's CSS generator again and drops the CSS of add-ons that
+	 * are turned off, the same as saving the settings does.
+	 *
+	 * @since 4.6.1
+	 * @return void
+	 */
+	public function maybe_regenerate_addon_css() {
+		if ( WOPB_VER === get_option( 'wopb_generated_css_version' ) ) {
+			return;
+		}
+		// Only the settings fields load on the settings screen, not the add-ons' generators.
+		if ( is_admin() && 'wopb-settings' === wopb_function()->get_screen() ) {
+			return;
+		}
+		// Mark it first, so a failing generator can't make every request retry.
+		update_option( 'wopb_generated_css_version', WOPB_VER );
+
+		$css = get_option( 'wopb_generated_css' );
+		if ( ! is_string( $css ) || ! preg_match_all( '/\/\*([a-z0-9_]+)_start\*\//', $css, $matches ) ) {
+			return;
+		}
+		foreach ( array_unique( $matches[1] ) as $key ) {
+			if ( 'true' !== wopb_function()->get_setting( $key ) ) {
+				wopb_function()->update_css( $key, 'delete' );
+				continue;
+			}
+			$old_block = preg_match( '/\/\*' . $key . '_start\*\/(.*?)\/\*' . $key . '_stop\*\//s', $css, $block ) ? $block[1] : '';
+			// A generator that warns (e.g. settings never saved) could build less CSS than the site has now.
+			$failed = false;
+			set_error_handler( // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler -- Catches the add-on generator's warnings so they aren't printed mid-request.
+				function () use ( &$failed ) {
+					$failed = true;
+					return true;
+				},
+				E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE
+			);
+			try {
+				do_action( 'wopb_save_settings', $key );
+			} catch ( \Throwable $e ) {
+				$failed = true;
+			} finally {
+				restore_error_handler();
+			}
+			// Keep the CSS the site already had; it's rebuilt when the settings are saved.
+			if ( $failed ) {
+				wopb_function()->update_css( $key, 'add', $old_block );
+			}
+		}
 	}
 
 	/**
@@ -66,7 +122,8 @@ class Styles {
 	public function enqueue_the_wowstore_block_css() {
 		$this->productx_global_css( 'front' );
 		wopb_function()->front_common_script();
-		if ( apply_filters('productx_common_script', false) || isset( $_GET['et_fb'] ) ) { //phpcs:ignore
+		// Pro 2.1.7 and older still add '__return_true' to the old 'productx_common_script' name.
+		if ( apply_filters( 'wopb_common_script', (bool) has_filter( 'productx_common_script' ) ) || isset( $_GET['et_fb'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: Divi's front-end builder URL flag only registers scripts; Divi builder URLs cannot carry a nonce.
 			wopb_function()->register_scripts_common();
 		}
 		if ( is_admin() ) {
@@ -74,8 +131,8 @@ class Styles {
 		}
 		$css     = '';
 		$post_id = wopb_function()->get_ID();
-		if ( isset($_GET['preview_id']) && isset($_GET['preview_nonce']) ) {	// phpcs:ignore @codingStandardsIgnoreLine
-			$css = get_transient( '_wopb_preview_' . $post_id, true );
+		if ( $this->is_verified_css_preview( $post_id ) ) {
+			$css = get_transient( '_wopb_preview_' . $post_id );
 			if ( ! $css ) {
 				$css = get_post_meta( $post_id, '_wopb_css', true );
 			}
@@ -90,6 +147,31 @@ class Styles {
 	}
 
 	/**
+	 * Whether unsaved preview CSS may be shown on this request.
+	 *
+	 * Needs the preview nonce WordPress core adds to preview links
+	 * (`post_preview_{ID}`) and edit access to the post whose CSS is shown.
+	 *
+	 * @param int $post_id Post whose preview CSS would be printed.
+	 * @return bool
+	 */
+	private function is_verified_css_preview( $post_id ) {
+		if ( ! isset( $_GET['preview_id'], $_GET['preview_nonce'] ) ) {
+			return false;
+		}
+		if ( ! is_string( $_GET['preview_id'] ) || ! is_string( $_GET['preview_nonce'] ) ) {
+			return false;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['preview_nonce'] ) ), 'post_preview_' . absint( $_GET['preview_id'] ) ) ) {
+			return false;
+		}
+		if ( ! $post_id ) {
+			return false;
+		}
+		return current_user_can( 'edit_post', (int) $post_id );
+	}
+
+	/**
 	 * Enqueue The Block Style
 	 *
 	 * @param $data
@@ -97,8 +179,12 @@ class Styles {
 	 * @since v.4.0.4
 	 */
 	public function wopb_enqueue_wowstore_block_css_callback( $data ) {
-		$post_id = isset( $data['post_id'] ) ? $data['post_id'] : '';
-		$css     = isset( $data['css'] ) ? safecss_filter_attr( $data['css'] ) : '';
+		// The ID can come from a block attribute, so only a post ID or 'wopb-widget' names a CSS file.
+		$post_id = isset( $data['post_id'] ) ? $this->get_css_post_id( $data['post_id'] ) : false;
+		if ( ! $post_id ) {
+			return;
+		}
+		$css = isset( $data['css'] ) ? safecss_filter_attr( $data['css'] ) : '';
 		if ( wp_style_is( "wopb-post-{$post_id}", 'enqueued' ) ) {
 			return;
 		}
@@ -204,17 +290,41 @@ class Styles {
 	 * @return bool
 	 */
 	public function can_save_block_css( $request ) {
-		$post_id = $request->get_param( 'post_id' );
+		$post_id = $this->get_css_post_id( $request->get_param( 'post_id' ) );
+		if ( false === $post_id ) {
+			return false;
+		}
 		if ( 'wopb-widget' === $post_id ) {
 			return current_user_can( 'manage_options' );
 		}
-		if ( ! is_scalar( $post_id ) || ! ctype_digit( (string) $post_id ) || ! get_post( (int) $post_id ) ) {
+		if ( ! get_post( $post_id ) ) {
 			return false;
 		}
-		if ( in_array( get_post_type( (int) $post_id ), array( 'wp_template', 'wp_template_part' ), true ) && ! current_user_can( 'edit_theme_options' ) ) {
+		if ( in_array( get_post_type( $post_id ), array( 'wp_template', 'wp_template_part' ), true ) && ! current_user_can( 'edit_theme_options' ) ) {
 			return false;
 		}
-		return current_user_can( 'edit_post', (int) $post_id );
+		return current_user_can( 'edit_post', $post_id );
+	}
+
+	/**
+	 * Read the CSS target from a `post_id` request value.
+	 *
+	 * Only 'wopb-widget', a positive integer or its exact digit string are
+	 * accepted, so values such as "12abc", "012", true or 12.5 are rejected
+	 * instead of being cast to another post ID.
+	 *
+	 * @param mixed $post_id Raw request value.
+	 * @return int|string|false Post ID, 'wopb-widget', or false when invalid.
+	 */
+	private function get_css_post_id( $post_id ) {
+		if ( 'wopb-widget' === $post_id ) {
+			return $post_id;
+		}
+		if ( ! is_int( $post_id ) && ! is_string( $post_id ) ) {
+			return false;
+		}
+		$id = (int) $post_id;
+		return ( $id > 0 && (string) $id === (string) $post_id ) ? $id : false;
 	}
 
 	/**
@@ -282,7 +392,6 @@ class Styles {
 			}
 		}
 		wp_reset_postdata();
-		$custom_fonts = implode( '|', $custom_fonts );
 		// system font
 		$exclude_typo = array( 'Arial', 'Tahoma', 'Verdana', 'Helvetica', 'Times New Roman', 'Trebuchet MS', 'Georgia' );
 
@@ -300,24 +409,33 @@ class Styles {
 			}
 		}
 
-		$exclude_typo = implode( '|', $exclude_typo );
+		// Font titles are user text: quote them so they match literally.
+		$keep_fonts = array();
+		foreach ( array_unique( array_merge( $custom_fonts, $exclude_typo ) ) as $font_name ) {
+			$keep_fonts[] = preg_quote( $font_name, '/' );
+		}
+		$exclude_typo = implode( '|', $keep_fonts );
 
 		if ( count( $css_dir ) > 0 ) {
 			foreach ( $css_dir as $key => $value ) {
 				$css        = $wp_filesystem->get_contents( $value );
 				$filter_css = preg_replace( '/(@import)[\w\s:\/?=,;.\'()+]*;/m', '', $css ); // Remove Import Font
-				$final_css  = preg_replace( '/(font-family:)((?!' . $custom_fonts . $exclude_typo . ')[\w\s:,\\\'-])*;/mi', '', $filter_css ); // Font Replace Except Default Font
-				$wp_filesystem->put_contents( $value, $final_css ); // Update CSS File
+				$final_css  = preg_replace( '/(font-family:)((?!' . $exclude_typo . ')[\w\s:,\\\'-])*;/mi', '', $filter_css ); // Font Replace Except Default Font
+				if ( null !== $final_css ) {
+					$wp_filesystem->put_contents( $value, $final_css ); // Update CSS File
+				}
 			}
 		}
 
 		global $wpdb;
-		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE `meta_key`=%s", '_wopb_css' ) ); //phpcs:ignore
+		$results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE `meta_key`=%s", '_wopb_css' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- admin-only action (disabling Google Fonts) that rewrites every post's stored block CSS, so it must read the current rows.
 		if ( ! empty( $results ) ) {
 			foreach ( $results as $key => $value ) {
 				$filter_css = preg_replace( '/(@import)[\w\s:\/?=,;.\'()+]*;/m', '', $value->meta_value ); // Remove Import Font
-				$final_css  = preg_replace( '/(font-family:)((?!' . $custom_fonts . $exclude_typo . ')[\w\s:,\\\'-])*;/mi', '', $filter_css ); // Font Replace Except Default Font
-				update_post_meta( $value->post_id, '_wopb_css', $final_css );
+				$final_css  = preg_replace( '/(font-family:)((?!' . $exclude_typo . ')[\w\s:,\\\'-])*;/mi', '', $filter_css ); // Font Replace Except Default Font
+				if ( null !== $final_css ) {
+					update_post_meta( $value->post_id, '_wopb_css', wp_slash( $final_css ) );
+				}
 			}
 		}
 
@@ -383,17 +501,11 @@ class Styles {
 		);
 		foreach ( $data as $key => $value ) {
 			if ( preg_match( '/^presetColor[1-9]$/D', (string) $key ) ) {
-				if ( ! is_string( $value ) || strlen( $value ) > 100 ) {
+				$color = $this->sanitize_preset_color( $value );
+				if ( '' === $color ) {
 					return $error;
 				}
-				$value = trim( $value );
-				if ( sanitize_hex_color( $value ) || 'transparent' === $value ) {
-					$data[ $key ] = sanitize_text_field( $value );
-				} elseif ( preg_match( '/^rgba?\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})(?:\s*,\s*(0(?:\.[0-9]+)?|1(?:\.0+)?|\.[0-9]+))?\s*\)$/D', $value, $matches ) && (int) $matches[1] <= 255 && (int) $matches[2] <= 255 && (int) $matches[3] <= 255 && ( ( 0 === strpos( $value, 'rgba(' ) ) === isset( $matches[4] ) ) ) {
-					$data[ $key ] = sanitize_text_field( $value );
-				} else {
-					return $error;
-				}
+				$data[ $key ] = sanitize_text_field( $color );
 			} elseif ( isset( $dimensions[ $key ] ) ) {
 				if ( ! ( is_int( $value ) || is_string( $value ) ) || ! ctype_digit( (string) $value ) || (int) $value < $dimensions[ $key ][0] || (int) $value > $dimensions[ $key ][1] ) {
 					return $error;
@@ -408,6 +520,41 @@ class Styles {
 			}
 		}
 		return $data;
+	}
+
+	/**
+	 * Return a preset color if it is a hex, rgb(), rgba() or 'transparent' value.
+	 *
+	 * @param mixed $value Color from the request or the saved option.
+	 * @return string The trimmed color, or '' when it is not a valid color.
+	 */
+	private function sanitize_preset_color( $value ) {
+		if ( ! is_string( $value ) || strlen( $value ) > 100 ) {
+			return '';
+		}
+		$value = trim( $value );
+		if ( sanitize_hex_color( $value ) || 'transparent' === $value ) {
+			return $value;
+		}
+		if ( preg_match( '/^rgba?\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})(?:\s*,\s*(0(?:\.[0-9]+)?|1(?:\.0+)?|\.[0-9]+))?\s*\)$/D', $value, $matches ) && (int) $matches[1] <= 255 && (int) $matches[2] <= 255 && (int) $matches[3] <= 255 && ( ( 0 === strpos( $value, 'rgba(' ) ) === isset( $matches[4] ) ) ) {
+			return $value;
+		}
+		return '';
+	}
+
+	/**
+	 * Saved preset color, or the default when it is missing or not a valid color.
+	 *
+	 * Options saved before the color check was added are checked again here.
+	 *
+	 * @param mixed  $global   Saved `productx_global` option.
+	 * @param int    $index    Preset number, 1 to 9.
+	 * @param string $fallback Default color.
+	 * @return string
+	 */
+	private function get_preset_color( $global, $index, $fallback ) {
+		$color = is_array( $global ) && isset( $global[ 'presetColor' . $index ] ) ? $this->sanitize_preset_color( $global[ 'presetColor' . $index ] ) : '';
+		return '' !== $color ? $color : $fallback;
 	}
 
 
@@ -428,14 +575,17 @@ class Styles {
 		if ( isset( $params['block_css'] ) ) {
 			$params['block_css'] = wp_strip_all_tags( $params['block_css'] );
 		}
-		$post_id    = isset( $params['post_id'] ) ? sanitize_text_field( $params['post_id'] ) : '';
-		$has_block  = isset( $params['has_block'] ) ? rest_sanitize_boolean( $params['has_block'] ) : '';
-		$is_preview = isset( $params['preview'] ) ? rest_sanitize_boolean( $params['preview'] ) : '';
-		$is_widget  = 'wopb-widget' === $post_id;
-
 		if ( ! $this->can_save_block_css( $request ) ) {
 			return new \WP_Error( 'rest_forbidden', __( 'You cannot edit these styles.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
 		}
+		// Same value the permission check authorized.
+		$post_id = $this->get_css_post_id( $request->get_param( 'post_id' ) );
+		if ( false === $post_id ) {
+			return new \WP_Error( 'wopb_invalid_css', __( 'Provide valid block CSS and save options.', 'product-blocks' ), array( 'status' => 400 ) );
+		}
+		$has_block  = isset( $params['has_block'] ) ? rest_sanitize_boolean( $params['has_block'] ) : '';
+		$is_preview = isset( $params['preview'] ) ? rest_sanitize_boolean( $params['preview'] ) : '';
+		$is_widget  = 'wopb-widget' === $post_id;
 		try {
 			$upload_dir_url = wp_upload_dir();
 			$dir            = trailingslashit( $upload_dir_url['basedir'] ) . 'product-blocks/';
@@ -469,7 +619,7 @@ class Styles {
 					$wp_filesystem->mkdir( $dir );
 				}
 				if ( ! $wp_filesystem->put_contents( $dir . $filename, $wopb_block_css ) ) {
-					throw new \Exception(__('CSS can not be saved due to permission!!!', 'product-blocks')); //phpcs:ignore
+					throw new \Exception( __( 'CSS can not be saved due to permission!!!', 'product-blocks' ) );
 				}
 				return array(
 					'success' => true,
@@ -623,15 +773,15 @@ class Styles {
 		// Preset CSS
 		$global     = get_option( 'productx_global', array() );
 		$custom_css = ':root {
-			--productx-color1: ' . ( isset( $global['presetColor1'] ) ? esc_attr( $global['presetColor1'] ) : '#037fff' ) . ';
-			--productx-color2: ' . ( isset( $global['presetColor2'] ) ? esc_attr( $global['presetColor2'] ) : '#026fe0' ) . ';
-			--productx-color3: ' . ( isset( $global['presetColor3'] ) ? esc_attr( $global['presetColor3'] ) : '#071323' ) . ';
-			--productx-color4: ' . ( isset( $global['presetColor4'] ) ? esc_attr( $global['presetColor4'] ) : '#132133' ) . ';
-			--productx-color5: ' . ( isset( $global['presetColor5'] ) ? esc_attr( $global['presetColor5'] ) : '#34495e' ) . ';
-			--productx-color6: ' . ( isset( $global['presetColor6'] ) ? esc_attr( $global['presetColor6'] ) : '#787676' ) . ';
-			--productx-color7: ' . ( isset( $global['presetColor7'] ) ? esc_attr( $global['presetColor7'] ) : '#f0f2f3' ) . ';
-			--productx-color8: ' . ( isset( $global['presetColor8'] ) ? esc_attr( $global['presetColor8'] ) : '#f8f9fa' ) . ';
-			--productx-color9: ' . ( isset( $global['presetColor9'] ) ? esc_attr( $global['presetColor9'] ) : '#ffffff' ) . ';
+			--productx-color1: ' . $this->get_preset_color( $global, 1, '#037fff' ) . ';
+			--productx-color2: ' . $this->get_preset_color( $global, 2, '#026fe0' ) . ';
+			--productx-color3: ' . $this->get_preset_color( $global, 3, '#071323' ) . ';
+			--productx-color4: ' . $this->get_preset_color( $global, 4, '#132133' ) . ';
+			--productx-color5: ' . $this->get_preset_color( $global, 5, '#34495e' ) . ';
+			--productx-color6: ' . $this->get_preset_color( $global, 6, '#787676' ) . ';
+			--productx-color7: ' . $this->get_preset_color( $global, 7, '#f0f2f3' ) . ';
+			--productx-color8: ' . $this->get_preset_color( $global, 8, '#f8f9fa' ) . ';
+			--productx-color9: ' . $this->get_preset_color( $global, 9, '#ffffff' ) . ';
 			}';
 
 		// Addon Genetarate CSS Added

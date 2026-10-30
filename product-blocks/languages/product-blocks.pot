@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore – Store Builder & Product Blocks for WooCommerce 4.6.0\n"
+"Project-Id-Version: WowStore – Store Builder & Product Blocks for WooCommerce 4.6.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-21T11:31:11+00:00\n"
+"POT-Creation-Date: 2026-10-29T09:57:01+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: product-blocks\n"
@@ -325,31 +325,31 @@ msgstr ""
 msgid "Badge Border Radius"
 msgstr ""
 
-#: addons/backorder/Backorder.php:174
+#: addons/backorder/Backorder.php:172
 msgid "WowStore Backorder Information"
 msgstr ""
 
-#: addons/backorder/Backorder.php:183
-#: addons/preorder/Preorder.php:307
+#: addons/backorder/Backorder.php:181
+#: addons/preorder/Preorder.php:319
 msgid "Available Quantity"
 msgstr ""
 
-#: addons/backorder/Backorder.php:187
+#: addons/backorder/Backorder.php:185
 msgid "Enter the maximum amount of products available for backorder"
 msgstr ""
 
-#: addons/backorder/Backorder.php:327
-#: addons/preorder/Preorder.php:427
+#: addons/backorder/Backorder.php:350
+#: addons/preorder/Preorder.php:439
 msgid "Remaining Item only: "
 msgstr ""
 
-#: addons/backorder/Backorder.php:403
-#: addons/preorder/Preorder.php:512
+#: addons/backorder/Backorder.php:426
+#: addons/preorder/Preorder.php:524
 msgid "Order Type"
 msgstr ""
 
-#: addons/backorder/Backorder.php:440
-#: addons/backorder/Backorder.php:446
+#: addons/backorder/Backorder.php:463
+#: addons/backorder/Backorder.php:469
 msgid "Quantity Exceeded for Backorder Item."
 msgstr ""
 
@@ -388,12 +388,12 @@ msgstr ""
 
 #: addons/beaver_builder/beaverbuilder.php:33
 #: addons/divi/divi.php:25
-#: addons/oxygen/oxygen.php:65
+#: addons/oxygen/oxygen.php:64
 msgid "Select Your Template"
 msgstr ""
 
 #: addons/beaver_builder/beaverbuilder.php:40
-#: addons/templates/Saved_Templates.php:58
+#: addons/templates/Saved_Templates.php:61
 msgid "Edit Template"
 msgstr ""
 
@@ -404,8 +404,8 @@ msgstr ""
 
 #: addons/beaver_builder/beaverbuilder.php:46
 #: addons/elementor/Elementor_Widget.php:50
-#: addons/templates/Saved_Templates.php:56
-#: addons/templates/Saved_Templates.php:57
+#: addons/templates/Saved_Templates.php:59
+#: addons/templates/Saved_Templates.php:60
 msgid "Add New Template"
 msgstr ""
 
@@ -413,8 +413,8 @@ msgstr ""
 #. translators: %s: link/path to the saved templates screen
 #: addons/beaver_builder/includes/frontend.php:26
 #: addons/divi/divi.php:71
-#: addons/elementor/Elementor_Widget.php:82
-#: addons/oxygen/oxygen.php:57
+#: addons/elementor/Elementor_Widget.php:99
+#: addons/oxygen/oxygen.php:56
 msgid "Pick a Template from your saved ones. Or create a template from: %s."
 msgstr ""
 
@@ -462,50 +462,50 @@ msgstr ""
 msgid "Select Sidebar(Widget Area)"
 msgstr ""
 
-#: addons/builder/Builder.php:90
-#: addons/builder/Builder.php:91
+#: addons/builder/Builder.php:95
+#: addons/builder/Builder.php:96
 msgctxt "Builder"
 msgid "Builder"
 msgstr ""
 
-#: addons/builder/Builder.php:92
-#: addons/builder/Builder.php:94
+#: addons/builder/Builder.php:97
+#: addons/builder/Builder.php:99
 msgid "Builder"
 msgstr ""
 
-#: addons/builder/Builder.php:93
+#: addons/builder/Builder.php:98
 msgid "Parent Builder"
 msgstr ""
 
-#: addons/builder/Builder.php:95
+#: addons/builder/Builder.php:100
 msgid "View Builder"
 msgstr ""
 
-#: addons/builder/Builder.php:96
-#: addons/builder/Builder.php:97
-#: addons/custom_font/Custom_Font.php:294
-#: addons/custom_font/Custom_Font.php:295
+#: addons/builder/Builder.php:101
+#: addons/builder/Builder.php:102
+#: addons/custom_font/Custom_Font.php:306
+#: addons/custom_font/Custom_Font.php:307
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Add New"
 msgstr ""
 
-#: addons/builder/Builder.php:98
+#: addons/builder/Builder.php:103
 msgid "Edit Builder"
 msgstr ""
 
-#: addons/builder/Builder.php:99
+#: addons/builder/Builder.php:104
 msgid "Update Builder"
 msgstr ""
 
-#: addons/builder/Builder.php:100
+#: addons/builder/Builder.php:105
 msgid "Search Builder"
 msgstr ""
 
-#: addons/builder/Builder.php:101
+#: addons/builder/Builder.php:106
 msgid "No Builder Found"
 msgstr ""
 
-#: addons/builder/Builder.php:102
+#: addons/builder/Builder.php:107
 msgid "Not Builder found in Trash"
 msgstr ""
 
@@ -555,15 +555,15 @@ msgstr ""
 msgid "The template could not be duplicated."
 msgstr ""
 
-#: addons/builder/RequestAPI.php:573
+#: addons/builder/RequestAPI.php:574
 msgid "Template has been duplicated."
 msgstr ""
 
-#: addons/builder/RequestAPI.php:584
+#: addons/builder/RequestAPI.php:585
 msgid "The template status could not be changed."
 msgstr ""
 
-#: addons/builder/RequestAPI.php:586
+#: addons/builder/RequestAPI.php:587
 msgid "Status has been changed."
 msgstr ""
 
@@ -877,10 +877,10 @@ msgid "Let your shoppers compare multiple products by displaying a pop-up or red
 msgstr ""
 
 #: addons/compare/backend.php:45
-#: addons/compare/Compare.php:1314
+#: addons/compare/Compare.php:1381
 #: addons/quick_view/backend.php:36
-#: addons/quick_view/Quickview.php:747
-#: addons/wishlist/Wishlist.php:265
+#: addons/quick_view/Quickview.php:796
+#: addons/wishlist/Wishlist.php:307
 #: assets/js/blocks-placeholder.js:40
 #: assets/js/editor.blocks.js:1
 #: assets/js/wopb_dashboard_min.js:1
@@ -888,9 +888,9 @@ msgid "Image"
 msgstr ""
 
 #: addons/compare/backend.php:49
-#: addons/compare/Compare.php:1319
+#: addons/compare/Compare.php:1386
 #: addons/quick_view/backend.php:40
-#: addons/quick_view/Quickview.php:748
+#: addons/quick_view/Quickview.php:800
 #: addons/size_chart/SizeChart.php:192
 #: assets/js/editor.blocks.js:1
 #: assets/js/wopb_dashboard_min.js:1
@@ -898,80 +898,80 @@ msgid "Title"
 msgstr ""
 
 #: addons/compare/backend.php:53
-#: addons/compare/Compare.php:1324
+#: addons/compare/Compare.php:1391
 #: addons/quick_view/backend.php:48
-#: addons/quick_view/Quickview.php:750
-#: addons/wishlist/Wishlist.php:267
+#: addons/quick_view/Quickview.php:808
+#: addons/wishlist/Wishlist.php:309
 #: assets/js/editor.blocks.js:1
 msgid "Price"
 msgstr ""
 
 #: addons/compare/backend.php:57
-#: addons/compare/Compare.php:1329
+#: addons/compare/Compare.php:1396
 #: addons/quick_view/backend.php:56
-#: addons/quick_view/Quickview.php:752
+#: addons/quick_view/Quickview.php:816
 #: assets/js/editor.blocks.js:1
 msgid "Stock Status"
 msgstr ""
 
 #: addons/compare/backend.php:61
-#: addons/compare/Compare.php:1334
+#: addons/compare/Compare.php:1401
 #: assets/js/editor.blocks.js:1
 msgid "Quantity"
 msgstr ""
 
 #: addons/compare/backend.php:65
-#: addons/compare/Compare.php:1339
+#: addons/compare/Compare.php:1406
 #: addons/quick_view/backend.php:60
-#: addons/quick_view/Quickview.php:753
+#: addons/quick_view/Quickview.php:820
 #: assets/js/editor.blocks.js:1
 msgid "Add To Cart"
 msgstr ""
 
 #: addons/compare/backend.php:69
-#: addons/compare/Compare.php:1344
+#: addons/compare/Compare.php:1411
 #: assets/js/editor.blocks.js:1
 msgid "Review"
 msgstr ""
 
 #: addons/compare/backend.php:75
 #: addons/quick_view/backend.php:78
-#: addons/quick_view/Quickview.php:759
+#: addons/quick_view/Quickview.php:838
 msgid "Select Column"
 msgstr ""
 
 #: addons/compare/backend.php:80
-#: addons/compare/Compare.php:1356
+#: addons/compare/Compare.php:1423
 msgid "Additional"
 msgstr ""
 
 #: addons/compare/backend.php:84
-#: addons/compare/Compare.php:1361
+#: addons/compare/Compare.php:1428
 #: addons/quick_view/backend.php:52
-#: addons/quick_view/Quickview.php:751
+#: addons/quick_view/Quickview.php:812
 #: assets/js/editor.blocks.js:1
 msgid "Description"
 msgstr ""
 
 #: addons/compare/backend.php:88
-#: addons/compare/Compare.php:1366
+#: addons/compare/Compare.php:1433
 #: assets/js/editor.blocks.js:1
 msgid "Weight"
 msgstr ""
 
 #: addons/compare/backend.php:92
-#: addons/compare/Compare.php:1371
+#: addons/compare/Compare.php:1438
 msgid "Dimensions"
 msgstr ""
 
 #: addons/compare/backend.php:96
-#: addons/compare/Compare.php:1376
+#: addons/compare/Compare.php:1443
 #: assets/js/editor.blocks.js:1
 msgid "SKU"
 msgstr ""
 
 #: addons/compare/backend.php:101
-#: addons/compare/Compare.php:1286
+#: addons/compare/Compare.php:1353
 #: assets/js/editor.blocks.js:1
 msgid "Compare"
 msgstr ""
@@ -1501,72 +1501,72 @@ msgstr ""
 msgid "Compare Not Added"
 msgstr ""
 
-#: addons/compare/Compare.php:639
+#: addons/compare/Compare.php:703
 msgid "Compare Products"
 msgstr ""
 
-#: addons/compare/Compare.php:669
+#: addons/compare/Compare.php:733
 msgid "Clear All"
 msgstr ""
 
-#: addons/compare/Compare.php:681
+#: addons/compare/Compare.php:745
 msgid "Let's Compare"
 msgstr ""
 
-#: addons/compare/Compare.php:740
-#: addons/quick_view/Quickview.php:355
-#: blocks/woo/Product_Rating.php:52
+#: addons/compare/Compare.php:804
+#: addons/quick_view/Quickview.php:402
+#: blocks/woo/Product_Rating.php:50
 msgid "customer review"
 msgstr ""
 
-#: addons/compare/Compare.php:857
-#: addons/wishlist/Wishlist.php:268
+#: addons/compare/Compare.php:920
+#: addons/wishlist/Wishlist.php:310
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Action"
 msgstr ""
 
-#: addons/compare/Compare.php:866
-#: addons/custom_font/Custom_Font.php:203
+#: addons/compare/Compare.php:929
+#: addons/custom_font/Custom_Font.php:212
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Delete"
 msgstr ""
 
-#: addons/compare/Compare.php:880
+#: addons/compare/Compare.php:943
 msgid "Add Product"
 msgstr ""
 
-#: addons/compare/Compare.php:951
+#: addons/compare/Compare.php:1014
 msgid "in stock"
 msgstr ""
 
-#: addons/compare/Compare.php:977
-#: blocks/Product_Slider.php:512
-#: classes/Functions.php:2956
-#: classes/Functions.php:2958
+#: addons/compare/Compare.php:1040
+#: blocks/Product_Slider.php:501
+#: classes/Functions.php:3198
+#: classes/Functions.php:3200
 msgid "View Cart"
 msgstr ""
 
-#: addons/compare/Compare.php:1077
+#: addons/compare/Compare.php:1144
 msgid "Search for products by name..."
 msgstr ""
 
-#: addons/compare/Compare.php:1154
+#: addons/compare/Compare.php:1221
 msgid "No products were added to compare list"
 msgstr ""
 
-#: addons/compare/Compare.php:1159
+#: addons/compare/Compare.php:1226
 msgid "Return to Shop"
 msgstr ""
 
-#: addons/compare/Compare.php:1187
+#: addons/compare/Compare.php:1254
 msgid "has been added on compare list."
 msgstr ""
 
-#: addons/compare/Compare.php:1195
+#: addons/compare/Compare.php:1262
 msgid "View Compare List"
 msgstr ""
 
-#: addons/compare/Compare.php:1350
+#: addons/compare/Compare.php:1417
 msgid "- Select -"
 msgstr ""
 
@@ -1619,169 +1619,169 @@ msgstr ""
 msgid "Font Family"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:130
+#: addons/custom_font/Custom_Font.php:144
 #: assets/js/wopb_dashboard_min.js:1
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:157
+#: addons/custom_font/Custom_Font.php:171
 msgid "Font Vaiations"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:170
+#: addons/custom_font/Custom_Font.php:184
 msgid "Weight:  "
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:173
+#: addons/custom_font/Custom_Font.php:187
 #: assets/js/editor.blocks.js:1
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Normal"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:174
+#: addons/custom_font/Custom_Font.php:188
 msgid "100"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:175
+#: addons/custom_font/Custom_Font.php:189
 msgid "200"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:176
+#: addons/custom_font/Custom_Font.php:190
 msgid "300"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:177
+#: addons/custom_font/Custom_Font.php:191
 msgid "400"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:178
+#: addons/custom_font/Custom_Font.php:192
 msgid "500"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:179
+#: addons/custom_font/Custom_Font.php:193
 msgid "600"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:180
+#: addons/custom_font/Custom_Font.php:194
 msgid "700"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:181
+#: addons/custom_font/Custom_Font.php:195
 msgid "800"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:182
+#: addons/custom_font/Custom_Font.php:196
 msgid "900"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:198
+#: addons/custom_font/Custom_Font.php:207
 msgid "The quick brown fox jumps over the lazy dog"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:201
+#: addons/custom_font/Custom_Font.php:210
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Edit"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:202
+#: addons/custom_font/Custom_Font.php:211
 #: assets/js/editor.blocks.js:1
 #: assets/js/wopb_dashboard_min.js:1
 msgid "Close"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:208
+#: addons/custom_font/Custom_Font.php:217
 msgid "WOFF File"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:209
+#: addons/custom_font/Custom_Font.php:218
 msgid "The web open Font Format, Used by Modern Browsers"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:210
-#: addons/custom_font/Custom_Font.php:215
-#: addons/custom_font/Custom_Font.php:220
-#: addons/custom_font/Custom_Font.php:225
-#: addons/custom_font/Custom_Font.php:230
+#: addons/custom_font/Custom_Font.php:219
+#: addons/custom_font/Custom_Font.php:224
+#: addons/custom_font/Custom_Font.php:229
+#: addons/custom_font/Custom_Font.php:234
+#: addons/custom_font/Custom_Font.php:239
 #: assets/js/editor.blocks.js:1
 msgid "Upload"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:213
+#: addons/custom_font/Custom_Font.php:222
 msgid "WOFF2 File"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:214
+#: addons/custom_font/Custom_Font.php:223
 msgid "The web open Font Format 2, Used by Super Modern Browsers"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:218
+#: addons/custom_font/Custom_Font.php:227
 msgid "TTF File"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:219
+#: addons/custom_font/Custom_Font.php:228
 msgid "TrueType Fonts, Used for better supporting Safari, Android, iOS"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:223
+#: addons/custom_font/Custom_Font.php:232
 msgid "SVG File"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:224
+#: addons/custom_font/Custom_Font.php:233
 msgid "SVG font allow SVG to be used as glyphs when displaying text, Used by Legacy iOS"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:228
+#: addons/custom_font/Custom_Font.php:237
 msgid "EOT File"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:229
+#: addons/custom_font/Custom_Font.php:238
 msgid "Embedded OpenType, Used by IE6-IE9 Browsers"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:249
+#: addons/custom_font/Custom_Font.php:258
 msgid "Add Variation"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:288
+#: addons/custom_font/Custom_Font.php:300
 msgctxt "Custom Font"
 msgid "Custom Fonts"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:289
+#: addons/custom_font/Custom_Font.php:301
 msgctxt "Custom Font"
 msgid "Saved Custom Font"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:290
-#: addons/custom_font/Custom_Font.php:292
+#: addons/custom_font/Custom_Font.php:302
+#: addons/custom_font/Custom_Font.php:304
 msgid "Saved Custom Font"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:291
+#: addons/custom_font/Custom_Font.php:303
 msgid "Parent Custom Font"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:293
+#: addons/custom_font/Custom_Font.php:305
 msgid "View Custom Font"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:296
+#: addons/custom_font/Custom_Font.php:308
 msgid "Edit Custom Font"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:297
+#: addons/custom_font/Custom_Font.php:309
 msgid "Update Custom Font"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:298
+#: addons/custom_font/Custom_Font.php:310
 msgid "Search Custom Font"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:299
+#: addons/custom_font/Custom_Font.php:311
 msgid "No Custom Font Found"
 msgstr ""
 
-#: addons/custom_font/Custom_Font.php:300
+#: addons/custom_font/Custom_Font.php:312
 msgid "Not Custom Font found in Trash"
 msgstr ""
 
@@ -2033,7 +2033,7 @@ msgstr ""
 msgid "Maximum Price"
 msgstr ""
 
-#: addons/name_price/NamePrice.php:579
+#: addons/name_price/NamePrice.php:590
 msgid "Enter a valid product price within the allowed minimum and maximum."
 msgstr ""
 
@@ -2089,7 +2089,7 @@ msgid "Pre-order Now"
 msgstr ""
 
 #: addons/preorder/backend.php:76
-#: addons/preorder/Preorder.php:319
+#: addons/preorder/Preorder.php:331
 msgid "Pre-Release Message"
 msgstr ""
 
@@ -2117,19 +2117,19 @@ msgstr ""
 msgid "If you want to set pre-order click here"
 msgstr ""
 
-#: addons/preorder/Preorder.php:299
+#: addons/preorder/Preorder.php:311
 msgid "WowStore Pre-order information"
 msgstr ""
 
-#: addons/preorder/Preorder.php:311
+#: addons/preorder/Preorder.php:323
 msgid "Enter the maximum amount of products available for pre-order"
 msgstr ""
 
-#: addons/preorder/Preorder.php:323
+#: addons/preorder/Preorder.php:335
 msgid "Enter a message if the pre-ordered product availability date and time are not given"
 msgstr ""
 
-#: addons/preorder/Preorder.php:584
+#: addons/preorder/Preorder.php:596
 msgid "Quantity Exceeded for Pre-Order Item."
 msgstr ""
 
@@ -2241,23 +2241,23 @@ msgid "It allows the shoppers to check out the product details in a pop-up inste
 msgstr ""
 
 #: addons/quick_view/backend.php:44
-#: addons/quick_view/Quickview.php:749
+#: addons/quick_view/Quickview.php:804
 msgid "Rating"
 msgstr ""
 
 #: addons/quick_view/backend.php:64
-#: addons/quick_view/Quickview.php:754
+#: addons/quick_view/Quickview.php:824
 msgid "Meta"
 msgstr ""
 
 #: addons/quick_view/backend.php:68
-#: addons/quick_view/Quickview.php:755
+#: addons/quick_view/Quickview.php:828
 msgid "View Details"
 msgstr ""
 
 #: addons/quick_view/backend.php:72
-#: addons/quick_view/Quickview.php:586
-#: addons/quick_view/Quickview.php:756
+#: addons/quick_view/Quickview.php:634
+#: addons/quick_view/Quickview.php:832
 #: assets/js/blocks-placeholder.js:34
 #: assets/js/editor.blocks.js:1
 #: assets/js/wopb_dashboard_min.js:1
@@ -2500,39 +2500,39 @@ msgstr ""
 msgid "Thumbnail Width"
 msgstr ""
 
-#: addons/quick_view/Quickview.php:448
+#: addons/quick_view/Quickview.php:494
 msgid "View Full Product Details"
 msgstr ""
 
-#: addons/quick_view/Quickview.php:479
-#: addons/wishlist/Wishlist.php:287
-#: addons/wishlist/Wishlist.php:289
-#: blocks/Product_Grid_1.php:280
-#: blocks/Product_Grid_2.php:271
-#: blocks/Product_Grid_3.php:279
+#: addons/quick_view/Quickview.php:527
+#: addons/wishlist/Wishlist.php:329
+#: addons/wishlist/Wishlist.php:331
+#: blocks/Product_Grid_1.php:281
+#: blocks/Product_Grid_2.php:272
+#: blocks/Product_Grid_3.php:280
 #: assets/js/editor.blocks.js:1
 msgid "In Stock"
 msgstr ""
 
-#: addons/quick_view/Quickview.php:481
-#: blocks/Product_Grid_1.php:276
-#: blocks/Product_Grid_2.php:267
-#: blocks/Product_Grid_3.php:275
+#: addons/quick_view/Quickview.php:529
+#: blocks/Product_Grid_1.php:277
+#: blocks/Product_Grid_2.php:268
+#: blocks/Product_Grid_3.php:276
 #: assets/js/editor.blocks.js:1
 msgid "Out of stock"
 msgstr ""
 
-#: addons/quick_view/Quickview.php:504
-#: blocks/woo/Product_Cart.php:176
+#: addons/quick_view/Quickview.php:552
+#: blocks/woo/Product_Cart.php:238
 #: assets/js/editor.blocks.js:1
 msgid "Buy Now"
 msgstr ""
 
-#: addons/quick_view/Quickview.php:962
-#: blocks/Product_Grid_1.php:225
-#: blocks/Product_Grid_2.php:219
-#: blocks/Product_Grid_3.php:217
-#: blocks/Product_Slider.php:392
+#: addons/quick_view/Quickview.php:1051
+#: blocks/Product_Grid_1.php:226
+#: blocks/Product_Grid_2.php:220
+#: blocks/Product_Grid_3.php:218
+#: blocks/Product_Slider.php:382
 #: assets/js/editor.blocks.js:1
 msgid "Sale!"
 msgstr ""
@@ -2566,7 +2566,7 @@ msgid "Number of Recent Order"
 msgstr ""
 
 #: addons/sales_notification/backend.php:69
-#: addons/wishlist/Wishlist.php:266
+#: addons/wishlist/Wishlist.php:308
 msgid "Name"
 msgstr ""
 
@@ -2741,7 +2741,7 @@ msgstr ""
 #: addons/size_chart/SizeChart.php:88
 #: addons/size_chart/SizeChart.php:107
 #: addons/size_chart/SizeChart.php:108
-#: addons/size_chart/SizeChart.php:500
+#: addons/size_chart/SizeChart.php:502
 #: classes/Options.php:181
 msgid "Size Chart"
 msgstr ""
@@ -2957,16 +2957,16 @@ msgstr ""
 msgid "Search for a product"
 msgstr ""
 
-#: addons/size_chart/SizeChart.php:531
-#: addons/size_chart/SizeChart.php:538
+#: addons/size_chart/SizeChart.php:533
+#: addons/size_chart/SizeChart.php:540
 msgid "Select Size Chart"
 msgstr ""
 
-#: addons/size_chart/SizeChart.php:557
+#: addons/size_chart/SizeChart.php:559
 msgid "There is no chart available"
 msgstr ""
 
-#: addons/size_chart/SizeChart.php:562
+#: addons/size_chart/SizeChart.php:564
 msgid "Create Chart"
 msgstr ""
 
@@ -3099,42 +3099,42 @@ msgstr ""
 msgid "Shortcode"
 msgstr ""
 
-#: addons/templates/Saved_Templates.php:50
+#: addons/templates/Saved_Templates.php:53
 msgctxt "Templates"
 msgid "Saved Templates"
 msgstr ""
 
-#: addons/templates/Saved_Templates.php:51
+#: addons/templates/Saved_Templates.php:54
 msgctxt "Templates"
 msgid "Saved Template"
 msgstr ""
 
-#: addons/templates/Saved_Templates.php:52
-#: addons/templates/Saved_Templates.php:54
+#: addons/templates/Saved_Templates.php:55
+#: addons/templates/Saved_Templates.php:57
 msgid "Saved Templates"
 msgstr ""
 
-#: addons/templates/Saved_Templates.php:53
+#: addons/templates/Saved_Templates.php:56
 msgid "Parent Template"
 msgstr ""
 
-#: addons/templates/Saved_Templates.php:55
+#: addons/templates/Saved_Templates.php:58
 msgid "View Template"
 msgstr ""
 
-#: addons/templates/Saved_Templates.php:59
+#: addons/templates/Saved_Templates.php:62
 msgid "Update Template"
 msgstr ""
 
-#: addons/templates/Saved_Templates.php:60
+#: addons/templates/Saved_Templates.php:63
 msgid "Search Template"
 msgstr ""
 
-#: addons/templates/Saved_Templates.php:61
+#: addons/templates/Saved_Templates.php:64
 msgid "No Template Found"
 msgstr ""
 
-#: addons/templates/Saved_Templates.php:62
+#: addons/templates/Saved_Templates.php:65
 msgid "Not Template found in Trash"
 msgstr ""
 
@@ -3266,32 +3266,32 @@ msgstr ""
 msgid "Alignment in Shop/Archive Page"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:335
+#: addons/variation_swatches/VariationSwatches.php:349
 #: assets/js/editor.blocks.js:1
 msgid "Upload Image"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:338
+#: addons/variation_swatches/VariationSwatches.php:352
 msgid "Remove"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:382
+#: addons/variation_swatches/VariationSwatches.php:401
 msgid "Select terms"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:397
+#: addons/variation_swatches/VariationSwatches.php:416
 msgid "Select all"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:398
+#: addons/variation_swatches/VariationSwatches.php:417
 msgid "Select none"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:400
+#: addons/variation_swatches/VariationSwatches.php:419
 msgid "Add new"
 msgstr ""
 
-#: addons/variation_swatches/VariationSwatches.php:730
+#: addons/variation_swatches/VariationSwatches.php:764
 msgid "Clear"
 msgstr ""
 
@@ -3373,12 +3373,12 @@ msgid "Position on Single Page"
 msgstr ""
 
 #: addons/wishlist/backend.php:136
-#: addons/wishlist/Wishlist.php:344
+#: addons/wishlist/Wishlist.php:386
 msgid "Add to Wishlist"
 msgstr ""
 
 #: addons/wishlist/backend.php:141
-#: addons/wishlist/Wishlist.php:345
+#: addons/wishlist/Wishlist.php:387
 msgid "Browse Wishlist"
 msgstr ""
 
@@ -3410,51 +3410,51 @@ msgstr ""
 msgid "Use this shortcode [wopb_wishlist_nav] for custom position of comparison menu on navbar."
 msgstr ""
 
-#: addons/wishlist/Wishlist.php:287
-#: addons/wishlist/Wishlist.php:289
+#: addons/wishlist/Wishlist.php:329
+#: addons/wishlist/Wishlist.php:331
 msgid "Stock"
 msgstr ""
 
-#: addons/wishlist/Wishlist.php:300
+#: addons/wishlist/Wishlist.php:342
 msgid "Open Wishlist Page"
 msgstr ""
 
-#: addons/wishlist/Wishlist.php:303
+#: addons/wishlist/Wishlist.php:345
 msgid "Add All To Cart"
 msgstr ""
 
-#: addons/wishlist/Wishlist.php:306
-#: addons/wishlist/Wishlist.php:315
+#: addons/wishlist/Wishlist.php:348
+#: addons/wishlist/Wishlist.php:357
 #: assets/js/editor.blocks.js:1
 msgid "Continue Shopping"
 msgstr ""
 
-#: addons/wishlist/Wishlist.php:314
+#: addons/wishlist/Wishlist.php:356
 msgid "Your Wishlist is empty."
 msgstr ""
 
-#: addons/wishlist/Wishlist.php:503
-#: addons/wishlist/Wishlist.php:559
+#: addons/wishlist/Wishlist.php:545
+#: addons/wishlist/Wishlist.php:601
 msgid "Wishlist Not Added."
 msgstr ""
 
-#: addons/wishlist/Wishlist.php:514
+#: addons/wishlist/Wishlist.php:556
 msgid "Wishlist Added."
 msgstr ""
 
-#: addons/wishlist/Wishlist.php:526
+#: addons/wishlist/Wishlist.php:568
 msgid "Wishlist Item Added To Cart."
 msgstr ""
 
-#: addons/wishlist/Wishlist.php:536
+#: addons/wishlist/Wishlist.php:578
 msgid "Wishlist All Item Removed."
 msgstr ""
 
-#: addons/wishlist/Wishlist.php:544
+#: addons/wishlist/Wishlist.php:586
 msgid "Wishlist Item Removed."
 msgstr ""
 
-#: addons/wishlist/Wishlist.php:548
+#: addons/wishlist/Wishlist.php:590
 msgid "Wishlist Already Removed."
 msgstr ""
 
@@ -3470,24 +3470,24 @@ msgstr ""
 msgid "Read More"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:228
-#: blocks/Product_Grid_2.php:221
-#: blocks/Product_Grid_3.php:219
-#: blocks/Product_Slider.php:394
+#: blocks/Product_Grid_1.php:229
+#: blocks/Product_Grid_2.php:222
+#: blocks/Product_Grid_3.php:220
+#: blocks/Product_Slider.php:384
 msgid " Off"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:234
-#: blocks/Product_Grid_2.php:226
-#: blocks/Product_Grid_3.php:224
+#: blocks/Product_Grid_1.php:235
+#: blocks/Product_Grid_2.php:227
+#: blocks/Product_Grid_3.php:225
 #: assets/js/editor.blocks.js:1
 msgid "Hot"
 msgstr ""
 
-#: blocks/Product_Grid_1.php:412
-#: blocks/Product_Grid_2.php:430
-#: blocks/Product_Grid_3.php:414
-#: blocks/Product_List_1.php:339
+#: blocks/Product_Grid_1.php:427
+#: blocks/Product_Grid_2.php:431
+#: blocks/Product_Grid_3.php:415
+#: blocks/Product_List_1.php:350
 msgid "No products were found of your matching selection"
 msgstr ""
 
@@ -3504,29 +3504,29 @@ msgstr ""
 msgid "Available on backorder"
 msgstr ""
 
-#: blocks/woo/cart_table/Template.php:241
+#: blocks/woo/cart_table/Template.php:240
 msgid "Apply coupon"
 msgstr ""
 
-#: blocks/woo/cart_total/Template.php:31
-#: blocks/woo/checkout/order_review/Template.php:23
-#: blocks/woo/checkout/order_review/Template.php:64
+#: blocks/woo/cart_total/Template.php:27
+#: blocks/woo/checkout/order_review/Template.php:19
+#: blocks/woo/checkout/order_review/Template.php:60
 #: assets/js/editor.blocks.js:1
 msgid "Subtotal"
 msgstr ""
 
-#: blocks/woo/cart_total/Template.php:52
+#: blocks/woo/cart_total/Template.php:48
 msgid "Shipping"
 msgstr ""
 
 #. translators: %s: is no estimated
-#: blocks/woo/cart_total/Template.php:70
+#: blocks/woo/cart_total/Template.php:66
 msgid "(estimated for %s)"
 msgstr ""
 
-#: blocks/woo/cart_total/Template.php:95
-#: blocks/woo/cart_total/Template.php:96
-#: blocks/woo/checkout/order_review/Template.php:111
+#: blocks/woo/cart_total/Template.php:91
+#: blocks/woo/cart_total/Template.php:92
+#: blocks/woo/checkout/order_review/Template.php:107
 #: assets/js/editor.blocks.js:1
 msgid "Total"
 msgstr ""
@@ -3535,43 +3535,43 @@ msgstr ""
 msgid "Create an account?"
 msgstr ""
 
-#: blocks/woo/checkout/login/Template.php:26
+#: blocks/woo/checkout/login/Template.php:27
 #: assets/js/editor.blocks.js:1
 msgid "If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing section."
 msgstr ""
 
-#: blocks/woo/checkout/login/Template.php:31
+#: blocks/woo/checkout/login/Template.php:32
 msgid "Returning customer?"
 msgstr ""
 
-#: blocks/woo/checkout/login/Template.php:31
+#: blocks/woo/checkout/login/Template.php:32
 msgid "Click here to login"
 msgstr ""
 
-#: blocks/woo/checkout/login/Template.php:41
+#: blocks/woo/checkout/login/Template.php:42
 msgid "Username or Email"
 msgstr ""
 
-#: blocks/woo/checkout/login/Template.php:45
+#: blocks/woo/checkout/login/Template.php:46
 #: assets/js/editor.blocks.js:1
 msgid "Password"
 msgstr ""
 
-#: blocks/woo/checkout/login/Template.php:54
+#: blocks/woo/checkout/login/Template.php:55
 #: assets/js/editor.blocks.js:1
 msgid "Remember me"
 msgstr ""
 
-#: blocks/woo/checkout/login/Template.php:58
+#: blocks/woo/checkout/login/Template.php:59
 #: assets/js/editor.blocks.js:1
 msgid "Login"
 msgstr ""
 
-#: blocks/woo/checkout/login/Template.php:61
+#: blocks/woo/checkout/login/Template.php:62
 msgid "Lost your password?"
 msgstr ""
 
-#: blocks/woo/checkout/order_review/Template.php:22
+#: blocks/woo/checkout/order_review/Template.php:18
 #: assets/js/editor.blocks.js:1
 msgid "Product"
 msgstr ""
@@ -3597,7 +3597,7 @@ msgstr ""
 msgid "Place order"
 msgstr ""
 
-#: blocks/woo/Product_Image.php:242
+#: blocks/woo/Product_Image.php:268
 msgid "Awaiting product image"
 msgstr ""
 
@@ -3618,15 +3618,15 @@ msgstr ""
 msgid "My account"
 msgstr ""
 
-#: blocks/woo/thank_you/order_details/Template.php:64
+#: blocks/woo/thank_you/order_details/Template.php:63
 msgid "&infin;"
 msgstr ""
 
-#: blocks/woo/thank_you/order_details/Template.php:70
+#: blocks/woo/thank_you/order_details/Template.php:69
 msgid "Never"
 msgstr ""
 
-#: blocks/woo/thank_you/order_details/Template.php:146
+#: blocks/woo/thank_you/order_details/Template.php:145
 msgid "Note:"
 msgstr ""
 
@@ -3718,16 +3718,16 @@ msgstr ""
 msgid "The block has been disabled."
 msgstr ""
 
-#: classes/Dashboard.php:283
-#: classes/Dashboard.php:387
+#: classes/Dashboard.php:286
+#: classes/Dashboard.php:396
 msgid "Invalid post type."
 msgstr ""
 
-#: classes/Dashboard.php:364
+#: classes/Dashboard.php:373
 msgid "Status changed for selected items."
 msgstr ""
 
-#: classes/Dashboard.php:379
+#: classes/Dashboard.php:388
 msgid "The selected item is deleted."
 msgstr ""
 
@@ -3751,58 +3751,58 @@ msgstr ""
 msgid "Seconds"
 msgstr ""
 
-#: classes/Functions.php:1148
+#: classes/Functions.php:1191
 #: assets/js/editor.blocks.js:1
 msgid "Next"
 msgstr ""
 
-#: classes/Functions.php:1149
+#: classes/Functions.php:1192
 #: assets/js/editor.blocks.js:1
 msgid "Previous"
 msgstr ""
 
-#: classes/Functions.php:1441
+#: classes/Functions.php:1494
 msgid "Select Page"
 msgstr ""
 
-#: classes/Functions.php:1457
+#: classes/Functions.php:1510
 msgid "Select Location"
 msgstr ""
 
-#: classes/Functions.php:2540
+#: classes/Functions.php:2782
 msgid "- Select Template -"
 msgstr ""
 
 #. translators: 1: plugin name, 2: link to the Plugins screen.
-#: classes/Initialization.php:528
+#: classes/Initialization.php:529
 msgid "%1$s needs WooCommerce to work. Install and activate WooCommerce on the %2$s screen."
 msgstr ""
 
-#: classes/Initialization.php:530
+#: classes/Initialization.php:531
 msgid "Plugins"
 msgstr ""
 
-#: classes/Initialization.php:548
+#: classes/Initialization.php:549
 msgid "WooCommerce Blocks (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:552
+#: classes/Initialization.php:553
 msgid "Single Product (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:556
+#: classes/Initialization.php:557
 msgid "Cart (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:560
+#: classes/Initialization.php:561
 msgid "Checkout (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:564
+#: classes/Initialization.php:565
 msgid "Thank You (WowStore)"
 msgstr ""
 
-#: classes/Initialization.php:568
+#: classes/Initialization.php:569
 msgid "My Account (WowStore)"
 msgstr ""
 
@@ -3853,11 +3853,11 @@ msgstr ""
 msgid "New Year Offer!"
 msgstr ""
 
-#: classes/Options.php:303
+#: classes/Options.php:302
 msgid "WowStore Settings"
 msgstr ""
 
-#: classes/Options.php:315
+#: classes/Options.php:314
 msgid "Enable Product Single Builder"
 msgstr ""
 
@@ -3869,8 +3869,8 @@ msgstr ""
 #: classes/REST_API.php:278
 #: classes/REST_API.php:314
 #: classes/REST_API.php:388
-#: classes/REST_API.php:509
-#: classes/REST_API.php:542
+#: classes/REST_API.php:512
+#: classes/REST_API.php:545
 msgid "You cannot access this resource."
 msgstr ""
 
@@ -3878,59 +3878,60 @@ msgstr ""
 msgid "Product not found."
 msgstr ""
 
-#: classes/REST_API.php:656
+#: classes/REST_API.php:659
 msgid "Provide a valid title and block content."
 msgstr ""
 
-#: classes/REST_API.php:660
+#: classes/REST_API.php:663
 msgid "You cannot create pages."
 msgstr ""
 
-#: classes/REST_API.php:671
+#: classes/REST_API.php:674
 msgid "The page could not be created."
 msgstr ""
 
-#: classes/Styles.php:326
+#: classes/Styles.php:443
 msgid "CSS Updated!"
 msgstr ""
 
-#: classes/Styles.php:340
+#: classes/Styles.php:457
 msgid "Invalid global style action."
 msgstr ""
 
-#: classes/Styles.php:343
+#: classes/Styles.php:460
 msgid "You cannot change global styles."
 msgstr ""
 
-#: classes/Styles.php:375
+#: classes/Styles.php:492
 msgid "Invalid global style settings."
 msgstr ""
 
-#: classes/Styles.php:426
+#: classes/Styles.php:572
+#: classes/Styles.php:583
 msgid "Provide valid block CSS and save options."
 msgstr ""
 
-#: classes/Styles.php:437
+#: classes/Styles.php:578
 msgid "You cannot edit these styles."
 msgstr ""
 
-#: classes/Styles.php:472
+#: classes/Styles.php:621
 msgid "CSS can not be saved due to permission!!!"
 msgstr ""
 
-#: classes/Styles.php:476
+#: classes/Styles.php:625
 msgid "WowStore css file has been updated."
 msgstr ""
 
-#: classes/Styles.php:493
+#: classes/Styles.php:642
 msgid "Data Delete Done"
 msgstr ""
 
-#: classes/Styles.php:522
+#: classes/Styles.php:671
 msgid "Data retrive done"
 msgstr ""
 
-#: classes/Styles.php:527
+#: classes/Styles.php:676
 msgid "Data not found!!"
 msgstr ""
 
@@ -3938,11 +3939,11 @@ msgstr ""
 msgid "WowStore Template (Without Title)"
 msgstr ""
 
-#: includes/notice/class-notice.php:352
+#: includes/notice/class-notice.php:364
 msgid "Unknown hello bar."
 msgstr ""
 
-#: includes/notice/class-notice.php:361
+#: includes/notice/class-notice.php:373
 msgid "Hello Bar Action performed"
 msgstr ""
 
@@ -4008,7 +4009,7 @@ msgstr ""
 msgid "Up to 60% Off"
 msgstr ""
 
-#: includes/notice/templates/split-countdown.php:126
+#: includes/notice/templates/split-countdown.php:236
 msgid "Close Banner"
 msgstr ""
 
@@ -8213,10 +8214,6 @@ msgid "Pagination Gap"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Add {{WOPB}} before the selector to wrap element."
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Sales"
 msgstr ""
 
@@ -8282,10 +8279,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Hide this block on Extra Large, Desktop, Tablet or Mobile screens with Pro."
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Custom CSS"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1

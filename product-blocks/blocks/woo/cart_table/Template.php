@@ -11,17 +11,19 @@ defined( 'ABSPATH' ) || exit;
 
 function wopb_cart_table_product_remove( $args ) {
 	echo '<div class="product-remove">';
-		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo apply_filters(
-			'woocommerce_cart_item_remove_link',
-			sprintf(
-				'<a href="%s" class="remove wopb-cart-product-remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
-				esc_url( wc_get_cart_remove_url( $args['cart_item_key'] ) ),
-				esc_html__( 'Remove this item', 'product-blocks' ),
-				esc_attr( $args['product']->get_id() ),
-				esc_attr( $args['product']->get_sku() )
+		echo wp_kses(
+			apply_filters(
+				'woocommerce_cart_item_remove_link',
+				sprintf(
+					'<a href="%s" class="remove wopb-cart-product-remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
+					esc_url( wc_get_cart_remove_url( $args['cart_item_key'] ) ),
+					esc_html__( 'Remove this item', 'product-blocks' ),
+					esc_attr( $args['product']->get_id() ),
+					esc_attr( $args['product']->get_sku() )
+				),
+				$args['cart_item_key']
 			),
-			$args['cart_item_key']
+			wopb_function()->allowed_html_tags()
 		);
 	echo '</div>';
 }
@@ -58,7 +60,7 @@ function wopb_cart_table_product_thumbnail( $args ) {
 
 		$html .= '</div>';
 
-		return $html;
+		return wp_kses( $html, wopb_function()->allowed_html_tags() );
 }
 
 function wopb_cart_table_cross_sell_product() {
@@ -134,12 +136,11 @@ if ( $attr['showCrossSell'] && ! empty( wopb_cart_table_cross_sell_product() ) )
 							if ( 'withImage' !== $attr['removeBtnPosition'] ) {
 								wopb_cart_table_product_remove( $args );
 							}
-								echo wopb_cart_table_product_thumbnail( $args ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+								echo wp_kses( wopb_cart_table_product_thumbnail( $args ), $allowed_html_tags );
 							?>
 							</td>
 							<td data-title="
 							<?php
-							// phpcs:ignore WordPress.CodeAnalysis.EscapedNotTranslated.Found echo esc_attr( $attr['productHead'] );
 							echo esc_attr( $attr['productHead'] );
 							?>
 							">
@@ -151,15 +152,14 @@ if ( $attr['showCrossSell'] && ! empty( wopb_cart_table_cross_sell_product() ) )
 										wopb_cart_table_product_remove( $args );
 									}
 									?>
-										<?php echo wopb_cart_table_product_thumbnail( $args ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?> 
+										<?php echo wp_kses( wopb_cart_table_product_thumbnail( $args ), $allowed_html_tags ); ?> 
 									</div>
 
 									<div class="wopb-cart-table-product-section">
 										<?php
-										$cart_item_name_safe = wopb_function()->wp_kses_safe( $cart_item_name );
-										echo $cart_item_name_safe; // phpcs:ignore
+										echo wp_kses( $cart_item_name, $allowed_html_tags );
 										do_action( 'woocommerce_after_cart_item_name', $args['cart_item'], $args['cart_item_key'] );
-										echo wc_get_formatted_cart_item_data( $args['cart_item'] ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+										echo wp_kses( wc_get_formatted_cart_item_data( $args['cart_item'] ), wopb_function()->allowed_html_tags() );
 
 										if ( $product->backorders_require_notification() && $product->is_on_backorder( $args['cart_item']['quantity'] ) ) {
 											echo wp_kses_post( apply_filters( 'woocommerce_cart_item_backorder_notification', '<p class="backorder_notification">' . esc_html__( 'Available on backorder', 'product-blocks' ) . '</p>', $product->get_id() ) );
@@ -171,11 +171,10 @@ if ( $attr['showCrossSell'] && ! empty( wopb_cart_table_cross_sell_product() ) )
 
 							<td class="wopb-cart-table-price" data-title="
 							<?php
-							// phpcs:ignore WordPress.CodeAnalysis.EscapedNotTranslated.Found
 								echo esc_attr( $attr['priceHead'] );
 							?>
 							">
-							<?php echo apply_filters( 'woocommerce_cart_item_price', WC()->cart->get_product_price( $product ), $args['cart_item'], $args['cart_item_key'] ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+							<?php echo wp_kses( apply_filters( 'woocommerce_cart_item_price', WC()->cart->get_product_price( $product ), $args['cart_item'], $args['cart_item_key'] ), wopb_function()->allowed_html_tags() ); ?>
 							</td>
 
 							<td class="wopb-product-qty" data-title="<?php echo esc_attr( $attr['qtyHead'] ); ?>">
@@ -211,7 +210,7 @@ if ( $attr['showCrossSell'] && ! empty( wopb_cart_table_cross_sell_product() ) )
 
 							<td class="wopb-product-subtotal" data-title="<?php echo esc_html( $attr['subTotalHead'] ); ?>">
 								<?php
-									echo WC()->cart->get_product_subtotal( $product, $args['cart_item']['quantity'] ); //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+									echo wp_kses( WC()->cart->get_product_subtotal( $product, $args['cart_item']['quantity'] ), wopb_function()->allowed_html_tags() );
 								?>
 								<div class="wopb-cart-table-medium">
 								<?php
@@ -281,8 +280,7 @@ if ( ! in_array( $current_theme->get( 'Name' ), array( 'Botiga' ) ) ) {
 ?>
 
 <?php
-	$cross_sell_product_safe = wopb_function()->wp_kses_safe( $cross_sell_product );
-    echo $cross_sell_product_safe; // phpcs:ignore
+	echo wp_kses( $cross_sell_product, $allowed_html_tags );
 ?>
 
 <?php do_action( 'woocommerce_after_cart' ); ?>

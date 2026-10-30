@@ -94,6 +94,27 @@ class Social_Share {
 		return isset( $share_links[ $key ] ) ? $share_links[ $key ] : '';
 	}
 
+	/**
+	 * Allowed HTML for the bundled share icons: the shared allowlist plus the id and data-name
+	 * attributes the plugin's own SVG files carry.
+	 *
+	 * @return array
+	 */
+	private function allowed_icon_html() {
+		return wopb_function()->allowed_html_tags(
+			array(
+				'svg'  => array(
+					'id'     => true,
+					'data-*' => true,
+				),
+				'path' => array(
+					'id'     => true,
+					'data-*' => true,
+				),
+			)
+		);
+	}
+
 	public function content( $attr, $noAjax = false ) {
 		$block_name    = 'social-share';
 		$wraper_before = $wraper_after = $wrapper_content = '';
@@ -107,18 +128,18 @@ class Social_Share {
 		if ( is_product() ) {
 			$attr['className'] = ! empty( $attr['className'] ) ? preg_replace( '/[^A-Za-z0-9_ -]/', '', $attr['className'] ) : '';
 
-			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . sanitize_html_class( $attr['advanceId'] ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . $block_name . ' wopb-block-' . sanitize_html_class( $attr['blockId'] ) . ' ' . $attr['className'] . '">';
+			$wraper_before     .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . '">';
 				$wraper_before .= '<div class="wopb-product-wrapper">';
 
 					$wrapper_content     .= '<div class="wopb-share">';
 						$wrapper_content .= '<div class="wopb-share-layout wopb-inline-' . ( $attr['disInline'] ? 'true' : 'false' ) . '">';
 			if ( $attr['shareLabelShow'] ) {
-				$wrapper_content .= '<div class="wopb-share-count-section wopb-share-count-section-' . sanitize_html_class( $attr['shareLabelStyle'] ) . '">';
+				$wrapper_content .= '<div class="wopb-share-count-section wopb-share-count-section-' . esc_attr( sanitize_html_class( $attr['shareLabelStyle'] ) ) . '">';
 				if ( 'style2' !== $attr['shareLabelStyle'] && $attr['shareCountShow'] ) {
-								$wrapper_content .= '<span class="wopb-share-count">' . $total_share . '</span>';
+								$wrapper_content .= '<span class="wopb-share-count">' . esc_html( $total_share ) . '</span>';
 				}
 				if ( 'style2' === $attr['shareLabelStyle'] ) {
-									$wrapper_content .= '<span class="wopb-share-icon-section">' . wopb_function()->svg_icon( 'share' ) . '</span>';
+									$wrapper_content .= '<span class="wopb-share-icon-section">' . wp_kses( wopb_function()->svg_icon( 'share' ), $this->allowed_icon_html() ) . '</span>';
 				}
 				if ( 'style2' !== $attr['shareLabelStyle'] && $attr['shareCountLabel'] ) {
 					$wrapper_content .= '<span class="wopb-share-label">' . esc_html( $attr['shareCountLabel'] ) . '</span>';
@@ -129,9 +150,9 @@ class Social_Share {
 
 			foreach ( $attr['repeatableSocialShare'] as $key => $value ) {
 				$share_type               = isset( $value['type'] ) ? sanitize_html_class( $value['type'] ) : '';
-				$wrapper_content         .= '<div class="wopb-share-item wopb-repeat-' . sanitize_html_class( $key ) . ' wopb-social-' . $share_type . '" postId="' . absint( $post_id ) . '" count="' . $total_share . '">';
-					$wrapper_content     .= '<a href="javascript:" class="wopb-share-item-' . $share_type . '" data-url="' . esc_url( $this->share_link( $share_type, $post_link ) ) . '">';
-						$wrapper_content .= '<span class="wopb-share-item-icon">' . wopb_function()->svg_icon( $share_type ) . '</span>';
+				$wrapper_content         .= '<div class="wopb-share-item wopb-repeat-' . esc_attr( sanitize_html_class( $key ) ) . ' wopb-social-' . esc_attr( $share_type ) . '" postId="' . absint( $post_id ) . '" count="' . esc_attr( $total_share ) . '">';
+					$wrapper_content     .= '<a href="javascript:" class="wopb-share-item-' . esc_attr( $share_type ) . '" data-url="' . esc_url( $this->share_link( $share_type, $post_link ) ) . '">';
+						$wrapper_content .= '<span class="wopb-share-item-icon">' . wp_kses( wopb_function()->svg_icon( $share_type ), $this->allowed_icon_html() ) . '</span>';
 						$wrapper_content .= '' . $value['enableLabel'] && $attr['enableLabel'] ? '<span class="wopb-share-item-label">' . esc_html( $value['label'] ) . '</span>' : ' ';
 					$wrapper_content     .= '</a>';
 				$wrapper_content         .= '</div>';

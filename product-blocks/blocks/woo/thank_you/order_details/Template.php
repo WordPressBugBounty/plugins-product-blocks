@@ -28,7 +28,6 @@ $show_downloads        = $order->has_downloadable_item() && $order->is_download_
 	<section class="woocommerce-order-downloads">
 		<h2 class="woocommerce-order-downloads__title">
 			<?php
-				// phpcs:ignore WordPress.CodeAnalysis.EscapedNotTranslated.Found
 				echo esc_html( $attr['downloadText'] );
 			?>
 		</h2>
@@ -61,7 +60,7 @@ $show_downloads        = $order->has_downloadable_item() && $order->is_download_
 										echo '<a href="' . esc_url( $download['download_url'] ) . '" class="woocommerce-MyAccount-downloads-file button alt">' . esc_html( $download['download_name'] ) . '</a>';
 										break;
 									case 'download-remaining':
-										echo is_numeric( $download['downloads_remaining'] ) ? esc_html( $download['downloads_remaining'] ) : esc_html__( '&infin;', 'product-blocks' );
+										echo esc_html( is_numeric( $download['downloads_remaining'] ) ? $download['downloads_remaining'] : __( '&infin;', 'product-blocks' ) );
 										break;
 									case 'download-expires':
 										if ( ! empty( $download['access_expires'] ) ) {
@@ -136,7 +135,7 @@ $show_downloads        = $order->has_downloadable_item() && $order->is_download_
 				?>
 					<tr>
 						<th scope="row"><?php echo esc_html( $total['label'] ); ?></th>
-						<td><?php echo ( 'payment_method' === $key ) ? esc_html( $total['value'] ) : wp_kses_post( $total['value'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
+						<td><?php echo wp_kses( 'payment_method' === $key ? esc_html( $total['value'] ) : $total['value'], wopb_function()->allowed_html_tags() ); ?></td>
 					</tr>
 				<?php
 			}

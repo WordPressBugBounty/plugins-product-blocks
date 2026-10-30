@@ -3,11 +3,7 @@
 
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- template partial included directly into a method scope; these are local render-time variables/functions, not plugin globals.
 
-if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- read-only shipping recalculation, mirrors WC_Shortcode_Cart::calculate_shipping() in WooCommerce core, which handles the same $_POST key without a nonce check.
-	if ( class_exists( 'WC_Shortcode_Cart' ) ) {
-		WC_Shortcode_Cart::calculate_shipping();
-	}
-}
+wopb_function()->maybe_calculate_shipping();
 	WC()->cart->calculate_totals();
 	WC()->cart->calculate_shipping();
 
@@ -18,7 +14,7 @@ if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Secu
 	);
 	?>
 
-<div class="wopb-cart-total cart_totals <?php echo ( WC()->customer->has_calculated_shipping() ) ? 'calculated_shipping' : ''; //phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
+<div class="wopb-cart-total cart_totals <?php echo esc_attr( WC()->customer->has_calculated_shipping() ? 'calculated_shipping' : '' ); ?>">
 	<?php do_action( 'woocommerce_before_cart_totals' ); ?>
 	<div class="wopb-table-heading"><?php echo esc_html( $attr['cartTotalTxt'] ); ?></div>
 
@@ -28,7 +24,7 @@ if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Secu
 			<tbody>
 				<tr class="cart-subtotal">
 					<th><?php echo esc_html( $attr['subTotalTxt'] ); ?></th>
-					<td class="wopb-total-price" data-title="<?php echo ( $attr['subTotalTxt'] ? esc_html( $attr['subTotalTxt'] ) : esc_attr__( 'Subtotal', 'product-blocks' ) ); ?>"><?php wc_cart_totals_subtotal_html(); ?></td>
+					<td class="wopb-total-price" data-title="<?php echo esc_attr( $attr['subTotalTxt'] ? $attr['subTotalTxt'] : __( 'Subtotal', 'product-blocks' ) ); ?>"><?php wc_cart_totals_subtotal_html(); ?></td>
 				</tr>
 
 				<!-- // Coupon LVL -->
@@ -92,8 +88,8 @@ if ( isset( $_POST['calc_shipping_country'] ) ) { // phpcs:ignore WordPress.Secu
 				<?php do_action( 'woocommerce_cart_totals_before_order_total' ); ?>
 
 				<tr class="order-total">
-					<th><?php echo ( $attr['totalTxt'] ? esc_html( $attr['totalTxt'] ) : esc_html__( 'Total', 'product-blocks' ) ); ?></th>
-					<td class="wopb-total-price" data-title="<?php echo ( $attr['totalTxt'] ? esc_html( $attr['totalTxt'] ) : esc_html__( 'Total', 'product-blocks' ) ); ?>"><?php wc_cart_totals_order_total_html(); ?></td>
+					<th><?php echo esc_html( $attr['totalTxt'] ? $attr['totalTxt'] : __( 'Total', 'product-blocks' ) ); ?></th>
+					<td class="wopb-total-price" data-title="<?php echo esc_attr( $attr['totalTxt'] ? $attr['totalTxt'] : __( 'Total', 'product-blocks' ) ); ?>"><?php wc_cart_totals_order_total_html(); ?></td>
 				</tr>
 			</tbody>
 			<?php do_action( 'woocommerce_cart_totals_after_order_total' ); ?>

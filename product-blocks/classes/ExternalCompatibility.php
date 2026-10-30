@@ -143,7 +143,6 @@ class ExternalCompatibility {
 					if ( $wp_filesystem ) {
 						$wp_filesystem->put_contents( $css_file_path, $assets['css'], FS_CHMOD_FILE );
 					}
-					// error_log( 'Spectra CSS generated: ' . $css_file_path );
 				}
 			}
 		} catch ( \Exception $e ) {
@@ -178,7 +177,6 @@ class ExternalCompatibility {
 
 			if ( file_exists( $spectra_css_path ) ) {
 				wp_delete_file( $spectra_css_path );
-				// error_log( 'Deleted Spectra CSS file: ' . $spectra_css_path . ' for post ID: ' . $post_id );
 			} else {
 				error_log( 'Spectra CSS file does not exist: ' . $spectra_css_path ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- genuine error-path logging, not debug code.
 			}

@@ -24,6 +24,9 @@ return array(
 	// folder here instead of in every entry.
 	'asset_url'              => WOPB_URL . 'assets/img/',
 
+	// Version of the notice CSS/JS handles.
+	'version'                => WOPB_VER,
+
 	// Cross-plugin notice priority (xpo_active_notice_lists filter).
 	'priority_key'           => 'wow_store',
 	'priority'               => 5,
