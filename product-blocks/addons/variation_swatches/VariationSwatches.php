@@ -591,7 +591,7 @@ class VariationSwatches {
 					$selected,
 					esc_attr( safecss_filter_attr( $custom_style ) ),
 					esc_attr( $option ),
-					esc_attr( $option ),
+					esc_attr( $label ),
 					esc_html( $label ),
 					$tooltip,
 					$label_separator

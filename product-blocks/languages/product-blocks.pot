@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowStore – Store Builder & Product Blocks for WooCommerce 4.6.1\n"
+"Project-Id-Version: WowStore – Store Builder & Product Blocks for WooCommerce 4.6.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/product-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-29T09:57:01+00:00\n"
+"POT-Creation-Date: 2026-11-01T09:53:39+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: product-blocks\n"
@@ -3890,48 +3890,48 @@ msgstr ""
 msgid "The page could not be created."
 msgstr ""
 
-#: classes/Styles.php:443
+#: classes/Styles.php:444
 msgid "CSS Updated!"
 msgstr ""
 
-#: classes/Styles.php:457
+#: classes/Styles.php:458
 msgid "Invalid global style action."
 msgstr ""
 
-#: classes/Styles.php:460
+#: classes/Styles.php:461
 msgid "You cannot change global styles."
 msgstr ""
 
-#: classes/Styles.php:492
+#: classes/Styles.php:493
 msgid "Invalid global style settings."
 msgstr ""
 
-#: classes/Styles.php:572
-#: classes/Styles.php:583
+#: classes/Styles.php:573
+#: classes/Styles.php:584
 msgid "Provide valid block CSS and save options."
 msgstr ""
 
-#: classes/Styles.php:578
+#: classes/Styles.php:579
 msgid "You cannot edit these styles."
 msgstr ""
 
-#: classes/Styles.php:621
+#: classes/Styles.php:622
 msgid "CSS can not be saved due to permission!!!"
 msgstr ""
 
-#: classes/Styles.php:625
+#: classes/Styles.php:626
 msgid "WowStore css file has been updated."
 msgstr ""
 
-#: classes/Styles.php:642
+#: classes/Styles.php:643
 msgid "Data Delete Done"
 msgstr ""
 
-#: classes/Styles.php:671
+#: classes/Styles.php:672
 msgid "Data retrive done"
 msgstr ""
 
-#: classes/Styles.php:676
+#: classes/Styles.php:677
 msgid "Data not found!!"
 msgstr ""
 
@@ -4921,26 +4921,6 @@ msgid "No Categories found"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Product View"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Grid View"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Slide View"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Arrows"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Dots"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "Height"
 msgstr ""
 
@@ -5013,6 +4993,26 @@ msgid "Count Style"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
+msgid "Product View"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Grid View"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Slide View"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Arrows"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Dots"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
 msgid "Explore"
 msgstr ""
 
@@ -5050,47 +5050,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "No Products found"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Sale"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Out of Stock"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Deal"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-#: assets/js/wopb_dashboard_min.js:1
-msgid "Category"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Brand"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Cart"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Short Description"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Filter"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Pagination"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Variation Swatch"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5271,6 +5230,47 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Var. Swatch Style"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sale"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Out of Stock"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Deal"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+#: assets/js/wopb_dashboard_min.js:1
+msgid "Category"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Brand"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Cart"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Short Description"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Filter"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Pagination"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Variation Swatch"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -5547,10 +5547,6 @@ msgid "Sales Margin"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
-msgid "Sale Tag"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
 msgid "General + Query"
 msgstr ""
 
@@ -5665,6 +5661,10 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Arrow Settings"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
+msgid "Sale Tag"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
@@ -7345,6 +7345,10 @@ msgid "Social Share Spacing"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1
+msgid "Share Social Spacing"
+msgstr ""
+
+#: assets/js/editor.blocks.js:1
 msgid "Social Share Style"
 msgstr ""
 
@@ -7445,10 +7449,6 @@ msgstr ""
 
 #: assets/js/editor.blocks.js:1
 msgid "Horizontal floating responsiveness"
-msgstr ""
-
-#: assets/js/editor.blocks.js:1
-msgid "Share Social Spacing"
 msgstr ""
 
 #: assets/js/editor.blocks.js:1

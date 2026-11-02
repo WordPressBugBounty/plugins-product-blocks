@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, woocommerce wishlist, variation s
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 4.6.1
+Stable tag: 4.6.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -284,6 +284,10 @@ WowStore includes open source libraries (React, Slick, flexMenu and others) unde
 9. WooCommerce Compare
 
 == Changelog ==
+= 4.6.2 - 02 November 2026 =
+* Fix: Fatal error in the Compare popup when clearing the list or when a compared product can no longer be loaded.
+* Fix: Compare table showed the last product's short description in every column.
+
 = 4.6.1 - 30 October 2026 =
 * Fix: Security hardening: output escaping across blocks, shortcodes and templates, and nonce and permission checks on WooCommerce product data saves (product video, Name Your Price, Pre-Order, Backorder, Size Chart, Variation Swatches).
 * Fix: Security hardening of block CSS saving, preview and inline CSS output, and add-on style settings validation.

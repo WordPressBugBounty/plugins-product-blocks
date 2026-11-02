@@ -953,7 +953,6 @@ class Compare {
 					foreach ( $table_columns as $table_column ) {
 						$row_class    = 'wopb-' . $table_column['key'] . '-row';
 						$column_class = wopb_function()->get_setting( 'compare_first_column_sticky' ) && ! wp_is_mobile() ? 'wopb-sticky-column' : '';
-						$short_desc   = $product->get_short_description() ? $product->get_short_description() : 'N/A';
 						?>
 							<tr class="<?php echo esc_attr( $row_class ); ?>">
 								<th class="<?php echo esc_attr( $column_class ); ?>">
@@ -1005,6 +1004,7 @@ class Compare {
 											}
 											break;
 										case 'description':
+											$short_desc = $product->get_short_description() ? $product->get_short_description() : 'N/A';
 											?>
 														<span class="wopb-description"><?php echo wp_kses_post( $short_desc ); ?></span>
 													<?php
