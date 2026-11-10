@@ -33,10 +33,6 @@ function wopb_get_backorder_opt( $config ) {
 		'wopb_backorder' => array(
 			'label' => __( 'Backorder', 'product-blocks' ),
 			'attr'  => array(
-				'backorder_heading' => array(
-					'type'  => 'heading',
-					'label' => __( 'Backorder Settings', 'product-blocks' ),
-				),
 				'tab'               => (object) array(
 					'type'    => 'tab',
 					'options' => array(

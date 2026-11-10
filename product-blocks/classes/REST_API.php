@@ -680,6 +680,47 @@ class REST_API {
 	}
 
 	/**
+	 * Resolve the public post types offered by editor selection controls.
+	 *
+	 * The legacy post-type filter may enumerate internal types for other consumers.
+	 * It must not make their titles available through editor search.
+	 *
+	 * @param string $type           Search control.
+	 * @param string $condition_type Selected post type.
+	 * @return array|\WP_Error Eligible names, or an invalid selection error.
+	 */
+	private function get_editor_search_post_types( $type, $condition_type ) {
+		$allowed  = apply_filters( 'wopb_editor_search_post_types', array( 'post', 'page', 'product' ) );
+		$eligible = array();
+		foreach ( wopb_function()->get_post_type() as $name ) {
+			$post_type = get_post_type_object( $name );
+			if (
+				$post_type &&
+				in_array( $name, (array) $allowed, true ) &&
+				$post_type->public &&
+				is_post_type_viewable( $post_type ) &&
+				! $post_type->exclude_from_search &&
+				current_user_can( $post_type->cap->edit_posts )
+			) {
+				$eligible[] = $name;
+			}
+		}
+
+		if ( in_array( $type, array( 'allpost', 'allproduct' ), true ) ) {
+			$selected = $eligible;
+		} elseif ( in_array( $type, array( 'postExclude', 'productInclude', 'productExclude' ), true ) ) {
+			if ( ! in_array( $condition_type, $eligible, true ) ) {
+				return $this->invalid_param_error( 'condition' );
+			}
+			$selected = array( $condition_type );
+		} else {
+			$selected = array_intersect( array( 'posts' === $type ? 'post' : 'product' ), $eligible );
+		}
+
+		return $selected ? array_values( $selected ) : $this->invalid_param_error( 'type' );
+	}
+
+	/**
 	 * Search from editor settings
 	 *
 	 * @since v.2.6.0
@@ -688,7 +729,13 @@ class REST_API {
 	 */
 	public function search_settings_action( $server ) {
 		global $wpdb;
-		$post           = $server->get_params();
+		$post = $server->get_params();
+		foreach ( array( 'type', 'condition', 'term' ) as $key ) {
+			if ( array_key_exists( $key, $post ) && ! is_string( $post[ $key ] ) && ( 'term' !== $key || ! is_int( $post[ $key ] ) ) ) {
+				return $this->invalid_param_error( $key );
+			}
+		}
+
 		$type           = isset( $post['type'] ) ? wopb_function()->rest_sanitize_params( $post['type'] ) : '';
 		$condition_type = isset( $post['condition'] ) ? wopb_function()->rest_sanitize_params( $post['condition'] ) : '';
 		$term_type      = isset( $post['term'] ) ? wopb_function()->rest_sanitize_params( $post['term'] ) : '';
@@ -696,11 +743,9 @@ class REST_API {
 			case 'posts':
 			case 'allpost':
 			case 'postExclude':
-				$post_type = array( 'post' );
-				if ( 'allpost' === $type ) {
-					$post_type = array_keys( wopb_function()->get_post_type() );
-				} elseif ( 'postExclude' === $type ) {
-					$post_type = array( $condition_type );
+				$post_type = $this->get_editor_search_post_types( $type, $condition_type );
+				if ( is_wp_error( $post_type ) ) {
+					return $post_type;
 				}
 				$args = array(
 					'post_type'      => $post_type,
@@ -719,6 +764,9 @@ class REST_API {
 					while ( $post_results->have_posts() ) {
 						$post_results->the_post();
 						$id     = get_the_ID();
+						if ( ! current_user_can( 'read_post', $id ) ) {
+							continue;
+						}
 						$title  = html_entity_decode( get_the_title() );
 						$data[] = array(
 							'value' => $id,
@@ -737,11 +785,9 @@ class REST_API {
 			case 'allproduct':
 			case 'productInclude':
 			case 'productExclude':
-				$post_type = array( 'product' );
-				if ( 'allproduct' === $type ) {
-					$post_type = array_keys( wopb_function()->get_post_type() );
-				} elseif ( 'productInclude' === $type || 'productExclude' === $type ) {
-					$post_type = array( $condition_type );
+				$post_type = $this->get_editor_search_post_types( $type, $condition_type );
+				if ( is_wp_error( $post_type ) ) {
+					return $post_type;
 				}
 				$args = array(
 					'post_type'      => $post_type,
@@ -771,6 +817,9 @@ class REST_API {
 					while ( $post_results->have_posts() ) {
 						$post_results->the_post();
 						$id     = get_the_ID();
+						if ( ! current_user_can( 'read_post', $id ) ) {
+							continue;
+						}
 						$title  = wp_strip_all_tags( html_entity_decode( get_the_title() ) );
 						$data[] = array(
 							'value' => $id,

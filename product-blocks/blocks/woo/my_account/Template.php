@@ -3,9 +3,11 @@ defined( 'ABSPATH' ) || exit;
 
 if ( is_user_logged_in() && $attr['showProfile'] ) { ?>
 	<div class="wopb-my-account-profile-section">
-		<div class="wopb-my-account-user-img">
-			<img src="<?php echo esc_url( $profileUrl ); ?>" alt="">
-		</div>
+		<?php if ( $profileUrl ) { ?>
+			<div class="wopb-my-account-user-img">
+				<img src="<?php echo esc_url( $profileUrl ); ?>" alt="">
+			</div>
+		<?php } ?>
 		<div class="wopb-my-account-user-data">
 			<span class="wopb-user-name"><?php echo esc_html( $userData->display_name ); ?></span>
 			<span class="wopb-user-email"><?php echo esc_html( $userData->user_email ); ?></span>

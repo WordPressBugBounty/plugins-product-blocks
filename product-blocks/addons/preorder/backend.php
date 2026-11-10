@@ -42,11 +42,7 @@ function wopb_get_preorder_opt( $config ) {
 		'wopb_preorder' => array(
 			'label' => __( 'Pre-order', 'product-blocks' ),
 			'attr'  => array(
-				'preorder_heading' => array(
-					'type'  => 'heading',
-					'label' => __( 'Pre-order Settings', 'product-blocks' ),
-				),
-				'tab'              => (object) array(
+				'tab' => (object) array(
 					'type'    => 'tab',
 					'options' => array(
 						'settings' => (object) array(

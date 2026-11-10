@@ -25,7 +25,7 @@ class Backorder {
 	public function __construct() {
 		// Add Script for Addons
 		add_action( 'wp_enqueue_scripts', array( $this, 'add_backorder_scripts' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_backorder_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'add_backorder_admin_scripts' ) );
 
 		// Add Custom Field to Inventory Tab
 		add_action( 'woocommerce_product_options_inventory_product_data', array( $this, 'product_options_inventory_product_data' ), 10, 2 );
@@ -44,8 +44,8 @@ class Backorder {
 		// Get Stock HTML
 		add_filter( 'woocommerce_get_stock_html', array( $this, 'get_stock_html' ), 10, 2 );
 
-		// Validate Item When Add to Cart
-		add_filter( 'woocommerce_add_to_cart', array( $this, 'add_to_cart_validation' ), 10, 6 );
+		// Validate quantities before adding products to the cart.
+		add_filter( 'woocommerce_add_to_cart_validation', array( $this, 'validate_before_add_to_cart' ), 10, 4 );
 		add_filter( 'woocommerce_update_cart_validation', array( $this, 'update_cart_validation' ), 10, 4 );
 
 		// Add to Cart Item Name
@@ -72,6 +72,19 @@ class Backorder {
 	public function add_backorder_scripts() {
 		wp_enqueue_style( 'wopb-backorder-style', WOPB_URL . 'addons/backorder/css/backorder.css', array(), WOPB_VER );
 		wp_enqueue_script( 'wopb-backorder-script', WOPB_URL . 'addons/backorder/js/backorder.js', array( 'jquery' ), WOPB_VER, true );
+	}
+
+	/**
+	 * Backorder assets on admin screens: only on the product edit screens that use them.
+	 *
+	 * @return NULL
+	 */
+	public function add_backorder_admin_scripts() {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( ! $screen || 'product' !== $screen->post_type ) {
+			return;
+		}
+		$this->add_backorder_scripts();
 	}
 
 	/**
@@ -194,6 +207,16 @@ class Backorder {
 			 * @param int|string  $loop    Variation loop index, '' for simple products.
 			 */
 			do_action( 'wopb_backorder_product_fields', $product, $loop );
+			if ( ! defined( 'WOPB_PRO_VER' ) ) {
+				?>
+				<p class="form-field">
+					<strong><?php esc_html_e( 'Availability Date and Availability Message are available in the WowStore Pro add-on.', 'product-blocks' ); ?></strong>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=wopb-settings#pro-features' ) ); ?>">
+						<?php esc_html_e( 'View Pro Features', 'product-blocks' ); ?>
+					</a>
+				</p>
+				<?php
+			}
 			$html .= ob_get_clean();
 		} finally {
 			while ( ob_get_level() > $wopb_buffer_level_1 ) {
@@ -460,13 +483,63 @@ class Backorder {
 	public function add_to_cart_validation( $cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data ) {
 		$cart_item = WC()->cart->get_cart()[ $cart_item_key ];
 		if ( ! $this->cart_quantity_validation( $cart_item['quantity'], $product_id, $variation_id ) ) {
-			throw new \Exception( esc_html__( 'Quantity Exceeded for Backorder Item.', 'product-blocks' ) );
+			throw new \Exception( esc_html__( 'The requested backorder quantity is unavailable. Please reduce the quantity or contact the store.', 'product-blocks' ) );
 		}
+	}
+
+	/**
+	 * Validate the requested backorder quantity before changing the cart.
+	 *
+	 * @param bool $passed       Whether previous validation passed.
+	 * @param int  $product_id   Product ID.
+	 * @param int  $quantity     Quantity being added.
+	 * @param int  $variation_id Variation ID, when applicable.
+	 * @return bool
+	 */
+	public function validate_before_add_to_cart( $passed, $product_id, $quantity, $variation_id = 0 ) {
+		if ( ! $passed ) {
+			return false;
+		}
+
+		$product = wc_get_product( $variation_id ? $variation_id : $product_id );
+
+		if (
+			! $product ||
+			$product->managing_stock() ||
+			! $product->is_on_backorder() ||
+			! $this->is_active( $product )
+		) {
+			return $passed;
+		}
+
+		$total_quantity = $quantity;
+
+		if ( WC()->cart ) {
+			foreach ( WC()->cart->get_cart() as $cart_item ) {
+				if (
+					absint( $cart_item['product_id'] ) === absint( $product_id ) &&
+					absint( $cart_item['variation_id'] ) === absint( $variation_id )
+				) {
+					$total_quantity += $cart_item['quantity'];
+				}
+			}
+		}
+
+		if ( ! $this->cart_quantity_validation( $total_quantity, $product_id, $variation_id ) ) {
+			wc_add_notice(
+				__( 'The requested backorder quantity is unavailable. Please reduce the quantity or contact the store.', 'product-blocks' ),
+				'error'
+			);
+
+			return false;
+		}
+
+		return $passed;
 	}
 
 	public function update_cart_validation( $passed, $cart_item_key, $values, $quantity ) {
 		if ( ! $this->cart_quantity_validation( $quantity, $values['product_id'], $values['variation_id'] ) ) {
-			wc_add_notice( __( 'Quantity Exceeded for Backorder Item.', 'product-blocks' ), 'error' );
+			wc_add_notice( __( 'The requested backorder quantity is unavailable. Please reduce the quantity or contact the store.', 'product-blocks' ), 'error' );
 			$passed = false;
 		}
 		return $passed;
@@ -514,43 +587,68 @@ class Backorder {
 	 */
 	public function get_total_backorder( $product_id, $variation_id = null ) {
 		global $wpdb;
-		$product_id = absint( $product_id );
-		// Live order totals used to enforce backorder limits; not practical to cache.
-		if ( $variation_id ) {
-			$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- live order totals across WooCommerce's order lookup tables (no WP API) to enforce the backorder limit; a cached value would let the limit be exceeded.
-				$wpdb->prepare(
-					"
-                    SELECT sum(order_product.product_qty) as total_order
-                    FROM {$wpdb->prefix}wc_order_product_lookup as order_product
-                    INNER JOIN {$wpdb->prefix}wc_order_stats AS order_stat
-                        ON order_product.order_id = order_stat.order_id
-                    INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta as order_item_meta
-                        ON order_product.order_item_id = order_item_meta.order_item_id AND order_item_meta.meta_key = 'wopb_backorder_item'
-                    WHERE order_product.product_id = %d AND order_product.variation_id = %d
-                        AND order_stat.status NOT IN ('wc-cancelled', 'wc-refunded')
-                ",
-					$product_id,
-					absint( $variation_id )
+
+		$product_id   = absint( $product_id );
+		$variation_id = absint( $variation_id );
+
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT items.order_id, SUM(quantity_meta.meta_value) AS total_order
+				FROM {$wpdb->prefix}woocommerce_order_items AS items
+				INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS product_meta
+					ON items.order_item_id = product_meta.order_item_id
+					AND product_meta.meta_key = '_product_id'
+				INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta AS quantity_meta
+					ON items.order_item_id = quantity_meta.order_item_id
+					AND quantity_meta.meta_key = '_qty'
+				WHERE items.order_item_type = 'line_item'
+					AND product_meta.meta_value = %s
+					AND EXISTS (
+						SELECT 1
+						FROM {$wpdb->prefix}woocommerce_order_itemmeta AS backorder_meta
+						WHERE backorder_meta.order_item_id = items.order_item_id
+							AND backorder_meta.meta_key = 'wopb_backorder_item'
+					)
+					AND (
+						%d = 0
+						OR EXISTS (
+							SELECT 1
+							FROM {$wpdb->prefix}woocommerce_order_itemmeta AS variation_meta
+							WHERE variation_meta.order_item_id = items.order_item_id
+								AND variation_meta.meta_key = '_variation_id'
+								AND variation_meta.meta_value = %s
+						)
+					)
+				GROUP BY items.order_id",
+				(string) $product_id,
+				$variation_id,
+				(string) $variation_id
+			)
+		);
+
+		$total = 0;
+
+		foreach ( $results as $result ) {
+			$order = wc_get_order( absint( $result->order_id ) );
+
+			if (
+				! $order ||
+				$order->has_status(
+					array(
+						'cancelled',
+						'refunded',
+						'checkout-draft',
+						'auto-draft',
+					)
 				)
-			);
-		} else {
-			$result = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- live order totals across WooCommerce's order lookup tables (no WP API) to enforce the backorder limit; a cached value would let the limit be exceeded.
-				$wpdb->prepare(
-					"
-                    SELECT sum(order_product.product_qty) as total_order
-                    FROM {$wpdb->prefix}wc_order_product_lookup as order_product
-                    INNER JOIN {$wpdb->prefix}wc_order_stats AS order_stat
-                        ON order_product.order_id = order_stat.order_id
-                    INNER JOIN {$wpdb->prefix}woocommerce_order_itemmeta as order_item_meta
-                        ON order_product.order_item_id = order_item_meta.order_item_id AND order_item_meta.meta_key = 'wopb_backorder_item'
-                    WHERE order_product.product_id = %d
-                        AND order_stat.status NOT IN ('wc-cancelled', 'wc-refunded')
-                ",
-					$product_id
-				)
-			);
+			) {
+				continue;
+			}
+
+			$total += (int) $result->total_order;
 		}
-		return isset( $result[0] ) && isset( $result[0]->total_order ) ? $result[0]->total_order : 0;
+
+		return $total;
 	}
 
 	/**

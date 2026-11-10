@@ -78,7 +78,7 @@ class ProductX_Widget extends \Elementor\Widget_Base {
 		if ( $id ) {
 			// The editor renders widgets through admin-ajax.php; its preview also needs the template CSS inline.
 			if ( wp_doing_ajax() || $this->wopb_is_editor_request() ) {
-				echo wopb_function()->build_css_for_inline_print( $id, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the helper returns a <style> tag whose id is esc_attr()'d and whose CSS has tags stripped; wp_kses() would turn child selectors (>) and & into entities and break the CSS.
+				wopb_function()->print_post_css( $id, true );
 			}
 			echo '<div class="wopb-shortcode" data-postid="' . esc_attr( $id ) . '">';
 				$args      = array(

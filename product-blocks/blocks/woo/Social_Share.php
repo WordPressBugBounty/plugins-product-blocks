@@ -80,13 +80,14 @@ class Social_Share {
 	}
 
 	public function share_link( $key = 'facebook', $post_link = '' ) {
+		$post_link   = rawurlencode( $post_link );
 		$share_links = array(
 			'facebook'  => 'https://www.facebook.com/sharer.php?u=' . $post_link,
 			'twitter'   => 'https://twitter.com/share?url=' . $post_link,
 			'linkedin'  => 'https://www.linkedin.com/sharing/share-offsite/?url=' . $post_link,
 			'pinterest' => 'https://pinterest.com/pin/create/link/?url=' . $post_link,
 			'whatsapp'  => 'https://api.whatsapp.com/send?text=' . $post_link,
-			'messenger' => 'https://www.facebook.com/dialog/send?app_id=1904103319867886&amp;link=' . $post_link . '&amp;redirect_uri=' . $post_link,
+			'messenger' => 'https://www.facebook.com/dialog/send?app_id=1904103319867886&link=' . $post_link . '&redirect_uri=' . $post_link,
 			'mail'      => 'mailto:?body=' . $post_link,
 			'reddit'    => 'https://www.reddit.com/submit?url=' . $post_link,
 			'skype'     => 'https://web.skype.com/share?url=' . $post_link,

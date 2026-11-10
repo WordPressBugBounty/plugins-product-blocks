@@ -73,7 +73,7 @@ function wopb_get_sales_notification_settings( $config ) {
 												'first_name' => __( 'First Name', 'product-blocks' ),
 												'last_name' => __( 'Last Name', 'product-blocks' ),
 												'full'    => __( 'Full Name', 'product-blocks' ),
-												'user_name' => __( 'Username', 'product-blocks' ),
+												'user_name' => __( 'Username (shows Display Name)', 'product-blocks' ),
 												'nick_name' => __( 'Nickname', 'product-blocks' ),
 											),
 											'default' => 'none',

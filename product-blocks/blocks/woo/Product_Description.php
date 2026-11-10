@@ -31,7 +31,7 @@ class Product_Description {
 
 			$wraper_before .= '<div ' . ( isset( $attr['advanceId'] ) ? 'id="' . esc_attr( sanitize_html_class( $attr['advanceId'] ) ) . '" ' : '' ) . ' class="wp-block-product-blocks-' . esc_attr( $block_name ) . ' wopb-block-' . esc_attr( sanitize_html_class( $attr['blockId'] ) ) . ' ' . esc_attr( $attr['className'] ) . '">';
 			$wraper_before .= '<div class="wopb-product-wrapper">';
-				$content   .= wp_kses_post( wpautop( $description ) );
+			$content .= wp_kses( wpautop( $description ), wopb_function()->allowed_html_tags() );
 			$wraper_after  .= '</div>';
 			$wraper_after  .= '</div>';
 		}

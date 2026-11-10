@@ -97,7 +97,7 @@ class Initialization {
 			if ( wp_doing_ajax() || is_network_admin() || isset( $_GET['activate-multi'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only: WordPress adds this flag itself when several plugins are activated at once; it only skips the welcome redirect.
 				return;
 			}
-			wp_safe_redirect( admin_url( 'admin.php?page=wopb-settings#home' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=wopb-settings#addons' ) );
 			exit;
 		}
 	}
@@ -267,7 +267,7 @@ class Initialization {
 			}
 		}
 
-		// The menu styles and the small option script run on every admin screen. The heavy assets load only where the plugin has UI.
+		// Only the scoped menu styles run on every admin screen. Everything else loads only where the plugin has UI.
 		$load_page_assets = $this->is_plugin_admin_screen( $screen );
 		wp_enqueue_style( 'wopb-admin-menu-style', WOPB_URL . 'assets/css/wopb-admin-menu.css', array(), WOPB_VER );
 		if ( $load_page_assets ) {
@@ -286,25 +286,35 @@ class Initialization {
 			wp_enqueue_script( 'wc-enhanced-select' );
 			wp_enqueue_style( 'wopb-option-style', WOPB_URL . 'assets/css/wopb-option.css', array(), WOPB_VER );
 		}
-		wp_enqueue_script( 'wopb-option-script', WOPB_URL . 'assets/js/wopb-option.js', array( 'jquery' ), WOPB_VER, true );
-		wp_localize_script(
-			'wopb-option-script',
-			'wopb_option',
-			array(
-				'url'                => WOPB_URL,
-				'version'            => WOPB_VER,
-				'width'              => wopb_function()->get_setting( 'editor_container' ),
-				'security'           => wp_create_nonce( 'wopb-nonce' ),
-				'ajax'               => admin_url( 'admin-ajax.php' ),
-				'settings'           => wopb_function()->get_setting(),
-				'post_type'          => $post_type,
-				'saved_template_url' => admin_url( 'admin.php?page=wopb-settings#saved-templates' ),
-				'custom_fonts'       => $custom_fonts,
-			)
-		);
+		// The option script and its settings data (which include a nonce) load only on WowStore and editor screens.
+		if ( $load_page_assets ) {
+			wp_enqueue_script( 'wopb-option-script', WOPB_URL . 'assets/js/wopb-option.js', array( 'jquery' ), WOPB_VER, true );
+			wp_localize_script(
+				'wopb-option-script',
+				'wopb_option',
+				array(
+					'url'                => WOPB_URL,
+					'version'            => WOPB_VER,
+					'width'              => wopb_function()->get_setting( 'editor_container' ),
+					'security'           => wp_create_nonce( 'wopb-nonce' ),
+					'ajax'               => admin_url( 'admin-ajax.php' ),
+					'settings'           => wopb_function()->get_setting(),
+					'post_type'          => $post_type,
+					'saved_template_url' => admin_url( 'admin.php?page=wopb-settings#saved-templates' ),
+					'custom_fonts'       => $custom_fonts,
+				)
+			);
+		}
 
 		if ( 'wopb-settings' === $_page || 'wopb_builder' === $post_type ) { // Conditions JS
-			wp_enqueue_script( 'wopb-conditions-script', WOPB_URL . 'addons/builder/assets/js/conditions.min.js', array( 'react', 'react-dom', 'wp-element' ), WOPB_VER, true );
+			$conditions_asset_file = WOPB_PATH . 'addons/builder/assets/js/conditions.min.asset.php';
+			$conditions_asset      = file_exists( $conditions_asset_file ) ? include $conditions_asset_file : array();
+			$conditions_deps       = array( 'react', 'react-dom', 'wp-element', 'wp-components', 'wp-i18n', 'wp-api-fetch', 'wp-data', 'wp-hooks' );
+			if ( isset( $conditions_asset['dependencies'] ) && is_array( $conditions_asset['dependencies'] ) ) {
+				$conditions_deps = array_unique( array_merge( $conditions_deps, $conditions_asset['dependencies'] ) );
+			}
+			wp_enqueue_style( 'wp-components' );
+			wp_enqueue_script( 'wopb-conditions-script', WOPB_URL . 'addons/builder/assets/js/conditions.min.js', $conditions_deps, isset( $conditions_asset['version'] ) ? $conditions_asset['version'] : WOPB_VER, true );
 			wp_localize_script(
 				'wopb-conditions-script',
 				'wopb_condition',
@@ -320,8 +330,15 @@ class Initialization {
 
 		/* === Dashboard === */
 		if ( 'wopb-settings' === $_page ) {
+			wp_enqueue_style( 'wp-components' );
 			$user_info = get_userdata( get_current_user_id() );
-			wp_enqueue_script( 'wopb-dashboard-script', WOPB_URL . 'assets/js/wopb_dashboard_min.js', array( 'react', 'react-dom', 'wp-element', 'wp-i18n', 'wp-api-fetch', 'wp-api-request', 'wp-components', 'wp-blocks' ), WOPB_VER, true );
+			$dashboard_asset_file = WOPB_PATH . 'assets/js/wopb_dashboard_min.asset.php';
+			$dashboard_asset      = file_exists( $dashboard_asset_file ) ? include $dashboard_asset_file : array();
+			$dashboard_deps       = array( 'react', 'react-dom', 'wp-element', 'wp-i18n', 'wp-api-fetch', 'wp-api-request', 'wp-components', 'wp-blocks' );
+			if ( isset( $dashboard_asset['dependencies'] ) && is_array( $dashboard_asset['dependencies'] ) ) {
+				$dashboard_deps = array_unique( array_merge( $dashboard_deps, $dashboard_asset['dependencies'] ) );
+			}
+			wp_enqueue_script( 'wopb-dashboard-script', WOPB_URL . 'assets/js/wopb_dashboard_min.js', $dashboard_deps, isset( $dashboard_asset['version'] ) ? $dashboard_asset['version'] : WOPB_VER, true );
 			wp_localize_script(
 				'wopb-dashboard-script',
 				'wopb_dashboard_pannel',
@@ -420,6 +437,8 @@ class Initialization {
 			'wopb_product_video'       => 'true',
 			'save_version'             => wp_rand( 1, 1000 ),
 			'disable_google_font'      => '',
+			'enable_google_font'       => '',
+			'wopb_enable_gravatar'     => '',
 			'wopb_custom_font'         => 'true',
 			'wprocket_cache_exclusion' => 'false',
 		);
@@ -452,7 +471,6 @@ class Initialization {
 	 * @return NULL
 	 */
 	public function compatibility_check() {
-		require_once WOPB_PATH . 'classes/Compatibility.php';
 		new \WOPB\Compatibility();
 	}
 
@@ -463,13 +481,9 @@ class Initialization {
 	 * @return NULL
 	 */
 	public function requires() {
-		require_once WOPB_PATH . 'classes/Dashboard.php';
-		require_once WOPB_PATH . 'classes/Options.php';
 		new \WOPB\Dashboard();
 		new \WOPB\Options();
 
-		require_once WOPB_PATH . 'includes/class-xpo.php';
-		require_once WOPB_PATH . 'includes/notice/class-notice.php';
 		new \WOPB\Includes\Notice\Notice();
 	}
 
@@ -490,13 +504,6 @@ class Initialization {
 		$GLOBALS['wopb_settings']['is_wc_ready'] = $is_wc_ready;
 
 		if ( wopb_function()->get_setting( 'is_wc_ready' ) ) {
-			require_once WOPB_PATH . 'classes/REST_API.php';
-			require_once WOPB_PATH . 'classes/Blocks.php';
-			require_once WOPB_PATH . 'classes/Styles.php';
-			require_once WOPB_PATH . 'classes/Caches.php';
-			require_once WOPB_PATH . 'classes/WooHooks.php';
-			require_once WOPB_PATH . 'classes/ExternalCompatibility.php';
-			require_once WOPB_PATH . 'classes/compatibility/GermanizedSupport.php';
 			new \WOPB\REST_API();
 			new \WOPB\Styles();
 			new \WOPB\Blocks();

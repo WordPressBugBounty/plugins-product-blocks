@@ -33,10 +33,6 @@ function wopb_get_variation_swatches_settings( $config ) {
 		'wopb_variation_swatches' => array(
 			'label' => __( 'Variation Swatches', 'product-blocks' ),
 			'attr'  => array(
-				'variation_switch_heading' => array(
-					'type'  => 'heading',
-					'label' => __( 'Variation Swatches Settings', 'product-blocks' ),
-				),
 				'tab'                      => (object) array(
 					'type'    => 'tab',
 					'options' => array(

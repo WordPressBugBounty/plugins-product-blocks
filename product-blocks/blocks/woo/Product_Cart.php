@@ -184,7 +184,7 @@ class Product_Cart {
 					if ( ! empty( $sanitized_request['variation_id'] ) ) {
 						$variation = array();
 						foreach ( $sanitized_request as $name => $value ) {
-							if ( str_starts_with( $name, 'attribute_' ) ) {
+							if ( 0 === strpos( $name, 'attribute_' ) ) {
 								$variation[ $name ] = $value;
 							}
 						}

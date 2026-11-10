@@ -188,7 +188,7 @@ class ProductVideo {
 		if ( isset( $args['wopb_product_video'] ) && $args['wopb_product_video'] ) {
 			$param_content = 'enablejsapi=1';
 
-			if ( str_contains( $url, 'vimeo.com' ) ) {
+			if ( false !== strpos( $url, 'vimeo.com' ) ) {
 				$html = preg_replace( '/src="(.+?)"/', 'src="$1?' . ( 'loop=1&' . $param_content ) . '"', $html );
 			} else {
 				$replace_html = 'feature=oembed&' . $param_content;
@@ -327,6 +327,16 @@ class ProductVideo {
 			 * @param \WP_Post $post Product being edited.
 			 */
 			do_action( 'wopb_product_video_fields', $post );
+			if ( ! defined( 'WOPB_PRO_VER' ) ) {
+				?>
+				<p class="form-field">
+					<strong><?php esc_html_e( 'Video Autoplay, Video Repeat and Play On Hover are available in the WowStore Pro add-on.', 'product-blocks' ); ?></strong>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=wopb-settings#pro-features' ) ); ?>">
+						<?php esc_html_e( 'View Pro Features', 'product-blocks' ); ?>
+					</a>
+				</p>
+				<?php
+			}
 			?>
 		</div>
 		<?php

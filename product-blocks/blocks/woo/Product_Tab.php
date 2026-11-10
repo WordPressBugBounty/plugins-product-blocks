@@ -129,7 +129,7 @@ class Product_Tab {
 					if ( isset( $product_tab['callback'] ) ) {
 						if ( 'description' === $key ) {
 							if ( $description = $product->get_description() ) {
-								$content .= wp_kses_post( wpautop( $description ) );
+								$content .= wp_kses( wpautop( $description ), wopb_function()->allowed_html_tags() );
 							}
 						} else {
 							$wopb_buffer_level_2 = ob_get_level();

@@ -83,10 +83,6 @@ function wopb_get_quickview_settings( $config ) {
 		'wopb_quickview' => array(
 			'label' => __( 'QuickView', 'product-blocks' ),
 			'attr'  => array(
-				'quickview_heading' => array(
-					'type'  => 'heading',
-					'label' => __( 'Quick View Settings', 'product-blocks' ),
-				),
 				'tab'               => (object) array(
 					'type'    => 'tab',
 					'options' => array(

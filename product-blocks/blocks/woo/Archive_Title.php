@@ -82,7 +82,7 @@ class Archive_Title {
 				} elseif ( is_author() ) {
 					return array(
 						'title' => get_the_author_meta( 'display_name' ),
-						'image' => get_avatar_url( get_the_author_meta( 'ID' ) ),
+						'image' => wopb_function()->avatar_url( get_the_author_meta( 'ID' ) ),
 						'desc'  => get_the_author_meta( 'description' ),
 					);
 				} elseif ( is_tax() ) {

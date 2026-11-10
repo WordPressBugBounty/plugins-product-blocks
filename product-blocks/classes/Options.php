@@ -31,6 +31,7 @@ class Options {
 	 */
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'menu_page_callback' ) );
+		add_action( 'admin_menu', array( self::class, 'move_go_pro_submenu_last' ), PHP_INT_MAX );
 		add_action( 'in_admin_header', array( $this, 'relocate_notices' ) );
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_settings_meta' ), 10, 2 );
 		add_filter( 'plugin_action_links_' . WOPB_BASE, array( $this, 'plugin_action_links_callback' ) );
@@ -166,11 +167,12 @@ class Options {
 		add_submenu_page(
 			'wopb-settings',
 			esc_html__( 'WowStore Dashboard', 'product-blocks' ),
-			esc_html__( 'Addons', 'product-blocks' ),
+			esc_html__( 'Overview', 'product-blocks' ),
 			$menupage_cap,
 			'wopb-settings'
 		);
 		$menu_lists = array(
+			'addons'          => __( 'Addons', 'product-blocks' ),
 			'builder'         => __( 'Woo Builder', 'product-blocks' ),
 			'templatekit'     => __( 'Template Kits', 'product-blocks' ),
 			'blocks'          => __( 'Blocks', 'product-blocks' ),
@@ -219,6 +221,27 @@ class Options {
 		}
 
 		do_action( 'wopb_go_pro_menu' );
+	}
+
+	/**
+	 * Keep the highlighted link last after extensions register their menu pages.
+	 *
+	 * @return void
+	 */
+	public static function move_go_pro_submenu_last() {
+		global $submenu;
+
+		if ( empty( $submenu['wopb-settings'] ) ) {
+			return;
+		}
+
+		foreach ( $submenu['wopb-settings'] as $index => $item ) {
+			if ( isset( $item[2] ) && 'wopb-pro' === $item[2] ) {
+				unset( $submenu['wopb-settings'][ $index ] );
+				$submenu['wopb-settings'][] = $item;
+				break;
+			}
+		}
 	}
 
 	/**

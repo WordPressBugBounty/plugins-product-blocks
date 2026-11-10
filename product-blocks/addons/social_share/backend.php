@@ -81,6 +81,18 @@ function wopb_get_social_share_opt( $config ) {
 													'key' => 'reddit',
 													'label' => __( 'Reddit', 'product-blocks' ),
 												),
+												array(
+													'key' => 'mail',
+													'label' => __( 'Mail', 'product-blocks' ),
+												),
+												array(
+													'key' => 'whatsapp',
+													'label' => __( 'WhatsApp', 'product-blocks' ),
+												),
+												array(
+													'key' => 'messenger',
+													'label' => __( 'Messenger', 'product-blocks' ),
+												),
 											),
 											'default' => array(
 												array(

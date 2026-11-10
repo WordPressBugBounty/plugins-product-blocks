@@ -20,6 +20,7 @@ class Functions {
 	private $PLUGIN_SLUG     = 'product-blocks';
 	private $PLUGIN_VERSION  = WOPB_VER;
 	private static $instance = null;
+	private $inline_style_handles = array();
 	/**
 	 * Setup class.
 	 *
@@ -189,6 +190,32 @@ class Functions {
 		} else {
 			return $data;
 		}
+	}
+
+	/**
+	 * Avatar URL for the plugin's own output. Gravatar loads only after opt-in.
+	 *
+	 * Follows Settings > Discussion > Show Avatars. Local avatar providers keep
+	 * working; Gravatar URLs are replaced by a local placeholder unless the
+	 * "Load Gravatar Avatars" setting is on.
+	 *
+	 * @since 4.6.3
+	 * @param int $user_id User ID.
+	 * @return string Avatar URL, or '' when avatars are turned off.
+	 */
+	public function avatar_url( $user_id ) {
+		if ( ! get_option( 'show_avatars' ) ) {
+			return '';
+		}
+		$url = get_avatar_url( $user_id );
+		if ( 'yes' === $this->get_setting( 'wopb_enable_gravatar' ) ) {
+			return $url ? $url : '';
+		}
+		$host = $url ? strtolower( (string) wp_parse_url( $url, PHP_URL_HOST ) ) : '';
+		if ( '' === $host || 'gravatar.com' === $host || '.gravatar.com' === substr( $host, -13 ) ) {
+			return WOPB_URL . 'assets/img/wopb-avatar.svg';
+		}
+		return $url;
 	}
 
 	/**
@@ -2148,7 +2175,65 @@ class Functions {
 	 * @return STRING | CSS with Style
 	 */
 	public function esc_inline( $css ) {
-		return '<style type="text/css">' . wp_strip_all_tags( $css ) . '</style>';
+		$css    = wp_strip_all_tags( $css );
+		$handle = $this->enqueue_inline_style( 'wopb-inline-' . md5( $css ), $css );
+		return $this->get_style_markup( $handle );
+	}
+
+	/**
+	 * Queue generated CSS through WordPress and retain late frontend/admin output.
+	 *
+	 * @param string   $handle Stylesheet handle.
+	 * @param string   $css Generated CSS, without markup.
+	 * @param string[] $dependencies Stylesheets that must precede this CSS.
+	 * @return string Registered handle, or an empty string when there is no CSS.
+	 */
+	public function enqueue_inline_style( $handle, $css, $dependencies = array() ) {
+		$css = wp_strip_all_tags( $css );
+		if ( '' === $css && empty( $dependencies ) ) {
+			return '';
+		}
+		if ( ! wp_style_is( $handle, 'registered' ) ) {
+			wp_register_style( $handle, false, $dependencies, WOPB_VER );
+		} elseif ( ! wp_style_is( $handle, 'done' ) ) {
+			$style       = wp_styles()->registered[ $handle ];
+			$style->deps = array_values( array_unique( array_merge( $style->deps, $dependencies ) ) );
+		}
+		if ( ! wp_style_is( $handle, 'done' ) ) {
+			$existing = wp_styles()->get_data( $handle, 'after' );
+			if ( '' !== $css && ! in_array( $css, (array) $existing, true ) ) {
+				wp_add_inline_style( $handle, $css );
+			}
+			wp_enqueue_style( $handle );
+		}
+		$this->inline_style_handles[ $handle ] = $handle;
+		add_action( 'wp_footer', array( $this, 'print_late_styles' ) );
+		add_action( 'admin_print_footer_scripts', array( $this, 'print_late_styles' ) );
+		return $handle;
+	}
+
+	/**
+	 * Print only plugin styles that WordPress has not already emitted in the head.
+	 */
+	public function print_late_styles() {
+		if ( $this->inline_style_handles ) {
+			wp_print_styles( array_values( $this->inline_style_handles ) );
+		}
+	}
+
+	/**
+	 * Capture WordPress's stylesheet transport for legacy return-value consumers.
+	 *
+	 * @param string $handle Stylesheet handle.
+	 * @return string Core-generated stylesheet markup.
+	 */
+	private function get_style_markup( $handle ) {
+		if ( ! $handle ) {
+			return '';
+		}
+		ob_start();
+		wp_print_styles( array( $handle ) );
+		return ob_get_clean();
 	}
 
 	/**
@@ -2526,7 +2611,7 @@ class Functions {
 	 */
 	public function custom_post_join( $join, $query ) {
 		global $wpdb;
-		$join .= " INNER JOIN {$wpdb->postmeta} AS post_meta ON ( {$wpdb->posts}.ID = post_meta.post_id )";
+		$join .= " LEFT JOIN {$wpdb->postmeta} AS post_meta ON ( {$wpdb->posts}.ID = post_meta.post_id )";
 		return $join;
 	}
 
@@ -2972,7 +3057,8 @@ class Functions {
 	 * @since v.2.6.8
 	 */
 	public function highlightSearchKey( $content, $search ) {
-		if ( trim( (string) $search ) === '' ) {
+		if ( trim( (string) $search ) === '' || ! class_exists( 'DOMDocument' ) ) {
+			// Without the DOM extension the text is shown unhighlighted rather than failing.
 			return wp_kses_post( $content );
 		}
 
@@ -3439,46 +3525,64 @@ class Functions {
 	 * @since v.4.0.4
 	 */
 	public function build_css_for_inline_print( $post_id, $call_common = true ) {
+		return $this->get_style_markup( $this->enqueue_post_css( $post_id, $call_common ) );
+	}
+
+	/**
+	 * Print core-managed styles inside a builder's late HTML/AJAX fragment.
+	 *
+	 * @param int  $post_id Template/post ID.
+	 * @param bool $call_common Whether common block assets are required.
+	 */
+	public function print_post_css( $post_id, $call_common = true ) {
+		$handle = $this->enqueue_post_css( $post_id, $call_common );
+		if ( $handle ) {
+			wp_print_styles( array( $handle ) );
+		}
+	}
+
+	/**
+	 * Queue readable posts and reusable blocks using structured block styles.
+	 *
+	 * @param int  $post_id Template/post ID.
+	 * @param bool $call_common Whether common block assets are required.
+	 * @return string Registered handle, or an empty string for an unreadable post.
+	 */
+	public function enqueue_post_css( $post_id, $call_common = true ) {
 		$post_id = is_numeric( $post_id ) ? absint( $post_id ) : 0;
 		if ( $post_id && $this->can_print_post_css( $post_id ) ) {
-			$upload_dir_url     = wp_get_upload_dir();
-			$upload_css_dir_url = trailingslashit( $upload_dir_url['basedir'] );
-
-			$css_dir_url = trailingslashit( $upload_dir_url['baseurl'] );
-			if ( is_ssl() ) {
-				$css_dir_url = str_replace( 'http://', 'https://', $css_dir_url );
+			if ( ! class_exists( '\WOPB\BlockStyles' ) ) {
+				require_once WOPB_PATH . 'classes/BlockStyles.php';
 			}
-			$reusable_css = '';
-			$reusable_id  = $this->get_reusable_ids( $post_id );
-			if ( ! empty( $reusable_id ) ) {
-				foreach ( $reusable_id as $id ) {
-					// Only real reusable blocks (wp_block) the visitor may see; the ref is free text in post content.
-					$id = is_numeric( $id ) ? absint( $id ) : 0;
-					if ( ! $id || 'wp_block' !== get_post_type( $id ) || ! $this->can_print_post_css( $id ) ) {
-						continue;
-					}
-					$reusable_dir_path = $upload_css_dir_url . "product-blocks/wopb-css-{$id}.css";
-					if ( file_exists( $reusable_dir_path ) ) {
-						$reusable_css .= $this->get_path_file_contents( $reusable_dir_path );
-					} else {
-						$reusable_css .= get_post_meta( $id, '_wopb_css', true );
+			$styles = array();
+			foreach ( $this->get_reusable_ids( $post_id ) as $id ) {
+				// Only real reusable blocks (wp_block) the visitor may see; the ref is free text in post content.
+				$id = is_numeric( $id ) ? absint( $id ) : 0;
+				if ( ! $id || $id === $post_id || 'wp_block' !== get_post_type( $id ) || ! $this->can_print_post_css( $id ) ) {
+					continue;
+				}
+				$styles[ $id ] = BlockStyles::get_post_css( $id );
+			}
+			$styles[ $post_id ] = BlockStyles::get_post_css( $post_id );
+			if ( ! array_filter( $styles ) ) {
+				return '';
+			}
+			$dependencies = array();
+			if ( $call_common ) {
+				$this->register_scripts_common();
+				foreach ( array( 'dashicons', 'wopb-slick-style', 'wopb-slick-theme-style', 'wopb-blocks-rtl-css', 'wopb-style', 'wopb-css' ) as $handle ) {
+					if ( wp_style_is( $handle, 'registered' ) ) {
+						$dependencies[] = $handle;
 					}
 				}
 			}
-
-			$css_dir_path = $upload_css_dir_url . "product-blocks/wopb-css-{$post_id}.css";
-			$css          = '';
-			if ( file_exists( $css_dir_path ) ) {
-				$css = $this->get_path_file_contents( $css_dir_path );
-			} else {
-				$css = get_post_meta( $post_id, '_wopb_css', true );
-			}
-			if ( $reusable_css . $css ) {
-				if ( $call_common ) {
-					$this->register_scripts_common();
+			foreach ( $styles as $id => $css ) {
+				$handle = $this->enqueue_inline_style( 'wopb-post-' . $id, $css, $dependencies );
+				if ( $handle ) {
+					$dependencies[] = $handle;
 				}
-				return '<style id="wopb-post-' . esc_attr( $post_id ) . '" type="text/css">' . wp_strip_all_tags( $reusable_css . $css ) . '</style>';
 			}
+			return $handle;
 		}
 		return '';
 	}

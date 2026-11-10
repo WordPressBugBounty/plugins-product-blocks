@@ -40,10 +40,6 @@ function wopb_get_wishlist_settings( $config ) {
 						'settings' => array(
 							'label' => __( 'Settings', 'product-blocks' ),
 							'attr'  => array(
-								'wishlist_heading'        => array(
-									'type'  => 'heading',
-									'label' => __( 'Wishlist Settings', 'product-blocks' ),
-								),
 								'wopb_wishlist'           => array(
 									'type'  => 'toggle',
 									'value' => 'true',

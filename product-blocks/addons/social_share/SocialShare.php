@@ -144,18 +144,26 @@ class SocialShare {
 	 * @since v.4.0.0
 	 */
 	public function share_link( $key = 'facebook', $post_link = '' ) {
-		$share_links = apply_filters(
-			'wopb_social_share_networks',
-			array(
-				'facebook'  => 'https://www.facebook.com/sharer.php?u=' . $post_link,
-				'twitter'   => 'https://twitter.com/share?url=' . $post_link,
-				'linkedin'  => 'https://www.linkedin.com/sharing/share-offsite/?url=' . $post_link,
-				'pinterest' => 'https://pinterest.com/pin/create/link/?url=' . $post_link,
-				'reddit'    => 'https://www.reddit.com/submit?url=' . $post_link,
-				'skype'     => 'https://web.skype.com/share?url=' . $post_link,
-			),
-			$post_link
+		$encoded_link = rawurlencode( $post_link );
+		$default_links = array(
+			'facebook'  => 'https://www.facebook.com/sharer.php?u=' . $encoded_link,
+			'twitter'   => 'https://twitter.com/share?url=' . $encoded_link,
+			'linkedin'  => 'https://www.linkedin.com/sharing/share-offsite/?url=' . $encoded_link,
+			'pinterest' => 'https://pinterest.com/pin/create/link/?url=' . $encoded_link,
+			'reddit'    => 'https://www.reddit.com/submit?url=' . $encoded_link,
+			'skype'     => 'https://web.skype.com/share?url=' . $encoded_link,
+			'mail'      => 'mailto:?body=' . $encoded_link,
+			'whatsapp'  => 'https://api.whatsapp.com/send?text=' . $encoded_link,
+			'messenger' => 'https://www.facebook.com/dialog/send?app_id=1904103319867886&link=' . $encoded_link . '&redirect_uri=' . $encoded_link,
 		);
-		return isset( $share_links[ $key ] ) ? $share_links[ $key ] : '';
+		$share_links = apply_filters( 'wopb_social_share_networks', $default_links, $post_link );
+		$share_link = isset( $share_links[ $key ] ) ? $share_links[ $key ] : '';
+		// Recognize stock older Pro URLs while preserving custom filter destinations.
+		$legacy_links = array(
+			'mail'      => 'mailto:?body=' . $post_link,
+			'whatsapp'  => 'https://wa.me/send?text=' . $post_link,
+			'messenger' => 'https://www.facebook.com/dialog/send?app_id=1904103319867886&amp;link=' . $post_link . '&amp;redirect_uri=' . $post_link,
+		);
+		return isset( $legacy_links[ $key ] ) && $legacy_links[ $key ] === $share_link ? $default_links[ $key ] : $share_link;
 	}
 }

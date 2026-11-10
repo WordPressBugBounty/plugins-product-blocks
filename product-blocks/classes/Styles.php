@@ -10,6 +10,8 @@ namespace WOPB;
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/BlockStyles.php';
+
 /**
  * Styles class.
  */
@@ -132,9 +134,9 @@ class Styles {
 		$css     = '';
 		$post_id = wopb_function()->get_ID();
 		if ( $this->is_verified_css_preview( $post_id ) ) {
-			$css = get_transient( '_wopb_preview_' . $post_id );
-			if ( ! $css ) {
-				$css = get_post_meta( $post_id, '_wopb_css', true );
+			$blocks = get_transient( '_wopb_preview_blocks_' . $post_id );
+			if ( is_array( $blocks ) ) {
+				$css = BlockStyles::generate( $blocks );
 			}
 		}
 		do_action(
@@ -184,34 +186,33 @@ class Styles {
 		if ( ! $post_id ) {
 			return;
 		}
-		$css = isset( $data['css'] ) ? safecss_filter_attr( $data['css'] ) : '';
 		if ( wp_style_is( "wopb-post-{$post_id}", 'enqueued' ) ) {
 			return;
 		}
-
-		if ( $post_id ) {
-			if ( '' == $css ) {
-				global $wp_filesystem;
-				if ( ! $wp_filesystem ) {
-					require_once ABSPATH . 'wp-admin/includes/file.php';
-				}
-				WP_Filesystem();
-				$upload_dir_url = wp_upload_dir();
-				$_path          = trailingslashit( $upload_dir_url['basedir'] ) . "product-blocks/wopb-css-{$post_id}.css";
-				$css            = '';
-				if ( file_exists( $_path ) ) {
-					$css = $wp_filesystem->get_contents( $_path );
-				} elseif ( 'wopb-widget' === $post_id ) {
-					$css = get_option( $post_id, true );
-				} else {
-					$css = get_post_meta( $post_id, '_wopb_css', true );
-				}
+		// Generate from structured controls even when an older caller supplies raw CSS.
+		$css = BlockStyles::get_post_css( $post_id );
+		if ( $this->is_verified_css_preview( $post_id ) ) {
+			$blocks = get_transient( '_wopb_preview_blocks_' . $post_id );
+			if ( is_array( $blocks ) ) {
+				$css = BlockStyles::generate( $blocks );
 			}
+		}
+		if ( $post_id ) {
 			if ( $css ) {
-				wp_register_style( "wopb-post-{$post_id}", false, array(), WOPB_VER );
-				wp_enqueue_style( "wopb-post-{$post_id}" );
-				wp_add_inline_style( "wopb-post-{$post_id}", wp_strip_all_tags( $css ) );
 				wopb_function()->register_scripts_common();
+				$dependencies = array();
+				foreach ( array( 'dashicons', 'wopb-slick-style', 'wopb-slick-theme-style', 'wopb-blocks-rtl-css', 'wopb-style', 'wopb-css' ) as $handle ) {
+					if ( wp_style_is( $handle, 'registered' ) ) {
+						$dependencies[] = $handle;
+					}
+				}
+				if ( method_exists( wopb_function(), 'enqueue_inline_style' ) ) {
+					wopb_function()->enqueue_inline_style( "wopb-post-{$post_id}", $css, $dependencies );
+				} else {
+					wp_register_style( "wopb-post-{$post_id}", false, $dependencies, WOPB_VER );
+					wp_enqueue_style( "wopb-post-{$post_id}" );
+					wp_add_inline_style( "wopb-post-{$post_id}", $css );
+				}
 			}
 		}
 
@@ -454,7 +455,7 @@ class Styles {
 	 */
 	public function global_settings_action( $server ) {
 		$post = $server->get_params();
-		if ( ! isset( $post['type'] ) || ! is_string( $post['type'] ) || ! in_array( $post['type'], array( 'get', 'set', 'regenerate_font' ), true ) ) {
+		if ( ! isset( $post['type'] ) || ! is_string( $post['type'] ) || ! in_array( $post['type'], array( 'get', 'set', 'regenerate_font' ), true ) || array_diff( array_keys( $post ), array( 'type', 'data', '_locale', '_wpnonce' ) ) ) {
 			return new \WP_Error( 'wopb_invalid_style_action', __( 'Invalid global style action.', 'product-blocks' ), array( 'status' => 400 ) );
 		}
 		if ( ! $this->can_access_global_settings( $server ) ) {
@@ -473,9 +474,18 @@ class Styles {
 			} elseif ( 'regenerate_font' === $type ) {
 				return $this->disable_google_font_callback();
 			} else {
+				// Older options may contain CSS fields or controls saved before validation.
+				$saved    = get_option( 'productx_global', array() );
+				$settings = array();
+				foreach ( is_array( $saved ) ? $saved : array() as $key => $value ) {
+					$setting = $this->sanitize_global_settings( array( $key => $value ) );
+					if ( ! is_wp_error( $setting ) ) {
+						$settings = array_merge( $settings, $setting );
+					}
+				}
 				return array(
 					'success' => true,
-					'data'    => get_option( 'productx_global', array() ),
+					'data'    => $settings,
 				);
 			}
 		} else {
@@ -569,11 +579,8 @@ class Styles {
 
 		$params     = $request->get_params();
 		$boolean_values = array( true, false, 0, 1, '0', '1', 'true', 'false' );
-		if ( ! isset( $params['post_id'], $params['has_block'] ) || ! ( is_int( $params['post_id'] ) || is_string( $params['post_id'] ) ) || ! in_array( $params['has_block'], $boolean_values, true ) || ( array_key_exists( 'preview', $params ) && ! in_array( $params['preview'], $boolean_values, true ) ) || ( rest_sanitize_boolean( $params['has_block'] ) && ! isset( $params['block_css'] ) ) || ( array_key_exists( 'block_css', $params ) && ( ! is_string( $params['block_css'] ) || strlen( $params['block_css'] ) > 1048576 || false !== strpos( $params['block_css'], "\0" ) ) ) ) {
-			return new \WP_Error( 'wopb_invalid_css', __( 'Provide valid block CSS and save options.', 'product-blocks' ), array( 'status' => 400 ) );
-		}
-		if ( isset( $params['block_css'] ) ) {
-			$params['block_css'] = wp_strip_all_tags( $params['block_css'] );
+		if ( ! isset( $params['post_id'], $params['has_block'] ) || ! ( is_int( $params['post_id'] ) || is_string( $params['post_id'] ) ) || ! in_array( $params['has_block'], $boolean_values, true ) || ( array_key_exists( 'preview', $params ) && ! in_array( $params['preview'], $boolean_values, true ) ) ) {
+			return new \WP_Error( 'wopb_invalid_css', __( 'Provide valid block controls and save options.', 'product-blocks' ), array( 'status' => 400 ) );
 		}
 		if ( ! $this->can_save_block_css( $request ) ) {
 			return new \WP_Error( 'rest_forbidden', __( 'You cannot edit these styles.', 'product-blocks' ), array( 'status' => rest_authorization_required_code() ) );
@@ -583,29 +590,33 @@ class Styles {
 		if ( false === $post_id ) {
 			return new \WP_Error( 'wopb_invalid_css', __( 'Provide valid block CSS and save options.', 'product-blocks' ), array( 'status' => 400 ) );
 		}
-		$has_block  = isset( $params['has_block'] ) ? rest_sanitize_boolean( $params['has_block'] ) : '';
+		if ( array_key_exists( 'block_css', $params ) || ! isset( $params['blocks'] ) || ! BlockStyles::valid_blocks( $params['blocks'] ) ) {
+			return new \WP_Error( 'wopb_invalid_css', __( 'Send structured block controls instead of a stylesheet.', 'product-blocks' ), array( 'status' => 400 ) );
+		}
+		$generated_css = BlockStyles::generate( $params['blocks'] );
+		$has_block  = '' !== $generated_css;
 		$is_preview = isset( $params['preview'] ) ? rest_sanitize_boolean( $params['preview'] ) : '';
 		$is_widget  = 'wopb-widget' === $post_id;
+		if ( $is_preview ) {
+			set_transient( '_wopb_preview_blocks_' . $post_id, $params['blocks'], 3600 );
+			return array(
+				'success' => true,
+				'preview' => true,
+			);
+		}
 		try {
 			$upload_dir_url = wp_upload_dir();
 			$dir            = trailingslashit( $upload_dir_url['basedir'] ) . 'product-blocks/';
 			if ( $has_block ) {
-				$wopb_block_css = $this->set_top_css( $params['block_css'] );
-				// Preview Check
-				if ( $is_preview ) {
-					set_transient( '_wopb_preview_' . $post_id, $wopb_block_css, 3600 );
-					return array(
-						'success' => true,
-						'preview' => true,
-					);
-				}
+				$wopb_block_css = $generated_css;
+				// Preview Check is handled above without changing published caches.
 
 				global $wp_filesystem;
 				if ( ! $wp_filesystem ) {
 					require_once ABSPATH . 'wp-admin/includes/file.php';
 				}
 				if ( $is_widget ) {
-					update_option( $post_id, $params['block_css'] );
+					update_option( $post_id, $wopb_block_css );
 				} else {
 					$post_id = (int) $post_id;
 					update_post_meta( $post_id, '_wopb_active', 'yes' );
@@ -711,7 +722,7 @@ class Styles {
 	 */
 	public function update_block_attributes_func( $blocks, $post_id ) {
 		foreach ( $blocks as &$block ) {
-			if ( strpos( $block['blockName'], 'product-blocks/' ) > -1 && isset( $block['attrs']['currentPostId'] ) && $post_id != $block['attrs']['currentPostId'] ) {
+			if ( is_string( $block['blockName'] ?? null ) && 0 === strpos( $block['blockName'], 'product-blocks/' ) && isset( $block['attrs']['currentPostId'] ) && $post_id != $block['attrs']['currentPostId'] ) {
 				$this->changed_wp_block = true;
 				$block['attrs']         = array_merge( $block['attrs'], array( 'currentPostId' => $post_id ) );
 			}
@@ -733,6 +744,10 @@ class Styles {
 	 */
 	public function set_top_css( $get_css = '' ) {
 		$disable_google_font = wopb_function()->get_setting( 'disable_google_font' );
+		if ( 'yes' !== wopb_function()->get_setting( 'enable_google_font' ) || 'yes' === $disable_google_font ) {
+			// Old saved/imported styles must obey the current service choice too.
+			return preg_replace( '/@import\s+(?:url\(\s*)?[\'"]?(?:https?:)?\/\/fonts\.(?:googleapis|gstatic)\.com\b[^;]*;/i', '', $get_css ) ?? '';
+		}
 		if ( 'yes' !== $disable_google_font ) {
 			$css_url     = "@import url('https://fonts.googleapis.com/css?family=";
 			$font_exists = substr_count( $get_css, $css_url );

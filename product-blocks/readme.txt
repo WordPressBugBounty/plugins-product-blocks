@@ -4,13 +4,15 @@ Tags: woocommerce builder, woocommerce blocks, woocommerce wishlist, variation s
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 4.6.2
+Stable tag: 4.6.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Build eCommerce sites & boost your earnings with the WooCommerce Builder, WooCommerce Blocks, and more effective features. 
 
 == Description ==
+
+When using WowStore Pro, install the matching Pro update alongside this update to retain custom styling for Pro blocks.
 
 🥇 **WooCommerce Builder** for Gutenberg
 📈 Build professional eCommerce stores and **boost earnings**
@@ -32,7 +34,7 @@ WowStore comes with numerous features to expand the default WooCommerce function
 ✅ Product Compare
 ✅ Variation Swatches
 ✅ Quick View
-✅ Quick Social Share
+✅ Quick Social Share, including Mail, WhatsApp and Messenger
 ✅ Product Video
 ✅ Size Chart
 ✅ Preorder
@@ -83,7 +85,6 @@ The features below are **not** part of this free plugin. They are included in th
 *Pro options in the free features*
 
 ✨ Call for Price: WhatsApp, Email and custom link buttons
-✨ Quick Social Share: Mail, WhatsApp and Messenger
 ✨ Cart Reserved Timer: clear the cart when the timer expires
 ✨ Wishlist: require login, and empty the wishlist after adding to the cart
 ✨ Size Chart: product tab, chart image and choosing the products a chart applies to
@@ -234,13 +235,13 @@ WowStore uses these external services, including services operated by WPXPO. Bro
 
 Free library content requires no WPXPO account. Pro library content requires the separate licensed WowStore Pro plugin. Public fonts and avatars require no provider account. Video and social services may require an account depending on the content or action. Configure external media and fonts only if you accept the provider's terms and privacy policy; use locally hosted media and system fonts to avoid those provider requests.
 
-* **WPXPO template and design library:** Supplies presets, designs, and templates from wopb.wpxpo.com/wp-json/restapi/v2/. Catalogs are cached on your site for 5 days. When a cached catalog is missing or older than that, your server downloads it through wopbdata as soon as one of these opens: the Woo Builder or Template kits tab of the WowStore dashboard, the block library or a block's design picker in the editor, or a block settings panel that lists designs. The Synchronize button downloads every catalog again. Selecting a design or template for import contacts single-design, single-template, or single-premade through the browser or your server. Requests send the catalog type, design_id, template_id, or section_id, and the license key only when the WowStore Pro plugin is active and supplies one. Displaying catalog previews or imported remote images also contacts the image hosts specified by that content. The library lists every design and template of the catalog, as described under "Pro designs in the library" below. [Terms](https://www.wpxpo.com/terms-and-conditions/) | [Privacy Policy](https://www.wpxpo.com/policy/privacy/)
+* **WPXPO template and design library:** Loads remote catalogs and previews when library screens open; catalogs are cached for 5 days. Synchronize refreshes them, and importing downloads block content. Requests to wopb.wpxpo.com/wp-json/restapi/v2/ send the catalog type or content ID, plus a license key when supplied by Pro. Preview images contact their listed hosts. [Terms](https://www.wpxpo.com/terms-and-conditions/) | [Privacy Policy](https://www.wpxpo.com/policy/privacy/)
 
-* **Gravatar (Automattic):** Displays My Account and Archive Title avatars, unless replaced by another avatar provider. Image requests to gravatar.com send an email-derived hash, image size, and default-image settings when displayed, without a plain email address. [Terms](https://wordpress.com/tos/) | [Privacy Policy](https://automattic.com/privacy/)
+* **Gravatar (Automattic):** Off by default. WowStore's My Account and Archive Title (author archive) blocks load Gravatar avatars only when you turn on "Load Gravatar Avatars" in WowStore > Settings > General Settings and Settings > Discussion > Show Avatars is on; otherwise they show a local placeholder, or no avatar when Show Avatars is off. When enabled, each displayed avatar makes the visitor's browser request an image from gravatar.com, sending an MD5 or SHA-256 hash of the user's email address (not the plain address), the image size and default-image settings, and the visitor's IP address. Avatars from another local avatar provider are not affected. [Terms](https://wordpress.com/tos/) | [Privacy Policy](https://automattic.com/privacy/)
 
-* **Google Fonts:** Loads selected fonts from fonts.googleapis.com and fonts.gstatic.com when editor previews or pages render them and they are not cached. Requests include font families and styles, without customer account or order data. [Terms](https://policies.google.com/terms) | [Privacy Policy](https://policies.google.com/privacy)
+* **Google Fonts (optional, off by default):** Enable Google Fonts in WowStore > Settings > General Settings to allow selected fonts to load from fonts.googleapis.com and fonts.gstatic.com in editor previews and on your site. Requests send the visitor's IP address, font families and styles to Google, without customer account or order data. Saved and imported designs do not enable this service. Turn the setting off and save to stop WowStore generating Google Fonts imports; reload open editors after changing it. System fonts and uploaded custom fonts remain available without this service. [Terms](https://policies.google.com/terms) | [Privacy Policy](https://policies.google.com/privacy)
 
-* **YouTube (Google):** Displays tutorials and configured video embeds from youtube.com when the player is rendered. For a Product Video add-on URL, WordPress also requests embed code from YouTube on your server when the product media renders. The add-on does not cache that embed response itself. Requests include the video URL or ID and player settings; YouTube may use cookies and process playback interactions. [Terms](https://www.youtube.com/t/terms) | [Privacy Policy](https://policies.google.com/privacy)
+* **YouTube (Google):** Displays tutorials and configured video embeds from youtube.com when the player is rendered. The Overview tutorial opens its video on youtube.com in a new browser tab only after you click its video card; no YouTube player is embedded in the dashboard. For a Product Video add-on URL, WordPress also requests embed code from YouTube on your server when the product media renders. The add-on does not cache that embed response itself. Requests include the video URL or ID and player settings; YouTube may use cookies and process playback interactions. [Terms](https://www.youtube.com/t/terms) | [Privacy Policy](https://policies.google.com/privacy)
 
 * **Vimeo:** Displays Product Video add-on embeds and editor video previews from player.vimeo.com when the player is rendered. For a Vimeo URL, WordPress also requests embed code from vimeo.com on your server when the product media renders. The add-on does not cache that embed response itself. Requests include the video URL or ID and player settings; Vimeo may use cookies and process playback interactions. [Terms](https://vimeo.com/terms) | [Privacy Policy](https://vimeo.com/privacy)
 
@@ -284,6 +285,22 @@ WowStore includes open source libraries (React, Slick, flexMenu and others) unde
 9. WooCommerce Compare
 
 == Changelog ==
+= 4.6.3 - 10 November 2026 =
+* Update: Redesigned the WowStore dashboard (Overview, Settings, Add-ons, Blocks, Template Kits, Size Chart, Custom Font and Saved Templates) with WordPress components.
+* Update: Quick Social Share includes Mail, WhatsApp and Messenger.
+* Update: Google Fonts are off by default and load only after you enable them in the settings.
+* Update: Gravatar avatars in the My Account and Archive Title blocks are off by default and load only after you enable "Load Gravatar Avatars" in the settings; the blocks also follow the Show Avatars setting in Settings > Discussion.
+* Update: Block styles are generated only from structured block settings; stored custom CSS is no longer printed.
+* Fix: Backorder add to cart and available quantity on products on backorder.
+* Fix: Global settings validation no longer saves invalid CSS values.
+* Fix: Sales Notification never shows a guest buyer's billing name; guest orders show "Someone".
+* Fix: Sales Notification never shows a customer's login name; the Username option shows the display name, and a nickname or display name equal to the login shows the first name or "Someone".
+* Fix: Security hardening: the editor search only lists posts, pages and products the user can edit, and builder template creation requires permission to create templates.
+* Fix: The plugin checks for PHP 7.4 and WordPress 6.8 before loading and shows a notice instead of failing.
+* Fix: Replaced PHP 8-only functions so the plugin runs on PHP 7.4.
+* Fix: Backorder, Pre-Order and option scripts load only on the screens that use them.
+* Update: The dashboard tutorial video opens on YouTube in a new tab instead of an embedded player.
+
 = 4.6.2 - 02 November 2026 =
 * Fix: Fatal error in the Compare popup when clearing the list or when a compared product can no longer be loaded.
 * Fix: Compare table showed the last product's short description in every column.

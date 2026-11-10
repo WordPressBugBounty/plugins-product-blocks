@@ -678,10 +678,10 @@ Social Share Addon [START]
 .wopb-social-share-wrapper .wopb-share-item a:hover {
     filter: brightness(120%);
 }
-.wopb-facebook a, .wopb-twitter a, .wopb-linkedin a, .wopb-pinterest a, .wopb-reddit a, .wopb-skype a {
+.wopb-facebook a, .wopb-twitter a, .wopb-linkedin a, .wopb-pinterest a, .wopb-reddit a, .wopb-skype a, .wopb-mail a, .wopb-whatsapp a, .wopb-messenger a {
     color: #fff !important;
 }
-.wopb-facebook svg, .wopb-twitter svg, .wopb-linkedin svg, .wopb-pinterest svg, .wopb-reddit svg, .wopb-skype svg {
+.wopb-facebook svg, .wopb-twitter svg, .wopb-linkedin svg, .wopb-pinterest svg, .wopb-reddit svg, .wopb-skype svg, .wopb-mail svg, .wopb-whatsapp svg, .wopb-messenger svg {
     fill: #fff;
 }
 
@@ -705,6 +705,15 @@ Social Share Addon [START]
 }
 .wopb-social-share-wrapper .wopb-share-item.wopb-skype a {
     background: #009edc;
+}
+.wopb-social-share-wrapper .wopb-share-item.wopb-mail a {
+    background: #EA4335;
+}
+.wopb-social-share-wrapper .wopb-share-item.wopb-whatsapp a {
+    background: #25d366;
+}
+.wopb-social-share-wrapper .wopb-share-item.wopb-messenger a {
+    background: #0084FF;
 }
 .wp-block-product-blocks-product-meta .wopb-social-share-wrapper {
     width: 100%;

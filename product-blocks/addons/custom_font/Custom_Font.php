@@ -100,15 +100,13 @@ class Custom_Font {
 
 
 	/**
-	 * The `<style>` tag of a font face.
-	 *
-	 * wp_kses() turns a raw `&` into `&amp;`, which CSS does not read back, so it is written as the CSS escape `\26 `, which means the same.
+	 * Register a generated font face for WordPress's admin stylesheet output.
 	 *
 	 * @param string $font_face CSS from get_font_face().
-	 * @return string
+	 * @return void
 	 */
 	private function font_face_style( $font_face ) {
-		return str_replace( '&', '\\26 ', wopb_function()->esc_inline( $font_face ) );
+		wopb_function()->enqueue_inline_style( 'wopb-font-' . md5( $font_face ), $font_face );
 	}
 
 
@@ -137,7 +135,7 @@ class Custom_Font {
 					$eot = true; }
 			}
 			$font_face = $this->get_font_face( $settings[0], get_the_title( $post_id ) );
-			echo wp_kses( $this->font_face_style( $font_face ), array( 'style' => array( 'type' => true ) ) );
+			$this->font_face_style( $font_face );
 
 			switch ( $column_id ) {
 				case 0:
@@ -200,7 +198,7 @@ class Custom_Font {
 					$styles = '';
 				if ( ! empty( $arr ) ) {
 					$font_face = $this->get_font_face( $arr, $font_name );
-					echo wp_kses( $this->font_face_style( $font_face ), array( 'style' => array( 'type' => true ) ) );
+					$this->font_face_style( $font_face );
 					$styles = 'font-family: ' . wp_json_encode( sanitize_text_field( $font_name ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '; font-weight: ' . $this->get_font_weight( $arr );
 				}
 				?>

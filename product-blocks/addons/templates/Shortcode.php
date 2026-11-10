@@ -54,6 +54,7 @@ class Shortcode {
 						'css'     => '',
 					)
 				);
+				wopb_function()->enqueue_post_css( $id, true );
 
 				// Breakdance builder support for its shortcode render
 				$current_url            = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
@@ -65,7 +66,7 @@ class Shortcode {
 					if ( ! empty( $_breakdance_doing_ajax ) && get_template() === 'bricks' ) {
 						get_header();
 					}
-					// A <style> tag whose id is esc_attr()'d and whose CSS has tags stripped; wp_kses() would turn child selectors (>) and & into entities and break the CSS.
+					// Builder fragment responses have no later stylesheet phase; capture WordPress's stylesheet output here.
 					$pre_content .= wopb_function()->build_css_for_inline_print( $id, true );
 				}
 				self::$rendering[] = $id;

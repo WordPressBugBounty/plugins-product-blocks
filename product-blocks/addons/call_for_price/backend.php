@@ -42,10 +42,6 @@ function wopb_get_call_price_opt( $config ) {
 		'wopb_call_for_price' => array(
 			'label' => __( 'Call for Price', 'product-blocks' ),
 			'attr'  => array(
-				'call_for_price_heading' => array(
-					'type'  => 'heading',
-					'label' => __( 'Call for Price Settings', 'product-blocks' ),
-				),
 				'tab'                    => array(
 					'type'    => 'tab',
 					'options' => array(
@@ -77,7 +73,7 @@ function wopb_get_call_price_opt( $config ) {
 											'required' => true,
 											'default'  => '',
 											'label'    => __( 'Recipient Number / ID', 'product-blocks' ),
-											'desc'     => __( '<strong>Note:</strong> Add number with country code for direct calling. Add ID for skype.', 'product-blocks' ),
+											'desc'     => __( 'Note: Add number with country code for direct calling. Add ID for skype.', 'product-blocks' ),
 										),
 										'call_for_price_text' => array(
 											'type'    => 'text',

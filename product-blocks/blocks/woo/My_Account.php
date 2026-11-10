@@ -29,7 +29,7 @@ class My_Account {
 	public function content( $attr, $noAjax = false ) {
 		$block_name    = 'my-account';
 		$user_id       = get_current_user_id();
-		$profileUrl    = get_avatar_url( $user_id );
+		$profileUrl    = wopb_function()->avatar_url( $user_id );
 		$userData      = get_userdata( $user_id );
 		$wraper_before = $wraper_after = $content = '';
 		$attr          = wp_parse_args( $attr, $this->get_attributes() );

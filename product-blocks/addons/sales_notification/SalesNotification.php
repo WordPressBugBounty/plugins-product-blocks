@@ -195,8 +195,12 @@ class SalesNotification {
 	 * Buyer name for a notification
 	 *
 	 * Empty for "No Name" (the default and any unknown value), so nothing
-	 * about the buyer is read. Falls back to "Someone" when the chosen name
-	 * is blank on the order.
+	 * about the buyer is read. A guest order (no customer account) never shows
+	 * a name taken from the billing address: it always shows "Someone". For a
+	 * customer account only the account's own name fields are used. The login
+	 * name is never shown: "Username" shows the display name, and a nickname or
+	 * display name equal to the login is replaced by the first name. Falls back
+	 * to "Someone" when the chosen name is blank.
 	 *
 	 * @param \WC_Order $order Order.
 	 * @param string    $type  Value of the Name setting.
@@ -209,39 +213,52 @@ class SalesNotification {
 			return '';
 		}
 
-		$first = $order->get_billing_first_name();
-		$last  = $order->get_billing_last_name();
-		$user  = $order->get_user_id() ? get_userdata( $order->get_user_id() ) : false;
-
-		if ( $user ) {
-			$first = $user->first_name ? $user->first_name : $first;
-			$last  = $user->last_name ? $user->last_name : $last;
+		$user_id = $order->get_user_id();
+		$user    = $user_id ? get_userdata( $user_id ) : false;
+		if ( ! $user ) {
+			return __( 'Someone', 'product-blocks' );
 		}
 
 		$name = '';
 		switch ( $type ) {
 			case 'first_name':
-				$name = $first;
+				$name = $user->first_name;
 				break;
 			case 'last_name':
-				$name = $last;
+				$name = $user->last_name;
+				break;
+			case 'full':
+				$name = trim( $user->first_name . ' ' . $user->last_name );
 				break;
 			case 'user_name':
-				$name = $user ? $user->user_login : '';
+				// Legacy "Username" value: the login name is never public, so the display name is shown instead.
+				$name = $this->is_login_name( $user->display_name, $user ) ? '' : $user->display_name;
 				break;
 			case 'nick_name':
-				$name = $user ? $user->nickname : '';
-				break;
 			case 'display':
-				$name = $user ? $user->display_name : '';
+				$name = 'nick_name' === $type ? $user->nickname : $user->display_name;
+				if ( $this->is_login_name( $name, $user ) ) {
+					$name = $this->is_login_name( $user->first_name, $user ) ? '' : $user->first_name;
+				}
 				break;
 		}
-		if ( '' === trim( $name ) ) {
-			// "Full" and any blank choice fall back to the full name.
-			$name = trim( $first . ' ' . $last );
-		}
+		return '' === trim( (string) $name ) ? __( 'Someone', 'product-blocks' ) : $name;
+	}
 
-		return '' === $name ? __( 'Someone', 'product-blocks' ) : $name;
+	/**
+	 * Whether a name equals the account's login name
+	 *
+	 * WordPress sets the nickname and display name to the login on
+	 * registration, so these fields can reveal the login indirectly.
+	 *
+	 * @param string   $name Name to check.
+	 * @param \WP_User $user Account.
+	 * @return bool
+	 * @since 4.6.3
+	 */
+	private function is_login_name( $name, $user ) {
+		$login = strtolower( trim( (string) $user->user_login ) );
+		return '' !== $login && strtolower( trim( (string) $name ) ) === $login;
 	}
 
 	/**

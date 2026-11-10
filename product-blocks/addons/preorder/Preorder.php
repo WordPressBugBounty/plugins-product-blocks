@@ -55,7 +55,7 @@ class Preorder {
 
 		// Add Script for Addons
 		add_action( 'wp_enqueue_scripts', array( $this, 'add_preorder_scripts' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_preorder_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'add_preorder_admin_scripts' ) );
 
 		// Before Single Product
 		add_action( 'woocommerce_before_single_product', array( $this, 'before_single_product' ) );
@@ -103,6 +103,19 @@ class Preorder {
 	public function add_preorder_scripts() {
 		wp_enqueue_style( 'wopb-preorder-style', WOPB_URL . 'addons/preorder/css/preorder.css', array(), WOPB_VER );
 		wp_enqueue_script( 'wopb-preorder-script', WOPB_URL . 'addons/preorder/js/preorder.js', array( 'jquery' ), WOPB_VER, true );
+	}
+
+	/**
+	 * Pre-Order assets on admin screens: only on the product edit screens that use them.
+	 *
+	 * @return NULL
+	 */
+	public function add_preorder_admin_scripts() {
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( ! $screen || 'product' !== $screen->post_type ) {
+			return;
+		}
+		$this->add_preorder_scripts();
 	}
 
 	/**
@@ -346,6 +359,16 @@ class Preorder {
 			 * @param \WC_Product $product Simple product.
 			 */
 			do_action( 'wopb_preorder_product_fields', $product );
+			if ( ! defined( 'WOPB_PRO_VER' ) ) {
+				?>
+				<p class="form-field">
+					<strong><?php esc_html_e( 'Availability Date, Availability Message, Auto Convert and Manage Discount are available in the WowStore Pro add-on.', 'product-blocks' ); ?></strong>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=wopb-settings#pro-features' ) ); ?>">
+						<?php esc_html_e( 'View Pro Features', 'product-blocks' ); ?>
+					</a>
+				</p>
+				<?php
+			}
 
 			$html .= ob_get_clean();
 		} finally {

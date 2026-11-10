@@ -100,10 +100,6 @@ function wopb_get_compare_settings( $config ) {
 		'wopb_compare' => array(
 			'label' => __( 'Compare', 'product-blocks' ),
 			'attr'  => array(
-				'compare_heading' => array(
-					'type'  => 'heading',
-					'label' => __( 'Compare Settings', 'product-blocks' ),
-				),
 				'tab'             => (object) array(
 					'type'    => 'tab',
 					'options' => array(
@@ -478,7 +474,6 @@ function wopb_get_compare_settings( $config ) {
 										'compare_table_columns' => array(
 											'type'    => 'select_item',
 											'label'   => __( 'Select Fields To Show In Comparison Table', 'product-blocks' ),
-											'desc'    => __( 'Select the fields you want to include in the comparison table. To rearrange these fields, you can also drag and drop. You can also customize the label name according to your preferences.', 'product-blocks' ),
 											'default' => $default_columns,
 											'options' => $all_columns,
 										),

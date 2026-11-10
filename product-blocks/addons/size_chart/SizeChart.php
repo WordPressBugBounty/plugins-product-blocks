@@ -368,6 +368,17 @@ class SizeChart {
 			__( 'Exclude Products', 'product-blocks' ),
 			'wopb-sc-exclude-products'
 		);
+
+		if ( ! defined( 'WOPB_PRO_VER' ) ) {
+			?>
+			<p>
+				<strong><?php esc_html_e( 'Chart image and Include Products are available in the WowStore Pro add-on.', 'product-blocks' ); ?></strong>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=wopb-settings#pro-features' ) ); ?>">
+					<?php esc_html_e( 'View Pro Features', 'product-blocks' ); ?>
+				</a>
+			</p>
+			<?php
+		}
 	}
 
 	/**

@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkwowstore||=[]).push([[786],{27698(e,t,a){a.r(t);var l=a(55445);a.d(t,["default",0,()=>wp.element.createElement(l.default,{type:"wopb_custom_font"})])}}]);

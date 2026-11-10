@@ -37,7 +37,7 @@ class ProductXElement extends OxyEl {
 
 		if ( $templates ) {
 			if ( isset( $_GET['action'] ) && false !== strpos( sanitize_key( wp_unslash( $_GET['action'] ) ), 'oxy_render_oxy' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only check of the builder preview request.
-				echo wopb_function()->build_css_for_inline_print( $templates, true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the helper returns a <style> tag whose id is esc_attr()'d and whose CSS has tags stripped; wp_kses() would turn child selectors (>) and & into entities and break the CSS.
+				wopb_function()->print_post_css( $templates, true );
 			}
 			$args      = array(
 				'p'         => $templates,

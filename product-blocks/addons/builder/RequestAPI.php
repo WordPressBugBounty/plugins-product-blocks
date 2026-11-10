@@ -128,6 +128,15 @@ class RequestAPI {
 					$body = json_decode( $response['body'] );
 				if ( isset( $body->rawData ) && isset( $body->success ) && $body->success ) {
 					$post_id = $this->set_post_content( $type, wp_slash( $body->rawData ) );
+
+					if ( is_wp_error( $post_id ) ) {
+						return new \WP_Error(
+							'wopb_template_create_failed',
+							__( 'The builder template could not be created.', 'product-blocks' ),
+							array( 'status' => 500 )
+						);
+					}
+
 					return array(
 						'success' => true,
 						'link'    => get_edit_post_link( $post_id ),
@@ -138,6 +147,15 @@ class RequestAPI {
 			}
 		} else {
 			$post_id = $this->set_post_content( $type, '' );
+
+			if ( is_wp_error( $post_id ) ) {
+				return new \WP_Error(
+					'wopb_template_create_failed',
+					__( 'The builder template could not be created.', 'product-blocks' ),
+					array( 'status' => 500 )
+				);
+			}
+
 			return array(
 				'success' => true,
 				'link'    => get_edit_post_link( $post_id ),
@@ -599,17 +617,40 @@ class RequestAPI {
 	 *
 	 * @since v.2.3.9
 	 * @param ARRAY
-	 * @return INT | Post ID
+	 * @return INT|\WP_Error Post ID or creation error.
 	 */
 	public function set_post_content( $type, $body = '' ) {
+		$builder_type = get_post_type_object( 'wopb_builder' );
+		if ( ! $builder_type || ! current_user_can( $builder_type->cap->create_posts ) ) {
+			return new \WP_Error(
+				'wopb_template_forbidden',
+				__( 'You are not allowed to create builder templates.', 'product-blocks' ),
+				array( 'status' => 403 )
+			);
+		}
+
 		$post_id  = wp_insert_post(
 			array(
 				'post_title'   => ucwords( str_replace( '_', ' ', $type ) ) . ' Template',
 				'post_content' => $body,
 				'post_type'    => 'wopb_builder',
 				'post_status'  => 'draft',
-			)
+			),
+			true
 		);
+
+		if ( is_wp_error( $post_id ) ) {
+			return $post_id;
+		}
+
+		if ( ! $post_id ) {
+			return new \WP_Error(
+				'wopb_template_create_failed',
+				__( 'The builder template could not be created.', 'product-blocks' ),
+				array( 'status' => 500 )
+			);
+		}
+
 		$settings = get_option( 'wopb_builder_conditions', array() );
 		switch ( $type ) {
 			case 'home_page':

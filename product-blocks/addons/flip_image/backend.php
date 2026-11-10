@@ -35,10 +35,6 @@ function wopb_get_flip_image_settings( $config ) {
 		'wopb_flipimage' => array(
 			'label' => __( 'Flip Image', 'product-blocks' ),
 			'attr'  => array(
-				'flipimage_heading'         => array(
-					'type'  => 'heading',
-					'label' => __( 'Flip Image Settings', 'product-blocks' ),
-				),
 				'flip_image_basic_settings' => array(
 					'type' => 'container',
 					'attr' => array(

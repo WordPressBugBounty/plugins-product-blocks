@@ -279,7 +279,8 @@ class Dashboard {
 			switch ( $type ) {
 
 				case 'saved_templates':
-					$post_per_page = 10;
+					$view          = isset( $post['view'] ) && is_array( $post['view'] ) ? $post['view'] : array();
+					$post_per_page = isset( $view['per_page'] ) ? max( 1, min( 100, absint( $view['per_page'] ) ) ) : 10;
 					$data          = array();
 					$list_type     = $this->get_requested_post_type( isset( $post['pType'] ) ? $post['pType'] : '' );
 					if ( ! $list_type ) {
@@ -289,12 +290,16 @@ class Dashboard {
 						'post_type'      => $list_type,
 						'post_status'    => array( 'publish', 'draft' ),
 						'posts_per_page' => $post_per_page,
-						'paged'          => $post['pages'],
+						'paged'          => isset( $post['pages'] ) ? max( 1, absint( $post['pages'] ) ) : 1,
 					);
 
 					if ( isset( $post['search'] ) ) {
 						$args['paged'] = 1;
 						$args['s']     = $post['search'];
+					}
+
+					if ( isset( $view['search'] ) && is_string( $view['search'] ) ) {
+						$args['s'] = sanitize_text_field( $view['search'] );
 					}
 
 					$the_query = new \WP_Query( $args );
@@ -389,7 +394,8 @@ class Dashboard {
 					);
 				break;
 				case 'wopb-size-chart':
-					$post_per_page = 10;
+					$view          = isset( $post['view'] ) && is_array( $post['view'] ) ? $post['view'] : array();
+					$post_per_page = isset( $view['per_page'] ) ? max( 1, min( 100, absint( $view['per_page'] ) ) ) : 10;
 					$data          = array();
 					$list_type     = $this->get_requested_post_type( isset( $post['pType'] ) ? $post['pType'] : '' );
 					if ( ! $list_type ) {
@@ -399,12 +405,23 @@ class Dashboard {
 						'post_type'      => $list_type,
 						'post_status'    => array( 'publish', 'draft' ),
 						'posts_per_page' => $post_per_page,
-						'paged'          => $post['pages'],
+						'paged'          => isset( $post['pages'] ) ? max( 1, absint( $post['pages'] ) ) : 1,
 					);
 
 					if ( isset( $post['search'] ) ) {
 						$args['paged'] = 1;
 						$args['s']     = $post['search'];
+					}
+
+					if ( isset( $view['search'] ) && is_string( $view['search'] ) ) {
+						$args['s'] = sanitize_text_field( $view['search'] );
+					}
+					if ( isset( $view['status'] ) && in_array( $view['status'], array( 'publish', 'draft' ), true ) ) {
+						$args['post_status'] = $view['status'];
+					}
+					if ( isset( $view['orderby'] ) && in_array( $view['orderby'], array( 'title', 'modified' ), true ) ) {
+						$args['orderby'] = $view['orderby'];
+						$args['order']   = isset( $view['order'] ) && 'asc' === $view['order'] ? 'ASC' : 'DESC';
 					}
 
 					$the_query = new \WP_Query( $args );
