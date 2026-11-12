@@ -211,16 +211,20 @@ class Initialization {
 	 * @return bool
 	 */
 	private function is_plugin_admin_screen( $hook_suffix ) {
-		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
-		if ( ! $screen ) {
-			return true;
+		$screen    = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$is_plugin = 'toplevel_page_wopb-settings' === $hook_suffix || 'wopb-settings' === wopb_function()->get_screen();
+		if ( $screen ) {
+			$post_types = array( 'wopb_builder', 'wopb_templates', 'wopb_custom_font', 'wopb-size-chart' );
+			$taxonomy   = isset( $screen->taxonomy ) ? $screen->taxonomy : '';
+			$is_plugin  = $is_plugin
+				|| 'toplevel_page_wopb-settings' === $screen->id
+				|| in_array( $screen->post_type, $post_types, true )
+				|| in_array( $screen->base, array( 'site-editor', 'widgets' ), true )
+				|| ( 'post' === $screen->base && ( 'product' === $screen->post_type || $screen->is_block_editor() ) )
+				|| ( in_array( $screen->base, array( 'edit-tags', 'term' ), true )
+					&& 'true' === wopb_function()->get_setting( 'wopb_variation_swatches' )
+					&& 0 === strpos( $taxonomy, 'pa_' ) );
 		}
-		$bases      = array( 'post', 'edit', 'edit-tags', 'term', 'plugins', 'site-editor', 'widgets' );
-		$post_types = array( 'product', 'wopb_builder', 'wopb_templates', 'wopb_custom_font', 'wopb-size-chart' );
-		$is_plugin  = in_array( $screen->base, $bases, true )
-			|| in_array( $screen->post_type, $post_types, true )
-			|| false !== strpos( (string) $screen->id, 'wopb' )
-			|| 0 === strpos( (string) wopb_function()->get_screen(), 'wopb' );
 
 		/**
 		 * Filters whether the media, select and form assets load on an admin screen.
@@ -270,6 +274,19 @@ class Initialization {
 		// Only the scoped menu styles run on every admin screen. Everything else loads only where the plugin has UI.
 		$load_page_assets = $this->is_plugin_admin_screen( $screen );
 		wp_enqueue_style( 'wopb-admin-menu-style', WOPB_URL . 'assets/css/wopb-admin-menu.css', array(), WOPB_VER );
+		wp_enqueue_script( 'wopb-admin-menu-script', WOPB_URL . 'assets/js/wopb-admin-menu.js', array( 'jquery' ), WOPB_VER, true );
+		wp_localize_script(
+			'wopb-admin-menu-script',
+			'wopb_admin_menu',
+			array(
+				'settings' => array(
+					'wopb_builder'     => wopb_function()->get_setting( 'wopb_builder' ),
+					'wopb_custom_font' => wopb_function()->get_setting( 'wopb_custom_font' ),
+					'wopb_size_chart'  => wopb_function()->get_setting( 'wopb_size_chart' ),
+					'wopb_templates'   => wopb_function()->get_setting( 'wopb_templates' ),
+				),
+			)
+		);
 		if ( $load_page_assets ) {
 			wp_enqueue_media();
 		}
@@ -277,7 +294,7 @@ class Initialization {
 		$current_screen                         = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 		$taxonomy                               = $current_screen && ! empty( $current_screen->taxonomy ) ? $current_screen->taxonomy : '';
 		$variation_swatches_attribute_poststype = wopb_function()->get_setting( 'wopb_variation_swatches' ) === 'true' && 0 === strpos( $taxonomy, 'pa_' );
-		if ( 'pa_color' === $taxonomy || $variation_swatches_attribute_poststype ) {
+		if ( $load_page_assets && $variation_swatches_attribute_poststype ) {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_script( 'wp-color-picker' );
 		}

@@ -655,6 +655,7 @@ class Wishlist {
 		if ( ( is_shop() || is_archive() ) && ! wopb_function()->is_builder() ) {
 			return $content . $this->add_wishlist_html();
 		}
+		return $content;
 	}
 
 	/**

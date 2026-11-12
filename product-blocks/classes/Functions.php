@@ -605,10 +605,10 @@ class Functions {
 		$archive             = isset( $attr['is_archive'] ) ? $attr['is_archive'] : ''; // double check because built in function not working after click on pagination
 
 		if (
-			! $this->is_specific_archive_product( $attr ) &&
 			$this->is_builder( $builder ) &&
 			( is_archive() || is_search() || is_product_taxonomy() || is_product_tag() || $wopb_search_builder ) && ! is_shop()
 		) {
+			$query_args_before_archive = $query_args;
 			if ( $builder ) {
 				$str = explode( '###', $builder );
 				if ( isset( $str[0] ) ) {
@@ -632,6 +632,16 @@ class Functions {
 			} else {
 				$query_args += $wp_query->query_vars;
 			}
+
+			/**
+			 * Filters the query after an archive, taxonomy or search template has narrowed it to the page's own term or search.
+			 *
+			 * @since v.4.6.4
+			 * @param array $query_args        Query with the archive's scoping applied.
+			 * @param array $attr              Block attributes.
+			 * @param array $query_args_before Query as it was before the scoping.
+			 */
+			$query_args = apply_filters( 'wopb_archive_query_args', $query_args, $attr, $query_args_before_archive );
 		}
 
 		if ( isset( $attr['queryOrderBy'] ) ) {
@@ -855,16 +865,17 @@ class Functions {
 		return apply_filters( 'wopb_query_args', $query_args, $attr );
 	}
 
+	/**
+	 * Kept so code written against earlier versions keeps working.
+	 *
+	 * Free no longer decides this; an add-on changes the archive query with the `wopb_archive_query_args` filter.
+	 *
+	 * @since v.4.6.4 Deprecated.
+	 * @param array $attr Block attributes.
+	 * @return bool Always false.
+	 */
 	public function is_specific_archive_product( $attr ) {
-		if (
-			isset( $attr['queryProductSort'] ) &&
-			'choose_specific' === $attr['queryProductSort'] &&
-			isset( $attr['querySpecificProduct'] ) &&
-			$attr['querySpecificProduct'] &&
-			( is_archive() || ( ! is_archive() && ( is_product_taxonomy() || is_product_tag() ) ) )
-		) {
-			return true;
-		}
+		return false;
 	}
 
 	/**

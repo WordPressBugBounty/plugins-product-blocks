@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, woocommerce wishlist, variation s
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 4.6.3
+Stable tag: 4.6.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -92,7 +92,7 @@ The features below are **not** part of this free plugin. They are included in th
 ✨ Product Video: videos on archive pages, autoplay, repeat and play on hover
 ✨ Backorder: available date and availability message
 ✨ Pre-Order: release date, auto convert, custom price, countdown, availability message and pre-order for variations
-✨ Advanced product query: extra Order By options (popular by sales, popular by views, top rated), Most Viewed and Random sorting by time period, specific products, stock status, author include/exclude and multi-taxonomy
+✨ Advanced product query: the extra Order By choices "Popular By Sales", "Popular By View" and "Top Rated", extra time periods for Most Viewed and Random (such as Last 24hr and 90 Days), stock status filter, author include/exclude and multi-taxonomy queries. Free already includes picking specific products with Include Products, Exclude Product, Most Sales (last 24hr, 7 days, 1 month, 3 months and all time), Top Rated, Most Rated, Most Viewed (all time), Random (7 days, 30 days and all time), related-product sorting, and the Order By choices Menu Order, Date, Title, Price, SKU, Random, Last Modified Date and Stock Status.
 ✨ Extra layouts for the Product Category 2 and Archive Title blocks, and the Product Slider title hover effects
 ✨ Template library: additional Pro starter packs, templates and patterns (shown in the library with a Pro badge, see "Pro designs in the library" below)
 
@@ -235,7 +235,11 @@ WowStore uses these external services, including services operated by WPXPO. Bro
 
 Free library content requires no WPXPO account. Pro library content requires the separate licensed WowStore Pro plugin. Public fonts and avatars require no provider account. Video and social services may require an account depending on the content or action. Configure external media and fonts only if you accept the provider's terms and privacy policy; use locally hosted media and system fonts to avoid those provider requests.
 
-* **WPXPO template and design library:** Loads remote catalogs and previews when library screens open; catalogs are cached for 5 days. Synchronize refreshes them, and importing downloads block content. Requests to wopb.wpxpo.com/wp-json/restapi/v2/ send the catalog type or content ID, plus a license key when supplied by Pro. Preview images contact their listed hosts. [Terms](https://www.wpxpo.com/terms-and-conditions/) | [Privacy Policy](https://www.wpxpo.com/policy/privacy/)
+* **WPXPO template and design library:** Provides remote catalogs, preview images, and selected block content for Template Kits and editor template libraries. Opening a library loads catalogs and previews before you click Import. Catalogs are cached locally for 5 days; a missing or expired cache triggers requests to https://wopb.wpxpo.com/wp-json/restapi/v2/wopbdata. Synchronize explicitly refreshes the catalogs. Free activation, Add-ons, and Overview do not load this service.
+
+Catalog requests send the catalog type (design, premade, or template). Selected imports send the content ID to https://wopb.wpxpo.com/wp-json/restapi/v2/ endpoints, plus a license key when supplied by the separate Pro plugin. Server requests expose the server IP address; WordPress's default HTTP User-Agent also includes the WordPress version and site URL. Free catalog requests do not send administrator names or email addresses, customer data, or orders.
+
+Displaying a preview contacts the image host listed by the catalog, even when the catalog is cached and no import is selected. Those browser requests expose the administrator's IP address and browser details, and may include a referrer or service cookies depending on browser policy. To avoid these library requests, do not open Template Kits or editor template libraries, synchronize catalogs, or import remote designs. [Terms](https://www.wpxpo.com/terms-and-conditions/) | [Privacy Policy](https://www.wpxpo.com/policy/privacy/)
 
 * **Gravatar (Automattic):** Off by default. WowStore's My Account and Archive Title (author archive) blocks load Gravatar avatars only when you turn on "Load Gravatar Avatars" in WowStore > Settings > General Settings and Settings > Discussion > Show Avatars is on; otherwise they show a local placeholder, or no avatar when Show Avatars is off. When enabled, each displayed avatar makes the visitor's browser request an image from gravatar.com, sending an MD5 or SHA-256 hash of the user's email address (not the plain address), the image size and default-image settings, and the visitor's IP address. Avatars from another local avatar provider are not affected. [Terms](https://wordpress.com/tos/) | [Privacy Policy](https://automattic.com/privacy/)
 
@@ -285,6 +289,10 @@ WowStore includes open source libraries (React, Slick, flexMenu and others) unde
 9. WooCommerce Compare
 
 == Changelog ==
+= 4.6.4 - 12 November 2026 =
+* Update: The readme separates the advanced product query options included in Free from the options added by the separate WowStore Pro plugin.
+* Fix: Compare button in the shop loop no longer drops the content added by earlier callbacks.
+
 = 4.6.3 - 10 November 2026 =
 * Update: Redesigned the WowStore dashboard (Overview, Settings, Add-ons, Blocks, Template Kits, Size Chart, Custom Font and Saved Templates) with WordPress components.
 * Update: Quick Social Share includes Mail, WhatsApp and Messenger.

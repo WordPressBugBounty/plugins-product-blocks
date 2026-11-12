@@ -1295,6 +1295,7 @@ class Compare {
 		if ( ! wopb_function()->is_builder() && ( is_shop() || is_archive() ) ) {
 			return $content . wp_kses( $this->get_compare( get_the_ID(), 'default' ), $this->allowed_html() );
 		}
+		return $content;
 	}
 
 	/**
