@@ -736,49 +736,6 @@ class Styles {
 
 
 	/**
-	 * Save Import CSS in the top of the File
-	 *
-	 * @since v.1.0.0
-	 * @param STRING | CSS (STRING)
-	 * @return STRING | Generated CSS
-	 */
-	public function set_top_css( $get_css = '' ) {
-		$disable_google_font = wopb_function()->get_setting( 'disable_google_font' );
-		if ( 'yes' !== wopb_function()->get_setting( 'enable_google_font' ) || 'yes' === $disable_google_font ) {
-			// Old saved/imported styles must obey the current service choice too.
-			return preg_replace( '/@import\s+(?:url\(\s*)?[\'"]?(?:https?:)?\/\/fonts\.(?:googleapis|gstatic)\.com\b[^;]*;/i', '', $get_css ) ?? '';
-		}
-		if ( 'yes' !== $disable_google_font ) {
-			$css_url     = "@import url('https://fonts.googleapis.com/css?family=";
-			$font_exists = substr_count( $get_css, $css_url );
-			if ( $font_exists ) {
-				$pattern = sprintf( '/%s(.+?)%s/ims', preg_quote( $css_url, '/' ), preg_quote( "');", '/' ) );
-				if ( preg_match_all( $pattern, $get_css, $matches ) ) {
-					$fonts   = $matches[0];
-					$get_css = str_replace( $fonts, '', $get_css );
-					if ( preg_match_all( '/font-weight[ ]?:[ ]?[\d]{3}[ ]?;/', $get_css, $matche_weight ) ) {
-						$weight = array_map(
-							function ( $val ) {
-								$process = trim( str_replace( array( 'font-weight', ':', ';' ), '', $val ) );
-								if ( is_numeric( $process ) ) {
-										return $process;
-								}
-							},
-							$matche_weight[0]
-						);
-						foreach ( $fonts as $key => $val ) {
-							$fonts[ $key ] = str_replace( "');", '', $val ) . ':' . implode( ',', $weight ) . "');";
-						}
-					}
-					$fonts   = array_unique( $fonts );
-					$get_css = implode( '', $fonts ) . $get_css;
-				}
-			}
-		}
-		return $get_css;
-	}
-
-	/**
 	 * Set Global Color Codes
 	 *
 	 * @since v.2.3.7

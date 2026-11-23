@@ -149,8 +149,8 @@ if ( $page_id ) {
 		$blocks = parse_blocks( $content );
 		$embed  = new WP_Embed();
 
-		// Shared form list plus the SVG and microdata attributes the blocks print.
-		$allowed_html = wopb_function()->allowed_form_html(
+		// Shared add to cart form list (keeps WooCommerce's variation gallery template element) plus the SVG and microdata attributes the blocks print.
+		$allowed_html = wopb_function()->allowed_cart_form_html(
 			array(
 				'svg'    => array(
 					'aria-hidden' => true,

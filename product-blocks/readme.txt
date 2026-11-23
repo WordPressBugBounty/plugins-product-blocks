@@ -4,7 +4,7 @@ Tags: woocommerce builder, woocommerce blocks, woocommerce wishlist, variation s
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 4.6.4
+Stable tag: 4.6.5
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -289,6 +289,13 @@ WowStore includes open source libraries (React, Slick, flexMenu and others) unde
 9. WooCommerce Compare
 
 == Changelog ==
+= 4.6.5 - 23 November 2026 =
+* Update: Editor settings fields (Search, Select, Border, Box Shadow, Color and others) are rebuilt with WordPress components for a consistent look.
+* Update: Product Slider and Product Review blocks have improved styling and taxonomy handling.
+* Fix: Variation gallery image showing twice on variable products in the Product Builder.
+* Fix: Heading and image caption HTML showing as escaped text on the front end.
+* Fix: Empty query and filter values are skipped when block settings are applied.
+
 = 4.6.4 - 12 November 2026 =
 * Update: The readme separates the advanced product query options included in Free from the options added by the separate WowStore Pro plugin.
 * Fix: Compare button in the shop loop no longer drops the content added by earlier callbacks.

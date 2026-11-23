@@ -96,31 +96,7 @@ class Product_Cart {
 	 * @return string
 	 */
 	private function kses_cart_form( $html ) {
-		$allowed = wopb_function()->allowed_form_html(
-			array(
-				'template' => array(
-					'class' => true,
-				),
-				'div'      => array(
-					'aria-relevant' => true,
-					'readonly'      => true,
-					'swatches-attr' => true,
-				),
-				'input'    => array(
-					'hidden' => true,
-				),
-				'img'      => array(
-					'itemprop' => true,
-				),
-				'span'     => array(
-					'translate' => true,
-				),
-				'svg'      => array(
-					'aria-hidden' => true,
-					'focusable'   => true,
-				),
-			)
-		);
+		$allowed = wopb_function()->allowed_cart_form_html();
 		add_filter( 'safe_style_css', array( $this, 'allow_transition_style' ) );
 		$html = wp_kses( $html, $allowed );
 		remove_filter( 'safe_style_css', array( $this, 'allow_transition_style' ) );

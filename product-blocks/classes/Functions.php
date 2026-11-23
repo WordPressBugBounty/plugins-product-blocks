@@ -2179,19 +2179,6 @@ class Functions {
 	}
 
 	/**
-	 * Escaping and Set Inline CSS
-	 *
-	 * @since v.2.2.7
-	 * @param STRING | CSS
-	 * @return STRING | CSS with Style
-	 */
-	public function esc_inline( $css ) {
-		$css    = wp_strip_all_tags( $css );
-		$handle = $this->enqueue_inline_style( 'wopb-inline-' . md5( $css ), $css );
-		return $this->get_style_markup( $handle );
-	}
-
-	/**
 	 * Queue generated CSS through WordPress and retain late frontend/admin output.
 	 *
 	 * @param string   $handle Stylesheet handle.
@@ -2542,6 +2529,49 @@ class Functions {
 			$this->allowed_html_tags(),
 			$form,
 			(array) $extras
+		);
+	}
+
+	/**
+	 * Allowed HTML for the WooCommerce add to cart form.
+	 * Extends allowed_form_html() with the template element WooCommerce clones for the variation
+	 * gallery (dropping its tag would print the hidden gallery as a second visible image), the
+	 * attributes variation swatch and product add-on plugins read, and the inline transition style.
+	 * Every escaping pass over a rendered add to cart form must use this list.
+	 *
+	 * @param array $extras Extra tags/attributes merged on top.
+	 * @return array
+	 *
+	 * @since v.4.6.5
+	 */
+	public function allowed_cart_form_html( $extras = array() ) {
+		return $this->allowed_form_html(
+			array_replace_recursive(
+				array(
+					'template' => array(
+						'class' => true,
+					),
+					'div'      => array(
+						'aria-relevant' => true,
+						'readonly'      => true,
+						'swatches-attr' => true,
+					),
+					'input'    => array(
+						'hidden' => true,
+					),
+					'img'      => array(
+						'itemprop' => true,
+					),
+					'span'     => array(
+						'translate' => true,
+					),
+					'svg'      => array(
+						'aria-hidden' => true,
+						'focusable'   => true,
+					),
+				),
+				(array) $extras
+			)
 		);
 	}
 

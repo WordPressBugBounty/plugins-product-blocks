@@ -67,11 +67,11 @@ class Image {
 			}
 		}
 		if ( $attr['btnLink'] && ( 'button' === $attr['linkType'] ) ) {
-			$wraper_before .= '<div class="wopb-image-button wopb-image-button-' . esc_attr( sanitize_html_class( $attr['btnPosition'] ) ) . '"><a href="' . esc_url( $attr['btnLink'] ) . '" target="' . esc_attr( $attr['btnTarget'] ) . '">' . esc_html( $attr['btnText'] ) . '</a></div>';
+			$wraper_before .= '<div class="wopb-image-button wopb-image-button-' . esc_attr( sanitize_html_class( $attr['btnPosition'] ) ) . '"><a href="' . esc_url( $attr['btnLink'] ) . '" target="' . esc_attr( $attr['btnTarget'] ) . '">' . wp_kses( $attr['btnText'], $allowed_html_tags ) . '</a></div>';
 		}
 					$wraper_before .= '</div>';
 		if ( 1 == $attr['headingEnable'] ) {
-			$wraper_before .= '<figcaption class="wopb-image-caption">' . esc_html( $attr['headingText'] ) . '</figcaption>';
+			$wraper_before .= '<figcaption class="wopb-image-caption">' . wp_kses( $attr['headingText'], $allowed_html_tags ) . '</figcaption>';
 		}
 				$wraper_before .= '</figure>';
 			$wraper_before     .= '</div>';

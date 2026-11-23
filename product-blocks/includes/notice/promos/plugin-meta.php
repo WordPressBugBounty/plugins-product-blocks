@@ -80,6 +80,26 @@ return array(
 		'visibility' => wopb_function()->show_upsell(),
 	),
 
+	// Black Friday 2026 — same window as the hello bar.
+	array(
+		'key'        => $prefix . '_plugin_meta_black_friday_2026',
+		'start'      => '2026-11-12 00:00 Asia/Dhaka',
+		'end'        => '2026-12-06 23:59 Asia/Dhaka',
+		'text'       => __( 'Upgrade to Pro & Save Up to 70% This Black Friday!', 'product-blocks' ),
+		'url'        => Xpo::generate_utm_link(
+			array(
+				'url'    => 'https://www.wpxpo.com/product/wowstore/pricing/',
+				'hash'   => '', // The pricing page needs no #pricing anchor.
+				'config' => array(
+					'source'   => 'db-wowstore',
+					'medium'   => 'bfcm-plugin-meta',
+					'campaign' => $config['utm_campaign'],
+				),
+			)
+		),
+		'visibility' => wopb_function()->show_upsell(),
+	),
+
 );
 
 /*

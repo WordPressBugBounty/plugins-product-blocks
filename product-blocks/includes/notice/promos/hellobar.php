@@ -112,6 +112,29 @@ return array(
 		'visibility'         => wopb_function()->show_upsell(),
 	),
 
+	// Black Friday 2026.
+	array(
+		'key'                => $prefix . '_helloBar_black_friday_2026_1',
+		'start'              => '2026-11-12 00:00 Asia/Dhaka',
+		'end'                => '2026-12-06 23:59 Asia/Dhaka',
+		'text'               => __( 'Black Friday Offer: Enjoy up to 70% Off on', 'product-blocks' ),
+		'highlight'          => $brand_name . ' ' . __( 'Pro', 'product-blocks' ),
+		'button_text'        => __( 'Upgrade Now', 'product-blocks' ),
+		'countdown_duration' => 0, // Seconds; 0 hides the countdown.
+		'url'                => Xpo::generate_utm_link(
+			array(
+				'url'    => 'https://www.wpxpo.com/product/wowstore/pricing/',
+				'hash'   => '', // The pricing page needs no #pricing anchor.
+				'config' => array(
+					'source'   => 'db-wowstore',
+					'medium'   => 'bfcm-plugin-topbar',
+					'campaign' => $config['utm_campaign'],
+				),
+			)
+		),
+		'visibility'         => wopb_function()->show_upsell(),
+	),
+
 );
 
 /*
